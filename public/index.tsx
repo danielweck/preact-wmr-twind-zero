@@ -45,12 +45,12 @@ export const App = () => {
 				<h1>404 Not Found links:</h1>
 				<ul>
 					<li>
-						<a href={`${publicPath}not/found/blank`} rel="noreferrer noopener" target="_BLANK">
+						<a href={`${publicPath}not-found-blank`} rel="noreferrer noopener" target="_BLANK">
 							404 (target BLANK)
 						</a>
 					</li>
 					<li>
-						<a href={`${publicPath}not/found/inpage`} target="_top">
+						<a href={`${publicPath}not-found-inpage`} target="_top">
 							404 (in page)
 						</a>
 					</li>

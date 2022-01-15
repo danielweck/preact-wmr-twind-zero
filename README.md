@@ -18,7 +18,7 @@ This small PreactWMR + Twind experiment demonstrates a set of techniques that ac
 
 The CSS styles deemed "critical" are those required to render the current static route. The "secondary" stylesheet is populated with all the other styles that the SPA might need when the user navigates to another client-side route. The "critical" stylesheet is granted a high priority during the early browser loading stages, by virtue of being embedded directly in the document head. The "secondary" stylesheet (pre)loads in the background / asynchronously, to avoid blocking the main render thread. This is orchastrated by simple markup in each `index.html` route pages, and a tiny line of Javascript that signals the activation of the stylesheet so that the browser consumes it.
 
-This obvious caveat when using this zero-runtime Twind integration recipe is that it works with dynamic class names / parameterized tokens only if they can predictably be enumerated during server-side pre-rendering. For example, if a button has "pressed" and "keyboard focused" states (aka. style variants) that can be expressed declaratively, then a server-side enumeration of all the possible states can be used to precompute the corresponding Twind classes and to statically generate the required styles into the target stylesheet.
+The obvious caveat when using this zero-runtime Twind integration recipe is that it works with dynamic class names / parameterized tokens only if they can predictably be enumerated during server-side pre-rendering. For example, if a button has "pressed" and "keyboard focused" states (aka. style variants) that can be expressed declaratively, then a server-side enumeration of all the possible states can be used to precompute the corresponding Twind classes and to statically generate the required styles into the target stylesheet.
 
 This repository contains a minimal demo which makes it easy to manually inspect the generated HTML / CSS / JS:
 
@@ -44,4 +44,4 @@ This repository contains a minimal demo which makes it easy to manually inspect 
 
 ### Dev server:
 
-* `npm run start`
+* `npm run start` (web browser at `http://127.0.0.1:8080`)
