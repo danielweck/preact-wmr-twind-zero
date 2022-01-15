@@ -22,6 +22,7 @@ if (process.env.NODE_ENV === 'development') {
 // Code splitting
 const RoutedLazy = lazy(() => import('./routed/lazy.js'));
 
+const publicPathOrigin = process.env.WMR_PUBLIC_PATH_ORIGIN || '';
 const publicPath = process.env.WMR_PUBLIC_PATH_ROOT || '/';
 
 export const App = () => {
@@ -61,22 +62,22 @@ export const App = () => {
 						<a href={`${publicPath}`}>Routed Home</a>
 					</li>
 					<li>
-						<a href={`${publicPath}routed-lazy`}>Routed Lazy</a>
+						<a href={`${publicPath}routed-lazy${publicPathOrigin ? '/' : ''}`}>Routed Lazy</a>
 					</li>
 					<li>
-						<a href={`${publicPath}routed-non-lazy`}>Routed Non Lazy</a>
+						<a href={`${publicPath}routed-non-lazy${publicPathOrigin ? '/' : ''}`}>Routed Non Lazy</a>
 					</li>
 					<li>
-						<a href={`${publicPath}routed-route`}>Routed Route</a>
+						<a href={`${publicPath}routed-route${publicPathOrigin ? '/' : ''}`}>Routed Route</a>
 					</li>
 				</ul>
 
 				<h1>Router content:</h1>
 				<Router>
 					<RoutedHome path={`${publicPath}`} />
-					<RoutedLazy path={`${publicPath}routed-lazy`} />
-					<RoutedNonLazy path={`${publicPath}routed-non-lazy`} />
-					<Route component={RoutedRoute} path={`${publicPath}routed-route`} />
+					<RoutedLazy path={`${publicPath}routed-lazy${publicPathOrigin ? '/' : ''}`} />
+					<RoutedNonLazy path={`${publicPath}routed-non-lazy${publicPathOrigin ? '/' : ''}`} />
+					<Route component={RoutedRoute} path={`${publicPath}routed-route${publicPathOrigin ? '/' : ''}`} />
 					<Routed404 default />
 				</Router>
 			</LocationProvider>

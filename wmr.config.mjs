@@ -36,10 +36,11 @@ export default defineConfig(async (config) => {
 	config.alias = { '~/*': './public' };
 
 	// ask WMR to prerender route not explicitly linked to in source code
-	config.customRoutes = [
-		'/_404',
-		// config.publicPath.startsWith('//') ? PUBLIC_PATH_ROOT : config.publicPath,
-	];
+	config.customRoutes = ['/_404'];
+	// config.publicPath.startsWith('//') ? PUBLIC_PATH_ROOT : config.publicPath,
+	// if (config.publicPath.startsWith('//')) {
+	// 	config.customRoutes.push('/');
+	// }
 
 	config.plugins.push(wmrTwindPlugin(config));
 });
