@@ -90,7 +90,13 @@ if (IS_CLIENT_SIDE) {
 		// client-side live dev server !== page prerendered via WMR 'build' mode
 		const isPrerendered = !!document.querySelector('script[type=isodata]'); // TODO: is that reliable?
 		initPreactVDOMHookForTwind(isPrerendered);
-		hydrate(<App />, document.body);
+		if (process.env.NODE_ENV === 'development') {
+			setTimeout(() => {
+				hydrate(<App />, document.body);
+			}, 600);
+		} else {
+			hydrate(<App />, document.body);
+		}
 	};
 
 	if (document.readyState === 'loading') {
