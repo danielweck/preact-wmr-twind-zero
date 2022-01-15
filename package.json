@@ -1,5 +1,9 @@
 {
 	"type": "module",
+	"engines": {
+		"node": ">=16",
+		"npm": ">=8"
+	},
 	"scripts": {
 		"clean": "rimraf \"./dist\" && rimraf \"./.cache\" && rimraf \"./.tmp\"",
 		"prestart": "npm run clean",
@@ -16,7 +20,7 @@
 		"serve": "cross-env DEBUG=* wmr serve",
 		"serve-http2": "cross-env DEBUG=* wmr serve --http2",
 		"lint:eslint": "eslint \"./public/**/*.{ts,tsx,jsx,tsx}\"",
-		"lint:editorconfig": "eclint check '**/*' '!.tmp/**/*' '!package-lock.json' '!package.json' '!yarn.lock' '!.cache/**/*' '!.vscode/**/*' '!.git/**/*' '!node_modules/**/*' '!.github/**/*' '!.history/**/*'",
+		"lint:editorconfig": "eclint check '**/*' '!.tmp/**/*' '!package-lock.json' '!package.json' '!yarn.lock' '!.cache/**/*' '!.vscode/**/*' '!.git/**/*' '!node_modules/**/*' '!.github/**/*' '!.history/**/*' '!dist/**/*'",
 		"lint-prettier": "prettier --check --no-write --loglevel log \"./public\"",
 		"lint": "npm run lint:editorconfig && npm run lint:eslint && npm run lint-prettier && npm run typescript",
 		"eslint-fix": "eslint --fix \"./public/**/*.{js,ts,jsx,tsx}\"",
