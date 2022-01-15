@@ -64,7 +64,7 @@ setTimeout(async () => {
 		});
 
 		fs.writeFileSync(`${htmlFilePath}.css`, hydrateCss.join('\n'), { encoding: 'utf8' });
-		const cssFilePath = `/${path.dirname(path.relative(root, htmlFilePath)).replace(/\\/g, '/')}/${path.basename(
+		const cssFilePath = `${path.dirname(path.relative(root, htmlFilePath)).replace(/\\/g, '/')}/${path.basename(
 			htmlFilePath,
 		)}.css`.replace(/\.\//g, '');
 		console.log('CSS: ', cssFilePath);

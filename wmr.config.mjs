@@ -9,6 +9,10 @@ export default defineConfig(async (config) => {
 	// we also use CLI DEBUG=*
 	config.debug = true;
 
+	config.publicPath = process.env.BUILD_FOR_GITHUB
+		? '//raw.githack.com/danielweck/preact-wmr-twind-zero/main/dist/'
+		: '/';
+
 	// we use CLI --visualize
 	// config.visualize = true;
 
