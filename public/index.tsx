@@ -22,6 +22,8 @@ if (process.env.NODE_ENV === 'development') {
 // Code splitting
 const RoutedLazy = lazy(() => import('./routed/lazy.js'));
 
+const publicPath = process.env.WMR_PUBLIC_PATH_ROOT || '/';
+
 export const App = () => {
 	return (
 		<ErrorBoundary
@@ -42,12 +44,12 @@ export const App = () => {
 				<h1>404 Not Found links:</h1>
 				<ul>
 					<li>
-						<a href={'/not/found/blank'} rel="noreferrer noopener" target="_BLANK">
+						<a href={`${publicPath}not/found/blank`} rel="noreferrer noopener" target="_BLANK">
 							404 (target BLANK)
 						</a>
 					</li>
 					<li>
-						<a href={'/not/found/inpage'} target="_top">
+						<a href={`${publicPath}not/found/inpage`} target="_top">
 							404 (in page)
 						</a>
 					</li>
@@ -56,25 +58,25 @@ export const App = () => {
 				<h1>Router links:</h1>
 				<ul>
 					<li>
-						<a href={'/'}>Routed Home</a>
+						<a href={`${publicPath}`}>Routed Home</a>
 					</li>
 					<li>
-						<a href={'/routed-lazy'}>Routed Lazy</a>
+						<a href={`${publicPath}routed-lazy`}>Routed Lazy</a>
 					</li>
 					<li>
-						<a href={'/routed-non-lazy'}>Routed Non Lazy</a>
+						<a href={`${publicPath}routed-non-lazy`}>Routed Non Lazy</a>
 					</li>
 					<li>
-						<a href={'/routed-route'}>Routed Route</a>
+						<a href={`${publicPath}routed-route`}>Routed Route</a>
 					</li>
 				</ul>
 
 				<h1>Router content:</h1>
 				<Router>
-					<RoutedHome path="/" />
-					<Route component={RoutedRoute} path="/routed-route" />
-					<RoutedNonLazy path="/routed-non-lazy" />
-					<RoutedLazy path="/routed-lazy" />
+					<RoutedHome path={`${publicPath}`} />
+					<RoutedLazy path={`${publicPath}routed-lazy`} />
+					<RoutedNonLazy path={`${publicPath}routed-non-lazy`} />
+					<Route component={RoutedRoute} path={`${publicPath}routed-route`} />
 					<Routed404 default />
 				</Router>
 			</LocationProvider>

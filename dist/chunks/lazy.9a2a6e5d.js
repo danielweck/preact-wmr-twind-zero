@@ -1,1 +1,0 @@
-import{m as e}from"../index.40fbee15.js";const t=t=>e`<section><h2>Lazy</h2><p class=${{_:"",tw:"bg-yellow-500 text-black"}}> This text should have a yellow-500 background </p></section>`;export default t;export{t as RoutedLazy};

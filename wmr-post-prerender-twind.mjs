@@ -69,15 +69,17 @@ setTimeout(async () => {
 		)}.css`.replace(/\.\//g, '');
 		console.log('CSS: ', cssFilePath);
 
+		const cssFilename = `${path.basename(htmlFilePath)}.css`;
+
 		let html = fs.readFileSync(htmlFilePath, { encoding: 'utf8' });
 
 		// add the lower-priority non-critical CSS external stylesheet links
 		html = html.replace(
 			/<\/head>/,
 			`
-<link rel="preload" href="${cssFilePath}" as="style" crossorigin="anonymous" />
-<link rel="stylesheet" href="${cssFilePath}" media="print" onload="this.onload=null;this.media='all'" crossorigin="anonymous" />
-<noscript><link rel="stylesheet" href="${cssFilePath}"></noscript>
+<link rel="preload" href="${cssFilename}" as="style" crossorigin="anonymous" />
+<link rel="stylesheet" href="${cssFilename}" media="print" onload="this.onload=null;this.media='all'" crossorigin="anonymous" />
+<noscript><link rel="stylesheet" href="${cssFilename}"></noscript>
 </head>
 `,
 		);

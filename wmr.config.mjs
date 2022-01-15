@@ -9,9 +9,13 @@ export default defineConfig(async (config) => {
 	// we also use CLI DEBUG=*
 	config.debug = true;
 
-	config.publicPath = process.env.BUILD_FOR_GITHUB
-		? '//raw.githack.com/danielweck/preact-wmr-twind-zero/main/dist/'
-		: '/';
+	// WMR hacks to deploy on GitHub :(
+	const PUBLIC_PATH_ORIGIN = '//raw.githack.com';
+	const PUBLIC_PATH_ROOT = '/danielweck/preact-wmr-twind-zero/main/dist/';
+	config.publicPath = process.env.BUILD_FOR_GITHUB ? `${PUBLIC_PATH_ORIGIN}${PUBLIC_PATH_ROOT}` : '/';
+	if (process.env.BUILD_FOR_GITHUB) {
+		config.env = { WMR_PUBLIC_PATH_ORIGIN: PUBLIC_PATH_ORIGIN, WMR_PUBLIC_PATH_ROOT: PUBLIC_PATH_ROOT };
+	}
 
 	// we use CLI --visualize
 	// config.visualize = true;
@@ -32,7 +36,10 @@ export default defineConfig(async (config) => {
 	config.alias = { '~/*': './public' };
 
 	// ask WMR to prerender route not explicitly linked to in source code
-	config.customRoutes = ['/_404'];
+	config.customRoutes = [
+		'/_404',
+		// config.publicPath.startsWith('//') ? PUBLIC_PATH_ROOT : config.publicPath,
+	];
 
 	config.plugins.push(wmrTwindPlugin(config));
 });
