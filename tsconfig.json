@@ -1,0 +1,38 @@
+{
+	"compileOnSave": false,
+	"compilerOptions": {
+		"plugins": [
+			{
+				"name": "@twind/typescript-plugin",
+				"tags": ["tw", "apply", "twind", "twindTw", "twindApply", "twindSkip"],
+				"attributes": ["class", "className", "tw", "data-tw", "tw-apply", "data-tw-apply"],
+				"styles": ["style", "styled"],
+				"debug": true,
+				"enable": true
+			}
+		],
+		"jsx": "preserve",
+		"jsxFactory": "preact.h",
+		"jsxFragmentFactory": "preact.Fragment",
+		"allowJs": false,
+		"checkJs": false,
+		"strict": true,
+		"strictNullChecks": true,
+		"noEmit": true,
+		"moduleResolution": "node",
+		"target": "ESNext",
+		"module": "esnext",
+		"resolveJsonModule": true,
+		"allowSyntheticDefaultImports": true,
+		"downlevelIteration": true,
+		"skipLibCheck": true,
+		"baseUrl": ".",
+		"paths": {
+			"~/*": ["./public/*"],
+			"/*": ["./public/*"],
+		}
+	},
+	"typeAcquisition": {
+		"enable": true
+	},
+}

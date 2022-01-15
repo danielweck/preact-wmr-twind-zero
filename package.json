@@ -1,0 +1,51 @@
+{
+	"type": "module",
+	"scripts": {
+		"clean": "rimraf \"./dist\" && rimraf \"./.cache\" && rimraf \"./.tmp\"",
+		"prestart": "npm run clean",
+		"start": "DEBUG=* wmr",
+		"prebuild": "npm run clean",
+		"build": "DEBUG=* wmr build --prerender",
+		"postbuild": "node \"./wmr-post-prerender-twind.mjs\"",
+		"prebuild-viz": "npm run prebuild",
+		"build-viz": "DEBUG=* wmr build --prerender --visualize",
+		"postbuild-viz": "npm run postbuild",
+		"serve": "DEBUG=* wmr serve",
+		"serve-http2": "DEBUG=* wmr serve --http2",
+		"lint:eslint": "eslint \"./public/**/*.{ts,tsx,jsx,tsx}\"",
+		"lint:editorconfig": "eclint check '**/*' '!.tmp/**/*' '!package-lock.json' '!package.json' '!yarn.lock' '!.cache/**/*' '!.vscode/**/*' '!.git/**/*' '!node_modules/**/*' '!.github/**/*' '!.history/**/*'",
+		"lint-prettier": "prettier --check --no-write --loglevel log \"./public\"",
+		"lint": "npm run lint:editorconfig && npm run lint:eslint && npm run lint-prettier && npm run typescript",
+		"eslint-fix": "eslint --fix \"./public/**/*.{js,ts,jsx,tsx}\"",
+		"prettier-fix": "prettier --write \"./public/**/*.{css,html,js,ts,jsx,tsx,json,md,yml,svg,xml}\"",
+		"lint-fix": "npm run eslint-fix && npm run prettier-fix",
+		"typescript": "tsc --project tsconfig.json"
+	},
+	"dependencies": {
+		"preact": "^10.6.4",
+		"preact-iso": "^2.3.0",
+		"twind": "^0.16.16"
+	},
+	"devDependencies": {
+		"@rollup/plugin-replace": "^3.0.1",
+		"@twind/typescript-plugin": "^0.3.4",
+		"@types/node": "^16.11.17",
+		"@typescript-eslint/eslint-plugin": "^5.9.1",
+		"@typescript-eslint/parser": "^5.9.1",
+		"cpy-cli": "^3.1.1",
+		"eclint": "^2.8.1",
+		"eslint": "^8.6.0",
+		"eslint-config-preact": "^1.3.0",
+		"eslint-config-prettier": "^8.3.0",
+		"eslint-plugin-prettier": "^4.0.0",
+		"eslint-plugin-react": "^7.28.0",
+		"eslint-plugin-react-hooks": "^4.3.0",
+		"eslint-plugin-unused-imports": "^2.0.0",
+		"kleur": "^4.1.4",
+		"kolorist": "^1.5.1",
+		"prettier": "^2.5.1",
+		"rimraf": "^3.0.2",
+		"typescript": "^4.5.4",
+		"wmr": "^3.7.2"
+	}
+}

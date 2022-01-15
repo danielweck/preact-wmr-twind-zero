@@ -1,0 +1,31 @@
+{
+  "typescript.tsdk": "./node_modules/typescript/lib",
+  "typescript.tsserver.trace": "off",
+  "files.exclude": {
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/.vscode": false,
+    "**/.history": true,
+    "**/.gitignore": true,
+    "**/.gitmodules": true,
+    "**/.idea": true,
+    "**/node_modules*": true,
+    "package-lock.json": true,
+    "yarn.lock": true
+  },
+  "typescript.surveys.enabled": false,
+  "editor.tabSize": 4,
+  "editor.useTabStops": true,
+  "importSorter.importStringConfiguration.quoteMark": "single",
+  "importSorter.importStringConfiguration.trailingComma": "multiLine",
+  "javascript.preferences.quoteStyle": "single",
+  "typescript.preferences.quoteStyle": "single",
+  "prettier.singleQuote": true,
+  "css.validate": false,
+  "less.validate": false,
+  "scss.validate": false,
+  "editor.suggest.showStatusBar": true,
+  "editor.quickSuggestions": {
+    "strings": false
+  }
+}

@@ -1,0 +1,11 @@
+.vscode/*
+.history/*
+.github/*
+.git/*
+.cache/*
+node_modules/*
+package-lock.json
+yarn.lock
+dist
+.tmp
+stats.html
