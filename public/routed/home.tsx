@@ -5,14 +5,16 @@ import type { FunctionalComponent, RenderableProps } from 'preact';
 export const RoutedHome: FunctionalComponent<unknown> = (_props: RenderableProps<unknown>) => {
 	return (
 		<section>
-			<h2>Home</h2>
+			<h2>&rarr; Home</h2>
 			<p
 				class={twindTw`
 					bg-yellow-400
 					text-black
+					text-3xl
 				`}
 			>
-				This text should have a yellow-400 background
+				This text should have a <strong>yellow-400</strong> background (unique to this paragraph, not shared with any other
+				route or omponent)
 			</p>
 		</section>
 	);

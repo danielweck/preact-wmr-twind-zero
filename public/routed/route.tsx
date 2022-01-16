@@ -5,14 +5,16 @@ import type { FunctionalComponent, RenderableProps } from 'preact';
 export const RoutedRoute: FunctionalComponent<unknown> = (_props: RenderableProps<unknown>) => {
 	return (
 		<section>
-			<h2>Route</h2>
+			<h2>&rarr; Route</h2>
 			<p
 				class={twindTw`
 					bg-yellow-700
 					text-black
+					text-3xl
 				`}
 			>
-				This text should have a yellow-700 background
+				This text should have a <strong>yellow-700</strong> background (unique to this paragraph, not shared with any other
+				route or omponent)
 			</p>
 		</section>
 	);

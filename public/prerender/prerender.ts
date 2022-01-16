@@ -1,7 +1,8 @@
 import prerender from 'preact-iso/prerender';
+
 import { virtual } from '@twind/core';
 
-import { initPreactVDOMHookForTwind } from '../twind-preact-vnode-options-hook.js';
+import { initPreactVDOMHook_Twind } from '../preact-vnode-options-hook--twind.js';
 import { twindConfig } from '../twind.config.js';
 
 import type { VNode } from 'preact';
@@ -14,7 +15,7 @@ const _twindSheet = virtual();
 
 // Custom Preact VNode 'options' hook
 // that interprets Twind component props (class, classname, etc.)
-const _tw = initPreactVDOMHookForTwind(false, _twindSheet);
+const _tw = initPreactVDOMHook_Twind(_twindSheet);
 
 export const preactWmrPrerenderForTwind = async (
 	url: string,

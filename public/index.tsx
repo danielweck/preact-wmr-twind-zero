@@ -1,12 +1,13 @@
 import hydrate from 'preact-iso/hydrate';
 import lazy, { ErrorBoundary } from 'preact-iso/lazy';
 import { LocationProvider, Route, Router } from 'preact-iso/router';
+import { useState } from 'preact/hooks';
 
+import { initPreactVDOMHook } from './preact-vnode-options-hook.js';
 import { Routed404 } from './routed/_404.js';
 import { RoutedHome } from './routed/home.js';
 import { RoutedNonLazy } from './routed/non-lazy.js';
 import { RoutedRoute } from './routed/route.js';
-import { initPreactVDOMHookForTwind } from './twind-preact-vnode-options-hook.js';
 import { twindTw } from './twindish.js';
 import { IS_CLIENT_SIDE } from './utils.js';
 
@@ -26,6 +27,7 @@ const publicPathOrigin = process.env.WMR_PUBLIC_PATH_ORIGIN || '';
 const publicPath = process.env.WMR_PUBLIC_PATH_ROOT || '/';
 
 export const App = () => {
+	const [onRouteChangeWasCalled, setOnRouteChangeWasCalled] = useState(false);
 	return (
 		<ErrorBoundary
 			onError={(err) => {
@@ -40,7 +42,8 @@ export const App = () => {
 						text-black
 					`}
 				>
-					This text should have a yellow-200 background
+					This text should have a <strong>yellow-200</strong> background (unique to this paragraph, not shared with any other
+					route or omponent)
 				</p>
 				<h1>404 Not Found links:</h1>
 				<ul>
@@ -73,30 +76,58 @@ export const App = () => {
 				</ul>
 
 				<h1>Router content:</h1>
-				<Router>
+				<Router
+					onRouteChange={() => {
+						setOnRouteChangeWasCalled(true);
+					}}
+				>
 					<RoutedHome path={`${publicPath}`} />
 					<RoutedLazy path={`${publicPath}routed-lazy${publicPathOrigin ? '/' : ''}`} />
 					<RoutedNonLazy path={`${publicPath}routed-non-lazy${publicPathOrigin ? '/' : ''}`} />
 					<Route component={RoutedRoute} path={`${publicPath}routed-route${publicPathOrigin ? '/' : ''}`} />
 					<Routed404 default />
 				</Router>
+
+				<h1>Router status</h1>
+				<p
+					class={twindTw`
+					bg-red-400
+					text-white
+					text-3xl
+				`}
+				>
+					{onRouteChangeWasCalled ? 'SPA route (post-hydration)' : 'Initial route (static SSR / SSG)'}
+				</p>
+				<p class={twindTw`text-3xl`}>
+					(note that the above paragraphs share the same <strong>text-3xl</strong> Twind style, but it isn't duplicated in
+					the pre-rendered "critical" and "secondary" stylesheets)
+				</p>
 			</LocationProvider>
 		</ErrorBoundary>
 	);
 };
 
 if (IS_CLIENT_SIDE) {
-	const load = () => {
+	const load = async () => {
 		// client-side live dev server !== page prerendered via WMR 'build' mode
-		const isPrerendered = !!document.querySelector('script[type=isodata]'); // TODO: is that reliable?
-		initPreactVDOMHookForTwind(isPrerendered);
-		if (process.env.NODE_ENV === 'development') {
-			setTimeout(() => {
-				hydrate(<App />, document.body);
-			}, 600);
+		const isPrerendered = !!document.querySelector('script[type=isodata]');
+		if (isPrerendered) {
+			initPreactVDOMHook();
 		} else {
-			hydrate(<App />, document.body);
+			// here in this code branch (no isodata): process.env.NODE_ENV === 'development'
+			// we use await import to force code splitting => this code bundle will not be loaded in production
+
+			// TODO: because of Preact WMR workaround for config.publicPath, this import fails :(
+			// ... so we strip the code at build time by detecting the following HTML comment:
+
+			/* PREACT_WMR_BUILD_STRIP_CODE_BEGIN */
+			const { initPreactVDOMHook_Twind } = await import('./preact-vnode-options-hook--twind.js');
+			initPreactVDOMHook_Twind();
+			/* PREACT_WMR_BUILD_STRIP_CODE_END */
 		}
+
+		// body to match prerender!
+		hydrate(<App />, document.body);
 	};
 
 	if (document.readyState === 'loading') {
@@ -132,7 +163,9 @@ export async function prerender(data: Record<string, any>): Promise<
 	// Must be dynamic import for code splitting and avoid include in client bundle
 	const { preactWmrPrerenderForTwind } = await import('./prerender/prerender.js');
 
-	const res = await preactWmrPrerenderForTwind(data.url, <App {...data} />);
+	// TODO: data props?
+	const res = await preactWmrPrerenderForTwind(data.url, <App {...data} />, { props: data });
+
 	const elements = new Set([
 		{ type: 'meta', props: { property: 'og:title', content: 'SEO title' } as Record<string, string> },
 		{ type: 'style', props: { id: res.cssId, children: res.cssTextContent } },
@@ -140,9 +173,9 @@ export async function prerender(data: Record<string, any>): Promise<
 	return {
 		html: res.html,
 		links: res.links,
-		// <script type="isodata" />
 		data: {
-			foo: 'bar',
+			isprerendered: 'yes', // leave this one! (ensures <script type="isodata" /> is present)
+			...data,
 		},
 		head: {
 			elements,
