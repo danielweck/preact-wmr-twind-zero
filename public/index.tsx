@@ -35,6 +35,17 @@ export const App = () => {
 			}}
 		>
 			<LocationProvider>
+				<h1>Router status</h1>
+				<p
+					class={twindTw`
+					bg-red-400
+					text-white
+					text-3xl
+				`}
+				>
+					{onRouteChangeWasCalled ? 'SPA route (post-hydration)' : 'Initial route (static SSR / SSG)'}
+				</p>
+
 				<h1>Router links:</h1>
 				<ul>
 					<li>
@@ -64,21 +75,10 @@ export const App = () => {
 					<Routed404 default />
 				</Router>
 
-				<h1>Router status</h1>
-				<p
-					class={twindTw`
-					bg-red-400
-					text-white
-					text-3xl
-				`}
-				>
-					{onRouteChangeWasCalled ? 'SPA route (post-hydration)' : 'Initial route (static SSR / SSG)'}
-				</p>
-
 				<h1>Twind critical/secondary stylesheet tests:</h1>
 				<p class={twindTw`text-3xl`}>
-					The above paragraphs share the same <strong>text-3xl</strong> Twind style, but it isn't duplicated in the
-					pre-rendered "critical" and "secondary" stylesheets.
+					This paragraphs and others located in different routes share the same <strong>text-3xl</strong> Twind style, but it
+					isn't duplicated in the pre-rendered "secondary" stylesheet, it is hoisted in the "critical" styles.
 				</p>
 				<p
 					class={twindTw`
