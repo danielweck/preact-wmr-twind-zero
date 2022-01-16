@@ -188,7 +188,10 @@ export const initPreactVDOMHookForTwind_ = (runTwind: boolean) => {
 	};
 };
 
-export const initPreactVDOMHookForTwind = (prerendered: boolean, sheet?: Sheet<string[]>) => {
+export const initPreactVDOMHookForTwind = (
+	prerendered: boolean,
+	sheet?: Sheet<string[]>,
+): Twind<BaseTheme, CSSStyleSheet | string[]> | undefined => {
 	// client-side live dev server !== page prerendered via WMR 'build' mode
 	if (prerendered) {
 		// No Twind runtime, stylesheets already statically generated
@@ -210,4 +213,6 @@ export const initPreactVDOMHookForTwind = (prerendered: boolean, sheet?: Sheet<s
 		}
 		initPreactVDOMHookForTwind_(true);
 	}
+
+	return _tw;
 };

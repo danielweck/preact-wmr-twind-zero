@@ -14,7 +14,7 @@ const _twindSheet = virtual();
 
 // Custom Preact VNode 'options' hook
 // that interprets Twind component props (class, classname, etc.)
-initPreactVDOMHookForTwind(false, _twindSheet);
+const _tw = initPreactVDOMHookForTwind(false, _twindSheet);
 
 export const preactWmrPrerenderForTwind = async (
 	url: string,
@@ -32,7 +32,12 @@ export const preactWmrPrerenderForTwind = async (
 
 	// Resets the stylesheet (previous file transform).
 	// Note that 'preflight', if any, is included (reset !== zero-ing the stylesheet)
-	_twindSheet.clear();
+	// note: condition ALWAYS true, TODO: is a full reset necessary?
+	if (_tw) {
+		_tw.clear();
+	} else {
+		_twindSheet.clear();
+	}
 
 	if (twindConfig.preflight === false && _twindSheet.target.length) {
 		const msg = `${DEBUG_PREFIX}no preflight but stylesheet is not empty after reset?!`;

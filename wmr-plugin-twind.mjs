@@ -82,7 +82,12 @@ export function wmrTwindPlugin(config) {
 					// Resets the stylesheet (previous file transform).
 					// Note that generally-speaking, 'preflight' (if any) is included.
 					// (reset !== zero-ing the stylesheet)
-					_twindSheet.clear();
+					// note: condition ALWAYS true, TODO: is a full reset necessary?
+					if (_tw) {
+						_tw.clear();
+					} else {
+						_twindSheet.clear();
+					}
 
 					code = code.replace(REGEXP_TWIND_TAGGED_TEMPLATE_LITERALS, (_match, $1, $2) => {
 						// Removes line breaks and collapses whitespaces
