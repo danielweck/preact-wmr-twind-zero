@@ -134,6 +134,19 @@ export function wmrTwindPlugin(config) {
 				throw new Error(`${DEBUG_PREFIX}${red('not all Twind tagged template literals were transformed!')}`);
 			}
 
+			if (config.publicPath !== '/') {
+				// TODO: because of Preact WMR workaround for config.publicPath, the async module imports fail :(
+				// ... so we strip the code at build time by detecting the following HTML comment:
+				code = code.replace(
+					/\/\* PREACT_WMR_BUILD_STRIP_CODE_BEGIN \*\/([\s\S]+)\/\* PREACT_WMR_BUILD_STRIP_CODE_END \*\//gm,
+					'',
+				);
+				if (code.includes('PREACT_WMR_BUILD_STRIP_CODE_BEGIN')) {
+					console.log(code);
+					throw new Error('?!');
+				}
+			}
+
 			return { code, map: null };
 		},
 	};
