@@ -14,7 +14,7 @@ export const Routed404: FunctionalComponent<unknown> = (_props: RenderableProps<
 				`}
 			>
 				This text should have a <strong>yellow-300</strong> background (unique to this paragraph, not shared with any other
-				route or omponent)
+				route or component)
 			</p>
 		</section>
 	);

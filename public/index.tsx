@@ -35,30 +35,6 @@ export const App = () => {
 			}}
 		>
 			<LocationProvider>
-				<h1>Twind test:</h1>
-				<p
-					class={twindTw`
-						bg-yellow-200
-						text-black
-					`}
-				>
-					This text should have a <strong>yellow-200</strong> background (unique to this paragraph, not shared with any other
-					route or omponent)
-				</p>
-				<h1>404 Not Found links:</h1>
-				<ul>
-					<li>
-						<a href={`${publicPath}not-found-blank`} rel="noreferrer noopener" target="_BLANK">
-							404 (target BLANK)
-						</a>
-					</li>
-					<li>
-						<a href={`${publicPath}not-found-inpage`} target="_top">
-							404 (in page)
-						</a>
-					</li>
-				</ul>
-
 				<h1>Router links:</h1>
 				<ul>
 					<li>
@@ -98,10 +74,35 @@ export const App = () => {
 				>
 					{onRouteChangeWasCalled ? 'SPA route (post-hydration)' : 'Initial route (static SSR / SSG)'}
 				</p>
+
+				<h1>Twind critical/secondary stylesheet tests:</h1>
 				<p class={twindTw`text-3xl`}>
-					(note that the above paragraphs share the same <strong>text-3xl</strong> Twind style, but it isn't duplicated in
-					the pre-rendered "critical" and "secondary" stylesheets)
+					The above paragraphs share the same <strong>text-3xl</strong> Twind style, but it isn't duplicated in the
+					pre-rendered "critical" and "secondary" stylesheets.
 				</p>
+				<p
+					class={twindTw`
+						bg-yellow-200
+						text-black
+					`}
+				>
+					This text should have a <strong>yellow-200</strong> background (unique to this paragraph, not shared with any other
+					route or component)
+				</p>
+
+				<h1>404 Not Found links:</h1>
+				<ul>
+					<li>
+						<a href={`${publicPath}not-found-blank`} rel="noreferrer noopener" target="_BLANK">
+							404 (target BLANK)
+						</a>
+					</li>
+					<li>
+						<a href={`${publicPath}not-found-inpage`} target="_top">
+							404 (in page)
+						</a>
+					</li>
+				</ul>
 			</LocationProvider>
 		</ErrorBoundary>
 	);

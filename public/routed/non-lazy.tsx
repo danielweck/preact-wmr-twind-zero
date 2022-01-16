@@ -14,7 +14,15 @@ export const RoutedNonLazy: FunctionalComponent<unknown> = (_props: RenderablePr
 				`}
 			>
 				This text should have a <strong>yellow-600</strong> background (unique to this paragraph, not shared with any other
-				route or omponent)
+				route or component)
+			</p>
+			<p
+				class={twindTw`
+					text-4xl
+				`}
+			>
+				This text should have a <strong>text-4xl</strong> size (unique to this paragraph, not shared with any other route or
+				component)
 			</p>
 		</section>
 	);
