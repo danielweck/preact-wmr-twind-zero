@@ -1,8 +1,9 @@
 import { green, red, cyan } from 'kolorist';
 
 import { twind, shortcut, virtual, asArray, defineConfig } from '@twind/core';
-import autoprefix from '@twind/preset-autoprefix';
-import ext from '@twind/preset-ext';
+import twindPresetAutoprefix from '@twind/preset-autoprefix';
+import twindPresetExt from '@twind/preset-ext';
+import twindPresetTailwind from '@twind/preset-tailwind';
 
 import { twindConfig } from './public/twind.config.js';
 
@@ -72,7 +73,7 @@ export function wmrTwindPlugin(config) {
 						// { preflight: false }
 						const twConfig = defineConfig({
 							...twindConfig,
-							presets: [autoprefix(), ...asArray(twindConfig.presets), ext()],
+							presets: [twindPresetAutoprefix(), ...asArray(twindConfig.presets), twindPresetExt(), twindPresetTailwind()],
 						});
 						_tw = twind(twConfig, _twindSheet);
 					}

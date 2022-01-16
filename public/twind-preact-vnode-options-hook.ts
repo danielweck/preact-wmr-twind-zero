@@ -1,8 +1,9 @@
 import { options } from 'preact';
 
 import { asArray, cssom, defineConfig, shortcut, twind } from '@twind/core';
-import autoprefix from '@twind/preset-autoprefix';
-import ext from '@twind/preset-ext';
+import twindPresetAutoprefix from '@twind/preset-autoprefix';
+import twindPresetExt from '@twind/preset-ext';
+import twindPresetTailwind from '@twind/preset-tailwind';
 
 import { twindConfig } from './twind.config.js';
 import { IS_CLIENT_SIDE } from './utils.js';
@@ -199,8 +200,13 @@ export const initPreactVDOMHookForTwind = (
 	} else {
 		const twConfig = defineConfig({
 			...twindConfig,
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			presets: [autoprefix(), ...asArray((twindConfig as TwindUserConfig<any>).presets), ext()],
+			presets: [
+				twindPresetAutoprefix(),
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				...asArray((twindConfig as TwindUserConfig<any>).presets),
+				twindPresetExt(),
+				twindPresetTailwind(),
+			],
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} as TwindUserConfig<any>);
 		// Twind runtime, stylesheets will be generated on the fly
