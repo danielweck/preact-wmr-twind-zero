@@ -1,7 +1,9 @@
-import { red, cyan } from 'kolorist';
+import { green, red, cyan } from 'kolorist';
 
-import { setup, apply, tw } from 'twind';
-import { virtualSheet } from 'twind/sheets';
+import { twind, shortcut, virtual, asArray, defineConfig } from '@twind/core';
+import twindPresetAutoprefix from '@twind/preset-autoprefix';
+import twindPresetExt from '@twind/preset-ext';
+import twindPresetTailwind from '@twind/preset-tailwind';
 
 import { twindConfig } from './public/twind.config.js';
 
@@ -9,13 +11,13 @@ import { twindConfig } from './public/twind.config.js';
 // we only transform Twind tagged template literals in TS, TSX, JS, JSX source code
 const REGEXP_TRANSFORM_FILE_FILTER = /\.[tj]sx?$/;
 
-// 'twindTw' is a function we define to wrap Twind's own tw() tagged template literal.
-// 'twindApply' is a function we define to wrap Twind's own apply() tagged template literal.
+// 'twindTw' is a function we define to wrap Twind's own tagged template literal.
+// 'twindshortcut' is a function we define to wrap Twind's own shortcut() tagged template literal.
 // 'twindSkip' is a function we define to signal that Twind will not be invoked,
 // instead we preserve the function parameters as-is (i.e. raw template literal string),
 // which enables token intellisense / autocompletion DX, without actually invoking Twind at buildtime or runtime.
 // (see tsconfig.json, 'compilerOptions' > 'plugins' > '@twind/typescript-plugin' > 'tags' and 'attributes')
-const twindTagFunctions = ['twindTw', 'twindApply', 'twindSkip'];
+const twindTagFunctions = ['twindTw', 'twindshortcut', 'twindSkip'];
 
 // Regular expression that captures Twind tagged template literals,
 // based on the above list of custom Twind functions.
@@ -39,7 +41,9 @@ const REGEXP_TWIND_TAGGED_TEMPLATE_LITERALS_CHECK = new RegExp(`(${twindTagFunct
 export function wmrTwindPlugin(config) {
 	// in WMR build/prerender mode, we execute Twind via a transient stylesheet.
 	// See lazy instantiation further down below...
-	/** @type {import('twind/sheets').VirtualSheet} */
+	/** @type {import('@twind/core').Twind<import('@twind/core').BaseTheme, string[]> | undefined} */
+	let _tw;
+	/** @type {import('@twind/core').Sheet<string[]> | undefined} */
 	let _twindSheet;
 
 	/** @type {import('wmr').Plugin} */
@@ -60,22 +64,31 @@ export function wmrTwindPlugin(config) {
 			if (REGEXP_TWIND_TAGGED_TEMPLATE_LITERALS.test(code)) {
 				if (config.mode === 'build') {
 					// Lazy instantiation
-					if (!_twindSheet) {
+					if (!_tw) {
 						console.log(`${DEBUG_PREFIX}${red('lazy create stylesheet and init Twind')}`);
 
-						_twindSheet = virtualSheet();
+						_twindSheet = virtual();
 						// We could force 'preflight' to false as this might be unnecessary overhead at build time (transient stylesheet),
 						// but I am not sure about undesirable side effects (i.e. dispcrepancies with Twind processing via custom Preact VNode 'options' hook)
 						// { preflight: false }
-						setup({ ...twindConfig, sheet: _twindSheet });
+						const twConfig = defineConfig({
+							...twindConfig,
+							presets: [twindPresetAutoprefix(), ...asArray(twindConfig.presets), twindPresetExt(), twindPresetTailwind()],
+						});
+						_tw = twind(twConfig, _twindSheet);
 					}
 
 					console.log(`${DEBUG_PREFIX}${red('stylesheet reset and process Twind tagged template literals...')}`);
 
-					// Clears the stylesheet (previous file transform).
+					// Resets the stylesheet (previous file transform).
 					// Note that generally-speaking, 'preflight' (if any) is included.
 					// (reset !== zero-ing the stylesheet)
-					_twindSheet.reset();
+					// note: condition ALWAYS true, TODO: is a full reset necessary?
+					if (_tw) {
+						_tw.clear();
+					} else {
+						_twindSheet.clear();
+					}
 
 					code = code.replace(REGEXP_TWIND_TAGGED_TEMPLATE_LITERALS, (_match, $1, $2) => {
 						// Removes line breaks and collapses whitespaces
@@ -88,10 +101,10 @@ export function wmrTwindPlugin(config) {
 						}
 
 						// The other option is $1 === 'twindTw'
-						const twindResult = $1 === 'twindApply' ? tw(apply(classList)) : tw(classList);
+						const twindResult = $1 === 'twindShortcut' ? _tw(shortcut(classList)) : _tw(classList);
 
 						if (!_twindSheet.target.length) {
-							throw new Error(`${DEBUG_PREFIX}${red('empty stylesheet?!')}`);
+							throw new Error(`${DEBUG_PREFIX}${red('empty stylesheet?!')} -- ${green(twindResult)}`);
 						}
 
 						// Replaces tagged template literals (i.e. prefixed with the Twind function)

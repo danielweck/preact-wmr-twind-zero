@@ -4,7 +4,7 @@
 		"plugins": [
 			{
 				"name": "@twind/typescript-plugin",
-				"tags": ["tw", "apply", "twind", "twindTw", "twindApply", "twindSkip"],
+				"tags": ["tw", "apply", "twind", "twindTw", "twindShortcut", "twindSkip"],
 				"attributes": ["class", "className", "tw", "data-tw", "tw-apply", "data-tw-apply"],
 				"styles": ["style", "styled"],
 				"debug": true,

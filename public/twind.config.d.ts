@@ -1,7 +1,2 @@
-import type { Configuration } from 'twind';
-export const twindConfig: Configuration;
-declare module 'twind' {
-	interface Plugins {
-		prose: '' | 'xl';
-	}
-}
+import type { TwindConfig, BaseTheme } from '@twind/core';
+export const twindConfig: TwindConfig<BaseTheme>;
