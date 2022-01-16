@@ -13,8 +13,8 @@ export const RoutedRoute: FunctionalComponent<unknown> = (_props: RenderableProp
 					text-3xl
 				`}
 			>
-				This text should have a <strong>yellow-700</strong> background (unique to this paragraph, not shared with any other
-				route or component)
+				This text has a <strong>yellow-700</strong> background (unique to this paragraph, not shared with any other route or
+				component)
 			</p>
 		</section>
 	);

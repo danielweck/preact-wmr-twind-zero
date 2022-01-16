@@ -35,13 +35,14 @@ export const App = () => {
 			}}
 		>
 			<LocationProvider>
-				<h1>Router status</h1>
+				<h1>Router status:</h1>
 				<p
 					class={twindTw`
-					bg-red-400
-					text-white
-					text-3xl
-				`}
+						bg-pink-600
+						p-1.5
+						text-white
+						text-3xl
+					`}
 				>
 					{onRouteChangeWasCalled ? 'SPA route (post-hydration)' : 'Initial route (static SSR / SSG)'}
 				</p>
@@ -49,31 +50,76 @@ export const App = () => {
 				<h1>Router links:</h1>
 				<ul>
 					<li>
+						<span
+							class={twindTw`
+								inline-block
+								text-yellow-400
+								mr-1.5
+							`}
+						>
+							&#x2588;&#x2588;&#x2588;
+						</span>
 						<a href={`${publicPath}`}>Routed Home</a>
 					</li>
 					<li>
+						<span
+							class={twindTw`
+								inline-block
+								text-yellow-500
+								mr-1.5
+							`}
+						>
+							&#x2588;&#x2588;&#x2588;
+						</span>
 						<a href={`${publicPath}routed-lazy${publicPathOrigin ? '/' : ''}`}>Routed Lazy</a>
 					</li>
 					<li>
+						<span
+							class={twindTw`
+								inline-block
+								text-yellow-600
+								mr-1.5
+							`}
+						>
+							&#x2588;&#x2588;&#x2588;
+						</span>
 						<a href={`${publicPath}routed-non-lazy${publicPathOrigin ? '/' : ''}`}>Routed Non Lazy</a>
 					</li>
 					<li>
+						<span
+							class={twindTw`
+								inline-block
+								text-yellow-700
+								mr-1.5
+							`}
+						>
+							&#x2588;&#x2588;&#x2588;
+						</span>
 						<a href={`${publicPath}routed-route${publicPathOrigin ? '/' : ''}`}>Routed Route</a>
 					</li>
 				</ul>
 
 				<h1>Router content:</h1>
-				<Router
-					onRouteChange={() => {
-						setOnRouteChangeWasCalled(true);
-					}}
+				<div
+					class={twindTw`
+						border-solid
+						border-4
+						border-pink-600
+						rounded
+					`}
 				>
-					<RoutedHome path={`${publicPath}`} />
-					<RoutedLazy path={`${publicPath}routed-lazy${publicPathOrigin ? '/' : ''}`} />
-					<RoutedNonLazy path={`${publicPath}routed-non-lazy${publicPathOrigin ? '/' : ''}`} />
-					<Route component={RoutedRoute} path={`${publicPath}routed-route${publicPathOrigin ? '/' : ''}`} />
-					<Routed404 default />
-				</Router>
+					<Router
+						onRouteChange={() => {
+							setOnRouteChangeWasCalled(true);
+						}}
+					>
+						<RoutedHome path={`${publicPath}`} />
+						<RoutedLazy path={`${publicPath}routed-lazy${publicPathOrigin ? '/' : ''}`} />
+						<RoutedNonLazy path={`${publicPath}routed-non-lazy${publicPathOrigin ? '/' : ''}`} />
+						<Route component={RoutedRoute} path={`${publicPath}routed-route${publicPathOrigin ? '/' : ''}`} />
+						<Routed404 default />
+					</Router>
+				</div>
 
 				<h1>Twind critical/secondary stylesheet tests:</h1>
 				<p class={twindTw`text-3xl`}>
@@ -86,18 +132,36 @@ export const App = () => {
 						text-black
 					`}
 				>
-					This text should have a <strong>yellow-200</strong> background (unique to this paragraph, not shared with any other
-					route or component)
+					This text has a <strong>yellow-200</strong> background (unique to this paragraph, not shared with any other route
+					or component)
 				</p>
 
 				<h1>404 Not Found links:</h1>
 				<ul>
 					<li>
+						<span
+							class={twindTw`
+								inline-block
+								text-yellow-300
+								mr-1.5
+							`}
+						>
+							&#x2588;&#x2588;&#x2588;
+						</span>
 						<a href={`${publicPath}not-found-blank`} rel="noreferrer noopener" target="_BLANK">
 							404 (target BLANK)
 						</a>
 					</li>
 					<li>
+						<span
+							class={twindTw`
+								inline-block
+								text-yellow-300
+								mr-1.5
+							`}
+						>
+							&#x2588;&#x2588;&#x2588;
+						</span>
 						<a href={`${publicPath}not-found-inpage`} target="_top">
 							404 (in page)
 						</a>

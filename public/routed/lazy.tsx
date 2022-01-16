@@ -13,15 +13,15 @@ export const RoutedLazy: FunctionalComponent<unknown> = (_props: RenderableProps
 					text-3xl
 				`}
 			>
-				This text should have a <strong>yellow-500</strong> background (unique to this paragraph, not shared with any other
-				route or component)
+				This text has a <strong>yellow-500</strong> background (unique to this paragraph, not shared with any other route or
+				component)
 			</p>
 			<p
 				class={twindTw`
 					text-2xl
 				`}
 			>
-				This text should have a <strong>text-2xl</strong> size (unique to this paragraph, not shared with any other route or
+				This text has a <strong>text-2xl</strong> size (unique to this paragraph, not shared with any other route or
 				component)
 			</p>
 		</section>
