@@ -27,7 +27,7 @@ This repository contains a minimal demo which makes it easy to manually inspect 
 
 ## DOCUMENTATION TODO
 
-1) Explain how the custom Preact 'options' VNode interceptor is used to invoke Twind's `tw()` and `apply()` functions in "dev" mode and during Preact WMR's prerender build step, after the Twind WMR plugin has transformed tagged template literals to resolved Twind objects (that is the key technique which makes all the difference with other "static extraction" methods)
+1) Explain how the custom Preact 'options' VNode interceptor is used to invoke Twind's `tw()` and `shortcut()` functions in "dev" mode and during Preact WMR's prerender build step, after the Twind WMR plugin has transformed tagged template literals to resolved Twind objects (that is the key technique which makes all the difference with other "static extraction" methods)
 2) Demonstrate Suspense (similar to lazy routes / dynamic imports, but for components within already-loaded routes)
 3) Document edge cases with nested / recursive (tagged) template literals.
 4) Provide an example of predictable enumeration of possible dynamic Twind classes / declarative variants, and include a technical solution in the demo (Preact Context?).

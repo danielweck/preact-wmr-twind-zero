@@ -1,46 +1,49 @@
 import { options } from 'preact';
-import { apply, setup, Sheet, tw } from 'twind';
+
+import { asArray, cssom, defineConfig, shortcut, twind } from '@twind/core';
+import autoprefix from '@twind/preset-autoprefix';
+import ext from '@twind/preset-ext';
 
 import { twindConfig } from './twind.config.js';
+import { IS_CLIENT_SIDE } from './utils.js';
 
 // eslint-disable-next-line no-duplicate-imports
-import type { Token } from 'twind';
+import type { TwindUserConfig, Class, Twind, Sheet, BaseTheme } from '@twind/core';
 // eslint-disable-next-line no-duplicate-imports
 import type { Options, VNode } from 'preact';
 
-import { IS_CLIENT_SIDE } from './utils.js';
-
 let _preactOptionsVNodeOriginal: ((vnode: VNode<TwindProps>) => void) | undefined | -1 = -1;
+
+let _tw: Twind<BaseTheme, CSSStyleSheet | string[]> | undefined;
 
 export type TTwindPair = {
 	_: string; // the original parameter of the tagged template literal function (or empty string if same as '.tw', to save bytes)
-	tw: string; // the result of Twind processing over '._', i.e. tw(._) or tw(apply(._))
+	tw: string; // the result of Twind processing over '._', i.e. tw(._) or tw(shortcut(._))
 };
 
-export type TParamsTw = Token;
-// Parameters<(...tokens: Token[]) => string>;
-// Parameters<(strings: TemplateStringsArray, ...interpolations: Token[]) => string>
+export type TParamsTw = Class;
+// Parameters<(strings: TemplateStringsArray | Class, ...interpolations: Class[]) => string>
 export type TPropTw = {
 	tw?: TParamsTw;
 	'data-tw'?: TParamsTw;
 };
 
-export type TParamsApply = {
-	apply: Token | undefined;
-	preapply: Token | undefined;
+export type TParamsShortcut = {
+	shortcut: Class | undefined;
+	preshortcut: Class | undefined;
 };
-// Parameters<(...tokens: Token[]) => Directive<CSSRules>>;
-// Parameters<(strings: TemplateStringsArray, ...interpolations: Token[]) => Directive<CSSRules>>
-export type TPropApply = {
-	'tw-apply'?: TParamsApply;
-	'data-tw-apply'?: TParamsApply;
+// Parameters<(...tokens: Class[]) => Directive<CSSRules>>;
+// Parameters<(strings: TemplateStringsArray, ...interpolations: Class[]) => Directive<CSSRules>>
+export type TPropShortcut = {
+	'tw-shortcut'?: TParamsShortcut;
+	'data-tw-shortcut'?: TParamsShortcut;
 };
 
 export type TClassProps = {
 	class?: string;
 	className?: string;
 };
-export type TwindProps = TClassProps & TPropApply & TPropTw;
+export type TwindProps = TClassProps & TPropShortcut & TPropTw;
 
 declare module 'preact' {
 	/* eslint-disable-next-line @typescript-eslint/no-namespace */
@@ -91,13 +94,13 @@ export const initPreactVDOMHookForTwind_ = (runTwind: boolean) => {
 		return obj.tw;
 	};
 
-	const processApply = (x: Token) => {
+	const processShortcut = (x: Class) => {
 		if (!Array.isArray(x)) {
 			x = [x];
 		}
 		return x.reduce<string>((acc, pp) => {
 			const cls = isTwindPair(pp) ? getTwindPairVal(pp) : pp;
-			const c = runTwind ? tw(apply(cls)) : cls;
+			const c = runTwind && _tw ? _tw(shortcut(cls)) : cls;
 			return `${acc}${acc ? ' ' : ''}${typeof c === 'string' ? c : ''}`;
 		}, '');
 	};
@@ -117,8 +120,8 @@ export const initPreactVDOMHookForTwind_ = (runTwind: boolean) => {
 			!props.class &&
 			!props['data-tw'] &&
 			!props['tw'] &&
-			!props['data-tw-apply'] &&
-			!props['tw-apply']
+			!props['data-tw-shortcut'] &&
+			!props['tw-shortcut']
 		) {
 			if (preactOptionsVNodeOriginal) {
 				preactOptionsVNodeOriginal(vnode);
@@ -132,7 +135,7 @@ export const initPreactVDOMHookForTwind_ = (runTwind: boolean) => {
 			if (p in props) {
 				const pp = props[p];
 				const val = isTwindPair(pp) ? getTwindPairVal(pp) : pp;
-				const c = runTwind ? tw(val) : val;
+				const c = runTwind && _tw ? _tw(val) : val;
 				if (typeof c === 'string') {
 					classes.add(c);
 				}
@@ -140,17 +143,17 @@ export const initPreactVDOMHookForTwind_ = (runTwind: boolean) => {
 			}
 		}
 
-		for (const p of ['data-tw-apply', 'tw-apply'] as Array<keyof TPropApply>) {
+		for (const p of ['data-tw-shortcut', 'tw-shortcut'] as Array<keyof TPropShortcut>) {
 			if (p in props) {
 				const pr = props[p];
 
-				if (pr?.apply) {
-					const val = processApply(pr.apply);
+				if (pr?.shortcut) {
+					const val = processShortcut(pr.shortcut);
 					classes.add(val);
 				}
 
-				if (pr?.preapply) {
-					processApply(pr.preapply);
+				if (pr?.preshortcut) {
+					processShortcut(pr.preshortcut);
 				}
 
 				props[p] = undefined;
@@ -159,7 +162,7 @@ export const initPreactVDOMHookForTwind_ = (runTwind: boolean) => {
 
 		if (props.class) {
 			const val = isTwindPair(props.class) ? getTwindPairVal(props.class) : props.class;
-			const c = runTwind ? tw(val) : val;
+			const c = runTwind && _tw ? _tw(val) : val;
 			if (typeof c === 'string') {
 				classes.add(c);
 			}
@@ -168,7 +171,7 @@ export const initPreactVDOMHookForTwind_ = (runTwind: boolean) => {
 
 		if (props.className) {
 			const val = isTwindPair(props.className) ? getTwindPairVal(props.className) : props.className;
-			const c = runTwind ? tw(val) : val;
+			const c = runTwind && _tw ? _tw(val) : val;
 			if (typeof c === 'string') {
 				classes.add(c);
 			}
@@ -185,19 +188,25 @@ export const initPreactVDOMHookForTwind_ = (runTwind: boolean) => {
 	};
 };
 
-export const initPreactVDOMHookForTwind = (prerendered: boolean, sheet?: Sheet<unknown>) => {
+export const initPreactVDOMHookForTwind = (prerendered: boolean, sheet?: Sheet<string[]>) => {
 	// client-side live dev server !== page prerendered via WMR 'build' mode
 	if (prerendered) {
 		// No Twind runtime, stylesheets already statically generated
 		initPreactVDOMHookForTwind_(false);
 	} else {
+		const twConfig = defineConfig({
+			...twindConfig,
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			presets: [autoprefix(), ...asArray((twindConfig as TwindUserConfig<any>).presets), ext()],
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		} as TwindUserConfig<any>);
 		// Twind runtime, stylesheets will be generated on the fly
 		if (sheet) {
 			// static SSR / SSG / WMR prerender => virtual stylesheet
-			setup({ ...twindConfig, sheet });
+			_tw = twind(twConfig, sheet);
 		} else {
 			// client side DOM stylesheet (CSSOM)
-			setup(twindConfig);
+			_tw = twind(twConfig, cssom());
 		}
 		initPreactVDOMHookForTwind_(true);
 	}

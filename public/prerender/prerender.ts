@@ -1,5 +1,5 @@
 import prerender from 'preact-iso/prerender';
-import { virtualSheet } from 'twind/sheets';
+import { virtual } from '@twind/core';
 
 import { initPreactVDOMHookForTwind } from '../twind-preact-vnode-options-hook.js';
 import { twindConfig } from '../twind.config.js';
@@ -10,11 +10,11 @@ import type { PrerenderOptions, PrerenderResult } from 'preact-iso/prerender';
 
 // Global module-level stylesheet,
 // reset for each WMR-prerendered file
-const sheet = virtualSheet();
+const _twindSheet = virtual();
 
 // Custom Preact VNode 'options' hook
 // that interprets Twind component props (class, classname, etc.)
-initPreactVDOMHookForTwind(false, sheet);
+initPreactVDOMHookForTwind(false, _twindSheet);
 
 export const preactWmrPrerenderForTwind = async (
 	url: string,
@@ -30,11 +30,11 @@ export const preactWmrPrerenderForTwind = async (
 
 	console.log(`${DEBUG_PREFIX}stylesheet reset and Preact WMR SSG / static SSR...`);
 
-	// Clears the stylesheet (previous file transform).
+	// Resets the stylesheet (previous file transform).
 	// Note that 'preflight', if any, is included (reset !== zero-ing the stylesheet)
-	sheet.reset();
+	_twindSheet.clear();
 
-	if (twindConfig.preflight === false && sheet.target.length) {
+	if (twindConfig.preflight === false && _twindSheet.target.length) {
 		const msg = `${DEBUG_PREFIX}no preflight but stylesheet is not empty after reset?!`;
 		console.log(msg);
 		throw new Error(msg);
@@ -42,7 +42,7 @@ export const preactWmrPrerenderForTwind = async (
 
 	const result = await prerender(app, options);
 
-	if (!sheet.target.length) {
+	if (!_twindSheet.target.length) {
 		const msg = `${DEBUG_PREFIX}stylesheet is empty after prerender?!\n${result.html}`;
 		console.log(msg);
 		// throw new Error(msg);
@@ -50,7 +50,7 @@ export const preactWmrPrerenderForTwind = async (
 
 	return {
 		...result,
-		cssTextContent: sheet.target.join('\n'),
+		cssTextContent: _twindSheet.target.join('\n'),
 		cssId: '__twind', // this MUST be! (other values will break an external postbuild script)
 	};
 };
