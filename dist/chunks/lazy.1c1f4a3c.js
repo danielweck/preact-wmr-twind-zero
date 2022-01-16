@@ -1,1 +1,0 @@
-import{m as t}from"../index.73e27cab.js";const e=e=>t`<section><h2>→ Lazy</h2><p class=${{_:"bg-yellow-500 text-black text-3xl",tw:"text-black bg-yellow-500 text-3xl"}}> This text should have a <strong>yellow-500</strong> background (unique to this paragraph, not shared with any other route or omponent) </p></section>`;export default e;export{e as RoutedLazy};

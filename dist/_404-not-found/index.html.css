@@ -1,4 +1,6 @@
 .bg-yellow-400{--tw-bg-opacity:1;background-color:rgba(250,204,21,var(--tw-bg-opacity))}
 .bg-yellow-500{--tw-bg-opacity:1;background-color:rgba(234,179,8,var(--tw-bg-opacity))}
+.text-2xl{font-size:1.5rem;line-height:2rem}
 .bg-yellow-600{--tw-bg-opacity:1;background-color:rgba(202,138,4,var(--tw-bg-opacity))}
+.text-4xl{font-size:2.25rem;line-height:2.5rem}
 .bg-yellow-700{--tw-bg-opacity:1;background-color:rgba(161,98,7,var(--tw-bg-opacity))}
