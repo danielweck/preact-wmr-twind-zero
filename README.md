@@ -2,17 +2,17 @@
 
 ## Zero-runtime Twind?
 
-The graphics below were generated using Preact WMR's `--visualize` option (size comparisons with `gzip` compression). This bundle snapshot is a striking illustration of how webpages can benefit from eliminating Twind in the client runtime, BUT in fairness, this also gives a grossly exaggerated impression due to the relative size of dependencies in my minimal demo! In a real-worl full-size website, the impact of removing Twind's runtime will certainly not be as striking. That being said, read on for more information about "critical" vs. "secondary" CSS stylesheets, which is another strategy used to speed-up initial load times.
+The treemap graphics below were generated using Preact WMR's `--visualize` option (size comparisons with `gzip` compression). This bundle snapshot is a striking illustration of how webpages can benefit from eliminating Twind in the client runtime, BUT in fairness, this also gives a grossly exaggerated impression due to the relative size of dependencies in my minimal demo! In a real-worl full-size website, the impact of removing Twind's runtime will certainly not be as striking. That being said, read on for more information about "critical" vs. "secondary" CSS stylesheets, which is another strategy used to speed-up initial load times.
 
 Technical note: we use Preact WMR's built-in support for code splitting (i.e. dynamic await module import), in order to isolate Twind and its dependencies into their own Javascript bundle. We only load this Twind runtime code in development mode (i.e. WMR server, instant on-demand incremental compilation of Javascript / Typescript modules), or at build time during the prerender pass (static SSR / SSG). At production runtime, the generated Twind bundle is not downloaded by the client. It stays on the server because Twind's Just-In-Time and CSS-in-JS features were executed during the build process and are not needed during client-side hydration. Read on for more information about the techniques used to achieve this ... and their caveats.
 
-### Before (red - Twind included in the client bundle)
+### Before optimisation (Twind JS included in client bundle)
 
-![Twind before](./doc/twind-bundle-before.png)
+![Before optimisation: client side Javscript bundle contains Twind runtime)](./doc/twind-bundle-before.png)
 
-### After (blue - Twind extracted into its server-only bundle)
+### After optimisation (Twind runtime only in server bundle)
 
-![Twind after](./doc/twind-bundle-after.png)
+![After optimisation: Twind runtime moved to server side Javscript bundle)](./doc/twind-bundle-after.png)
 
 ## Background Information
 
@@ -35,6 +35,12 @@ So, this small Preact WMR + Twind experiment demonstrates a set of techniques th
 2) statically generate "critical" styles as an inline CSS stylesheet (i.e. in the document head), and "secondary" styles as a separate CSS stylesheet (i.e. external browser fetch, subject to HTTP cache etc.).
 
 The CSS styles deemed "critical" are those required to render the current static route. The "secondary" stylesheet is populated with all the other styles that the SPA might need when the user navigates to another client-side route. The "critical" stylesheet is granted a high priority during the early browser loading stages, by virtue of being embedded directly in the document head. The "secondary" stylesheet (pre)loads in the background / asynchronously, to avoid blocking the main render thread. This is orchestrated by simple markup in each `index.html` route pages, and a tiny line of Javascript that signals the activation of the stylesheet so that the browser consumes it.
+
+Here is a super-reduced network waterfall and performance flamechart report that illustrate the principle (note the parallelised fetch of JS and secondary CSS, relative to the timing of web vitals):
+
+![HTML, CSS, JS network waterfall](./doc/PreactWMRTwind-NetworkWaterfall.png)
+
+![HTML, CSS, JS network waterfall and performance flamechart](./doc/PreactWMRTwind-NetworkWaterfall-FlameChart.png)
 
 Side note: multiple "secondary" stylesheets (i.e. individual payloads bound to dynamic components or routes) are currently not supported. With static SSR / SSG, we work on the assumption that the static entry point / HTML page requires its "critical" styling, and that from the moment the SPA is hydrated, we cannot predict which route / dynamic component will be loaded next. So we bundle the remainder CSS rules in the "secondary" stylesheet. Although we eliminate duplicates (i.e. shared utility classes), this "secondary" stylesheet covers the rest of the website so it can potentially grow large. We could of course segragate styling rules for each route / dynamic component, but this would likely introduce duplication (one of the "selling points" of utility classes is that they are very likely shared amongst components).
 
