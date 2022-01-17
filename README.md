@@ -17,11 +17,11 @@ The original SVG assets are:
 
 ## Summary
 
-This project demonstrates a recipe for integrating Twind in a website built with Preact WMR. The code in this repository brings a few key ingredients to customise the standard WMR build process and Preact runtime:
+This project demonstrates a recipe for integrating Twind in a website built with Preact WMR. The code in this repository brings a few key ingredients in order to customise the standard WMR build process and Preact runtime:
 
-* WMR plugin (Rollup under the hood).
-* Preact VDOM "hook" (`options.vnode`).
-* Post-build script that tweaks the default generated website.
+* a WMR plugin (Rollup under the hood) that pre-applies Twind primitives at the source code level.
+* a Preact VDOM "hook" (`options.vnode`) that interprets the resulting Twind expressions at runtime.
+* a post-build script that processes the default pre-rendered website to prioritise "critical" CSS in each static route.
 
 Massive credits to the developers of:
 
