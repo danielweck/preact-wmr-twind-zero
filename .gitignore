@@ -1,0 +1,9 @@
+.history
+.DS_Store
+.cache
+node_modules
+.tmp
+stats.html
+dist
+public
+
