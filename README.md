@@ -1,58 +1,110 @@
-# Twind integration in Preact WMR (SSG / static SSR) with zero CSS-in-JS runtime
+# Zero-runtime Twind integration in Preact WMR
+
+## Quick Start
+
+### Prerequisites
+
+* NodeJS 16+ ( https://nodejs.org )
+* `pnpm install` ( https://pnpm.io or can be installed via NodeJS CorePack)
+
+Alternative package managers:
+
+(note that this will probably work fine, but this is not recommended as this project's frozen dependencies are defined by `pnpm-lock.yaml`, I do not maintain a `package-lock.json` or `yarn.lock` in parallel)
+
+* `npm install` ( ships with https://nodejs.org )
+* `yarn` ( https://yarnpkg.com or can be installed via NodeJS CorePack)
+
+### Development server (vanilla Preact WMR):
+
+* `pnpm run start` (CTRL+C to kill the source "watcher" process and HTTP server)
+* Open your web browser at URL `http://127.0.0.1:8080`
+
+### SSG pre-rendering / whole-site static SSR (vanilla Preact WMR):
+
+* `pnpm run build` (if you experience a "segmentation fault" in your console, or if the build ends prematurely without `dist` files, try again ... this is a known Preact WMR bug with Node 16)
+* `pnpm run build-viz` (this adds Preact WMR's option `--visualize` and the generated bundle dependency treemap will automatically be opened in your default web browser)
+* `pnpm run serve` (CTRL+C to kill the HTTP server)
+* Open your web browser at URL `http://127.0.0.1:8080`
+
+## Project definition / scope
+
+* This project emerged from a "curiosity itch" I wanted to scratch. That's it. I have no concrete plans regarding the evolution of this repository. This is made in my spare time, for fun.
+* Caveat emptor - don't blame me if your cat explodes when you run my code! :exploding_head: :scream_cat:
+* I welcome Pull Requests and feedback / suggestions via the issue tracker. If you find the information contained herein useful, let me know. Also let me know if I get things wrong. Thanks for sharing!
+* This project is NOT yet another frontend or backend framework. I have neither the skills nor the inclination for this kind of endeavour ;)
+* This project is not a general-purpose SSR/SSG+hydration solution, but aims to solve a very specific (niche?) problem, based on existing tooling.
+* This project is an integration recipe for Twind in Preact WMR:
+  * **Preact WMR** https://github.com/preactjs/wmr/
+  * **Twind** https://github.com/tw-in-js/twind/
+* This project brings a few key ingredients to customise the standard WMR build process and Preact runtime:
+  * WMR plugin (Rollup under the hood).
+  * Preact VDOM "hook" (`options.vnode`).
+  * Post-build script that tweaks the default generated website.
+* This project extends the "JAM Stack" functionality of Preact WMR, namely the ability to pre-render an entire website so it can be uploaded to a static host. This is known as static "SSR" Server Side Rendering, or "SSG" Static Site Generation. That being said, Preact WMR is a smart framework that implements a hybrid  model of "MPA" Multi Page Application + "SPA" Single Page Application. Check out their website for more information.
+* This project is somewhat opinionated in the sense that the customised build process forces a particular way of invoking Twind APIs. For example, Twind's `tw` and `shortcut` function calls must be "proxied" via this project's own tagged template literals ``twindTw`...``` and ``twindShortcut`...```. On the plus side, these are configured to enable Visual Studio Code "Intellisense", courtesy of Twind's own plugin (i.e. autocompletion, error highlighting and rich information popup).
+* This project currently doesn't support all of Twind's functionality, notably the more advanced CSS-in-JS features. As Twind v1 is now just coming to fruition (at the time of writing, January 2022), I plan to research the feasibility of integrating additional useful APIs.
+
+The contents of this repository are published under the BSD3 open source license ( https://opensource.org/licenses/BSD-3-Clause ).
+
+FYI: my original stream of consciousness in a Twind discussion thread: https://github.com/tw-in-js/twind/discussions/147
 
 ## Zero-runtime Twind?
 
-The treemap graphics below were generated using Preact WMR's `--visualize` option (size comparisons with `gzip` compression). This bundle snapshot is a striking illustration of how webpages can benefit from eliminating Twind in the client runtime, BUT in fairness, this also gives a grossly exaggerated impression due to the relative size of dependencies in my minimal demo! In a real-worl full-size website, the impact of removing Twind's runtime will certainly not be as striking. That being said, read on for more information about "critical" vs. "secondary" CSS stylesheets, which is another strategy used to speed-up initial load times.
+Twind emulates the Tailwind feature-set (utility classes, etc.) but it is primarily designed for JIT "just in time" CSS stylesheet production based on actual, dynamic class usage in a rendered web document. In other words, Twind does not impose complicated and costly compile steps, such as configuring and executing style "purging". Twind also offers several powerful CSS-in-JS features which help create a logical, composable and scalable organisation of component styles. By this (simplistic) definition, Twind's runtime is therefore pretty much expected to be shipped on the client side, and to execute in the web browser in order to render the web page's styles.
 
-Technical note: we use Preact WMR's built-in support for code splitting (i.e. dynamic await module import), in order to isolate Twind and its dependencies into their own Javascript bundle. We only load this Twind runtime code in development mode (i.e. WMR server, instant on-demand incremental compilation of Javascript / Typescript modules), or at build time during the prerender pass (static SSR / SSG). At production runtime, the generated Twind bundle is not downloaded by the client. It stays on the server because Twind's Just-In-Time and CSS-in-JS features were executed during the build process and are not needed during client-side hydration. Read on for more information about the techniques used to achieve this ... and their caveats.
+That's absolutely fine in most cases, as Twind consists in a relatively lightweight code bundle (given its expansive feature set), and the runtime computations are fast too (hashing, caching, comparing/ordering, etc.).
 
-### Before optimisation (Twind JS included in client bundle)
+It does makes total sense to leverage Twind's intrinsic "JIT" qualities during development (especially with Preact WMR's dev server), but I wanted to explore techniques that would allow me to reliably eliminate Twind in production builds ("reliably" === without leaving behind some unprocesed styles, e.g. dynamic component styles).
 
-![Before optimisation: client side Javscript bundle contains Twind runtime)](./doc/twind-bundle-before.png)
+### Twind runtime shipped in client-side Javascript bundle (red)
 
-### After optimisation (Twind runtime only in server bundle)
+![Before](./doc/twind-bundle-before.png)
 
-![After optimisation: Twind runtime moved to server side Javscript bundle)](./doc/twind-bundle-after.png)
+### Twind runtime only used on the server (blue)
 
-## Background Information
+![After](./doc/twind-bundle-after.png)
 
-* **Preact WMR** https://github.com/preactjs/wmr/
-* **Twind** https://github.com/tw-in-js/twind/
+These "tree map" graphics were generated using Preact WMR's `--visualize` option, they show the relative sizes of dependencies (including `gzip` compression) inside the Javascript bundles generated by Rollup / Terser (i.e after tree shaking and minification).
 
-(original stream of consciousness in this discussion thread: https://github.com/tw-in-js/twind/discussions/147 )
+I am providing these graphics purely to illustrate how the removal of Twind's runtime from the client-side JS code bundle can *potentially* yield desirable performance benefits. But let's be real: these graphics are misleading, as they exaggerate the impression due to the scale of my minimalistic demo app! In a real-world full-size website, Twind's footprint would be dwarfed under the weight of neighbouring dependencies.
 
-This project aims to solve a very particular problem, it is not a general-purpose SSR/SSG solution. Caveat emptor :)
+In order to maximise website performance and to hit desirable "web vitals" metrics, there are several other key avenues to consider. This project implements techniques to generate "critical" vs. "secondary" CSS stylesheets, derived from Twind's compiled utility classes (i.e. ordered CSS selectors / rules to form a styling cascade). More on this further down in this document.
 
-The basic premise of Preact WMR's prerendering method is that each statically SSR'ed / SSG'ed HTML page is a distinct "entry point" into a complete website. Once a content route gets hydrated on the client / by the web browser, the page becomes a SPA inside which other routes are resolved without actual network requests to their server URL endpoints (until the next "hard" page reload, of course). Preact WMR's isomorphic router also supports "lazy" / dynamic component imports based on the same principle as React's Suspense (i.e. thrown Promises). The use of awaited imports enables code splitting, which consequently minimises the footprint of the initial web app "shell". Preact WMR's server-side prerender build process is capable of awaiting lazy routes in order to generate their static rendition, whilst the client-side hydrated SPA implements deferred code bundle fetch and execution.
+### Code splitting
 
-Twind's main appeal is that ; unlike - the early versions of - Tailwind ; it is primarily designed for "just in time" generation of a page's CSS stylesheet, based on usage of utility classes. Twind also offers several powerful CSS-in-JS features which help create a logical, composable and scalable organisation of component styles. By default, Twind's runtime is therefore required in web pages. That's absolutely fine in most cases, as Twind is relativaly lightweight given its feature set, and the runtime computations are fast. Plus, only required / actually-used CSS rules are dynamically generated into the "live" CSSOM stylesheet (no "purging" overhead).
+Preact WMR supports native asynchronous module imports, which means we can dynamically load Javascript bundles by awaiting a Promise (i.e. network fetch + code loading). At development time, the ECMAScript modules are loaded as-is, but the build process powered by Rollup resolves dependencies and aggregates modules into production-ready, self-contained code bundles.
 
-It makes total sense to leverage Twind's "JIT" qualities during development (especially with Preact WMR's dev server), but I wanted to explore techniques that would allow me to reliably eliminate Twind in production builds ("reliably" === without leaving behind some unprocesed styles, e.g. dynamic component styles).
+Here this common technique is leveraged in order to isolate Twind and its dependencies. Some client-side logic ensures that the Twind code bundle is only used on the server to pre-render documents, never loaded in the web browser. Preact WMR uses "isomorphic" code that works in both web browser and Node runtimes, so that static SSR / SSG + client-side hydration works seamlessly. In fact, Preact WMR provides its own "iso" router solution which supports asynchronous routes, based on a technique similar to React's "suspense" (thrown Promises).
 
-So, this small Preact WMR + Twind experiment demonstrates a set of techniques that achieve the following goals:
+### Critical vs. secondary CSS stylesheets
 
-1) negate the need for Twind's client-side Javascript runtime in the HTML pages pre-rendered by Preact WMR on the server at build time (i.e. SSG / whole-site static SSR).
-2) statically generate "critical" styles as an inline CSS stylesheet (i.e. in the document head), and "secondary" styles as a separate CSS stylesheet (i.e. external browser fetch, subject to HTTP cache etc.).
+The basic premise of Preact WMR's pre-rendering method is that each statically-generated HTML page is a distinct "entry point" into a complete website, with route paths reflected in the folder hierarchy created on the filesystem (remember: static hosting first and foremost!). Once a content route gets hydrated on the client / by the web browser, the page becomes a SPA inside which other routes are resolved without actual network requests to their server URL endpoints (until the next "hard" page reload, of course).
 
-The CSS styles deemed "critical" are those required to render the current static route. The "secondary" stylesheet is populated with all the other styles that the SPA might need when the user navigates to another client-side route. The "critical" stylesheet is granted a high priority during the early browser loading stages, by virtue of being embedded directly in the document head. The "secondary" stylesheet (pre)loads in the background / asynchronously, to avoid blocking the main render thread. This is orchestrated by simple markup in each `index.html` route pages, and a tiny line of Javascript that signals the activation of the stylesheet so that the browser consumes it.
+As previously mentioned, Preact WMR's isomorphic router supports "lazy" / dynamic component imports, which enables code splitting and consequently minimises the footprint of the initial web app "shell". Preact WMR's server-side pre-rendering build process is capable of awaiting lazy routes in order to generate their static rendition, whilst the client-side hydrated SPA implements deferred code bundle fetch and execution.
 
-Here is a super-reduced network waterfall and performance flamechart report that illustrate the principle (note the parallelised fetch of JS and secondary CSS, relative to the timing of web vitals):
+An important performance optimisation technique is to differentiate "critical" CSS styles versus "secondary" ones. In this project, the stylesheet deemed "critical" is inlined in the document head, and therefore contributes to the initial HTML document network payload. The so-called "secondary" stylesheet is a separate file that the web browser fetches with a lower priority during the initial loading phase, and as such, this external network resource benefits from HTTP caching.
+
+It is commonly accepted that the notion of "critical" styles applies to content that is "above the fold" in a web page, but in this project they are CSS rules required to render the current / initial static route (i.e. the entire active DOM, including fragments out-of-view in the scrolling viewport). The "secondary" stylesheet is populated with all the other styles (i.e. the "remainder") that the SPA might need when the user navigates to another client-side route (at which point the DOM typically mutates as a result of dynamic component mount/unmount lifecycle).
+
+The "critical" stylesheet is granted a high priority during the early browser loading stages, simply by virtue of being embedded directly in the document head. The "secondary" stylesheet (pre)loads in the background / asynchronously, to avoid blocking the main render thread. This is orchestrated by simple markup in each `index.html` route pages, and a tiny line of Javascript that signals the activation of the stylesheet so that the browser can start consuming it.
+
+Here is a super-reduced network waterfall and performance flamechart report that illustrate the principle (note the parallelised fetch of Javascript code bundles and secondary CSS stylesheet, relative to the timing of web vitals):
 
 ![HTML, CSS, JS network waterfall](./doc/PreactWMRTwind-NetworkWaterfall.png)
 
 ![HTML, CSS, JS network waterfall and performance flamechart](./doc/PreactWMRTwind-NetworkWaterfall-FlameChart.png)
 
-Side note: multiple "secondary" stylesheets (i.e. individual payloads bound to dynamic components or routes) are currently not supported. With static SSR / SSG, we work on the assumption that the static entry point / HTML page requires its "critical" styling, and that from the moment the SPA is hydrated, we cannot predict which route / dynamic component will be loaded next. So we bundle the remainder CSS rules in the "secondary" stylesheet. Although we eliminate duplicates (i.e. shared utility classes), this "secondary" stylesheet covers the rest of the website so it can potentially grow large. We could of course segragate styling rules for each route / dynamic component, but this would likely introduce duplication (one of the "selling points" of utility classes is that they are very likely shared amongst components).
+Side note: multiple "secondary" stylesheets (i.e. individual payloads bound to dynamic components or routes) are currently not supported. With static SSR / SSG, we work on the assumption that the static entry point / HTML page has its own "critical" styling, and that from the point in time at which the SPA is hydrated, we cannot predict which route / dynamic component will be loaded next. That is why we bundle the remainder CSS rules in the "secondary" stylesheet. Although the aggregation logic ensures that there are no duplicated definition of utility classes, the coverage of the "secondary" stylesheet is the rest of the website, so it can potentially grow large. We could of course segregate styling rules for each route / dynamic component, but this would likely introduce duplication (one of the "selling points" of utility classes is that they are very likely shared amongst components).
 
-One obvious caveat when using this zero-runtime Twind integration recipe is that it works with dynamic class names / parameterized tokens only if they can predictably be enumerated during server-side pre-rendering. For example, if a button has "pressed" and "keyboard focused" states (aka. style variants) that can be expressed declaratively, then an enumeration of all possible states must be used to precompute the corresponding Twind classes, and to statically generate the required styles into the target stylesheet.
+There is one obvious caveat when using this zero-runtime Twind integration recipe: it works with dynamic class names / parameterized tokens *only* if they can predictably be enumerated during server-side pre-rendering. For example, if a button has "pressed" and "keyboard focused" states (aka. style variants), and these can be expressed declaratively, then an enumeration of all possible states must be used to precompute the corresponding Twind classes, and to statically generate the required styles into the target stylesheet.
 
 ## Demonstration / test bed
 
 This repository contains a minimal demo which makes it easy to manually inspect the generated HTML / CSS / JS:
 
-* **Browse files:** https://github.com/danielweck/preact-wmr-twind-zero/tree/main/dist
-* **View pages:** https://raw.githack.com/danielweck/preact-wmr-twind-zero/main/dist/index.html
-* **Source code:** https://github.com/danielweck/preact-wmr-twind-zero/tree/main/public
+* **View demo pages:** https://danielweck.github.io/preact-wmr-twind-zero/
+* **Browse compiled demo files:** https://github.com/danielweck/preact-wmr-twind-zero/tree/gh-pages/
+* **Explore demo source code:** https://github.com/danielweck/preact-wmr-twind-zero/tree/main/public
 
 ## DOCUMENTATION TODO
 
@@ -60,16 +112,3 @@ This repository contains a minimal demo which makes it easy to manually inspect 
 2) Demonstrate Suspense / lazy components, other that Preact WMR's lazy routes (i.e.dynamic imports too, but for components in the render tree within already-loaded routes).
 3) Document edge cases with nested / recursive (tagged) template literals.
 4) Provide an example of predictable enumeration of possible dynamic Twind classes / declarative variants, and include a technical solution in the demo (Preact Context just like in my old pre-V1 code?).
-
-## Quick Start
-
-* `npm install`
-
-### Static SSR / SSG prerender:
-
-* `npm run build` (if "segfault", try again ... this is a known Preact WMR bug with Node 16)
-* `npm run serve` (web browser at `http://127.0.0.1:8080`)
-
-### Dev server:
-
-* `npm run start` (web browser at `http://127.0.0.1:8080`)
