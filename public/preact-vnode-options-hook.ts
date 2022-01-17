@@ -5,7 +5,14 @@ import { IS_CLIENT_SIDE } from './utils.js';
 // eslint-disable-next-line no-duplicate-imports
 import type { Options, VNode } from 'preact';
 
-import type { Class, TwindProps, TTwindPair, TPropShortcut, TPropTw } from './preact-vnode-options-hook--twind-types';
+import type {
+	Class,
+	TwindProps,
+	TTwindPair,
+	TPropShortcut,
+	TPropTw,
+	TClassProps,
+} from './preact-vnode-options-hook--twind-types';
 
 let _preactOptionsVNodeOriginal: ((vnode: VNode<TwindProps>) => void) | undefined | -1 = -1;
 
@@ -26,29 +33,48 @@ export const initPreactVDOMHook = (tw?: (val: Class) => string, twShortcut?: (va
 	}
 	const preactOptionsVNodeOriginal = _preactOptionsVNodeOriginal as Options['vnode'];
 
+	// isTwindPair is only be true (and therefore getTwindPairVal() is only called)
+	// by components that have been prerendered by Preact WMR and therefore source-transformed by the Twind plugin
+	// (i.e. execution of Twind's tw() and shortcut() functions ahead of time,
+	//  in order to generate the TTwindPair objects and place them directly in the source code).
+	//
+	// Conversely, in dev mode the tagged template literal Twind functions are simply erased
+	// (i.e. no TTwindPairs replacements) and the template literal are consumed as-is by the Twind tw() and shortcut() function here,
+	// that is to say in the Preact render runtime (live usage of Twind, as normally intented).
 	const getTwindPairVal = (obj: TTwindPair) => {
 		if (tw) {
-			// isTwindPair should only be true for SSG / static SSR / WMR prerender (see Twind plugin transform)
-			// Conversely, in dev mode Twind is invoked on the raw unprocessed values (no generated "Twind pairs")
 			if (IS_CLIENT_SIDE) {
-				throw new Error(`${DEBUG_PREFIX}initPreactVDOMHookForTwind_ > isTwindPair/getTwindPairVal with IS_CLIENT_SIDE?!`);
+				throw new Error(`${DEBUG_PREFIX}initPreactVDOMHook > isTwindPair/getTwindPairVal with IS_CLIENT_SIDE?!`);
 			}
+			// The fallback from ._ to .tw is performance optimisation
+			// (when the generated .tw string value is equal to the original ._ one,
+			// we only preserve a single one in .tw in order to avoid doubling the size footprint.
+			// and ._ is empty string)
 			return (obj._ || obj.tw) as string;
 		}
 
+		if (!IS_CLIENT_SIDE) {
+			throw new Error(`${DEBUG_PREFIX}initPreactVDOMHook > isTwindPair/getTwindPairVal with IS_CLIENT_SIDE?!`);
+		}
 		return obj.tw;
 	};
 
-	const processShortcut = (x: Class) => {
-		if (!Array.isArray(x)) {
-			x = [x];
-		}
-		return x.reduce<string>((acc, pp) => {
-			const cls = isTwindPair(pp) ? getTwindPairVal(pp) : pp;
-			const c = twShortcut ? twShortcut(cls) : cls;
-			return `${acc}${acc ? ' ' : ''}${typeof c === 'string' ? c : ''}`;
-		}, '');
-	};
+	// const processShortcut = (x: Class) => {
+	// 	if (!Array.isArray(x)) {
+	// 		x = [x];
+	// 	}
+	// 	return x.reduce<string>((acc, pp) => {
+	// 		const isTP = isTwindPair(pp);
+	// 		if (isTP && !pp.$) {
+	// 			throw new Error(
+	// 				`${DEBUG_PREFIX}processShortcut > isTwindPair/getTwindPairVal but not generated with twindShortcut?!`,
+	// 			);
+	// 		}
+	// 		const cls = isTP ? getTwindPairVal(pp) : pp;
+	// 		const c = twShortcut ? twShortcut(cls) : cls;
+	// 		return `${acc}${acc ? ' ' : ''}${typeof c === 'string' ? c : ''}`;
+	// 	}, '');
+	// };
 
 	options.vnode = (vnode: VNode<TwindProps>) => {
 		if (!vnode.type) {
@@ -76,49 +102,32 @@ export const initPreactVDOMHook = (tw?: (val: Class) => string, twShortcut?: (va
 
 		const classes = new Set<string>();
 
-		for (const p of ['data-tw', 'tw'] as Array<keyof TPropTw>) {
+		for (const p of ['data-tw', 'tw', 'class', 'className', 'data-tw-shortcut', 'tw-shortcut'] as Array<
+			keyof TPropTw | keyof TClassProps | keyof TPropShortcut
+		>) {
 			if (p in props) {
 				const pp = props[p];
-				const val = isTwindPair(pp) ? getTwindPairVal(pp) : pp;
-				const c = tw ? tw(val) : val;
+				if (!pp) {
+					continue;
+				}
+				const isShortcut = p === 'data-tw-shortcut' || p === 'tw-shortcut';
+
+				const isTP = isTwindPair(pp);
+				if (isTP) {
+					if (isShortcut && !pp.$) {
+						throw new Error(`${DEBUG_PREFIX}isTwindPair/getTwindPairVal but expecting generated with twindShortcut!`);
+					} else if (!isShortcut && pp.$) {
+						throw new Error(`${DEBUG_PREFIX}isTwindPair/getTwindPairVal but not expecting generated with twindShortcut!`);
+					}
+				}
+				const val = isTP ? getTwindPairVal(pp) : pp;
+
+				const c = isShortcut ? (twShortcut ? twShortcut(val) : val) : tw ? tw(val) : val;
 				if (typeof c === 'string') {
 					classes.add(c);
 				}
-				props[p] = undefined;
-			}
-		}
-
-		for (const p of ['data-tw-shortcut', 'tw-shortcut'] as Array<keyof TPropShortcut>) {
-			if (p in props) {
-				const pr = props[p];
-
-				if (pr?.shortcut) {
-					const val = processShortcut(pr.shortcut);
-					classes.add(val);
-				}
-
-				if (pr?.preshortcut) {
-					processShortcut(pr.preshortcut);
-				}
 
 				props[p] = undefined;
-			}
-		}
-
-		if (props.class) {
-			const val = isTwindPair(props.class) ? getTwindPairVal(props.class) : props.class;
-			const c = tw ? tw(val) : val;
-			if (typeof c === 'string') {
-				classes.add(c);
-			}
-			props.class = undefined;
-		}
-
-		if (props.className) {
-			const val = isTwindPair(props.className) ? getTwindPairVal(props.className) : props.className;
-			const c = tw ? tw(val) : val;
-			if (typeof c === 'string') {
-				classes.add(c);
 			}
 		}
 

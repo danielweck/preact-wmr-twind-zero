@@ -15,5 +15,5 @@ export const twindTw = (strings: TemplateStringsArray, ...interpolations: string
 	}
 	return res;
 };
-export const twindshortcut = twindTw;
+export const twindShortcut = twindTw;
 export const twindSkip = twindTw;

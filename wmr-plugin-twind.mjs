@@ -12,12 +12,12 @@ import { twindConfig } from './public/twind.config.js';
 const REGEXP_TRANSFORM_FILE_FILTER = /\.[tj]sx?$/;
 
 // 'twindTw' is a function we define to wrap Twind's own tagged template literal.
-// 'twindshortcut' is a function we define to wrap Twind's own shortcut() tagged template literal.
+// 'twindShortcut' is a function we define to wrap Twind's own shortcut() tagged template literal.
 // 'twindSkip' is a function we define to signal that Twind will not be invoked,
 // instead we preserve the function parameters as-is (i.e. raw template literal string),
 // which enables token intellisense / autocompletion DX, without actually invoking Twind at buildtime or runtime.
 // (see tsconfig.json, 'compilerOptions' > 'plugins' > '@twind/typescript-plugin' > 'tags' and 'attributes')
-const twindTagFunctions = ['twindTw', 'twindshortcut', 'twindSkip'];
+const twindTagFunctions = ['twindTw', 'twindShortcut', 'twindSkip'];
 
 // Regular expression that captures Twind tagged template literals,
 // based on the above list of custom Twind functions.
@@ -101,7 +101,9 @@ export function wmrTwindPlugin(config) {
 						}
 
 						// The other option is $1 === 'twindTw'
-						const twindResult = $1 === 'twindShortcut' ? _tw(shortcut(classList)) : _tw(classList);
+						const isTwindShortcut = $1 === 'twindShortcut';
+
+						const twindResult = isTwindShortcut ? _tw(shortcut(classList)) : _tw(classList);
 
 						if (!_twindSheet.target.length) {
 							throw new Error(`${DEBUG_PREFIX}${red('empty stylesheet?!')} -- ${green(twindResult)}`);
@@ -109,7 +111,9 @@ export function wmrTwindPlugin(config) {
 
 						// Replaces tagged template literals (i.e. prefixed with the Twind function)
 						// with a JSON object that contains the result of Twind processing.
-						return `{_:\`${classList === twindResult ? '' : classList}\`,tw:\`${twindResult}\`}`;
+						return `{${isTwindShortcut ? '$:1,' : ''}_:\`${
+							classList === twindResult ? '' : classList
+						}\`,tw:\`${twindResult}\`}`;
 					});
 				} else {
 					// config.mode !== 'build' ('dev' mode)
