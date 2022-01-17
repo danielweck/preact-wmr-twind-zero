@@ -173,43 +173,54 @@ export const App = () => {
 };
 
 if (IS_CLIENT_SIDE) {
-	const load = async () => {
-		// client-side live dev server !== page prerendered via WMR 'build' mode
-		const isPrerendered = !!document.querySelector('script[type=isodata]');
-		if (isPrerendered) {
-			initPreactVDOMHook();
-		} else {
-			// here in this code branch (no isodata): process.env.NODE_ENV === 'development'
-			// we use await import to force code splitting => this code bundle will not be loaded in production
+	// client-side live dev server !== page prerendered via WMR 'build' mode
+	const isPrerendered = !!document.querySelector('script[type=isodata]');
+	if (isPrerendered) {
+		initPreactVDOMHook();
+		hydrate(<App />, document.body);
+	} else {
+		// here in this code branch (no isodata): process.env.NODE_ENV === 'development'
+		// we use await import to force code splitting => this code bundle will not be loaded in production
 
-			// TODO: because of Preact WMR workaround for config.publicPath, this import fails :(
-			// ... so we strip the code at build time by detecting the following HTML comment:
+		// TODO: because of Preact WMR workaround for config.publicPath, this import fails :(
+		// ... so we strip the code at build time by detecting the following HTML comment:
 
-			/* PREACT_WMR_BUILD_STRIP_CODE_BEGIN */
+		/* PREACT_WMR_BUILD_STRIP_CODE_BEGIN */
+		(async () => {
 			const { initPreactVDOMHook_Twind } = await import('./preact-vnode-options-hook--twind.js');
 			initPreactVDOMHook_Twind();
-			/* PREACT_WMR_BUILD_STRIP_CODE_END */
-		}
-
-		// body to match prerender!
-		hydrate(<App />, document.body);
-	};
-
-	if (document.readyState === 'loading') {
-		document.addEventListener(
-			'DOMContentLoaded',
-			(_ev) => {
-				load();
-			},
-			{
-				once: false,
-				passive: false,
-				capture: false,
-			},
-		);
-	} else {
-		load();
+			hydrate(<App />, document.body);
+		})();
+		/* PREACT_WMR_BUILD_STRIP_CODE_END */
 	}
+
+	// Here, no need to wait for
+	// document.DOMContentLoaded
+	// or window.load
+	// or document.readyState=='interactive'||'complete',
+	// this script loads in the body and we want hydration ASAP.
+
+	// const load = async () => { ... };
+	// document.readyState:
+	// -1 loading
+	// -2 interactive (document.DOMContentLoaded)
+	// -3 complete (window.load)
+	// if (document.readyState === 'interactive' || document.readyState === 'complete') {
+	// 	load();
+	// } else {
+	// 	// document.readyState === 'loading'
+	// 	document.addEventListener(
+	// 		'DOMContentLoaded',
+	// 		(_ev) => {
+	// 			load();
+	// 		},
+	// 		{
+	// 			once: false,
+	// 			passive: false,
+	// 			capture: false,
+	// 		},
+	// 	);
+	// }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

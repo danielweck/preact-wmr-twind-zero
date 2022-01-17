@@ -73,12 +73,31 @@ setTimeout(async () => {
 
 		let html = fs.readFileSync(htmlFilePath, { encoding: 'utf8' });
 
+		const CSS_PERF = false;
+		// document.readyState:
+		// -1 loading
+		// -2 interactive (document.DOMContentLoaded)
+		// -3 complete (window.load)
+		const onStylesheetLinkLoad = `this.onload=null;${
+			// eslint-disable-next-line quotes
+			CSS_PERF ? "console.time('CSS');" : ''
+		}var n='DOMContentLoaded',h=x=>${CSS_PERF ? '(' : ''}(this.media='all')${
+			CSS_PERF
+				? // eslint-disable-next-line quotes
+				  "&&console.timeEnd('CSS')"
+				: ''
+		}${
+			CSS_PERF ? ')' : ''
+		};(document.readyState=='interactive'||document.readyState=='complete'?h():document.addEventListener(n,h))`
+			.replace(/\s\s*/gm, ' ')
+			.trim();
+
 		// add the lower-priority non-critical CSS external stylesheet links
 		html = html.replace(
 			/<\/head>/,
 			`
-<link rel="preload" href="${cssFilename}" as="style" crossorigin="anonymous" />
-<link rel="stylesheet" href="${cssFilename}" media="print" onload="this.onload=null;this.media='all'" crossorigin="anonymous" />
+<!-- UNCOMMENT THIS FOR HIGHER FETCH PRIORITY link rel="preload" href="${cssFilename}" as="style" crossorigin="anonymous" / -->
+<link rel="stylesheet" href="${cssFilename}" media="print" onload="${onStylesheetLinkLoad}" crossorigin="anonymous" />
 <noscript><link rel="stylesheet" href="${cssFilename}"></noscript>
 </head>
 `,
