@@ -10,8 +10,10 @@ export default defineConfig(async (config) => {
 	config.debug = true;
 
 	// WMR hacks to deploy on GitHub :(
-	const PUBLIC_PATH_ORIGIN = '//raw.githack.com';
-	const PUBLIC_PATH_ROOT = '/danielweck/preact-wmr-twind-zero/main/dist/';
+	// const PUBLIC_PATH_ORIGIN = '//raw.githack.com';
+	// const PUBLIC_PATH_ROOT = '/danielweck/preact-wmr-twind-zero/gh-pages/dist/';
+	const PUBLIC_PATH_ORIGIN = '//danielweck.github.io';
+	const PUBLIC_PATH_ROOT = '/preact-wmr-twind-zero/';
 	// config.publicPath = process.env.BUILD_FOR_GITHUB ? `${PUBLIC_PATH_ORIGIN}${PUBLIC_PATH_ROOT}` : '/';
 	if (process.env.BUILD_FOR_GITHUB) {
 		config.publicPath = `${PUBLIC_PATH_ORIGIN}${PUBLIC_PATH_ROOT}`;

@@ -20,7 +20,6 @@ specifiers:
   eslint-plugin-react: ^7.28.0
   eslint-plugin-react-hooks: ^4.3.0
   eslint-plugin-unused-imports: ^2.0.0
-  kleur: ^4.1.4
   kolorist: ^1.5.1
   preact: ^10.6.4
   preact-iso: ^2.3.0
@@ -30,17 +29,17 @@ specifiers:
   wmr: ^3.7.2
 
 dependencies:
-  '@twind/core': 1.0.0-next.12_typescript@4.5.4
-  '@twind/preset-autoprefix': 1.0.0-next.12_137260fb9909a7dde93cd745ede6687e
-  '@twind/preset-ext': 1.0.0-next.12_137260fb9909a7dde93cd745ede6687e
-  '@twind/preset-tailwind': 1.0.0-next.13_137260fb9909a7dde93cd745ede6687e
   preact: 10.6.4
   preact-iso: 2.3.0_preact@10.6.4
 
 devDependencies:
   '@rollup/plugin-replace': 3.0.1
+  '@twind/core': 1.0.0-next.12_typescript@4.5.4
+  '@twind/preset-autoprefix': 1.0.0-next.12_137260fb9909a7dde93cd745ede6687e
+  '@twind/preset-ext': 1.0.0-next.12_137260fb9909a7dde93cd745ede6687e
+  '@twind/preset-tailwind': 1.0.0-next.13_137260fb9909a7dde93cd745ede6687e
   '@twind/typescript-plugin': 0.3.4
-  '@types/node': 16.11.19
+  '@types/node': 16.11.20
   '@typescript-eslint/eslint-plugin': 5.9.1_bbe74534e31a8c21f1b3522447c55341
   '@typescript-eslint/parser': 5.9.1_eslint@8.7.0+typescript@4.5.4
   cpy-cli: 3.1.1
@@ -53,7 +52,6 @@ devDependencies:
   eslint-plugin-react: 7.28.0_eslint@8.7.0
   eslint-plugin-react-hooks: 4.3.0_eslint@8.7.0
   eslint-plugin-unused-imports: 2.0.0_3aaa536705e6b93ce4bb41980ac18927
-  kleur: 4.1.4
   kolorist: 1.5.1
   prettier: 2.5.1
   rimraf: 3.0.2
@@ -404,7 +402,7 @@ packages:
 
   /@swc/helpers/0.3.2:
     resolution: {integrity: sha512-qEru2uaH1vKZNCZR4rFCUZaflsBP7IWiGcIoQe22qi5tm+HEG/yPdhSba+ZCNTWk2xyYpx/nEFkncDY3orEx3w==}
-    dev: false
+    dev: true
 
   /@twind/core/1.0.0-next.12_typescript@4.5.4:
     resolution: {integrity: sha512-OSdJeqe++31Gy2rfje8TdoY8srxV7Td6hk7AmFlBiMxrl7iFaNY0Dh0hmLcQ4lw2fkI+KhhgkJ8I0nyfhI8EVA==}
@@ -418,7 +416,7 @@ packages:
       '@swc/helpers': 0.3.2
       csstype: 3.0.10
       typescript: 4.5.4
-    dev: false
+    dev: true
 
   /@twind/preset-autoprefix/1.0.0-next.12_137260fb9909a7dde93cd745ede6687e:
     resolution: {integrity: sha512-Zh3SRHrXpkmhffpvajVNELI9q92uwWJ8YVxY6LxETNGolMWc2g2VfHSQ5fLocZSsz8Won9Sx8tuc5gzzoMQsGA==}
@@ -434,7 +432,7 @@ packages:
       '@twind/core': 1.0.0-next.12_typescript@4.5.4
       style-vendorizer: 2.1.1
       typescript: 4.5.4
-    dev: false
+    dev: true
 
   /@twind/preset-ext/1.0.0-next.12_137260fb9909a7dde93cd745ede6687e:
     resolution: {integrity: sha512-DXUTNk1rQcxmds4mkYBKvcOz/oEc5nGAAJdKTqitBYjIEipH78MvDSZnIE7Ajy5zqiaKunbuh1gZF901qEh2jw==}
@@ -449,7 +447,7 @@ packages:
       '@swc/helpers': 0.3.2
       '@twind/core': 1.0.0-next.12_typescript@4.5.4
       typescript: 4.5.4
-    dev: false
+    dev: true
 
   /@twind/preset-tailwind/1.0.0-next.13_137260fb9909a7dde93cd745ede6687e:
     resolution: {integrity: sha512-oAidJBMESM9YnIPnU2pxMvkR5q5DseFJIO5FipIl8o+1h7GNXbEblzTD0YSbBlL+/yIfyML9QsFW7STcLk/bNQ==}
@@ -464,7 +462,7 @@ packages:
       '@swc/helpers': 0.3.2
       '@twind/core': 1.0.0-next.12_typescript@4.5.4
       typescript: 4.5.4
-    dev: false
+    dev: true
 
   /@twind/typescript-plugin/0.3.4:
     resolution: {integrity: sha512-67MAlpxQwH8xdIv7KfOqisZ297ImtnG7xtpzdMv15ikzKGa8NnY+vcPohk+xejU4hADIP810iQ7Du241dFRlCA==}
@@ -491,7 +489,7 @@ packages:
     resolution: {integrity: sha512-ZUxbzKl0IfJILTS6t7ip5fQQM/J3TJYubDm3nMbgubNNYS62eXeUpoLUC8/7fJNiFYHTrGPQn7hspDUzIHX3UA==}
     dependencies:
       '@types/minimatch': 3.0.5
-      '@types/node': 16.11.19
+      '@types/node': 16.11.20
     dev: true
 
   /@types/json-schema/7.0.9:
@@ -506,8 +504,8 @@ packages:
     resolution: {integrity: sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==}
     dev: true
 
-  /@types/node/16.11.19:
-    resolution: {integrity: sha512-BPAcfDPoHlRQNKktbsbnpACGdypPFBuX4xQlsWDE7B8XXcfII+SpOLay3/qZmCLb39kV5S1RTYwXdkx2lwLYng==}
+  /@types/node/16.11.20:
+    resolution: {integrity: sha512-lAKaZ0Lc1Umwd0AqLr6iy5U8u/1DpK7/JzNgQn9cMMUk2mFR8bbhEP8BQrI9Cm5CU0bOVCaWbkGBvgqKMOJHsw==}
     dev: true
 
   /@types/normalize-package-data/2.4.1:
@@ -935,7 +933,7 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001299
+      caniuse-lite: 1.0.30001300
       electron-to-chromium: 1.4.46
       escalade: 3.1.1
       node-releases: 2.0.1
@@ -1011,8 +1009,8 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /caniuse-lite/1.0.30001299:
-    resolution: {integrity: sha512-iujN4+x7QzqA2NCSrS5VUy+4gLmRd4xv6vbBBsmfVqTx8bLAD8097euLqQgKxSVLvxjSDcvF1T/i9ocgnUFexw==}
+  /caniuse-lite/1.0.30001300:
+    resolution: {integrity: sha512-cVjiJHWGcNlJi8TZVKNMnvMid3Z3TTdDHmLDzlOdIiZq138Exvo0G+G0wTdVYolxKb4AYwC+38pxodiInVtJSA==}
     dev: true
 
   /chalk/2.4.2:
@@ -1263,6 +1261,7 @@ packages:
 
   /csstype/3.0.10:
     resolution: {integrity: sha512-2u44ZG2OcNUO9HDp/Jl8C07x6pU/eTR3ncV91SiK3dhG9TWvRVsCoJw14Ckx5DgWkzGA3waZWO3d7pgqpUI/XA==}
+    dev: true
 
   /date-format/0.0.2:
     resolution: {integrity: sha1-+v1Ej3IRXvHitzkVWukvK+bCjdE=}
@@ -1560,7 +1559,7 @@ packages:
       '@mdn/browser-compat-data': 3.3.14
       ast-metadata-inferer: 0.7.0
       browserslist: 4.19.1
-      caniuse-lite: 1.0.30001299
+      caniuse-lite: 1.0.30001300
       core-js: 3.20.3
       eslint: 8.7.0
       find-up: 5.0.0
@@ -2802,11 +2801,6 @@ packages:
   /kind-of/6.0.3:
     resolution: {integrity: sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==}
     engines: {node: '>=0.10.0'}
-    dev: true
-
-  /kleur/4.1.4:
-    resolution: {integrity: sha512-8QADVssbrFjivHWQU7KkMgptGTl6WAcSdlbBPY4uNF+mWr6DGcKrvY2w4FQJoXch7+fKMjj0dRrL75vk3k23OA==}
-    engines: {node: '>=6'}
     dev: true
 
   /kolorist/1.5.1:
@@ -4115,6 +4109,7 @@ packages:
 
   /style-vendorizer/2.1.1:
     resolution: {integrity: sha512-gVO6Cwxtg8iX0X1W4xMhSc5WbQpiIBQDkhq3JkwebMRRgyhCfuvMrnPlTAGTRjfQPGRmzgjCOZ4drehTnLahHA==}
+    dev: true
 
   /sucrase/3.20.3:
     resolution: {integrity: sha512-azqwq0/Bs6RzLAdb4dXxsCgMtAaD2hzmUr4UhSfsxO46JFPAwMnnb441B/qsudZiS6Ylea3JXZe3Q497lsgXzQ==}
