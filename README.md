@@ -1,5 +1,48 @@
 # Zero-runtime Twind integration in Preact WMR
 
+<div>
+<img style="width: 120px;" src="./doc/preact-wmr-twind.png" alt="Preact WMR logo meets Twind logo" />
+<details>
+<summary>
+(copyrights)
+</summary>
+Hopefully my fun logo juxtaposition doesn't breach any copyright rules! If it does, please let me know and I will remove the PNG image from my repository :) Thanks!
+The original SVG assets are:
+<ul>
+<li>Preact WMR &rarr; <a href="https://wmr.dev/assets/wmr.svg">https://wmr.dev/assets/wmr.svg</a></li>
+<li>Twind &rarr; <a href="https://twind.dev/assets/twind-logo-animated.svg">https://twind.dev/assets/twind-logo-animated.svg</a></li>
+</ul>
+</details>
+</div>
+
+## Summary
+
+This project demonstrates a recipe for integrating Twind in a website built with Preact WMR. The code in this repository brings a few key ingredients to customise the standard WMR build process and Preact runtime:
+
+* WMR plugin (Rollup under the hood).
+* Preact VDOM "hook" (`options.vnode`).
+* Post-build script that tweaks the default generated website.
+
+Massive credits to the developers of:
+
+* **Preact WMR** https://github.com/preactjs/wmr/
+* **Twind** https://github.com/tw-in-js/twind/
+
+## Project definition / scope
+
+* This project emerged from a "curiosity itch" I wanted to scratch. That's it. I have no concrete plans regarding the evolution of this repository. This is made in my spare time, for fun.
+* Caveat emptor - don't blame me if your cat explodes when you run my code! :exploding_head: :scream_cat:
+* I welcome Pull Requests and feedback / suggestions via the issue tracker. If you find the information contained herein useful, let me know. Also let me know if I get things wrong. Thanks for sharing!
+* This project is NOT yet another frontend or backend framework. I have neither the skills nor the inclination for this kind of endeavour ;)
+* This project is not a general-purpose SSR/SSG+hydration solution, but aims to solve a very specific (niche?) problem, based on existing tooling.
+* This project extends the "JAM Stack" functionality of Preact WMR, namely the ability to pre-render an entire website so it can be uploaded to a static host. This is known as static "SSR" Server Side Rendering, or "SSG" Static Site Generation. That being said, Preact WMR is a smart framework that implements a hybrid  model of "MPA" Multi Page Application + "SPA" Single Page Application. Check out their website for more information.
+* This project is somewhat opinionated in the sense that the customised build process forces a particular way of invoking Twind APIs. For example, Twind's `tw` and `shortcut` function calls must be "proxied" via this project's own tagged template literals ``twindTw`...``` and ``twindShortcut`...```. On the plus side, these are configured to enable Visual Studio Code "Intellisense", courtesy of Twind's own plugin (i.e. autocompletion, error highlighting and rich information popup).
+* This project currently doesn't support all of Twind's functionality, notably the more advanced CSS-in-JS features. As Twind v1 is now just coming to fruition (at the time of writing, January 2022), I plan to research the feasibility of integrating additional useful APIs.
+
+The contents of this repository are published under the BSD3 open source license ( https://opensource.org/licenses/BSD-3-Clause ).
+
+FYI: my original stream of consciousness in a Twind discussion thread: https://github.com/tw-in-js/twind/discussions/147
+
 ## Quick Start
 
 ### Prerequisites
@@ -25,28 +68,6 @@ Alternative package managers:
 * `pnpm run build-viz` (this adds Preact WMR's option `--visualize` and the generated bundle dependency treemap will automatically be opened in your default web browser)
 * `pnpm run serve` (CTRL+C to kill the HTTP server)
 * Open your web browser at URL `http://127.0.0.1:8080`
-
-## Project definition / scope
-
-* This project emerged from a "curiosity itch" I wanted to scratch. That's it. I have no concrete plans regarding the evolution of this repository. This is made in my spare time, for fun.
-* Caveat emptor - don't blame me if your cat explodes when you run my code! :exploding_head: :scream_cat:
-* I welcome Pull Requests and feedback / suggestions via the issue tracker. If you find the information contained herein useful, let me know. Also let me know if I get things wrong. Thanks for sharing!
-* This project is NOT yet another frontend or backend framework. I have neither the skills nor the inclination for this kind of endeavour ;)
-* This project is not a general-purpose SSR/SSG+hydration solution, but aims to solve a very specific (niche?) problem, based on existing tooling.
-* This project is an integration recipe for Twind in Preact WMR:
-  * **Preact WMR** https://github.com/preactjs/wmr/
-  * **Twind** https://github.com/tw-in-js/twind/
-* This project brings a few key ingredients to customise the standard WMR build process and Preact runtime:
-  * WMR plugin (Rollup under the hood).
-  * Preact VDOM "hook" (`options.vnode`).
-  * Post-build script that tweaks the default generated website.
-* This project extends the "JAM Stack" functionality of Preact WMR, namely the ability to pre-render an entire website so it can be uploaded to a static host. This is known as static "SSR" Server Side Rendering, or "SSG" Static Site Generation. That being said, Preact WMR is a smart framework that implements a hybrid  model of "MPA" Multi Page Application + "SPA" Single Page Application. Check out their website for more information.
-* This project is somewhat opinionated in the sense that the customised build process forces a particular way of invoking Twind APIs. For example, Twind's `tw` and `shortcut` function calls must be "proxied" via this project's own tagged template literals ``twindTw`...``` and ``twindShortcut`...```. On the plus side, these are configured to enable Visual Studio Code "Intellisense", courtesy of Twind's own plugin (i.e. autocompletion, error highlighting and rich information popup).
-* This project currently doesn't support all of Twind's functionality, notably the more advanced CSS-in-JS features. As Twind v1 is now just coming to fruition (at the time of writing, January 2022), I plan to research the feasibility of integrating additional useful APIs.
-
-The contents of this repository are published under the BSD3 open source license ( https://opensource.org/licenses/BSD-3-Clause ).
-
-FYI: my original stream of consciousness in a Twind discussion thread: https://github.com/tw-in-js/twind/discussions/147
 
 ## Zero-runtime Twind?
 

@@ -1,0 +1,9 @@
+Hopefully my fun logo juxtaposition doesn't breach any copyright rules! If it does, please let me know and I will remove the PNG image from my repository :) Thanks!
+
+The original SVG assets are:
+
+* Preact WMR:
+https://wmr.dev/assets/wmr.svg
+
+* Twind:
+https://twind.dev/assets/twind-logo-animated.svg
