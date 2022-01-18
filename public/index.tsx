@@ -23,14 +23,16 @@ if (process.env.NODE_ENV === 'development') {
 
 // Code splitting
 // const RoutedLazy = lazy(() => import('./routed/lazy.js'));
-const RoutedLazy = lazy(() =>
-	IS_CLIENT_SIDE
-		? new Promise<typeof import('./routed/lazy.js')>((resolve) => {
-				setTimeout(() => {
+const RoutedLazy = lazy(
+	() =>
+		new Promise<typeof import('./routed/lazy.js')>((resolve) => {
+			setTimeout(
+				() => {
 					resolve(import('./routed/lazy.js'));
-				}, 1000);
-		  })
-		: import('./routed/lazy.js'),
+				},
+				IS_CLIENT_SIDE ? 1000 : 0,
+			);
+		}),
 );
 
 export const App = () => {
@@ -260,7 +262,7 @@ export async function prerender(data: Record<string, any>): Promise<
 		html: res.html,
 		links: res.links,
 		data: {
-			isprerendered: 'yes', // leave this one! (ensures <script type="isodata" /> is present)
+			// isprerendered: true, // ensures <script type="isodata" /> is generated so we can later check the DOM for its existence, but not needed here as 'data' includes ssr:true already
 			...data,
 		},
 		head: {

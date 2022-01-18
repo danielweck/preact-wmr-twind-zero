@@ -1,8 +1,8 @@
-import { twindShortcut, twindTw } from '/twindish.js';
 import { ErrorBoundary } from 'preact-iso/lazy';
 import { useState } from 'preact/hooks';
 
 import { SuspendedLazy } from '../suspended/lazy/lazy-island.js';
+import { twindShortcut, twindTw } from '../twindish.js';
 
 import type { FunctionalComponent, RenderableProps } from 'preact';
 

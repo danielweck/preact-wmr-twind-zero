@@ -1,4 +1,4 @@
-import { twindTw } from '/twindish.js';
+import { twindTw } from '../twindish.js';
 
 import type { FunctionalComponent, RenderableProps } from 'preact';
 
