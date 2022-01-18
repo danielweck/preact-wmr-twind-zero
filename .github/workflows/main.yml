@@ -6,6 +6,8 @@ on:
       - '*'
   pull_request:
     branches: [ main ]
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
   build:
     if: "github.event_name == 'pull_request' || !contains(github.event.head_commit.message, 'skip ci')"
@@ -26,6 +28,8 @@ jobs:
     - run: 'echo "GITHUB_SHA: ${{ github.sha }}"'
     - name: Checkout
       uses: actions/checkout@v2
+      with:
+        ref: main
     - name: Git config global dump (post)
       run: 'git config --global --list || echo NO_GIT_GLOBAL_CONFIG || true'
       shell: bash
@@ -48,4 +52,23 @@ jobs:
       run: pnpm run lint
     - name: non-PR action (lint and build)
       if: ${{ github.event_name != 'pull_request' }}
-      run: pnpm run lint && pnpm run build
+      run: pnpm run lint && pnpm run build-github && ls -R dist && mv dist/preact-wmr-twind-zero/* dist/ && rm -r dist/preact-wmr-twind-zero && rm dist/*.ts && rm dist/chunks/prerender*
+    - name: Checkout GH-PAGES
+      if: ${{ github.event_name != 'pull_request' }}
+      uses: actions/checkout@v2
+      with:
+        ref: gh-pages
+        path: gh-pages
+    - name: Copy dist to GH-PAGES
+      run: |
+          cp gh-pages/.gitignore dist/
+          rm -rf gh-pages/*
+          cd gh-pages
+          ls -als
+          cp -r ../dist/* ./
+          ls -als
+          git config user.name "Daniel Weck"
+          git config user.email daniel.weck@gmail.com
+          git add .
+          git commit -m "chore(dist): automated GitHub Actions CI dist update"
+          git push
