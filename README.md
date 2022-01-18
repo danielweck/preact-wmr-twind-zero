@@ -123,7 +123,7 @@ There is one obvious caveat when using this zero-runtime Twind integration recip
 
 This repository contains a minimal demo which makes it easy to manually inspect the generated HTML / CSS / JS:
 
-* **View demo pages:** https://danielweck.github.io/preact-wmr-twind-zero/
+* **View demo pages:** https://preact-wmr-twind-zero.pages.dev (automated CloudFlare Pages deployment), or alternatively GitHub Pages: https://danielweck.github.io/preact-wmr-twind-zero/
 * **Browse compiled demo files:** https://github.com/danielweck/preact-wmr-twind-zero/tree/gh-pages/
 * **Explore demo source code:** https://github.com/danielweck/preact-wmr-twind-zero/tree/main/public
 

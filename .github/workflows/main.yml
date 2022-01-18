@@ -1,0 +1,51 @@
+name: CI
+on:
+  push:
+    branches: [ main ]
+    tags-ignore:
+      - '*'
+  pull_request:
+    branches: [ main ]
+jobs:
+  build:
+    if: "github.event_name == 'pull_request' || !contains(github.event.head_commit.message, 'skip ci')"
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        include:
+          - os: ubuntu-latest
+            osname: linux
+    env:
+      GIHUB_ACTIONS_OS_NAME: ${{ matrix.osname }}
+    steps:
+    - run: echo 'GIHUB_ACTIONS_OS_NAME:' ${{ env.GIHUB_ACTIONS_OS_NAME }}
+    - run: 'echo "GITHUB_RUN_NUMBER: ${{ github.run_number }}"'
+    - run: 'echo "GITHUB_RUN_ID: ${{ github.run_id }}"'
+    - run: 'echo "GITHUB_SHA: ${{ github.sha }}"'
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Git config global dump (post)
+      run: 'git config --global --list || echo NO_GIT_GLOBAL_CONFIG || true'
+      shell: bash
+    - name: Git config local dump (post)
+      run: 'git config --list || echo NO_GIT_GLOBAL_CONFIG || true'
+      shell: bash
+    - uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+    - run: node --version && npm --version
+    #- run: npm --global install npm@^8
+    - run: npm --global install pnpm
+    - run: pnpm --version
+    - run: git --no-pager diff
+    #- run: npm cache clean --force
+    #- run: npm cache verify
+    - run: pnpm install
+    - name: PR action (just lint)
+      if: ${{ github.event_name == 'pull_request' }}
+      run: pnpm run lint
+    - name: non-PR action (lint and build)
+      if: ${{ github.event_name != 'pull_request' }}
+      run: pnpm run lint && pnpm run build
