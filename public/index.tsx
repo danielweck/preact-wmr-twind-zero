@@ -235,6 +235,8 @@ if (IS_CLIENT_SIDE) {
 	// }
 }
 
+// See ==> https://github.com/preactjs/wmr/blob/main/packages/wmr/src/lib/prerender.js
+//
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function prerender(data: Record<string, any>): Promise<
 	PrerenderResult & {
@@ -250,6 +252,9 @@ export async function prerender(data: Record<string, any>): Promise<
 > {
 	// Must be dynamic import for code splitting and avoid include in client bundle
 	const { preactWmrPrerenderForTwind } = await import('./prerender/prerender.js');
+	// // TODO? trick Rollup into *not* transforming the `import()`
+	// const $import = new Function('s', 'return import(s)');
+	// const { preactWmrPrerenderForTwind } = await $import('file:///' + path.resolve(cwd, './prerender/prerender.js'));
 
 	// TODO: data props?
 	const res = await preactWmrPrerenderForTwind(data.url, <App {...data} />, { props: data });
