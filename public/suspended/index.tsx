@@ -1,7 +1,7 @@
 import { ErrorBoundary } from 'preact-iso/lazy';
 import { Router } from 'preact-iso/router';
 
-import { PUBLIC_PATH_ORIGIN, PUBLIC_PATH_ROOT } from '../utils.js';
+import { PUBLIC_PATH_ORIGIN } from '../utils.js';
 import { SuspendedLazy } from './lazy/lazy-island.js';
 
 import type { FunctionalComponent, RenderableProps } from 'preact';
@@ -20,7 +20,7 @@ export const RoutedSuspendedSubRouter: FunctionalComponent<unknown> = (_props: R
 				console.log('ErrorBoundary onError (sub router): ', err);
 			}}
 		>
-			<Router>{[<SuspendedLazy path={`${PUBLIC_PATH_ROOT}lazy${PUBLIC_PATH_ORIGIN ? '/' : ''}`} />]}</Router>
+			<Router>{[<SuspendedLazy path={`/lazy${PUBLIC_PATH_ORIGIN ? '/' : ''}`} />]}</Router>
 		</ErrorBoundary>
 	);
 };
