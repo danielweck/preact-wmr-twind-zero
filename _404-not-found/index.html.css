@@ -6,3 +6,4 @@
 .\~\(\!text-center\,hover\:underline\,cursor-pointer\,text-red-800\,bg-green-50\,hover\:\!bg-red-100\,w-1\/2\,ml-11\){--tw-text-opacity:1;color:rgba(153,27,27,var(--tw-text-opacity));cursor:pointer;width:50%;--tw-bg-opacity:1;background-color:rgba(240,253,244,var(--tw-bg-opacity));text-align:center !important;margin-left:2.75rem}
 .\~\(\!text-center\,hover\:underline\,cursor-pointer\,text-red-800\,bg-green-50\,hover\:\!bg-red-100\,w-1\/2\,ml-11\):hover{--tw-bg-opacity:1 !important;background-color:rgba(254,226,226,var(--tw-bg-opacity)) !important;-webkit-text-decoration:underline;text-decoration:underline}
 .bg-yellow-700{--tw-bg-opacity:1;background-color:rgba(161,98,7,var(--tw-bg-opacity))}
+.bg-green-200{--tw-bg-opacity:1;background-color:rgba(187,247,208,var(--tw-bg-opacity))}
