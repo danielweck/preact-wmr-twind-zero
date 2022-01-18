@@ -37,7 +37,8 @@ setTimeout(async () => {
 			const htmlFilePath = path.join(root, file);
 			let html = fs.readFileSync(htmlFilePath, { encoding: 'utf8' });
 
-			const preactCss = new RegExp(TWIND_REGEXP).exec(html)[1] || '/* TWIND REGEXP FAIL???? */';
+			const r = new RegExp(TWIND_REGEXP).exec(html);
+			const preactCss = (r && r[1]) || '/* TWIND REGEXP FAIL???? */';
 			htmlCssMap[htmlFilePath] = preactCss;
 		}
 	}

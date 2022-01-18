@@ -4,8 +4,8 @@
 		"plugins": [
 			{
 				"name": "@twind/typescript-plugin",
-				"tags": ["tw", "apply", "twind", "twindTw", "twindShortcut", "twindSkip"],
-				"attributes": ["class", "className", "tw", "data-tw", "tw-apply", "data-tw-apply"],
+				"tags": ["tw", "twind", "twindTw", "twindShortcut", "twindSkip"],
+				"attributes": ["class", "className", "tw", "data-tw", "tw-shortcut", "data-tw-shortcut"],
 				"styles": ["style", "styled"],
 				"debug": true,
 				"enable": true
@@ -14,8 +14,8 @@
 		"jsx": "preserve",
 		"jsxFactory": "preact.h",
 		"jsxFragmentFactory": "preact.Fragment",
-		"allowJs": false,
-		"checkJs": false,
+		"allowJs": true,
+		"checkJs": true,
 		"strict": true,
 		"strictNullChecks": true,
 		"noEmit": true,
@@ -33,6 +33,8 @@
 		}
 	},
 	"typeAcquisition": {
-		"enable": true
+		"enable": true,
+		"disableFilenameBasedTypeAcquisition": true,
+		"include": ["rollup"]
 	},
 }
