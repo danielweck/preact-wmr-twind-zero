@@ -14,7 +14,6 @@ export default defineConfig(async (config) => {
 	// const PUBLIC_PATH_ROOT = '/danielweck/preact-wmr-twind-zero/gh-pages/dist/';
 	const PUBLIC_PATH_ORIGIN = '//danielweck.github.io';
 	const PUBLIC_PATH_ROOT = '/preact-wmr-twind-zero/';
-	// config.publicPath = process.env.BUILD_FOR_GITHUB ? `${PUBLIC_PATH_ORIGIN}${PUBLIC_PATH_ROOT}` : '/';
 	if (process.env.BUILD_FOR_GITHUB) {
 		config.publicPath = `${PUBLIC_PATH_ORIGIN}${PUBLIC_PATH_ROOT}`;
 		config.env = { WMR_PUBLIC_PATH_ORIGIN: PUBLIC_PATH_ORIGIN, WMR_PUBLIC_PATH_ROOT: PUBLIC_PATH_ROOT };
@@ -39,8 +38,11 @@ export default defineConfig(async (config) => {
 	config.alias = { '~/*': './public' };
 
 	// ask WMR to prerender route not explicitly linked to in source code
-	config.customRoutes = ['/_404-not-found'];
-	// config.publicPath.startsWith('//') ? PUBLIC_PATH_ROOT : config.publicPath,
+	config.customRoutes = [
+		'/_404-not-found', // This is only to ensure that the 404 page stylesheet is processed at post-build stage to segregate "critical" vs. "secondary" styles.
+		'/suspended/lazy', // Same reason as 404 above, but this is for self-contained lazy/async components (see /public/suspended/index.tsx).
+	];
+	// config.publicPath.startsWith('//') ? PUBLIC_PATH_ROOT : config.publicPath
 	// if (config.publicPath.startsWith('//')) {
 	// 	config.customRoutes.push('/');
 	// }

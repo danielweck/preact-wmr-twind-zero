@@ -5,7 +5,7 @@ import type { FunctionalComponent, RenderableProps } from 'preact';
 export const RoutedHome: FunctionalComponent<unknown> = (_props: RenderableProps<unknown>) => {
 	return (
 		<section>
-			<h2>&rarr; Home</h2>
+			<h2>Routed &rarr; Home</h2>
 			<p
 				class={twindTw`
 					bg-yellow-400

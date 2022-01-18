@@ -5,7 +5,7 @@ import type { FunctionalComponent, RenderableProps } from 'preact';
 export const RoutedLazy: FunctionalComponent<unknown> = (_props: RenderableProps<unknown>) => {
 	return (
 		<section>
-			<h2>&rarr; Lazy</h2>
+			<h2>Routed &rarr; Lazy</h2>
 			<p
 				class={twindTw`
 					bg-yellow-500

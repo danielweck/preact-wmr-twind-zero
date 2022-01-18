@@ -69,6 +69,8 @@ module.exports = {
 				caughtErrors: 'all',
 			},
 		],
+		'react/jsx-key': 0,
+
 		'react/no-unknown-property': 0,
 		'react/react-in-jsx-scope': 0,
 
