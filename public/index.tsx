@@ -180,6 +180,15 @@ export const App = () => {
 					</a>
 				</li>
 			</ul>
+			<p
+				dir="rtl"
+				class={twindTw`
+					is-rtl:font-bold
+					is-rtl:text-6xl
+				`}
+			>
+				RTL (bold)
+			</p>
 		</LocationProvider>
 	);
 };

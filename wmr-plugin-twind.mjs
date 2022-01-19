@@ -1,11 +1,8 @@
 import { green, red, cyan } from 'kolorist';
 
-import { twind, shortcut, virtual, asArray, defineConfig } from '@twind/core';
-import twindPresetAutoprefix from '@twind/preset-autoprefix';
-import twindPresetExt from '@twind/preset-ext';
-import twindPresetTailwind from '@twind/preset-tailwind';
+import { twind, shortcut, virtual } from '@twind/core';
 
-import { twindConfig } from './public/twind.config.js';
+import { twConfig } from './public/twindConfig.js';
 
 // Regular expression that checks file extensions:
 // we only transform Twind tagged template literals in TS, TSX, JS, JSX source code
@@ -68,14 +65,6 @@ export function wmrTwindPlugin(config) {
 						console.log(`${DEBUG_PREFIX}${red('lazy create stylesheet and init Twind')}`);
 
 						_twindSheet = virtual();
-
-						// We could force 'preflight' to false here, as this might be unnecessary overhead at build time (transient stylesheet),
-						// but I am not sure about undesirable side effects (i.e. dispcrepancies with Twind processing via custom Preact VNode 'options' hook)
-						// { preflight: false }
-						const twConfig = defineConfig({
-							...twindConfig,
-							presets: [twindPresetAutoprefix(), ...asArray(twindConfig.presets), twindPresetExt(), twindPresetTailwind()],
-						});
 
 						_tw = twind(twConfig, _twindSheet);
 					}

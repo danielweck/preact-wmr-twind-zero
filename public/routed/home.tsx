@@ -16,6 +16,12 @@ export const RoutedHome: FunctionalComponent<unknown> = (_props: RenderableProps
 				This text has a <strong>yellow-400</strong> background (unique to this paragraph, not shared with any other route or
 				component)
 			</p>
+			<div class={twindTw`test-scope`}>
+				<p>
+					this is a paragraph <span>with a child span</span> element.
+				</p>
+				<h4>heading</h4>
+			</div>
 		</section>
 	);
 };

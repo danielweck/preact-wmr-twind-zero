@@ -22,11 +22,12 @@ const SuspendedLazyLoader: FunctionalComponent<unknown> = (_props: RenderablePro
 			) : (
 				<>
 					<button
+						class={twindTw`p-2 m-2 border-2 rounded border-dotted border-purple-500`}
 						onClick={() => {
 							setLazyLoaded(true);
 						}}
 					>
-						Lazy
+						CLICK HERE TO LAZY-LOAD
 					</button>
 					<span>(1s simulated network delay on first load, then "cache" hit)</span>
 				</>

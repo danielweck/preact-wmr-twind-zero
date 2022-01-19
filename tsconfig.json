@@ -26,10 +26,12 @@
 		"allowSyntheticDefaultImports": true,
 		"downlevelIteration": true,
 		"skipLibCheck": true,
+		"rootDir": "./",
+		"rootDirs": ["./", "./public/"],
 		"baseUrl": ".",
 		"paths": {
 			"~/*": ["./public/*"],
-			"/*": ["./public/*"],
+			"/*": ["./public/*"]
 		}
 	},
 	"typeAcquisition": {
@@ -37,4 +39,5 @@
 		"disableFilenameBasedTypeAcquisition": true,
 		"include": ["rollup"]
 	},
+	"exclude": ["node_modules", "dist", "doc", ".github", ".vscode"]
 }

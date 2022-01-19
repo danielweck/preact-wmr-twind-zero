@@ -23,6 +23,11 @@ export const SuspendedLazy: FunctionalComponent<unknown> = (_props: RenderablePr
 				This text has a <strong>green-200</strong> background (unique to this paragraph, not shared with any other route or
 				component)
 			</p>
+			<input
+				type="text"
+				class="form-input block w-full"
+				placeholder="Tailwind Forms preset class (unique to this component)"
+			/>
 		</div>
 	);
 };
