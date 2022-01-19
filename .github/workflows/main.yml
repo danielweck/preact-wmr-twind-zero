@@ -77,5 +77,5 @@ jobs:
           git config user.name "Daniel Weck"
           git config user.email daniel.weck@gmail.com
           git add .
-          git commit -m "chore(dist): automated GitHub Actions CI dist update"
+          git commit -m "chore(dist): automated GitHub Actions CI dist update" || echo "ok"
           git push
