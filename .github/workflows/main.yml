@@ -59,7 +59,7 @@ jobs:
       run: pnpm run lint
     - name: non-PR action (lint and build)
       if: ${{ github.event_name != 'pull_request' }}
-      run: pnpm run lint && pnpm run build-github && ls -R dist && mv dist/preact-wmr-twind-zero/* dist/ && rm -r dist/preact-wmr-twind-zero && rm dist/*.ts && rm dist/chunks/prerender*
+      run: pnpm run lint && npm run build-github && ls -R dist && mv dist/preact-wmr-twind-zero/* dist/ && rm -r dist/preact-wmr-twind-zero && rm dist/*.ts && rm dist/chunks/prerender*
     - name: Checkout GH-PAGES
       if: ${{ github.event_name != 'pull_request' }}
       uses: actions/checkout@v2
