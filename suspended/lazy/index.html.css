@@ -1,9 +1,21 @@
 .bg-yellow-300{--tw-bg-opacity:1;background-color:rgba(253,224,71,var(--tw-bg-opacity))}
+.test-scope{--tw-text-opacity:1;color:rgba(255,255,255,var(--tw-text-opacity));margin:1rem;padding:1rem;--tw-bg-opacity:1;background-color:rgba(0,0,0,var(--tw-bg-opacity))}
+.test-scope p{--tw-text-opacity:1;color:rgba(37,99,235,var(--tw-text-opacity));padding:2rem;--tw-bg-opacity:1;background-color:rgba(254,226,226,var(--tw-bg-opacity))}
+.test-scope p > span{--tw-text-opacity:1;color:rgba(252,165,165,var(--tw-text-opacity));padding-left:1rem;padding-right:1rem;padding-top:1rem;padding-bottom:1rem;-webkit-text-decoration:underline;text-decoration:underline}
+.test-scope > h4{font-weight:800;text-transform:uppercase}
 .bg-yellow-400{--tw-bg-opacity:1;background-color:rgba(250,204,21,var(--tw-bg-opacity))}
+.test-scope > h4{padding:1em;background-color:blue}
+.test-scope > p{font-family:serif;color:magenta}
+.test-scope p span{font-size:200%}
 .bg-yellow-500{--tw-bg-opacity:1;background-color:rgba(234,179,8,var(--tw-bg-opacity))}
 .text-2xl{font-size:1.5rem;line-height:2rem}
 .bg-yellow-600{--tw-bg-opacity:1;background-color:rgba(202,138,4,var(--tw-bg-opacity))}
 .text-4xl{font-size:2.25rem;line-height:2.5rem}
 .\~\(\!text-center\,hover\:underline\,cursor-pointer\,text-red-800\,bg-green-50\,hover\:\!bg-red-100\,w-1\/2\,ml-11\){--tw-text-opacity:1;color:rgba(153,27,27,var(--tw-text-opacity));cursor:pointer;width:50%;--tw-bg-opacity:1;background-color:rgba(240,253,244,var(--tw-bg-opacity));text-align:center !important;margin-left:2.75rem}
 .\~\(\!text-center\,hover\:underline\,cursor-pointer\,text-red-800\,bg-green-50\,hover\:\!bg-red-100\,w-1\/2\,ml-11\):hover{--tw-bg-opacity:1 !important;background-color:rgba(254,226,226,var(--tw-bg-opacity)) !important;-webkit-text-decoration:underline;text-decoration:underline}
+.m-2{margin:0.5rem}
+.p-2{padding:0.5rem}
 .bg-yellow-700{--tw-bg-opacity:1;background-color:rgba(161,98,7,var(--tw-bg-opacity))}
+.border-purple-500{--tw-border-opacity:1;border-color:rgba(168,85,247,var(--tw-border-opacity))}
+.border-2{border-width:2px}
+.border-dotted{border-style:dotted}
