@@ -41,6 +41,13 @@ jobs:
         node-version: '16'
     - run: node --version && npm --version
     #- run: npm --global install npm@^8
+    - name: PNPM cache
+      uses: actions/cache@v2
+      with:
+        path: ~/.pnpm-store
+        key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-
     - run: npm --global install pnpm
     - run: pnpm --version
     - run: git --no-pager diff
