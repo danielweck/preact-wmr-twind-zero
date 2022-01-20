@@ -1,4 +1,4 @@
-import { type BaseTheme, type Class, type Sheet, type Twind, cssom, shortcut, twind } from 'twind';
+import { type BaseTheme, type Sheet, type Twind, cssom, twind } from 'twind';
 
 import { initPreactVDOMHook } from './preact-vnode-options-hook';
 import { twConfig } from './twindConfig.js';
@@ -17,7 +17,7 @@ export const initPreactVDOMHook_Twind = (sheet?: Sheet<string[]>): Twind<BaseThe
 		_tw = twind(twConfig, cssom());
 	}
 
-	initPreactVDOMHook(_tw, (val: Class) => _tw(shortcut(val)));
+	initPreactVDOMHook(_tw);
 
 	return _tw;
 };

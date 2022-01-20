@@ -21,7 +21,14 @@ const SuspendedLazyLoader: FunctionalComponent<unknown> = (_props: RenderablePro
 			) : (
 				<>
 					<button
-						class={twindTw`p-2 m-2 border-2 rounded border-dotted border-purple-500`}
+						class={`
+							p-2
+							m-2
+							border-2
+							rounded
+							border-dotted
+							border-purple-500
+						`}
 						onClick={() => {
 							setLazyLoaded(true);
 						}}
@@ -36,21 +43,26 @@ const SuspendedLazyLoader: FunctionalComponent<unknown> = (_props: RenderablePro
 };
 
 export const RoutedRoute: FunctionalComponent<unknown> = (_props: RenderableProps<unknown>) => {
+	// This could be directly inlined in the class JSX property without the twindTw (void) helper,
+	// but we're just demonstrating the use of the twindTw tagged template literal function
+	// for autocompletion / VSCode intellisense.
+	const other = process.env.NOPE ? twindTw`text-pink-600` : twindTw`text-black`;
+	// This one below doesn't use twindTw, so no autocompletion / VSCode intellisense:
+	const paraClass = `
+		bg-yellow-700
+		${other}
+	`;
+
+	// note the dual class and className props on the HTML / JSX paragraph below (no difference, either can be used):
 	return (
 		<section>
 			<h2>Routed &rarr; Route</h2>
-			<p
-				class={twindTw`
-					bg-yellow-700
-					text-black
-					text-3xl
-				`}
-			>
+			<p class={paraClass} className="text-6xl">
 				This text has a <strong>yellow-700</strong> background (unique to this paragraph, not shared with any other route or
 				component)
 			</p>
 			<p
-				tw-shortcut={twindShortcut`
+				class={twindShortcut`
 					!text-center
 					hover:underline
 					cursor-pointer

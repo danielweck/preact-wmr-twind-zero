@@ -4,8 +4,8 @@
 		"plugins": [
 			{
 				"name": "@twind/typescript-plugin",
-				"tags": ["tw", "twind", "twindTw", "twindShortcut", "twindSkip"],
-				"attributes": ["class", "className", "tw", "data-tw", "tw-shortcut", "data-tw-shortcut"],
+				"tags": ["tw", "twind", "twindTw", "twindShortcut"],
+				"attributes": ["class", "className"],
 				"styles": ["style", "styled"],
 				"debug": true,
 				"enable": true

@@ -1,13 +1,11 @@
 import type { FunctionalComponent, RenderableProps } from 'preact';
 
-import { twindTw } from '../twindish.js';
-
 export const RoutedLazy: FunctionalComponent<unknown> = (_props: RenderableProps<unknown>) => {
 	return (
 		<section>
 			<h2>Routed &rarr; Lazy</h2>
 			<p
-				class={twindTw`
+				class={`
 					bg-yellow-500
 					text-black
 					text-3xl
@@ -16,11 +14,7 @@ export const RoutedLazy: FunctionalComponent<unknown> = (_props: RenderableProps
 				This text has a <strong>yellow-500</strong> background (unique to this paragraph, not shared with any other route or
 				component)
 			</p>
-			<p
-				class={twindTw`
-					text-2xl
-				`}
-			>
+			<p class="text-2xl">
 				This text has a <strong>text-2xl</strong> size (unique to this paragraph, not shared with any other route or
 				component)
 			</p>

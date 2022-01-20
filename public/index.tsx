@@ -10,7 +10,6 @@ import { RoutedHome } from './routed/home.js';
 import { RoutedNonLazy } from './routed/non-lazy.js';
 import { RoutedRoute } from './routed/route.js';
 import { RoutedSuspendedSubRouter } from './suspended/index.js';
-import { twindTw } from './twindish.js';
 import { IS_CLIENT_SIDE, PUBLIC_PATH_ORIGIN, PUBLIC_PATH_ROOT } from './utils.js';
 
 if (process.env.NODE_ENV === 'development') {
@@ -40,7 +39,7 @@ export const App = () => {
 		<LocationProvider>
 			<h1>Router status:</h1>
 			<p
-				class={twindTw`
+				class={`
 						bg-pink-600
 						p-1.5
 						text-white
@@ -54,7 +53,7 @@ export const App = () => {
 			<ul>
 				<li>
 					<span
-						class={twindTw`
+						class={`
 								inline-block
 								text-yellow-400
 								mr-1.5
@@ -66,7 +65,7 @@ export const App = () => {
 				</li>
 				<li>
 					<span
-						class={twindTw`
+						class={`
 								inline-block
 								text-yellow-500
 								mr-1.5
@@ -79,7 +78,7 @@ export const App = () => {
 				</li>
 				<li>
 					<span
-						class={twindTw`
+						class={`
 								inline-block
 								text-yellow-600
 								mr-1.5
@@ -91,7 +90,7 @@ export const App = () => {
 				</li>
 				<li>
 					<span
-						class={twindTw`
+						class={`
 								inline-block
 								text-yellow-700
 								mr-1.5
@@ -106,7 +105,7 @@ export const App = () => {
 
 			<h1>Router content:</h1>
 			<div
-				class={twindTw`
+				class={`
 						border-solid
 						border-4
 						border-pink-600
@@ -134,12 +133,12 @@ export const App = () => {
 			</div>
 
 			<h1>Twind critical/secondary stylesheet tests:</h1>
-			<p class={twindTw`text-3xl`}>
+			<p class="text-3xl">
 				This paragraphs and others located in different routes share the same <strong>text-3xl</strong> Twind style, but it
 				isn't duplicated in the pre-rendered "secondary" stylesheet, it is hoisted in the "critical" styles.
 			</p>
 			<p
-				class={twindTw`
+				class={`
 						bg-yellow-200
 						text-black
 					`}
@@ -152,7 +151,7 @@ export const App = () => {
 			<ul>
 				<li>
 					<span
-						class={twindTw`
+						class={`
 								inline-block
 								text-yellow-300
 								mr-1.5
@@ -166,7 +165,7 @@ export const App = () => {
 				</li>
 				<li>
 					<span
-						class={twindTw`
+						class={`
 								inline-block
 								text-yellow-300
 								mr-1.5
@@ -181,7 +180,7 @@ export const App = () => {
 			</ul>
 			<p
 				dir="rtl"
-				class={twindTw`
+				class={`
 					is-rtl:font-bold
 					is-rtl:text-6xl
 				`}

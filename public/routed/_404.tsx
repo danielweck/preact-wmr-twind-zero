@@ -1,13 +1,11 @@
 import type { FunctionalComponent, RenderableProps } from 'preact';
 
-import { twindTw } from '../twindish.js';
-
 export const Routed404: FunctionalComponent<unknown> = (_props: RenderableProps<unknown>) => {
 	return (
 		<section>
 			<h2>Routed &rarr; 404 Not Found</h2>
 			<p
-				class={twindTw`
+				class={`
 					bg-yellow-300
 					text-black
 					text-3xl
