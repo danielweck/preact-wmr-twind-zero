@@ -1,4 +1,4 @@
-/** @type {import('@twind/core').TwindUserConfig<import('@twind/core').BaseTheme>} */
+/** @type {import('twind').TwindUserConfig<import('twind').BaseTheme>} */
 export const twindConfig = {
 	// preflight: false, // uncomment this to manually / visually check the generated stylesheet more easily
 

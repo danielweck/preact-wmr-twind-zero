@@ -1,6 +1,6 @@
 import { green, red, cyan } from 'kolorist';
 
-import { twind, shortcut, virtual } from '@twind/core';
+import { twind, shortcut, virtual } from 'twind';
 
 import { twConfig } from './public/twindConfig.js';
 
@@ -38,9 +38,9 @@ const REGEXP_TWIND_TAGGED_TEMPLATE_LITERALS_CHECK = new RegExp(`(${twindTagFunct
 export function wmrTwindPlugin(config) {
 	// in WMR build/prerender mode, we execute Twind via a transient stylesheet.
 	// See lazy instantiation further down below...
-	/** @type {import('@twind/core').Twind<import('@twind/core').BaseTheme, string[]> | undefined} */
+	/** @type {import('twind').Twind<import('twind').BaseTheme, string[]> | undefined} */
 	let _tw;
-	/** @type {import('@twind/core').Sheet<string[]> | undefined} */
+	/** @type {import('twind').Sheet<string[]> | undefined} */
 	let _twindSheet;
 
 	/** @type {import('wmr').Plugin} */

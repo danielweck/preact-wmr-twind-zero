@@ -1,4 +1,4 @@
-import type { Class as TClass } from '@twind/core';
+import type { Class as TClass } from 'twind';
 
 export type Class = TClass;
 

@@ -1,10 +1,10 @@
-import { cssom, shortcut, twind } from '@twind/core';
+import { cssom, shortcut, twind } from 'twind';
 
 import { initPreactVDOMHook } from './preact-vnode-options-hook';
 import { twConfig } from './twindConfig.js';
 
 // eslint-disable-next-line no-duplicate-imports
-import type { Class, Twind, Sheet, BaseTheme } from '@twind/core';
+import type { Class, Twind, Sheet, BaseTheme } from 'twind';
 
 let _tw: Twind<BaseTheme, CSSStyleSheet | string[]>;
 

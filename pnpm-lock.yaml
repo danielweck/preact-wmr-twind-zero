@@ -1,11 +1,10 @@
 lockfileVersion: 5.3
 
 specifiers:
-  '@twind/core': ^1.0.0-next.14
-  '@twind/preset-autoprefix': ^1.0.0-next.14
-  '@twind/preset-ext': ^1.0.0-next.14
-  '@twind/preset-tailwind': ^1.0.0-next.15
-  '@twind/preset-tailwind-forms': ^1.0.0-next.15
+  '@twind/preset-autoprefix': ^1.0.0-next.17
+  '@twind/preset-ext': ^1.0.0-next.17
+  '@twind/preset-tailwind': ^1.0.0-next.17
+  '@twind/preset-tailwind-forms': ^1.0.0-next.17
   '@twind/typescript-plugin': ^0.3.4
   '@types/node': ^16.11.17
   '@typescript-eslint/eslint-plugin': ^5.10.0
@@ -26,6 +25,7 @@ specifiers:
   prettier: ^2.5.1
   rimraf: ^3.0.2
   rollup: ^2.64.0
+  twind: ^1.0.0-next.17
   typescript: ^4.5.4
   wmr: ^3.7.2
 
@@ -34,11 +34,10 @@ dependencies:
   preact-iso: 2.3.0_preact@10.6.4
 
 devDependencies:
-  '@twind/core': 1.0.0-next.14_typescript@4.5.4
-  '@twind/preset-autoprefix': 1.0.0-next.14_9a93851f32e8be2464313c18c7ccbce5
-  '@twind/preset-ext': 1.0.0-next.14_9a93851f32e8be2464313c18c7ccbce5
-  '@twind/preset-tailwind': 1.0.0-next.15_9a93851f32e8be2464313c18c7ccbce5
-  '@twind/preset-tailwind-forms': 1.0.0-next.15_9fe3e96d75d8f76719b64c18592d66d9
+  '@twind/preset-autoprefix': 1.0.0-next.17_89cf5775dc2d35974dc826779fb7b39b
+  '@twind/preset-ext': 1.0.0-next.17_131788126a639c80345f201247480f01
+  '@twind/preset-tailwind': 1.0.0-next.17_89cf5775dc2d35974dc826779fb7b39b
+  '@twind/preset-tailwind-forms': 1.0.0-next.17_131788126a639c80345f201247480f01
   '@twind/typescript-plugin': 0.3.4
   '@types/node': 16.11.21
   '@typescript-eslint/eslint-plugin': 5.10.0_3b6b276e93ead7cf6063f183a5e18d1f
@@ -57,6 +56,7 @@ devDependencies:
   prettier: 2.5.1
   rimraf: 3.0.2
   rollup: 2.64.0
+  twind: 1.0.0-next.17_typescript@4.5.4
   typescript: 4.5.4
   wmr: 3.7.2
 
@@ -386,80 +386,68 @@ packages:
     resolution: {integrity: sha512-qEru2uaH1vKZNCZR4rFCUZaflsBP7IWiGcIoQe22qi5tm+HEG/yPdhSba+ZCNTWk2xyYpx/nEFkncDY3orEx3w==}
     dev: true
 
-  /@twind/core/1.0.0-next.14_typescript@4.5.4:
-    resolution: {integrity: sha512-Nalhg09vA3rzFEd+qEokUbWDKuUWlQ3O+QfSKotIFsJFIuVpRMriOYELe6ZCh7g3P95EL9nIdhYNHbMMS6m3Mg==}
+  /@twind/preset-autoprefix/1.0.0-next.17_89cf5775dc2d35974dc826779fb7b39b:
+    resolution: {integrity: sha512-67Q9MBo8TZaO+2Kps4DBI0fzrOHQc6wiN/ZZYokAa0BChBEBbJVXOLyg0SbIjHmLTMQokMSBupcxpTVhMGSx7g==}
     engines: {node: '>=12.4'}
     peerDependencies:
+      twind: 1.0.0-next.17
       typescript: ^4.4.0
     peerDependenciesMeta:
       typescript:
         optional: true
     dependencies:
       '@swc/helpers': 0.3.2
-      csstype: 3.0.10
-      typescript: 4.5.4
-    dev: true
-
-  /@twind/preset-autoprefix/1.0.0-next.14_9a93851f32e8be2464313c18c7ccbce5:
-    resolution: {integrity: sha512-DD93i/SGH5wJWijt1MLJADWFWEfbKY4g1WRhTfBvE3L7ql54Z1KiJygrZiaxqxYNKKuRzd1AsZ9GdyvCyfBD5w==}
-    engines: {node: '>=12.4'}
-    peerDependencies:
-      '@twind/core': 1.0.0-next.14
-      typescript: ^4.4.0
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-    dependencies:
-      '@swc/helpers': 0.3.2
-      '@twind/core': 1.0.0-next.14_typescript@4.5.4
       style-vendorizer: 2.1.1
+      twind: 1.0.0-next.17_typescript@4.5.4
       typescript: 4.5.4
     dev: true
 
-  /@twind/preset-ext/1.0.0-next.14_9a93851f32e8be2464313c18c7ccbce5:
-    resolution: {integrity: sha512-pRI3Exasfgs/5VH9knUi+mFCS3WF+TvL06iTTZrQ/zr2WUdY7HJBteSTnccuYSisFzUU/bMc0ih6zlAYxZPRlA==}
+  /@twind/preset-ext/1.0.0-next.17_131788126a639c80345f201247480f01:
+    resolution: {integrity: sha512-5bvFfxYYgiLq7O9u9qP0Y7VeE3whhaXWOMDcZGLxSEoTthRixmZXA7H5AWwIKGBu8RtLCHZgZJI4fV1mixgahw==}
     engines: {node: '>=12.4'}
     peerDependencies:
-      '@twind/core': 1.0.0-next.14
+      '@twind/preset-tailwind': 1.0.0-next.17
+      twind: 1.0.0-next.17
       typescript: ^4.4.0
     peerDependenciesMeta:
       typescript:
         optional: true
     dependencies:
       '@swc/helpers': 0.3.2
-      '@twind/core': 1.0.0-next.14_typescript@4.5.4
+      '@twind/preset-tailwind': 1.0.0-next.17_89cf5775dc2d35974dc826779fb7b39b
+      twind: 1.0.0-next.17_typescript@4.5.4
       typescript: 4.5.4
     dev: true
 
-  /@twind/preset-tailwind-forms/1.0.0-next.15_9fe3e96d75d8f76719b64c18592d66d9:
-    resolution: {integrity: sha512-wChvQaxHUswy/L8QMwxV52N41I/jciDCDh+j1ugwBdB8QQTdTpbNCfH7XBdHSxMqhPk+8rKMCopkznrfNkexJw==}
+  /@twind/preset-tailwind-forms/1.0.0-next.17_131788126a639c80345f201247480f01:
+    resolution: {integrity: sha512-bcGPvUo7o7T1d0SVX7ipB60epLEJTfxer7z1WWxeNP9SsPxUtwA/zXiig/g2UPK1z1Gw7RjmyPmB4ldP4j81zw==}
     engines: {node: '>=12.4'}
     peerDependencies:
-      '@twind/core': 1.0.0-next.14
-      '@twind/preset-tailwind': 1.0.0-next.15
+      '@twind/preset-tailwind': 1.0.0-next.17
+      twind: 1.0.0-next.17
       typescript: ^4.4.0
     peerDependenciesMeta:
       typescript:
         optional: true
     dependencies:
       '@swc/helpers': 0.3.2
-      '@twind/core': 1.0.0-next.14_typescript@4.5.4
-      '@twind/preset-tailwind': 1.0.0-next.15_9a93851f32e8be2464313c18c7ccbce5
+      '@twind/preset-tailwind': 1.0.0-next.17_89cf5775dc2d35974dc826779fb7b39b
+      twind: 1.0.0-next.17_typescript@4.5.4
       typescript: 4.5.4
     dev: true
 
-  /@twind/preset-tailwind/1.0.0-next.15_9a93851f32e8be2464313c18c7ccbce5:
-    resolution: {integrity: sha512-T1ZylOtyGBuLP374Txw8GFLn7e6UQg6YkQr8jFSiv46B5DPV0/8JptunP8IJ4rAs1MEobljl7H3bU7eMmiCI7g==}
+  /@twind/preset-tailwind/1.0.0-next.17_89cf5775dc2d35974dc826779fb7b39b:
+    resolution: {integrity: sha512-5voBrU5ofKNIirrGtZUyXcy5TQ3cQlEhuUnMYLqBg5wYFFDOkko/qHIK0NmoY3ZcWOouLB3jl6jazcb8SFbI5g==}
     engines: {node: '>=12.4'}
     peerDependencies:
-      '@twind/core': 1.0.0-next.14
+      twind: 1.0.0-next.17
       typescript: ^4.4.0
     peerDependenciesMeta:
       typescript:
         optional: true
     dependencies:
       '@swc/helpers': 0.3.2
-      '@twind/core': 1.0.0-next.14_typescript@4.5.4
+      twind: 1.0.0-next.17_typescript@4.5.4
       typescript: 4.5.4
     dev: true
 
@@ -4288,6 +4276,20 @@ packages:
       csstype: 3.0.10
       htmlparser2: 6.1.0
       style-vendorizer: 2.1.1
+      typescript: 4.5.4
+    dev: true
+
+  /twind/1.0.0-next.17_typescript@4.5.4:
+    resolution: {integrity: sha512-vVRkQu72pWTtrmQ+DkR3F3Z034WWYzw/6vQaDrJpr6Q46qUEROLxsq8hbVQlWwN2jHil2BDggb/YRDb3nIjzyQ==}
+    engines: {node: '>=12.4'}
+    peerDependencies:
+      typescript: ^4.4.0
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+    dependencies:
+      '@swc/helpers': 0.3.2
+      csstype: 3.0.10
       typescript: 4.5.4
     dev: true
 

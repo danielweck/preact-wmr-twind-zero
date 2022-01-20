@@ -53,7 +53,7 @@ jobs:
     - run: git --no-pager diff
     #- run: npm cache clean --force
     #- run: npm cache verify
-    - run: pnpm install
+    - run: pnpm install --frozen-lockfile
     - name: PR action (just lint)
       if: ${{ github.event_name == 'pull_request' }}
       run: pnpm run lint
