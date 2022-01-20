@@ -1,5 +1,4 @@
-import type { BaseTheme, Class, Sheet, Twind } from 'twind';
-import { cssom, shortcut, twind } from 'twind'; // eslint-disable-line no-duplicate-imports
+import { type BaseTheme, type Class, type Sheet, type Twind, cssom, shortcut, twind } from 'twind';
 
 import { initPreactVDOMHook } from './preact-vnode-options-hook';
 import { twConfig } from './twindConfig.js';

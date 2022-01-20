@@ -1,6 +1,5 @@
 import type { VNode } from 'preact';
-import type { PrerenderOptions, PrerenderResult } from 'preact-iso/prerender';
-import prerender from 'preact-iso/prerender'; // eslint-disable-line no-duplicate-imports
+import prerender, { type PrerenderOptions, type PrerenderResult } from 'preact-iso/prerender';
 import { virtual } from 'twind';
 
 import { initPreactVDOMHook_Twind } from '../preact-vnode-options-hook--twind.js';

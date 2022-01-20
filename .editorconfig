@@ -14,7 +14,7 @@ indent_size = ignore
 indent_style = tab
 indent_size = 1
 
-[*.{js,ts,jsx,tsx}]
+[*.{mjs,js,ts,jsx,tsx}]
 indent_style = tab
 indent_size = 1
 block_comment_start = /*

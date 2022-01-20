@@ -1,8 +1,7 @@
 import path from 'path';
+import { defineConfig } from 'wmr';
 
 import { wmrTwindPlugin } from './wmr-plugin-twind.mjs';
-
-import { defineConfig } from 'wmr';
 
 export default defineConfig(async (config) => {
 	// verbose!

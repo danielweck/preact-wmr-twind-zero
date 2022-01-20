@@ -1,5 +1,5 @@
-import path from 'path';
 import fs from 'fs';
+import path from 'path';
 
 /**
  * @param {string} rootDir directory in which to search
@@ -83,10 +83,8 @@ setTimeout(async () => {
 			// eslint-disable-next-line quotes
 			CSS_PERF ? "console.time('CSS');" : ''
 		}var n='DOMContentLoaded',h=x=>${CSS_PERF ? '(' : ''}(this.media='all')${
-			CSS_PERF
-				? // eslint-disable-next-line quotes
-				  "&&console.timeEnd('CSS')"
-				: ''
+			// eslint-disable-next-line quotes
+			CSS_PERF ? "&&console.timeEnd('CSS')" : ''
 		}${
 			CSS_PERF ? ')' : ''
 		};(document.readyState=='interactive'||document.readyState=='complete'?h():document.addEventListener(n,h))`

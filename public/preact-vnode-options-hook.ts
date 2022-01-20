@@ -1,5 +1,4 @@
-import type { Options, VNode } from 'preact';
-import { options } from 'preact'; // eslint-disable-line no-duplicate-imports
+import { type Options, type VNode, options } from 'preact';
 
 import type {
 	Class,
