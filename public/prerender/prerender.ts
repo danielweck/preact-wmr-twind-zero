@@ -53,6 +53,6 @@ export const preactWmrPrerenderForTwind = async (
 	return {
 		...result,
 		cssTextContent: _twindSheet.target.join('\n'),
-		cssId: '__twind', // this MUST be! (other values will break an external postbuild script)
+		cssId: '__twind', // this MUST be! (this is how we find the style element in our external postbuild script)
 	};
 };

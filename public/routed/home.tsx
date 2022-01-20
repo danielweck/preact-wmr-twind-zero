@@ -8,6 +8,7 @@ export const RoutedHome: FunctionalComponent<unknown> = (_props: RenderableProps
 				class={`
 					bg-yellow-400
 					text-black
+					non-twind-class-token
 					text-3xl
 				`}
 			>

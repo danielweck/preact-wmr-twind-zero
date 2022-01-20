@@ -34,7 +34,7 @@ export const twindConfig = {
 	],
 	preflight: (_context) => {
 		return {
-			'@layer other': {
+			'@layer base': {
 				':root#twind[dir=ltr]': {
 					'--is-ltr': 'true',
 					'--is-rtl': 'false',

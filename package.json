@@ -9,7 +9,7 @@
 	"scripts": {
 		"clean": "rimraf \"./dist\" && rimraf \"./.cache\" && rimraf \"./.tmp\"",
 		"start": "npm run clean && cross-env DEBUG=* wmr",
-		"build": "cross-env DEBUG=* wmr build --prerender && npm run afterbuild",
+		"build": "npm run clean && cross-env DEBUG=* wmr build --prerender && npm run afterbuild",
 		"build-repeat-if-fail": "(npm run build || npm run build || npm run build || npm run build || npm run build || npm run build || npm run build || npm run build || npm run build || npm run build || exit 0) || echo OK",
 		"afterbuild": "node \"./wmr-post-prerender-twind.mjs\"",
 		"build-github": "npm run clean && cross-env DEBUG=* BUILD_FOR_GITHUB=1 wmr build --prerender && npm run afterbuild",
