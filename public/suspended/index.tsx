@@ -2,7 +2,7 @@ import type { FunctionalComponent, RenderableProps } from 'preact';
 import { ErrorBoundary } from 'preact-iso/lazy';
 import { Router } from 'preact-iso/router';
 
-import { PUBLIC_PATH_ORIGIN } from '../utils.js';
+import { IS_PRE_RENDERED } from '../utils.js';
 import { SuspendedLazy } from './lazy/lazy-island.js';
 
 // This subrouter exists only to facilitate the generation of "critical" vs. "secondary" CSS stylesheets,
@@ -19,7 +19,7 @@ export const RoutedSuspendedSubRouter: FunctionalComponent<unknown> = (_props: R
 				console.log('ErrorBoundary onError (sub router): ', err);
 			}}
 		>
-			<Router>{[<SuspendedLazy path={`/lazy${PUBLIC_PATH_ORIGIN ? '/' : ''}`} />]}</Router>
+			<Router>{[<SuspendedLazy path={`/lazy${IS_PRE_RENDERED ? '/' : ''}`} />]}</Router>
 		</ErrorBoundary>
 	);
 };

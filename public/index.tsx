@@ -10,7 +10,7 @@ import { RoutedHome } from './routed/home.js';
 import { RoutedNonLazy } from './routed/non-lazy.js';
 import { RoutedRoute } from './routed/route.js';
 import { RoutedSuspendedSubRouter } from './suspended/index.js';
-import { IS_CLIENT_SIDE, PUBLIC_PATH_ORIGIN, PUBLIC_PATH_ROOT } from './utils.js';
+import { IS_CLIENT_SIDE, IS_PRE_RENDERED, PUBLIC_PATH_ROOT } from './utils.js';
 
 if (process.env.NODE_ENV === 'development') {
 	(async () => {
@@ -18,6 +18,34 @@ if (process.env.NODE_ENV === 'development') {
 		await import('preact/debug');
 	})();
 }
+
+// Here, no need to wait for
+// document.DOMContentLoaded
+// or window.load
+// or document.readyState=='interactive'||'complete',
+// this script loads in the body and we want hydration ASAP.
+
+// const load = async () => { ... };
+// document.readyState:
+// -1 loading
+// -2 interactive (document.DOMContentLoaded)
+// -3 complete (window.load)
+// if (document.readyState === 'interactive' || document.readyState === 'complete') {
+// 	load();
+// } else {
+// 	// document.readyState === 'loading'
+// 	document.addEventListener(
+// 		'DOMContentLoaded',
+// 		(_ev) => {
+// 			load();
+// 		},
+// 		{
+// 			once: false,
+// 			passive: false,
+// 			capture: false,
+// 		},
+// 	);
+// }
 
 // Code splitting
 // const RoutedLazy = lazy(() => import('./routed/lazy.js'));
@@ -61,7 +89,7 @@ export const App = () => {
 					>
 						&#x2588;&#x2588;&#x2588;
 					</span>
-					<a href={`${PUBLIC_PATH_ROOT}`}>Routed Home</a>
+					<a href={`${PUBLIC_PATH_ROOT}?param=home#hash-home`}>Routed Home</a>
 				</li>
 				<li>
 					<span
@@ -73,8 +101,8 @@ export const App = () => {
 					>
 						&#x2588;&#x2588;&#x2588;
 					</span>
-					<a href={`${PUBLIC_PATH_ROOT}routed-lazy${PUBLIC_PATH_ORIGIN ? '/' : ''}`}>Routed Lazy</a> (1s simulated network
-					delay on first load, then "cache" hit)
+					<a href={`${PUBLIC_PATH_ROOT}routed-lazy${IS_PRE_RENDERED ? '/' : ''}?param=lazy#hash-lazy`}>Routed Lazy</a> (1s
+					simulated network delay on first load, then "cache" hit)
 				</li>
 				<li>
 					<span
@@ -86,7 +114,9 @@ export const App = () => {
 					>
 						&#x2588;&#x2588;&#x2588;
 					</span>
-					<a href={`${PUBLIC_PATH_ROOT}routed-non-lazy${PUBLIC_PATH_ORIGIN ? '/' : ''}`}>Routed Non Lazy</a>
+					<a href={`${PUBLIC_PATH_ROOT}routed-non-lazy${IS_PRE_RENDERED ? '/' : ''}?param=non-lazy#hash-non-lazy`}>
+						Routed Non Lazy
+					</a>
 				</li>
 				<li>
 					<span
@@ -98,8 +128,8 @@ export const App = () => {
 					>
 						&#x2588;&#x2588;&#x2588;
 					</span>
-					<a href={`${PUBLIC_PATH_ROOT}routed-route${PUBLIC_PATH_ORIGIN ? '/' : ''}`}>Routed Route</a> (contains lazy
-					component)
+					<a href={`${PUBLIC_PATH_ROOT}routed-route${IS_PRE_RENDERED ? '/' : ''}?param=route#hash-route`}>Routed Route</a>{' '}
+					(contains lazy component)
 				</li>
 			</ul>
 
@@ -122,10 +152,10 @@ export const App = () => {
 							setOnRouteChangeWasCalled(true);
 						}}
 					>
-						<RoutedHome path={`${PUBLIC_PATH_ROOT}`} />
-						<RoutedLazy path={`${PUBLIC_PATH_ROOT}routed-lazy${PUBLIC_PATH_ORIGIN ? '/' : ''}`} />
-						<RoutedNonLazy path={`${PUBLIC_PATH_ROOT}routed-non-lazy${PUBLIC_PATH_ORIGIN ? '/' : ''}`} />
-						<Route component={RoutedRoute} path={`${PUBLIC_PATH_ROOT}routed-route${PUBLIC_PATH_ORIGIN ? '/' : ''}`} />
+						<RoutedHome path={`${PUBLIC_PATH_ROOT}${IS_PRE_RENDERED ? '/' : ''}`} />
+						<RoutedLazy path={`${PUBLIC_PATH_ROOT}routed-lazy${IS_PRE_RENDERED ? '/' : ''}`} />
+						<RoutedNonLazy path={`${PUBLIC_PATH_ROOT}routed-non-lazy${IS_PRE_RENDERED ? '/' : ''}`} />
+						<Route component={RoutedRoute} path={`${PUBLIC_PATH_ROOT}routed-route${IS_PRE_RENDERED ? '/' : ''}`} />
 						<Routed404 default />
 						<RoutedSuspendedSubRouter path={`${PUBLIC_PATH_ROOT}suspended/*`} />
 					</Router>
@@ -192,9 +222,7 @@ export const App = () => {
 };
 
 if (IS_CLIENT_SIDE) {
-	// client-side live dev server !== page prerendered via WMR 'build' mode
-	const isPrerendered = !!document.querySelector('script[type=isodata]');
-	if (isPrerendered) {
+	if (IS_PRE_RENDERED) {
 		initPreactVDOMHook();
 		hydrate(<App />, document.body);
 	} else {
@@ -212,34 +240,6 @@ if (IS_CLIENT_SIDE) {
 		})();
 		/* PREACT_WMR_BUILD_STRIP_CODE_END */
 	}
-
-	// Here, no need to wait for
-	// document.DOMContentLoaded
-	// or window.load
-	// or document.readyState=='interactive'||'complete',
-	// this script loads in the body and we want hydration ASAP.
-
-	// const load = async () => { ... };
-	// document.readyState:
-	// -1 loading
-	// -2 interactive (document.DOMContentLoaded)
-	// -3 complete (window.load)
-	// if (document.readyState === 'interactive' || document.readyState === 'complete') {
-	// 	load();
-	// } else {
-	// 	// document.readyState === 'loading'
-	// 	document.addEventListener(
-	// 		'DOMContentLoaded',
-	// 		(_ev) => {
-	// 			load();
-	// 		},
-	// 		{
-	// 			once: false,
-	// 			passive: false,
-	// 			capture: false,
-	// 		},
-	// 	);
-	// }
 }
 
 // See ==> https://github.com/preactjs/wmr/blob/main/packages/wmr/src/lib/prerender.js
@@ -269,12 +269,20 @@ export async function prerender(data: Record<string, any>): Promise<
 	const elements = new Set([
 		{ type: 'meta', props: { property: 'og:title', content: 'SEO title' } as Record<string, string> },
 		{ type: 'style', props: { id: res.cssId, children: res.cssTextContent } },
+		{
+			type: 'script',
+			props: {
+				type: 'text/javascript',
+				children:
+					'if (!window.location.pathname.endsWith("/") && !/\\.html?/.test(window.location.pathname)) { window.location = window.location.origin + window.location.pathname + "/" + window.location.search + window.location.hash; }',
+			},
+		},
 	]);
 	return {
 		html: res.html,
 		links: res.links,
 		data: {
-			// isprerendered: true, // ensures <script type="isodata" /> is generated so we can later check the DOM for its existence, but not needed here as 'data' includes ssr:true already
+			// xxx: true, // ensures <script type="isodata" /> is generated so we can later check the DOM for its existence, but not needed here as 'data' includes ssr:true already
 			...data,
 		},
 		head: {
