@@ -61,14 +61,14 @@ export function wmrTwindPlugin(config) {
 				if (config.mode === 'build') {
 					// Lazy instantiation
 					if (!_tw) {
-						console.log(`${DEBUG_PREFIX}${red('lazy create stylesheet and init Twind')}`);
+						console.log(`${DEBUG_PREFIX}${green('lazy create stylesheet and init Twind')}`);
 
 						_twindSheet = virtual();
 
 						_tw = twind(twConfig, _twindSheet);
 					}
 
-					console.log(`${DEBUG_PREFIX}${red('stylesheet reset and process Twind tagged template literals...')}`);
+					console.log(`${DEBUG_PREFIX}${green('stylesheet reset and process Twind tagged template literals...')}`);
 
 					// Resets the stylesheet (previous file transform).
 					// Note that generally-speaking, 'preflight' (if any) is included.
@@ -96,7 +96,7 @@ export function wmrTwindPlugin(config) {
 						const twindResult = _tw ? (isTwindShortcut ? _tw(shortcut(classList)) : _tw(classList)) : '';
 
 						if (_twindSheet && !_twindSheet.target.length) {
-							throw new Error(`${DEBUG_PREFIX}${red('empty stylesheet?!')} -- ${green(twindResult)}`);
+							throw new Error(`${DEBUG_PREFIX}${red('empty stylesheet?!')} -- ${red(twindResult)}`);
 						}
 
 						// Replaces tagged template literals (i.e. prefixed with the Twind function)
@@ -108,7 +108,7 @@ export function wmrTwindPlugin(config) {
 				} else {
 					// config.mode !== 'build' ('dev' mode)
 
-					console.log(`${DEBUG_PREFIX}${red('process Twind tagged template literals...')}`);
+					console.log(`${DEBUG_PREFIX}${green('process Twind tagged template literals...')}`);
 
 					code = code.replace(REGEXP_TWIND_TAGGED_TEMPLATE_LITERALS, (_match, _$1, $2) => {
 						// Removes line breaks and collapses whitespaces

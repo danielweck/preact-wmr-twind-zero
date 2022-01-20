@@ -1,3 +1,4 @@
+import { cyan, green } from 'kolorist';
 import path from 'path';
 import { defineConfig } from 'wmr';
 
@@ -43,4 +44,32 @@ export default defineConfig(async (config) => {
 	];
 
 	config.plugins.push(wmrTwindPlugin(config));
+
+	config.plugins.push({
+		name: 'TypeScript 4.5 type modifier on imported names removal plugin',
+		enforce: 'pre',
+
+		transform(code, id) {
+			if (!/\.tsx?$/.test(id)) return;
+
+			// TODO: is this really necessary in WMR's latest version?
+			if (id[0] === '\0' || id[0] === '\b') return;
+
+			if (config.mode === 'build' || config.mode === 'start') {
+				const DEBUG_PREFIX = `WMR IMPORT_TYPE PLUGIN (${config.mode}) [${cyan(id.replace(process.cwd(), ''))}]:\n`;
+				const re = /^import(.*)({.+})\s*from\s*['|"](.+)['|"]/gm;
+				return {
+					code: code.replace(re, (match, $1, $2, $3) => {
+						if (!$2.includes('type ')) {
+							return match; // preserve as-is
+						}
+						const s = `import${$1}${$2.replace(/type /g, '')} from '${$3}'`;
+						console.log(`${DEBUG_PREFIX}[${green(match)}] => [${green(s)}]`);
+						return s;
+					}),
+					map: null,
+				};
+			}
+		},
+	});
 });

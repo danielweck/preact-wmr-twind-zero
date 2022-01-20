@@ -25,7 +25,11 @@ export const SuspendedLazy: FunctionalComponent<unknown> = (_props: RenderablePr
 			</p>
 			<input
 				type="text"
-				class="form-input block w-full"
+				class={twindTw`
+					form-input
+					block
+					w-full
+				`}
 				placeholder="Tailwind Forms preset class (unique to this component)"
 			/>
 		</div>
