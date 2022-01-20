@@ -19,25 +19,25 @@ The original SVG assets are:
 
 This project demonstrates a recipe for integrating Twind in a website built with Preact WMR. The code in this repository brings a few key ingredients in order to customise the standard WMR build process and Preact runtime:
 
-* a WMR plugin (Rollup under the hood) that pre-applies Twind primitives at the source code level.
-* a Preact VDOM "hook" (`options.vnode`) that interprets the resulting Twind expressions at runtime.
-* a post-build script that processes the default pre-rendered website to prioritise "critical" CSS in each static route.
+- a WMR plugin (Rollup under the hood) that pre-applies Twind primitives at the source code level.
+- a Preact VDOM "hook" (`options.vnode`) that interprets the resulting Twind expressions at runtime.
+- a post-build script that processes the default pre-rendered website to prioritise "critical" CSS in each static route.
 
 Massive credits to the developers of:
 
-* **Preact WMR** https://github.com/preactjs/wmr/
-* **Twind** https://github.com/tw-in-js/twind/
+- **Preact WMR** https://github.com/preactjs/wmr/
+- **Twind** https://github.com/tw-in-js/twind/
 
 ## Project definition / scope
 
-* This project emerged from a "curiosity itch" I wanted to scratch. That's it. I have no concrete plans regarding the evolution of this repository. This is made in my spare time, for fun.
-* Caveat emptor - don't blame me if your cat explodes when you run my code! :exploding_head: :scream_cat:
-* I welcome Pull Requests and feedback / suggestions via the issue tracker. If you find the information contained herein useful, let me know. Also let me know if I get things wrong. Thanks for sharing!
-* This project is NOT yet another frontend or backend framework. I have neither the skills nor the inclination for this kind of endeavour ;)
-* This project is not a general-purpose SSR/SSG+hydration solution, but aims to solve a very specific (niche?) problem, based on existing tooling.
-* This project extends the "JAM Stack" functionality of Preact WMR, namely the ability to pre-render an entire website so it can be uploaded to a static host. This is known as static "SSR" Server Side Rendering, or "SSG" Static Site Generation. That being said, Preact WMR is a smart framework that implements a hybrid  model of "MPA" Multi Page Application + "SPA" Single Page Application. Check out their website for more information.
-* This project is somewhat opinionated in the sense that the customised build process forces a particular way of invoking Twind APIs. For example, Twind's `tw` and `shortcut` function calls must be "proxied" via this project's own tagged template literals `` twindTw`_` `` and `` twindShortcut`_` ``. On the plus side, these are configured to enable Visual Studio Code "Intellisense", courtesy of Twind's own plugin (i.e. autocompletion, error highlighting and rich information popup).
-* This project currently doesn't support all of Twind's functionality, notably the more advanced CSS-in-JS features. As Twind v1 is now just coming to fruition (at the time of writing, January 2022), I plan to research the feasibility of integrating additional useful APIs.
+- This project emerged from a "curiosity itch" I wanted to scratch. That's it. I have no concrete plans regarding the evolution of this repository. This is made in my spare time, for fun.
+- Caveat emptor - don't blame me if your cat explodes when you run my code! :exploding_head: :scream_cat:
+- I welcome Pull Requests and feedback / suggestions via the issue tracker. If you find the information contained herein useful, let me know. Also let me know if I get things wrong. Thanks for sharing!
+- This project is NOT yet another frontend or backend framework. I have neither the skills nor the inclination for this kind of endeavour ;)
+- This project is not a general-purpose SSR/SSG+hydration solution, but aims to solve a very specific (niche?) problem, based on existing tooling.
+- This project extends the "JAM Stack" functionality of Preact WMR, namely the ability to pre-render an entire website so it can be uploaded to a static host. This is known as static "SSR" Server Side Rendering, or "SSG" Static Site Generation. That being said, Preact WMR is a smart framework that implements a hybrid model of "MPA" Multi Page Application + "SPA" Single Page Application. Check out their website for more information.
+- This project is somewhat opinionated in the sense that the customised build process forces a particular way of invoking Twind APIs. For example, Twind's `tw` and `shortcut` function calls must be "proxied" via this project's own tagged template literals `` twindTw`_` `` and `` twindShortcut`_` ``. On the plus side, these are configured to enable Visual Studio Code "Intellisense", courtesy of Twind's own plugin (i.e. autocompletion, error highlighting and rich information popup).
+- This project currently doesn't support all of Twind's functionality, notably the more advanced CSS-in-JS features. As Twind v1 is now just coming to fruition (at the time of writing, January 2022), I plan to research the feasibility of integrating additional useful APIs.
 
 The contents of this repository are published under the BSD3 open source license ( https://opensource.org/licenses/BSD-3-Clause ).
 
@@ -47,27 +47,27 @@ FYI: my original stream of consciousness in a Twind discussion thread: https://g
 
 ### Prerequisites
 
-* NodeJS 16+ ( https://nodejs.org )
-* `pnpm install` ( https://pnpm.io or can be installed via NodeJS CorePack)
+- NodeJS 16+ ( https://nodejs.org )
+- `pnpm install` ( https://pnpm.io or can be installed via NodeJS CorePack)
 
 Alternative package managers:
 
 (note that this will probably work fine, but this is not recommended as this project's frozen dependencies are defined by `pnpm-lock.yaml`, I do not maintain a `package-lock.json` or `yarn.lock` in parallel)
 
-* `npm install` ( ships with https://nodejs.org )
-* `yarn` ( https://yarnpkg.com or can be installed via NodeJS CorePack)
+- `npm install` ( ships with https://nodejs.org )
+- `yarn` ( https://yarnpkg.com or can be installed via NodeJS CorePack)
 
 ### Development server (vanilla Preact WMR):
 
-* `pnpm run start` (CTRL+C to kill the source "watcher" process and HTTP server)
-* Open your web browser at URL `http://127.0.0.1:8080`
+- `pnpm run start` (CTRL+C to kill the source "watcher" process and HTTP server)
+- Open your web browser at URL `http://127.0.0.1:8080`
 
 ### SSG pre-rendering / whole-site static SSR (vanilla Preact WMR):
 
-* `pnpm run build` (if you experience a "segmentation fault" in your console, or if the build ends prematurely without `dist` files, try again ... this is a known Preact WMR bug with Node 16)
-* `pnpm run build-viz` (this adds Preact WMR's option `--visualize` and the generated bundle dependency treemap will automatically be opened in your default web browser)
-* `pnpm run serve` (CTRL+C to kill the HTTP server)
-* Open your web browser at URL `http://127.0.0.1:8080`
+- `pnpm run build` (if you experience a "segmentation fault" in your console, or if the build ends prematurely without `dist` files, try again ... this is a known Preact WMR bug with Node 16)
+- `pnpm run build-viz` (this adds Preact WMR's option `--visualize` and the generated bundle dependency treemap will automatically be opened in your default web browser)
+- `pnpm run serve` (CTRL+C to kill the HTTP server)
+- Open your web browser at URL `http://127.0.0.1:8080`
 
 ## Zero-runtime Twind?
 
@@ -87,7 +87,7 @@ It does makes total sense to leverage Twind's intrinsic "JIT" qualities during d
 
 These "tree map" graphics were generated using Preact WMR's `--visualize` option, they show the relative sizes of dependencies (including `gzip` compression) inside the Javascript bundles generated by Rollup / Terser (i.e after tree shaking and minification).
 
-I am providing these graphics purely to illustrate how the removal of Twind's runtime from the client-side JS code bundle can *potentially* yield desirable performance benefits. But let's be real: these graphics are misleading, as they exaggerate the impression due to the scale of my minimalistic demo app! In a real-world full-size website, Twind's footprint would be dwarfed under the weight of neighbouring dependencies.
+I am providing these graphics purely to illustrate how the removal of Twind's runtime from the client-side JS code bundle can _potentially_ yield desirable performance benefits. But let's be real: these graphics are misleading, as they exaggerate the impression due to the scale of my minimalistic demo app! In a real-world full-size website, Twind's footprint would be dwarfed under the weight of neighbouring dependencies.
 
 In order to maximise website performance and to hit desirable "web vitals" metrics, there are several other key avenues to consider. This project implements techniques to generate "critical" vs. "secondary" CSS stylesheets, derived from Twind's compiled utility classes (i.e. ordered CSS selectors / rules to form a styling cascade). More on this further down in this document.
 
@@ -117,19 +117,19 @@ Here is a super-reduced network waterfall and performance flamechart report that
 
 Side note: multiple "secondary" stylesheets (i.e. individual payloads bound to dynamic components or routes) are currently not supported. With static SSR / SSG, we work on the assumption that the static entry point / HTML page has its own "critical" styling, and that from the point in time at which the SPA is hydrated, we cannot predict which route / dynamic component will be loaded next. That is why we bundle the remainder CSS rules in the "secondary" stylesheet. Although the aggregation logic ensures that there are no duplicated definition of utility classes, the coverage of the "secondary" stylesheet is the rest of the website, so it can potentially grow large. We could of course segregate styling rules for each route / dynamic component, but this would likely introduce duplication (one of the "selling points" of utility classes is that they are very likely shared amongst components).
 
-There is one obvious caveat when using this zero-runtime Twind integration recipe: it works with dynamic class names / parameterized tokens *only* if they can predictably be enumerated during server-side pre-rendering. For example, if a button has "pressed" and "keyboard focused" states (aka. style variants), and these can be expressed declaratively, then an enumeration of all possible states must be used to precompute the corresponding Twind classes, and to statically generate the required styles into the target stylesheet.
+There is one obvious caveat when using this zero-runtime Twind integration recipe: it works with dynamic class names / parameterized tokens _only_ if they can predictably be enumerated during server-side pre-rendering. For example, if a button has "pressed" and "keyboard focused" states (aka. style variants), and these can be expressed declaratively, then an enumeration of all possible states must be used to precompute the corresponding Twind classes, and to statically generate the required styles into the target stylesheet.
 
 ## Demonstration / test bed
 
 This repository contains a minimal demo which makes it easy to manually inspect the generated HTML / CSS / JS:
 
-* **View demo pages:** https://preact-wmr-twind-zero.pages.dev (automated CloudFlare Pages deployment), or alternatively GitHub Pages: https://danielweck.github.io/preact-wmr-twind-zero/
-* **Browse compiled demo files:** https://github.com/danielweck/preact-wmr-twind-zero/tree/gh-pages/
-* **Explore demo source code:** https://github.com/danielweck/preact-wmr-twind-zero/tree/main/public
+- **View demo pages:** https://preact-wmr-twind-zero.pages.dev (automated CloudFlare Pages deployment), or alternatively GitHub Pages: https://danielweck.github.io/preact-wmr-twind-zero/
+- **Browse compiled demo files:** https://github.com/danielweck/preact-wmr-twind-zero/tree/gh-pages/
+- **Explore demo source code:** https://github.com/danielweck/preact-wmr-twind-zero/tree/main/public
 
 ## DOCUMENTATION TODO
 
-1) Explain how the custom Preact 'options' VNode interceptor is used to invoke Twind's `tw()` and `shortcut()` functions in "dev" mode and during Preact WMR's prerender build step, after the Twind WMR plugin has transformed tagged template literals to resolved Twind objects (that is the key technique which makes all the difference with other "static extraction" methods) Code references: https://github.com/danielweck/preact-wmr-twind-zero/blob/main/wmr-plugin-twind.mjs and https://github.com/danielweck/preact-wmr-twind-zero/blob/main/public/preact-vnode-options-hook--twind.ts and https://github.com/danielweck/preact-wmr-twind-zero/blob/main/public/preact-vnode-options-hook.ts
-2) Demonstrate Suspense / lazy components, other that Preact WMR's lazy routes (i.e.dynamic imports too, but for components in the render tree within already-loaded routes).
-3) Document edge cases with nested / recursive (tagged) template literals.
-4) Provide an example of predictable enumeration of possible dynamic Twind classes / declarative variants, and include a technical solution in the demo (Preact Context just like in my old pre-V1 code?).
+1. Explain how the custom Preact 'options' VNode interceptor is used to invoke Twind's `tw()` and `shortcut()` functions in "dev" mode and during Preact WMR's prerender build step, after the Twind WMR plugin has transformed tagged template literals to resolved Twind objects (that is the key technique which makes all the difference with other "static extraction" methods) Code references: https://github.com/danielweck/preact-wmr-twind-zero/blob/main/wmr-plugin-twind.mjs and https://github.com/danielweck/preact-wmr-twind-zero/blob/main/public/preact-vnode-options-hook--twind.ts and https://github.com/danielweck/preact-wmr-twind-zero/blob/main/public/preact-vnode-options-hook.ts
+2. Demonstrate Suspense / lazy components, other that Preact WMR's lazy routes (i.e.dynamic imports too, but for components in the render tree within already-loaded routes).
+3. Document edge cases with nested / recursive (tagged) template literals.
+4. Provide an example of predictable enumeration of possible dynamic Twind classes / declarative variants, and include a technical solution in the demo (Preact Context just like in my old pre-V1 code?).

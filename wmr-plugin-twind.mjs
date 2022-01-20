@@ -1,4 +1,4 @@
-import { cyan,green, red } from 'kolorist';
+import { cyan, green, red } from 'kolorist';
 import { shortcut, twind, virtual } from 'twind';
 
 import { twConfig } from './public/twindConfig.js';
