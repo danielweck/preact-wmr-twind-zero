@@ -35,12 +35,12 @@
 		"preact-iso": "^2.3.0"
 	},
 	"devDependencies": {
-		"@twind/preset-autoprefix": "^1.0.0-next.17",
-		"@twind/preset-ext": "^1.0.0-next.17",
-		"@twind/preset-tailwind": "^1.0.0-next.17",
-		"@twind/preset-tailwind-forms": "^1.0.0-next.17",
+		"@twind/preset-autoprefix": "^1.0.0-next.19",
+		"@twind/preset-ext": "^1.0.0-next.19",
+		"@twind/preset-tailwind": "^1.0.0-next.19",
+		"@twind/preset-tailwind-forms": "^1.0.0-next.19",
 		"@twind/typescript-plugin": "^0.3.4",
-		"@types/node": "^16.11.17",
+		"@types/node": "^16.11.21",
 		"@typescript-eslint/eslint-plugin": "^5.10.0",
 		"@typescript-eslint/parser": "^5.10.0",
 		"cpy-cli": "^3.1.1",
@@ -60,7 +60,7 @@
 		"prettier": "^2.5.1",
 		"rimraf": "^3.0.2",
 		"rollup": "^2.64.0",
-		"twind": "^1.0.0-next.17",
+		"twind": "^1.0.0-next.19",
 		"typescript": "^4.5.5",
 		"wmr": "^3.7.2"
 	}

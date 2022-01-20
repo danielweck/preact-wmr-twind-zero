@@ -1,12 +1,12 @@
 lockfileVersion: 5.3
 
 specifiers:
-  '@twind/preset-autoprefix': ^1.0.0-next.17
-  '@twind/preset-ext': ^1.0.0-next.17
-  '@twind/preset-tailwind': ^1.0.0-next.17
-  '@twind/preset-tailwind-forms': ^1.0.0-next.17
+  '@twind/preset-autoprefix': ^1.0.0-next.19
+  '@twind/preset-ext': ^1.0.0-next.19
+  '@twind/preset-tailwind': ^1.0.0-next.19
+  '@twind/preset-tailwind-forms': ^1.0.0-next.19
   '@twind/typescript-plugin': ^0.3.4
-  '@types/node': ^16.11.17
+  '@types/node': ^16.11.21
   '@typescript-eslint/eslint-plugin': ^5.10.0
   '@typescript-eslint/parser': ^5.10.0
   cpy-cli: ^3.1.1
@@ -28,7 +28,7 @@ specifiers:
   prettier: ^2.5.1
   rimraf: ^3.0.2
   rollup: ^2.64.0
-  twind: ^1.0.0-next.17
+  twind: ^1.0.0-next.19
   typescript: ^4.5.5
   wmr: ^3.7.2
 
@@ -37,10 +37,10 @@ dependencies:
   preact-iso: 2.3.0_preact@10.6.4
 
 devDependencies:
-  '@twind/preset-autoprefix': 1.0.0-next.17_1f8ce2857e2cf8e008f478312da1d8d7
-  '@twind/preset-ext': 1.0.0-next.17_244c56f3d30b1d283d5a118db6c32a2a
-  '@twind/preset-tailwind': 1.0.0-next.17_1f8ce2857e2cf8e008f478312da1d8d7
-  '@twind/preset-tailwind-forms': 1.0.0-next.17_244c56f3d30b1d283d5a118db6c32a2a
+  '@twind/preset-autoprefix': 1.0.0-next.19_c82fa9ef2ace8f7313fa4002b241f368
+  '@twind/preset-ext': 1.0.0-next.19_1489a1d124d02776dda4cf368dba8d0a
+  '@twind/preset-tailwind': 1.0.0-next.19_c82fa9ef2ace8f7313fa4002b241f368
+  '@twind/preset-tailwind-forms': 1.0.0-next.19_1489a1d124d02776dda4cf368dba8d0a
   '@twind/typescript-plugin': 0.3.4
   '@types/node': 16.11.21
   '@typescript-eslint/eslint-plugin': 5.10.0_706fb07ce74b1db611f19a02ad2ce784
@@ -62,7 +62,7 @@ devDependencies:
   prettier: 2.5.1
   rimraf: 3.0.2
   rollup: 2.64.0
-  twind: 1.0.0-next.17_typescript@4.5.5
+  twind: 1.0.0-next.19_typescript@4.5.5
   typescript: 4.5.5
   wmr: 3.7.2
 
@@ -392,11 +392,11 @@ packages:
     resolution: {integrity: sha512-qEru2uaH1vKZNCZR4rFCUZaflsBP7IWiGcIoQe22qi5tm+HEG/yPdhSba+ZCNTWk2xyYpx/nEFkncDY3orEx3w==}
     dev: true
 
-  /@twind/preset-autoprefix/1.0.0-next.17_1f8ce2857e2cf8e008f478312da1d8d7:
-    resolution: {integrity: sha512-67Q9MBo8TZaO+2Kps4DBI0fzrOHQc6wiN/ZZYokAa0BChBEBbJVXOLyg0SbIjHmLTMQokMSBupcxpTVhMGSx7g==}
+  /@twind/preset-autoprefix/1.0.0-next.19_c82fa9ef2ace8f7313fa4002b241f368:
+    resolution: {integrity: sha512-dlQ7KAprG/Tuc5s8B2vS4D7R0nCJhokhrwbqfpUZq80WxnW1pij41rvnBMjtGvJxztmaOOX4JmKmtc+KtmeUBA==}
     engines: {node: '>=12.4'}
     peerDependencies:
-      twind: 1.0.0-next.17
+      twind: 1.0.0-next.19
       typescript: ^4.4.0
     peerDependenciesMeta:
       typescript:
@@ -404,56 +404,56 @@ packages:
     dependencies:
       '@swc/helpers': 0.3.2
       style-vendorizer: 2.1.1
-      twind: 1.0.0-next.17_typescript@4.5.5
+      twind: 1.0.0-next.19_typescript@4.5.5
       typescript: 4.5.5
     dev: true
 
-  /@twind/preset-ext/1.0.0-next.17_244c56f3d30b1d283d5a118db6c32a2a:
-    resolution: {integrity: sha512-5bvFfxYYgiLq7O9u9qP0Y7VeE3whhaXWOMDcZGLxSEoTthRixmZXA7H5AWwIKGBu8RtLCHZgZJI4fV1mixgahw==}
+  /@twind/preset-ext/1.0.0-next.19_1489a1d124d02776dda4cf368dba8d0a:
+    resolution: {integrity: sha512-Z8RaXgw560YRJVccFJ2qPf0AHjJ56LLAem4+8FMegbgkVEyEVYfJN1bXyIuWq3sWxD2PnLIaLc2Vmrcq7k7ekw==}
     engines: {node: '>=12.4'}
     peerDependencies:
-      '@twind/preset-tailwind': 1.0.0-next.17
-      twind: 1.0.0-next.17
+      '@twind/preset-tailwind': 1.0.0-next.19
+      twind: 1.0.0-next.19
       typescript: ^4.4.0
     peerDependenciesMeta:
       typescript:
         optional: true
     dependencies:
       '@swc/helpers': 0.3.2
-      '@twind/preset-tailwind': 1.0.0-next.17_1f8ce2857e2cf8e008f478312da1d8d7
-      twind: 1.0.0-next.17_typescript@4.5.5
+      '@twind/preset-tailwind': 1.0.0-next.19_c82fa9ef2ace8f7313fa4002b241f368
+      twind: 1.0.0-next.19_typescript@4.5.5
       typescript: 4.5.5
     dev: true
 
-  /@twind/preset-tailwind-forms/1.0.0-next.17_244c56f3d30b1d283d5a118db6c32a2a:
-    resolution: {integrity: sha512-bcGPvUo7o7T1d0SVX7ipB60epLEJTfxer7z1WWxeNP9SsPxUtwA/zXiig/g2UPK1z1Gw7RjmyPmB4ldP4j81zw==}
+  /@twind/preset-tailwind-forms/1.0.0-next.19_1489a1d124d02776dda4cf368dba8d0a:
+    resolution: {integrity: sha512-BP+q8ZrA4p7QZT+4Nhbvu/qS5WsERPMp31eya49Ly10JQUjlizzNJY//+mLxFKo44R383lDJZ/T+oFJXcFCdhg==}
     engines: {node: '>=12.4'}
     peerDependencies:
-      '@twind/preset-tailwind': 1.0.0-next.17
-      twind: 1.0.0-next.17
+      '@twind/preset-tailwind': 1.0.0-next.19
+      twind: 1.0.0-next.19
       typescript: ^4.4.0
     peerDependenciesMeta:
       typescript:
         optional: true
     dependencies:
       '@swc/helpers': 0.3.2
-      '@twind/preset-tailwind': 1.0.0-next.17_1f8ce2857e2cf8e008f478312da1d8d7
-      twind: 1.0.0-next.17_typescript@4.5.5
+      '@twind/preset-tailwind': 1.0.0-next.19_c82fa9ef2ace8f7313fa4002b241f368
+      twind: 1.0.0-next.19_typescript@4.5.5
       typescript: 4.5.5
     dev: true
 
-  /@twind/preset-tailwind/1.0.0-next.17_1f8ce2857e2cf8e008f478312da1d8d7:
-    resolution: {integrity: sha512-5voBrU5ofKNIirrGtZUyXcy5TQ3cQlEhuUnMYLqBg5wYFFDOkko/qHIK0NmoY3ZcWOouLB3jl6jazcb8SFbI5g==}
+  /@twind/preset-tailwind/1.0.0-next.19_c82fa9ef2ace8f7313fa4002b241f368:
+    resolution: {integrity: sha512-55CrAr5dztd7tIT8sDlhB/EmSMSggZaCl7HsOyPBw3QF2r6/vlGqXhiAEfsPz/HZSri9ljVq/sW/LPpDasxDaQ==}
     engines: {node: '>=12.4'}
     peerDependencies:
-      twind: 1.0.0-next.17
+      twind: 1.0.0-next.19
       typescript: ^4.4.0
     peerDependenciesMeta:
       typescript:
         optional: true
     dependencies:
       '@swc/helpers': 0.3.2
-      twind: 1.0.0-next.17_typescript@4.5.5
+      twind: 1.0.0-next.19_typescript@4.5.5
       typescript: 4.5.5
     dev: true
 
@@ -1297,7 +1297,7 @@ packages:
   /debug/3.2.7:
     resolution: {integrity: sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ==}
     dependencies:
-      ms: 2.1.2
+      ms: 2.1.3
     dev: true
 
   /debug/4.3.3:
@@ -3181,6 +3181,10 @@ packages:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
     dev: true
 
+  /ms/2.1.3:
+    resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
+    dev: true
+
   /multimatch/2.1.0:
     resolution: {integrity: sha1-nHkGoi+0wCkZ4vX3UWG0zb1LKis=}
     engines: {node: '>=0.10.0'}
@@ -4422,8 +4426,8 @@ packages:
       typescript: 4.5.5
     dev: true
 
-  /twind/1.0.0-next.17_typescript@4.5.5:
-    resolution: {integrity: sha512-vVRkQu72pWTtrmQ+DkR3F3Z034WWYzw/6vQaDrJpr6Q46qUEROLxsq8hbVQlWwN2jHil2BDggb/YRDb3nIjzyQ==}
+  /twind/1.0.0-next.19_typescript@4.5.5:
+    resolution: {integrity: sha512-6qwu4wl+KzoljStsFdZE25oIapATHx9cp2sJJO78yScPAzDO2IYp2pIQMjsHbx6OosSxQo8+8BfhZvW1bvRpEA==}
     engines: {node: '>=12.4'}
     peerDependencies:
       typescript: ^4.4.0
