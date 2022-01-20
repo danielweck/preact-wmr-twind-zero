@@ -1,13 +1,10 @@
-import prerender from 'preact-iso/prerender';
-
+import type { VNode } from 'preact';
+import type { PrerenderOptions, PrerenderResult } from 'preact-iso/prerender';
+import prerender from 'preact-iso/prerender'; // eslint-disable-line no-duplicate-imports
 import { virtual } from 'twind';
 
 import { initPreactVDOMHook_Twind } from '../preact-vnode-options-hook--twind.js';
 import { twindConfig } from '../twind.config.js';
-
-import type { VNode } from 'preact';
-// eslint-disable-next-line no-duplicate-imports
-import type { PrerenderOptions, PrerenderResult } from 'preact-iso/prerender';
 
 // Global module-level stylesheet,
 // reset for each WMR-prerendered file

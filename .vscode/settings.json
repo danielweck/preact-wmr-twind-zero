@@ -17,8 +17,6 @@
   "typescript.surveys.enabled": false,
   "editor.tabSize": 4,
   "editor.useTabStops": true,
-  "importSorter.importStringConfiguration.quoteMark": "single",
-  "importSorter.importStringConfiguration.trailingComma": "multiLine",
   "javascript.preferences.quoteStyle": "single",
   "typescript.preferences.quoteStyle": "single",
   "prettier.singleQuote": true,

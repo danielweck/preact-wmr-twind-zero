@@ -1,10 +1,9 @@
-import { ErrorBoundary } from 'preact-iso/lazy';
+import type { FunctionalComponent, RenderableProps } from 'preact';
 import { useState } from 'preact/hooks';
+import { ErrorBoundary } from 'preact-iso/lazy';
 
 import { SuspendedLazy } from '../suspended/lazy/lazy-island.js';
 import { twindShortcut, twindTw } from '../twindish.js';
-
-import type { FunctionalComponent, RenderableProps } from 'preact';
 
 const SuspendedLazyLoader: FunctionalComponent<unknown> = (_props: RenderableProps<unknown>) => {
 	const [isLazyLoaded, setLazyLoaded] = useState(false);

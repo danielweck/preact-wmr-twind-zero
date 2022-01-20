@@ -1,6 +1,6 @@
-import { twindTw } from '../twindish.js';
-
 import type { FunctionalComponent, RenderableProps } from 'preact';
+
+import { twindTw } from '../twindish.js';
 
 export const Routed404: FunctionalComponent<unknown> = (_props: RenderableProps<unknown>) => {
 	return (

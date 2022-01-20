@@ -31,7 +31,7 @@ export type TwindProps = TClassProps & TPropShortcut & TPropTw;
 declare module 'preact' {
 	/* eslint-disable-next-line @typescript-eslint/no-namespace */
 	namespace JSX {
-		// eslint-disable-next-line unused-imports/no-unused-vars, @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-interface
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-interface
 		interface DOMAttributes<Target extends EventTarget> extends TwindProps {}
 	}
 }

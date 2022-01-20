@@ -1,18 +1,15 @@
-import { options } from 'preact';
-
-import { IS_CLIENT_SIDE } from './utils.js';
-
-// eslint-disable-next-line no-duplicate-imports
 import type { Options, VNode } from 'preact';
+import { options } from 'preact'; // eslint-disable-line no-duplicate-imports
 
 import type {
 	Class,
-	TwindProps,
-	TTwindPair,
+	TClassProps,
 	TPropShortcut,
 	TPropTw,
-	TClassProps,
+	TTwindPair,
+	TwindProps,
 } from './preact-vnode-options-hook--twind-types';
+import { IS_CLIENT_SIDE } from './utils.js';
 
 let _preactOptionsVNodeOriginal: ((vnode: VNode<TwindProps>) => void) | undefined | -1 = -1;
 

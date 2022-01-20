@@ -1,7 +1,8 @@
+import { useState } from 'preact/hooks';
 import hydrate from 'preact-iso/hydrate';
 import lazy, { ErrorBoundary } from 'preact-iso/lazy';
+import type { PrerenderResult } from 'preact-iso/prerender';
 import { LocationProvider, Route, Router } from 'preact-iso/router';
-import { useState } from 'preact/hooks';
 
 import { initPreactVDOMHook } from './preact-vnode-options-hook.js';
 import { Routed404 } from './routed/_404.js';
@@ -11,8 +12,6 @@ import { RoutedRoute } from './routed/route.js';
 import { RoutedSuspendedSubRouter } from './suspended/index.js';
 import { twindTw } from './twindish.js';
 import { IS_CLIENT_SIDE, PUBLIC_PATH_ORIGIN, PUBLIC_PATH_ROOT } from './utils.js';
-
-import type { PrerenderResult } from 'preact-iso/prerender';
 
 if (process.env.NODE_ENV === 'development') {
 	(async () => {

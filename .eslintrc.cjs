@@ -17,6 +17,15 @@ module.exports = {
 		react: {
 			version: 'detect',
 		},
+		'import/parsers': {
+			'@typescript-eslint/parser': ['.ts', '.tsx'],
+		},
+		'import/resolver': {
+			typescript: {
+				alwaysTryTypes: true,
+				project: './tsconfig.json',
+			},
+		},
 	},
 	extends: [
 		'preact',
@@ -26,9 +35,16 @@ module.exports = {
 		'plugin:@typescript-eslint/recommended',
 		'prettier',
 		'plugin:prettier/recommended',
+		'plugin:import/errors',
+		'plugin:import/warnings',
+		'plugin:import/typescript',
 	],
-	plugins: ['unused-imports', 'prettier'],
+	plugins: ['import', 'simple-import-sort', 'prettier'], // 'unused-imports'
 	rules: {
+		'simple-import-sort/imports': 'error',
+		'simple-import-sort/exports': 'error',
+		'import/order': 0,
+		'import/no-unresolved': 'error',
 		'jest/no-deprecated-functions': 0,
 		eqeqeq: 2,
 		quotes: ['error', 'single'],
@@ -57,18 +73,18 @@ module.exports = {
 		// 		allowSeparatedGroups: false,
 		// 	},
 		// ],
-		'unused-imports/no-unused-imports': 'error',
-		'unused-imports/no-unused-vars': [
-			'error',
-			{
-				vars: 'all',
-				args: 'all',
-				argsIgnorePattern: '^_',
-				varsIgnorePattern: '^_',
-				caughtErrorsIgnorePattern: '^_',
-				caughtErrors: 'all',
-			},
-		],
+		// 'unused-imports/no-unused-imports': 'error',
+		// 'unused-imports/no-unused-vars': [
+		// 	'error',
+		// 	{
+		// 		vars: 'all',
+		// 		args: 'all',
+		// 		argsIgnorePattern: '^_',
+		// 		varsIgnorePattern: '^_',
+		// 		caughtErrorsIgnorePattern: '^_',
+		// 		caughtErrors: 'all',
+		// 	},
+		// ],
 		'react/jsx-key': 0,
 
 		'react/no-unknown-property': 0,
@@ -106,13 +122,13 @@ module.exports = {
 
 		'prettier/prettier': 'error',
 	},
-	overrides: [
-		{
-			files: ['./**/*.ts'],
-			excludedFiles: ['./**/*.spec.ts'],
-			rules: {},
-		},
-	],
+	// overrides: [
+	// 	{
+	// 		files: ['./**/*.ts', '*.tsx'],
+	// 		excludedFiles: ['./**/*.spec.ts'],
+	// 		rules: {},
+	// 	},
+	// ],
 	// overrides: [
 	//     {
 	//         files: ["*.ts", "*.tsx"],
