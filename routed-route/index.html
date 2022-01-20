@@ -6,7 +6,7 @@
 		<meta name="description" content="Preact WMR Twind SSG zero-runtime CSS-in-JS">
 		<meta name="viewport" content="width=device-width,initial-scale=1">
 		<link rel="icon" href="data:">
-		<link rel="modulepreload" as="script" href="//danielweck.github.io/preact-wmr-twind-zero/index.b8cfbd11.js" crossorigin="anonymous">
+		<link rel="modulepreload" as="script" href="//danielweck.github.io/preact-wmr-twind-zero/index.f1cb6202.js" crossorigin="anonymous">
 	<meta content="SEO title" property="og:title"><style id="__twind">*,::before,::after{box-sizing:border-box;border-width:0;border-style:solid;border-color:currentColor}
 ::before,::after{--tw-content:''}
 html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji"}
@@ -44,12 +44,6 @@ button,[role="button"]{cursor:pointer}
 img,svg,video,canvas,audio,iframe,embed,object{display:block;vertical-align:middle}
 img,video{max-width:100%;height:auto}
 [hidden]{display:none}
-:root#twind[dir=ltr]{--is-ltr:true;--is-rtl:false}
-:root#twind[dir=rtl]{--is-rtl:true;--is-ltr:false}
-:root#twind > body h1{font-size:1.5rem;line-height:2rem;margin:1rem}
-:root#twind > body h1:hover{--tw-text-opacity:1;color:rgba(30,64,175,var(--tw-text-opacity))}
-:root#twind > body h2{font-size:1.25rem;line-height:1.75rem;margin:0.5rem}
-:root#twind > body h1,:root#twind > body h2,:root#twind > body h3,:root#twind > body h4{font-family:serif}
 .\~\(\!text-center\,hover\:underline\,cursor-pointer\,text-red-800\,bg-green-50\,hover\:\!bg-red-100\,w-1\/2\,ml-11\){--tw-text-opacity:1;color:rgba(153,27,27,var(--tw-text-opacity));cursor:pointer;width:50%;--tw-bg-opacity:1;background-color:rgba(240,253,244,var(--tw-bg-opacity));text-align:center !important;margin-left:2.75rem}
 .\~\(\!text-center\,hover\:underline\,cursor-pointer\,text-red-800\,bg-green-50\,hover\:\!bg-red-100\,w-1\/2\,ml-11\):hover{--tw-bg-opacity:1 !important;background-color:rgba(254,226,226,var(--tw-bg-opacity)) !important;-webkit-text-decoration:underline;text-decoration:underline}
 .text-black{--tw-text-opacity:1;color:rgba(0,0,0,var(--tw-text-opacity))}
@@ -63,12 +57,14 @@ img,video{max-width:100%;height:auto}
 .m-2{margin:0.5rem}
 .p-1\.5{padding:0.375rem}
 .p-2{padding:0.5rem}
+.w-1\/2{width:50%}
 .bg-pink-600{--tw-bg-opacity:1;background-color:rgba(219,39,119,var(--tw-bg-opacity))}
 .bg-yellow-200{--tw-bg-opacity:1;background-color:rgba(254,240,138,var(--tw-bg-opacity))}
 .bg-yellow-700{--tw-bg-opacity:1;background-color:rgba(161,98,7,var(--tw-bg-opacity))}
 .border-pink-600{--tw-border-opacity:1;border-color:rgba(219,39,119,var(--tw-border-opacity))}
 .border-purple-500{--tw-border-opacity:1;border-color:rgba(168,85,247,var(--tw-border-opacity))}
 .text-3xl{font-size:1.875rem;line-height:2.25rem}
+.text-6xl{font-size:3.75rem;line-height:1}
 .border-2{border-width:2px}
 .border-4{border-width:4px}
 .border-dotted{border-style:dotted}
@@ -76,13 +72,19 @@ img,video{max-width:100%;height:auto}
 .mr-1\.5{margin-right:0.375rem}
 .rounded{border-radius:0.25rem}
 .is-rtl\:text-6xl[dir=rtl]{font-size:3.75rem;line-height:1}
-.is-rtl\:font-bold[dir=rtl]{font-weight:700}</style>
+.is-rtl\:font-bold[dir=rtl]{font-weight:700}
+:root#twind[dir=ltr]{--is-ltr:true;--is-rtl:false}
+:root#twind[dir=rtl]{--is-rtl:true;--is-ltr:false}
+:root#twind > body h1{font-size:1.5rem;line-height:2rem;margin:1rem}
+:root#twind > body h1:hover{--tw-text-opacity:1;color:rgba(30,64,175,var(--tw-text-opacity))}
+:root#twind > body h2{font-size:1.25rem;line-height:1.75rem;margin:0.5rem}
+:root#twind > body h1,:root#twind > body h2,:root#twind > body h3,:root#twind > body h4{font-family:serif}</style>
 <!-- UNCOMMENT THIS FOR HIGHER FETCH PRIORITY link rel="preload" href="index.html.css" as="style" crossorigin="anonymous" / -->
 <link rel="stylesheet" href="index.html.css" media="print" onload="this.onload=null;var n='DOMContentLoaded',h=x=>(this.media='all');(document.readyState=='interactive'||document.readyState=='complete'?h():document.addEventListener(n,h))" crossorigin="anonymous" />
 <noscript><link rel="stylesheet" href="index.html.css"></noscript>
 </head>
 
-	<body><h1>Router status:</h1><p class="text-white p-1.5 bg-pink-600 text-3xl">Initial route (static SSR / SSG)</p><h1>Router links:</h1><ul><li><span class="text-yellow-400 inline-block mr-1.5"> ███ </span><a href="/preact-wmr-twind-zero/">Routed Home</a></li><li><span class="text-yellow-500 inline-block mr-1.5"> ███ </span><a href="/preact-wmr-twind-zero/routed-lazy/">Routed Lazy</a> (1s simulated network delay on first load, then &quot;cache&quot; hit) </li><li><span class="text-yellow-600 inline-block mr-1.5"> ███ </span><a href="/preact-wmr-twind-zero/routed-non-lazy/">Routed Non Lazy</a></li><li><span class="text-yellow-700 inline-block mr-1.5"> ███ </span><a href="/preact-wmr-twind-zero/routed-route/">Routed Route</a> (contains lazy component) </li></ul><h1>Router content:</h1><div class="border-pink-600 border-4 border-solid rounded"><section><h2>Routed → Route</h2><p class="text-black bg-yellow-700 text-3xl"> This text has a <strong>yellow-700</strong> background (unique to this paragraph, not shared with any other route or component) </p><p class="~(!text-center,hover:underline,cursor-pointer,text-red-800,bg-green-50,hover:!bg-red-100,w-1/2,ml-11)"> This text has a unique custom Twind &quot;shortcut&quot; class based on the combination of the following utility styles: <strong>!text-center hover:underline cursor-pointer text-red-800 bg(green-50 !hover:red-100) w-1/2 ml-11</strong>. </p><button class="m-2 p-2 border-purple-500 border-2 border-dotted rounded"> CLICK HERE TO LAZY-LOAD </button><span>(1s simulated network delay on first load, then &quot;cache&quot; hit)</span></section></div><h1>Twind critical/secondary stylesheet tests:</h1><p class="text-3xl"> This paragraphs and others located in different routes share the same <strong>text-3xl</strong> Twind style, but it isn't duplicated in the pre-rendered &quot;secondary&quot; stylesheet, it is hoisted in the &quot;critical&quot; styles. </p><p class="text-black bg-yellow-200"> This text has a <strong>yellow-200</strong> background (unique to this paragraph, not shared with any other route or component) </p><h1>404 Not Found links:</h1><ul><li><span class="text-yellow-300 inline-block mr-1.5"> ███ </span><a href="/preact-wmr-twind-zero/not-found-blank" rel="noreferrer noopener" target="_BLANK"> 404 (target BLANK) </a></li><li><span class="text-yellow-300 inline-block mr-1.5"> ███ </span><a href="/preact-wmr-twind-zero/not-found-inpage" target="_top"> 404 (in page) </a></li></ul><p dir="rtl" class="is-rtl:text-6xl is-rtl:font-bold"> RTL (bold) </p><script type="isodata">{"ssr":true,"url":"/preact-wmr-twind-zero/routed-route/","route":{"url":"/preact-wmr-twind-zero/routed-route/","_discoveredBy":{"url":"/"}}}</script>
-		<script type="module" src="//danielweck.github.io/preact-wmr-twind-zero/index.b8cfbd11.js"></script>
+	<body><h1>Router status:</h1><p class="text-white p-1.5 bg-pink-600 text-3xl">Initial route (static SSR / SSG)</p><h1>Router links:</h1><ul><li><span class="text-yellow-400 inline-block mr-1.5"> ███ </span><a href="/preact-wmr-twind-zero/">Routed Home</a></li><li><span class="text-yellow-500 inline-block mr-1.5"> ███ </span><a href="/preact-wmr-twind-zero/routed-lazy/">Routed Lazy</a> (1s simulated network delay on first load, then &quot;cache&quot; hit) </li><li><span class="text-yellow-600 inline-block mr-1.5"> ███ </span><a href="/preact-wmr-twind-zero/routed-non-lazy/">Routed Non Lazy</a></li><li><span class="text-yellow-700 inline-block mr-1.5"> ███ </span><a href="/preact-wmr-twind-zero/routed-route/">Routed Route</a> (contains lazy component) </li></ul><h1>Router content:</h1><div class="border-pink-600 border-4 border-solid rounded"><section><h2>Routed → Route</h2><p class="text-black bg-yellow-700 text-6xl"> This text has a <strong>yellow-700</strong> background (unique to this paragraph, not shared with any other route or component) </p><p class="~(!text-center,hover:underline,cursor-pointer,text-red-800,bg-green-50,hover:!bg-red-100,w-1/2,ml-11) w-1/2"> This text has a unique custom Twind &quot;shortcut&quot; class based on the combination of the following utility styles: <strong>!text-center hover:underline cursor-pointer text-red-800 bg(green-50 !hover:red-100) w-1/2 ml-11</strong>. </p><button class="m-2 p-2 border-purple-500 border-2 border-dotted rounded"> CLICK HERE TO LAZY-LOAD </button><span>(1s simulated network delay on first load, then &quot;cache&quot; hit)</span></section></div><h1>Twind critical/secondary stylesheet tests:</h1><p class="text-3xl"> This paragraphs and others located in different routes share the same <strong>text-3xl</strong> Twind style, but it isn't duplicated in the pre-rendered &quot;secondary&quot; stylesheet, it is hoisted in the &quot;critical&quot; styles. </p><p class="text-black bg-yellow-200"> This text has a <strong>yellow-200</strong> background (unique to this paragraph, not shared with any other route or component) </p><h1>404 Not Found links:</h1><ul><li><span class="text-yellow-300 inline-block mr-1.5"> ███ </span><a href="/preact-wmr-twind-zero/not-found-blank" rel="noreferrer noopener" target="_BLANK"> 404 (target BLANK) </a></li><li><span class="text-yellow-300 inline-block mr-1.5"> ███ </span><a href="/preact-wmr-twind-zero/not-found-inpage" target="_top"> 404 (in page) </a></li></ul><p dir="rtl" class="is-rtl:text-6xl is-rtl:font-bold"> RTL (bold) </p><script type="isodata">{"ssr":true,"url":"/preact-wmr-twind-zero/routed-route/","route":{"url":"/preact-wmr-twind-zero/routed-route/","_discoveredBy":{"url":"/"}}}</script>
+		<script type="module" src="//danielweck.github.io/preact-wmr-twind-zero/index.f1cb6202.js"></script>
 	</body>
 </html>

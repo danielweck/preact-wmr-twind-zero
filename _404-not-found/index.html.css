@@ -14,8 +14,10 @@
 .\~\(\!text-center\,hover\:underline\,cursor-pointer\,text-red-800\,bg-green-50\,hover\:\!bg-red-100\,w-1\/2\,ml-11\):hover{--tw-bg-opacity:1 !important;background-color:rgba(254,226,226,var(--tw-bg-opacity)) !important;-webkit-text-decoration:underline;text-decoration:underline}
 .m-2{margin:0.5rem}
 .p-2{padding:0.5rem}
+.w-1\/2{width:50%}
 .bg-yellow-700{--tw-bg-opacity:1;background-color:rgba(161,98,7,var(--tw-bg-opacity))}
 .border-purple-500{--tw-border-opacity:1;border-color:rgba(168,85,247,var(--tw-border-opacity))}
+.text-6xl{font-size:3.75rem;line-height:1}
 .border-2{border-width:2px}
 .border-dotted{border-style:dotted}
 .form-input,.form-textarea,.form-select,.form-multiselect{-webkit-appearance:none;-moz-appearance:none;appearance:none;background-color:#fff;border-color:#6b7280;border-width:1px;border-radius:0px;padding-top:0.5rem;padding-right:0.75rem;padding-bottom:0.5rem;padding-left:0.75rem;font-size:1rem;line-height:1.5rem;--tw-shadow:0 0 #0000}
