@@ -32,8 +32,8 @@ export const twindConfig = {
 			},
 		],
 	],
-	preflight: (_context) => {
-		return {
+	preflight: [
+		{
 			'@layer base': {
 				':root#twind[dir=ltr]': {
 					'--is-ltr': 'true',
@@ -43,18 +43,24 @@ export const twindConfig = {
 					'--is-rtl': 'true',
 					'--is-ltr': 'false',
 				},
+				':root#twind > body a[href]': {
+					'@apply': 'underline text-blue-700',
+					'&:hover': {
+						'@apply': 'font-bold text-blue-800',
+					},
+				},
 				':root#twind > body h1': {
-					'@apply': 'text-2xl m-4',
+					'@apply': 'font-bold uppercase text-3xl m-4',
 					'&:hover': {
 						'@apply': 'text-blue-800',
 					},
 				},
-				':root#twind > body h2': { '@apply': 'text-xl m-2' },
+				':root#twind > body h2': { '@apply': 'font-bold uppercase text-xl m-2' },
 				':root#twind > body h1, :root#twind > body h2, :root#twind > body h3, :root#twind > body h4': {
 					'font-family': 'serif',
 				},
 			},
-		};
-	},
+		},
+	],
 };
 export default twindConfig;
