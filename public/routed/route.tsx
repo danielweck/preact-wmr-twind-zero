@@ -43,15 +43,28 @@ const SuspendedLazyLoader: FunctionalComponent<unknown> = (_props: RenderablePro
 };
 
 export const RoutedRoute: FunctionalComponent<unknown> = (_props: RenderableProps<unknown>) => {
-	// This could be directly inlined in the class JSX property without the twindTw (void) helper,
-	// but we're just demonstrating the use of the twindTw tagged template literal function
-	// for autocompletion / VSCode intellisense.
-	const other = process.env.NOPE ? twindTw`text-pink-600` : twindTw`text-black`;
-	// This one below doesn't use twindTw, so no autocompletion / VSCode intellisense:
-	const paraClass = `
+	// The following classes could be directly inlined in the 'class' / 'className' JSX properties
+	// with or without the twindTw helper,
+	// but here we demonstrate the twindTw tagged template literal function
+	// for the benefits of autocompletion / VSCode intellisense,
+	// and also noting that this will perform whitespace collapse + string trim,
+	// resulting in cleaner smaller JSX hydration code
+	// (this is automatically done for class/className props too, not just the twindTw / twindShortcut functions)
+	const other = process.env.NOPE
+		? twindTw`text-pink-600`
+		: `
+        
+        text-black
+        
+        `;
+	const paraClass = twindTw`
+		
+		
 		bg-yellow-700
 		${other}
-	`;
+		
+		
+		`;
 
 	// note the dual class and className props on the HTML / JSX paragraph below (no difference, either can be used):
 	return (

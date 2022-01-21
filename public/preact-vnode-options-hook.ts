@@ -20,12 +20,12 @@ export const initPreactVDOMHook = (tw?: (val: Class) => string) => {
 
 		const props = vnode.props;
 
-		if (props.className && !props.class) {
-			if (preactOptionsVNodeOriginal) {
-				preactOptionsVNodeOriginal(vnode);
-			}
-			return;
-		}
+		// if (props.className && !props.class) {
+		// 	if (preactOptionsVNodeOriginal) {
+		// 		preactOptionsVNodeOriginal(vnode);
+		// 	}
+		// 	return;
+		// }
 
 		const classes = new Set<string>();
 

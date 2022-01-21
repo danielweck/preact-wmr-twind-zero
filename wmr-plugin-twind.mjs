@@ -23,6 +23,8 @@ const REGEXP_TWIND_TAGGED_TEMPLATE_LITERALS = new RegExp(`(${twindTagFunctions.j
 // to be later processed by the custom Preact VNode 'options' hook.
 const REGEXP_TWIND_TAGGED_TEMPLATE_LITERALS_CHECK = new RegExp(`(${twindTagFunctions.join('|')})\``, 'g');
 
+const REGEXP_MULTILINE_JSX_CLASS_PROPS = /(class|className)[\s]*=[\s]*{[\s]*`([^`]+)`[\s]*}/gm;
+
 /** @returns {import('wmr').Plugin} */
 /** @param {import('wmr').Options} config */
 export function wmrTwindPlugin(config) {
@@ -97,6 +99,11 @@ export function wmrTwindPlugin(config) {
 			if (REGEXP_TWIND_TAGGED_TEMPLATE_LITERALS_CHECK.test(code)) {
 				throw new Error(`${DEBUG_PREFIX}${red('not all Twind tagged template literals were transformed!')}`);
 			}
+
+			code = code.replace(REGEXP_MULTILINE_JSX_CLASS_PROPS, (_match, $1, $2) => {
+				// Removes line breaks and collapses whitespaces
+				return `${$1}="${$2.replace(/\s\s*/gm, ' ').trim()}"`;
+			});
 
 			if (config.publicPath !== '/') {
 				// TODO: because of Preact WMR workaround for config.publicPath, the async module imports fail :(
