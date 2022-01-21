@@ -4,27 +4,30 @@ root=true
 charset = utf-8
 end_of_line = lf
 insert_final_newline = true
-trim_trailing_whitespace = true
 
 [*.{md}]
 indent_style = ignore
 indent_size = ignore
+trim_trailing_whitespace = true
 
 [*.{md}]
 indent_style = tab
 indent_size = 1
-
-[*.{mjs,js,ts,jsx,tsx}]
-indent_style = tab
-indent_size = 1
-block_comment_start = /*
-block_comment = *
-block_comment_end = */
+trim_trailing_whitespace = true
 
 [*.{yml,json}]
 indent_style = tab
 indent_size = 1
+trim_trailing_whitespace = true
 
 [*.{html,ejs,css,scss}]
 indent_style = tab
 indent_size = 1
+trim_trailing_whitespace = true
+
+# [*.{mjs,js,ts,jsx,tsx}]
+# indent_style = tab
+# indent_size = 1
+# block_comment_start = /*
+# block_comment = *
+# block_comment_end = */
