@@ -1,7 +1,7 @@
 import { cyan, green, red } from 'kolorist';
-import { shortcut, twind, virtual } from 'twind';
+import { shortcut, virtual } from 'twind';
 
-import { twConfig } from './public/twindConfig.js';
+import { createTwindInstance, resetTwindInstance } from './public/twindFactory.js';
 
 // Regular expression that checks file extensions:
 // we only transform Twind tagged template literals in TS, TSX, JS, JSX source code
@@ -25,8 +25,10 @@ const REGEXP_TWIND_TAGGED_TEMPLATE_LITERALS_CHECK = new RegExp(`(${twindTagFunct
 
 const REGEXP_MULTILINE_JSX_CLASS_PROPS = /(class|className)[\s]*=[\s]*{[\s]*`([^`]+)`[\s]*}/gm;
 
-/** @returns {import('wmr').Plugin} */
-/** @param {import('wmr').Options} config */
+/**
+ * @returns {import('wmr').Plugin}
+ * @param {import('wmr').Options} config
+ * */
 export function wmrTwindPlugin(config) {
 	// in WMR build/prerender mode, we execute Twind via a transient stylesheet.
 	// See lazy instantiation further down below...
@@ -54,20 +56,21 @@ export function wmrTwindPlugin(config) {
 
 				_twindSheet = virtual();
 
-				_tw = twind(twConfig, _twindSheet);
+				_tw = createTwindInstance(_twindSheet);
+			} else {
+				// Resets the stylesheet (previous file transform).
+				// Note that generally-speaking, 'preflight' (if any) is included.
+				// (reset !== zero-ing the stylesheet)
+				// note: condition ALWAYS true, TODO: is a full reset necessary?
+				// if (_tw) {
+				// 	_tw.clear();
+				// } else if (_twindSheet) {
+				// 	_twindSheet.clear();
+				// }
+				resetTwindInstance(_tw);
 			}
 
 			console.log(`${DEBUG_PREFIX}${green('stylesheet reset and process Twind tagged template literals...')}`);
-
-			// Resets the stylesheet (previous file transform).
-			// Note that generally-speaking, 'preflight' (if any) is included.
-			// (reset !== zero-ing the stylesheet)
-			// note: condition ALWAYS true, TODO: is a full reset necessary?
-			if (_tw) {
-				_tw.clear();
-			} else if (_twindSheet) {
-				_twindSheet.clear();
-			}
 
 			code = code.replace(REGEXP_TWIND_TAGGED_TEMPLATE_LITERALS, (_match, $1, $2) => {
 				// Removes line breaks and collapses whitespaces

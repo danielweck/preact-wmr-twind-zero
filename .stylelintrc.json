@@ -1,0 +1,37 @@
+{
+	"extends": ["stylelint-config-standard", "stylelint-config-prettier", "stylelint-config-html"],
+	"rules": {
+		"declaration-block-trailing-semicolon": null,
+		"no-descending-specificity": null,
+		"selector-pseudo-class-no-unknown": [
+			true,
+			{
+				"ignorePseudoClasses": ["nope"]
+			}
+		],
+		"value-keyword-case": [
+			"lower",
+			{
+				"ignoreKeywords": ["/^nope$/"]
+			}
+		],
+		"at-rule-no-unknown": [
+			true,
+			{
+				"ignoreAtRules": ["apply", "layer", "variants", "responsive", "screen"]
+			}
+		],
+		"property-no-unknown": [
+			true,
+			{
+				"ignoreProperties": ["nope"]
+			}
+		]
+	},
+	"overrides": [
+		{
+			"files": ["**/*.js", "**/*.mjs", "**/*.jsx", "**/*.ts", "**/*.tsx"],
+			"customSyntax": "postcss-jsx"
+		}
+	]
+}

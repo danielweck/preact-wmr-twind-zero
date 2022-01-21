@@ -4,6 +4,7 @@ import { virtual } from 'twind';
 
 import { initPreactVDOMHook_Twind } from '../preact-vnode-options-hook--twind.js';
 import { twindConfig } from '../twind.config.js';
+import { resetTwindInstance } from '../twindFactory.js';
 
 // Global module-level stylesheet,
 // reset for each WMR-prerendered file
@@ -30,11 +31,12 @@ export const preactWmrPrerenderForTwind = async (
 	// Resets the stylesheet (previous file transform).
 	// Note that 'preflight', if any, is included (reset !== zero-ing the stylesheet)
 	// note: condition ALWAYS true, TODO: is a full reset necessary?
-	if (_tw) {
-		_tw.clear();
-	} else {
-		_twindSheet.clear();
-	}
+	// if (_tw) {
+	// 	_tw.clear();
+	// } else {
+	// 	_twindSheet.clear();
+	// }
+	resetTwindInstance(_tw);
 
 	if (twindConfig.preflight === false && _twindSheet.target.length) {
 		const msg = `${DEBUG_PREFIX}no preflight but stylesheet is not empty after reset?!`;

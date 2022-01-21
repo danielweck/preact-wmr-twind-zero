@@ -23,6 +23,7 @@
   "css.validate": false,
   "less.validate": false,
   "scss.validate": false,
+  "stylelint.validate": ["css", "html", "javascript", "typescript", "typescriptreact"],
   "editor.suggest.showStatusBar": true,
   "editor.quickSuggestions": {
     "strings": false

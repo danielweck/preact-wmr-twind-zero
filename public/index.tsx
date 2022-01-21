@@ -235,7 +235,7 @@ if (IS_CLIENT_SIDE) {
 		/* PREACT_WMR_BUILD_STRIP_CODE_BEGIN */
 		(async () => {
 			const { initPreactVDOMHook_Twind } = await import('./preact-vnode-options-hook--twind.js');
-			initPreactVDOMHook_Twind();
+			const _tw = initPreactVDOMHook_Twind();
 			hydrate(<App />, document.body);
 		})();
 		/* PREACT_WMR_BUILD_STRIP_CODE_END */

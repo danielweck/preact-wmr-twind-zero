@@ -1,7 +1,7 @@
-import { type BaseTheme, type Sheet, type Twind, cssom, twind } from 'twind';
+import { type BaseTheme, type Sheet, type Twind, cssom } from 'twind';
 
 import { initPreactVDOMHook } from './preact-vnode-options-hook';
-import { twConfig } from './twindConfig.js';
+import { createTwindInstance } from './twindFactory.js';
 
 let _tw: Twind<BaseTheme, CSSStyleSheet | string[]>;
 
@@ -11,10 +11,12 @@ export const initPreactVDOMHook_Twind = (sheet?: Sheet<string[]>): Twind<BaseThe
 	// Twind runtime, stylesheets will be generated on the fly
 	if (sheet) {
 		// static SSR / SSG / WMR prerender => virtual stylesheet
-		_tw = twind(twConfig, sheet);
+		// _tw = twind(twConfig, sheet);
+		_tw = createTwindInstance(sheet);
 	} else {
 		// client side DOM stylesheet (CSSOM)
-		_tw = twind(twConfig, cssom());
+		// _tw = twind(twConfig, cssom());
+		_tw = createTwindInstance(cssom());
 	}
 
 	initPreactVDOMHook(_tw);
