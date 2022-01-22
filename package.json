@@ -24,7 +24,7 @@
 		"lint": "npm run lint:editorconfig && npm run lint:eslint && npm run lint-stylelint && npm run lint-prettier && npm run typescript",
 		"eslint-fix": "eslint --fix \"./**/*.{js,ts,js,tsx,mjs}\"",
 		"prettier-fix": "prettier --write \"./**/*.{css,html,mjs,js,ts,jsx,tsx,json,md,yml,svg,xml}\"",
-		"stylelint-fix": "stylelint --fix \"./public/**/*\"",
+		"stylelint-fix": "stylelint --fix \"./public/**/*.{html,htm,mjs,js,jsx,ts,tsx,css}\"",
 		"lint-fix": "npm run eslint-fix && npm run prettier-fix && npm run stylelint-fix",
 		"typescript": "tsc --project tsconfig.json"
 	},
@@ -33,6 +33,7 @@
 		"preact-iso": "^2.3.0"
 	},
 	"devDependencies": {
+		"@parcel/css": "^1.1.0",
 		"@twind/preset-autoprefix": "^1.0.0-next.20",
 		"@twind/preset-ext": "^1.0.0-next.20",
 		"@twind/preset-tailwind": "^1.0.0-next.20",
@@ -41,6 +42,7 @@
 		"@types/node": "^16.11.21",
 		"@typescript-eslint/eslint-plugin": "^5.10.0",
 		"@typescript-eslint/parser": "^5.10.0",
+		"browserslist": "^4.19.1",
 		"cpy-cli": "^3.1.1",
 		"cross-env": "^7.0.3",
 		"eclint": "^2.8.1",
@@ -60,7 +62,7 @@
 		"postcss-syntax": "^0.36.2",
 		"prettier": "^2.5.1",
 		"rimraf": "^3.0.2",
-		"rollup": "^2.65.0",
+		"rollup": "^2.66.0",
 		"stylelint": "^14.2.0",
 		"stylelint-config-html": "^1.0.0",
 		"stylelint-config-prettier": "^9.0.3",

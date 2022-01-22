@@ -1,7 +1,56 @@
+import { css } from 'twind';
+
+export const twindReset = () => css`
+	@layer base {
+		:root#twind > body {
+			font-family: sans-serif;
+
+			@apply bg-yellow-100 text-black;
+
+			border: 3px solid red;
+		}
+
+		:root#twind[dir='ltr'] {
+			--is-ltr: 'true';
+			--is-rtl: 'false';
+		}
+
+		:root#twind[dir='rtl'] {
+			--is-rtl: 'true';
+			--is-ltr: 'false';
+		}
+
+		:root#twind > body a[href] {
+			@apply underline text-blue-700;
+
+			&:hover {
+				@apply font-bold text-blue-800;
+			}
+		}
+
+		:root#twind > body h1 {
+			@apply font-bold uppercase text-3xl m-4;
+
+			&:hover {
+				@apply text-blue-800;
+			}
+		}
+
+		:root#twind > body h2 {
+			@apply font-bold uppercase text-xl m-2;
+		}
+
+		:root#twind > body h1,
+		:root#twind > body h2,
+		:root#twind > body h3,
+		:root#twind > body h4 {
+			font-family: serif;
+		}
+	}
+`;
+
 /** @type {import('twind').TwindUserConfig<import('twind').BaseTheme>} */
 export const twindConfig = {
-	// preflight: false, // uncomment this to manually / visually check the generated stylesheet more easily
-
 	variants: [['is-rtl', '&[dir=rtl]']],
 	hash: false,
 	rules: [
@@ -32,35 +81,36 @@ export const twindConfig = {
 			},
 		],
 	],
-	preflight: [
-		{
-			'@layer base': {
-				':root#twind[dir=ltr]': {
-					'--is-ltr': 'true',
-					'--is-rtl': 'false',
-				},
-				':root#twind[dir=rtl]': {
-					'--is-rtl': 'true',
-					'--is-ltr': 'false',
-				},
-				':root#twind > body a[href]': {
-					'@apply': 'underline text-blue-700',
-					'&:hover': {
-						'@apply': 'font-bold text-blue-800',
-					},
-				},
-				':root#twind > body h1': {
-					'@apply': 'font-bold uppercase text-3xl m-4',
-					'&:hover': {
-						'@apply': 'text-blue-800',
-					},
-				},
-				':root#twind > body h2': { '@apply': 'font-bold uppercase text-xl m-2' },
-				':root#twind > body h1, :root#twind > body h2, :root#twind > body h3, :root#twind > body h4': {
-					'font-family': 'serif',
-				},
-			},
-		},
-	],
+	// preflight: false, // uncomment this to manually / visually check the generated stylesheet more easily
+	// preflight: [
+	// 	{
+	// 		'@layer base': {
+	// 			':root#twind[dir=ltr]': {
+	// 				'--is-ltr': 'true',
+	// 				'--is-rtl': 'false',
+	// 			},
+	// 			':root#twind[dir=rtl]': {
+	// 				'--is-rtl': 'true',
+	// 				'--is-ltr': 'false',
+	// 			},
+	// 			':root#twind > body a[href]': {
+	// 				'@apply': 'underline text-blue-700',
+	// 				'&:hover': {
+	// 					'@apply': 'font-bold text-blue-800',
+	// 				},
+	// 			},
+	// 			':root#twind > body h1': {
+	// 				'@apply': 'font-bold uppercase text-3xl m-4',
+	// 				'&:hover': {
+	// 					'@apply': 'text-blue-800',
+	// 				},
+	// 			},
+	// 			':root#twind > body h2': { '@apply': 'font-bold uppercase text-xl m-2' },
+	// 			':root#twind > body h1, :root#twind > body h2, :root#twind > body h3, :root#twind > body h4': {
+	// 				'font-family': 'serif',
+	// 			},
+	// 		},
+	// 	},
+	// ],
 };
 export default twindConfig;

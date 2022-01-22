@@ -10,3 +10,9 @@ pnpm-lock.yaml
 dist
 .tmp
 stats.html
+**/*.js
+**/*.ts
+**/*.mjs
+**/*.jsx
+**/*.tsx
+!twind.config.js

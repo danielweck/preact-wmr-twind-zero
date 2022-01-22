@@ -1,6 +1,7 @@
 lockfileVersion: 5.3
 
 specifiers:
+  '@parcel/css': ^1.1.0
   '@twind/preset-autoprefix': ^1.0.0-next.20
   '@twind/preset-ext': ^1.0.0-next.20
   '@twind/preset-tailwind': ^1.0.0-next.20
@@ -9,6 +10,7 @@ specifiers:
   '@types/node': ^16.11.21
   '@typescript-eslint/eslint-plugin': ^5.10.0
   '@typescript-eslint/parser': ^5.10.0
+  browserslist: ^4.19.1
   cpy-cli: ^3.1.1
   cross-env: ^7.0.3
   eclint: ^2.8.1
@@ -30,7 +32,7 @@ specifiers:
   preact-iso: ^2.3.0
   prettier: ^2.5.1
   rimraf: ^3.0.2
-  rollup: ^2.65.0
+  rollup: ^2.66.0
   stylelint: ^14.2.0
   stylelint-config-html: ^1.0.0
   stylelint-config-prettier: ^9.0.3
@@ -44,6 +46,7 @@ dependencies:
   preact-iso: 2.3.0_preact@10.6.4
 
 devDependencies:
+  '@parcel/css': 1.1.0
   '@twind/preset-autoprefix': 1.0.0-next.20_28410ceb289d13bb128c15e4fd2475a5
   '@twind/preset-ext': 1.0.0-next.20_1b64dc78479498f591c1fe56e787cebb
   '@twind/preset-tailwind': 1.0.0-next.20_28410ceb289d13bb128c15e4fd2475a5
@@ -52,6 +55,7 @@ devDependencies:
   '@types/node': 16.11.21
   '@typescript-eslint/eslint-plugin': 5.10.0_706fb07ce74b1db611f19a02ad2ce784
   '@typescript-eslint/parser': 5.10.0_eslint@8.7.0+typescript@4.5.5
+  browserslist: 4.19.1
   cpy-cli: 3.1.1
   cross-env: 7.0.3
   eclint: 2.8.1
@@ -71,7 +75,7 @@ devDependencies:
   postcss-syntax: 0.36.2
   prettier: 2.5.1
   rimraf: 3.0.2
-  rollup: 2.65.0
+  rollup: 2.66.0
   stylelint: 14.2.0
   stylelint-config-html: 1.0.0_2d1bcf73d0f2e8e613ccd6d821b0344f
   stylelint-config-prettier: 9.0.3_stylelint@14.2.0
@@ -400,6 +404,86 @@ packages:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.13.0
+    dev: true
+
+  /@parcel/css-darwin-arm64/1.1.0:
+    resolution: {integrity: sha512-zwLLgG4d6oaQAFrbBfUx4MKsn8kw/B84Idefh5uFcp5p+UmWaTJ2c990hpU/q1fWx3fLywDGc0MyQDD5mFj5gA==}
+    engines: {node: '>= 12.0.0'}
+    cpu: [arm64]
+    os: [darwin]
+    dev: true
+    optional: true
+
+  /@parcel/css-darwin-x64/1.1.0:
+    resolution: {integrity: sha512-4Fv5wmN8wosajSMI9Kuaj6Z9PnZgu9FXK0xrpopYE3O0f4jE3L15nBXvhYVX9xdpUocLoNEme5oKAqpg54XmPQ==}
+    engines: {node: '>= 12.0.0'}
+    cpu: [x64]
+    os: [darwin]
+    dev: true
+    optional: true
+
+  /@parcel/css-linux-arm-gnueabihf/1.1.0:
+    resolution: {integrity: sha512-3YoTxaU16LKhgkpXSoHDDJN+39YPOwmQKYMjUeOXbvISQAZlxypzaech6azKMeCKWTPF4LpAe8mmXZ/ScFHDvA==}
+    engines: {node: '>= 12.0.0'}
+    cpu: [arm]
+    os: [linux]
+    dev: true
+    optional: true
+
+  /@parcel/css-linux-arm64-gnu/1.1.0:
+    resolution: {integrity: sha512-UYIeAzzAEi8qIHY9kjzydKeDaoXZIdPk7CpOv13UZEvHYqSb8RPA0bQ+9S7x3q7w/gliM/1tp2+VKtMA2Shgfw==}
+    engines: {node: '>= 12.0.0'}
+    cpu: [arm64]
+    os: [linux]
+    dev: true
+    optional: true
+
+  /@parcel/css-linux-arm64-musl/1.1.0:
+    resolution: {integrity: sha512-x+2pCPniVHqrEglOx6Rh6ilTgyopL17VvUsf1BCUUDLX9Y7/AqvHodMho7deN2nFbXWMC8sBgsH/H4XsYDtf0Q==}
+    engines: {node: '>= 12.0.0'}
+    cpu: [arm64]
+    os: [linux]
+    dev: true
+    optional: true
+
+  /@parcel/css-linux-x64-gnu/1.1.0:
+    resolution: {integrity: sha512-BBWv1iZpaUo9sX2hRUlYqzd/H3OVsUYlBmclBhPqs4qTJ3bna0+E+i9DdDSaZIgQjGhkk6H/WM1H0P6ho0/8SQ==}
+    engines: {node: '>= 12.0.0'}
+    cpu: [x64]
+    os: [linux]
+    dev: true
+    optional: true
+
+  /@parcel/css-linux-x64-musl/1.1.0:
+    resolution: {integrity: sha512-ks6Qn382+3dKLblOBb7QAsIJoPjdAJMJwUcPqO5os2BO+wnBaDZuMKR7ItG8yZ7jv6fkZj3Dq+SCNcXVSELIKg==}
+    engines: {node: '>= 12.0.0'}
+    cpu: [x64]
+    os: [linux]
+    dev: true
+    optional: true
+
+  /@parcel/css-win32-x64-msvc/1.1.0:
+    resolution: {integrity: sha512-8PWyb/87lFIJtTJ8/emoYVkU0gIG+7nnU2K8JWeJFhKCvuWQCnE1RKaSmQ6Adwids+7IPI97LQHshtfaMo0OOQ==}
+    engines: {node: '>= 12.0.0'}
+    cpu: [x64]
+    os: [win32]
+    dev: true
+    optional: true
+
+  /@parcel/css/1.1.0:
+    resolution: {integrity: sha512-iTKWLQxwyMTTMZEddURYP9WbY51bpzqUPejo0yrrxWzPs3sH+wQTdv9EmDT62RmZg6zEaCSKV43949FZd8wwUg==}
+    engines: {node: '>= 12.0.0'}
+    dependencies:
+      detect-libc: 1.0.3
+    optionalDependencies:
+      '@parcel/css-darwin-arm64': 1.1.0
+      '@parcel/css-darwin-x64': 1.1.0
+      '@parcel/css-linux-arm-gnueabihf': 1.1.0
+      '@parcel/css-linux-arm64-gnu': 1.1.0
+      '@parcel/css-linux-arm64-musl': 1.1.0
+      '@parcel/css-linux-x64-gnu': 1.1.0
+      '@parcel/css-linux-x64-musl': 1.1.0
+      '@parcel/css-win32-x64-msvc': 1.1.0
     dev: true
 
   /@swc/helpers/0.3.2:
@@ -985,7 +1069,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001301
-      electron-to-chromium: 1.4.50
+      electron-to-chromium: 1.4.51
       escalade: 3.1.1
       node-releases: 2.0.1
       picocolors: 1.0.0
@@ -1427,6 +1511,12 @@ packages:
       isobject: 3.0.1
     dev: true
 
+  /detect-libc/1.0.3:
+    resolution: {integrity: sha1-+hN8S9aY7fVc1c0CrFWfkaTEups=}
+    engines: {node: '>=0.10'}
+    hasBin: true
+    dev: true
+
   /dir-glob/2.2.2:
     resolution: {integrity: sha512-f9LBi5QWzIW3I6e//uxZoLBlUt9kcp66qo0sSCxL6YZKc75R1c4MFCoe/LaZiBGmgujvQdxc5Bn3QhfyvK5Hsw==}
     engines: {node: '>=4'}
@@ -1522,8 +1612,8 @@ packages:
       sigmund: 1.0.1
     dev: true
 
-  /electron-to-chromium/1.4.50:
-    resolution: {integrity: sha512-g5X/6oVoqLyzKfsZ1HsJvxKoUAToFMCuq1USbmp/GPIwJDRYV1IEcv+plYTdh6h11hg140hycCBId0vf7rL0+Q==}
+  /electron-to-chromium/1.4.51:
+    resolution: {integrity: sha512-JNEmcYl3mk1tGQmy0EvL5eik/CKSBuzAyGP0QFdG6LIgxQe3II0BL1m2zKc2MZMf3uGqHWE1TFddJML0RpjSHQ==}
     dev: true
 
   /emoji-regex/7.0.3:
@@ -4183,8 +4273,8 @@ packages:
       glob: 7.2.0
     dev: true
 
-  /rollup/2.65.0:
-    resolution: {integrity: sha512-ohZVYrhtVMTqqeqH26sngfMiyGDg6gCUReOsoflXvYpzUkDHp8sVG8F9FQxjs72OfnLWpXP2nNNqQ9I0vkRovA==}
+  /rollup/2.66.0:
+    resolution: {integrity: sha512-L6mKOkdyP8HK5kKJXaiWG7KZDumPJjuo1P+cfyHOJPNNTK3Moe7zCH5+fy7v8pVmHXtlxorzaBjvkBMB23s98g==}
     engines: {node: '>=10.0.0'}
     hasBin: true
     optionalDependencies:

@@ -48,11 +48,11 @@ export function wmrTwindPlugin(config) {
 			// TODO: is this really necessary in WMR's latest version?
 			if (id[0] === '\0' || id[0] === '\b') return;
 
-			const DEBUG_PREFIX = `WMR TWIND PLUGIN (${config.mode}) [${cyan(id.replace(process.cwd(), ''))}]:\n`;
+			const DEBUG_PREFIX = `\nWMR TWIND PLUGIN (${config.mode}) [${cyan(id.replace(process.cwd(), ''))}]:\n`;
 
 			// Lazy instantiation
 			if (!_tw) {
-				console.log(`${DEBUG_PREFIX}${green('lazy create stylesheet and init Twind')}`);
+				console.log(`${DEBUG_PREFIX}${green('lazy create stylesheet and init Twind')}\n`);
 
 				_twindSheet = virtual();
 
@@ -70,7 +70,7 @@ export function wmrTwindPlugin(config) {
 				resetTwindInstance(_tw);
 			}
 
-			console.log(`${DEBUG_PREFIX}${green('stylesheet reset and process Twind tagged template literals...')}`);
+			console.log(`${DEBUG_PREFIX}${green('stylesheet reset and process Twind tagged template literals...')}\n`);
 
 			code = code.replace(REGEXP_TWIND_TAGGED_TEMPLATE_LITERALS, (_match, $1, $2) => {
 				// Removes line breaks and collapses whitespaces
@@ -87,10 +87,10 @@ export function wmrTwindPlugin(config) {
 				const s = shortcut(classList);
 				const twindResult = _tw ? _tw(s) : 'no-twind?!';
 
-				console.log(`${DEBUG_PREFIX}${green('--------> shortcut: ')}${classList} => ${cyan(s)} => ${red(twindResult)}`);
+				console.log(`${DEBUG_PREFIX}${green('--------> shortcut: ')}${classList} => ${cyan(s)} => ${red(twindResult)}\n`);
 
 				if (_twindSheet && !_twindSheet.target.length) {
-					throw new Error(`${DEBUG_PREFIX}${red('empty stylesheet?!')} -- ${red(twindResult)}`);
+					throw new Error(`${DEBUG_PREFIX}${red('empty stylesheet?!')} -- ${red(twindResult)}\n`);
 				}
 
 				return `\`${twindResult}\``;
@@ -100,7 +100,7 @@ export function wmrTwindPlugin(config) {
 			// there should not be any remaining Twind *tagged* template literals.
 			// See explanations at the top of this file.
 			if (REGEXP_TWIND_TAGGED_TEMPLATE_LITERALS_CHECK.test(code)) {
-				throw new Error(`${DEBUG_PREFIX}${red('not all Twind tagged template literals were transformed!')}`);
+				throw new Error(`${DEBUG_PREFIX}${red('not all Twind tagged template literals were transformed!')}\n`);
 			}
 
 			code = code.replace(REGEXP_MULTILINE_JSX_CLASS_PROPS, (_match, $1, $2) => {

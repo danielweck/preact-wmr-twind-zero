@@ -24,9 +24,9 @@ export const preactWmrPrerenderForTwind = async (
 		cssTextContent: string;
 	}
 > => {
-	const DEBUG_PREFIX = `WMR TWIND PRERENDER [${url}]:\n`;
+	const DEBUG_PREFIX = `\nWMR TWIND PRERENDER [${url}]:\n`;
 
-	console.log(`${DEBUG_PREFIX}stylesheet reset and Preact WMR SSG / static SSR...`);
+	console.log(`${DEBUG_PREFIX}...\n`);
 
 	// Resets the stylesheet (previous file transform).
 	// Note that 'preflight', if any, is included (reset !== zero-ing the stylesheet)
@@ -39,7 +39,7 @@ export const preactWmrPrerenderForTwind = async (
 	resetTwindInstance(_tw);
 
 	if (twindConfig.preflight === false && _twindSheet.target.length) {
-		const msg = `${DEBUG_PREFIX}no preflight but stylesheet is not empty after reset?!`;
+		const msg = `${DEBUG_PREFIX}no preflight but stylesheet is not empty after reset?!\n`;
 		console.log(msg);
 		throw new Error(msg);
 	}
@@ -47,14 +47,14 @@ export const preactWmrPrerenderForTwind = async (
 	const result = await prerender(app, options);
 
 	if (!_twindSheet.target.length) {
-		const msg = `${DEBUG_PREFIX}stylesheet is empty after prerender?!\n${result.html}`;
+		const msg = `${DEBUG_PREFIX}stylesheet is empty after prerender?!\n${result.html}\n`;
 		console.log(msg);
 		// throw new Error(msg);
 	}
 
 	return {
 		...result,
-		cssTextContent: _twindSheet.target.join('\n'),
+		cssTextContent: _twindSheet.target.join('\n'), // the line break is super important! (used as delimiter by our external postbuild script)
 		cssId: '__twind', // this MUST be! (this is how we find the style element in our external postbuild script)
 	};
 };
