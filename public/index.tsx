@@ -10,7 +10,7 @@ import { RoutedHome } from './routed/home.js';
 import { RoutedNonLazy } from './routed/non-lazy.js';
 import { RoutedRoute } from './routed/route.js';
 import { RoutedSuspendedSubRouter } from './suspended/index.js';
-import { IS_CLIENT_SIDE, IS_PRE_RENDERED, PUBLIC_PATH_ROOT } from './utils.js';
+import { IS_CLIENT_SIDE, IS_PRE_RENDERED, KEYBOARD_INTERACT, PUBLIC_PATH_ROOT } from './utils.js';
 
 if (process.env.NODE_ENV === 'development') {
 	(async () => {
@@ -222,6 +222,37 @@ export const App = () => {
 };
 
 if (IS_CLIENT_SIDE) {
+	document.documentElement.addEventListener(
+		'mousedown',
+		(_ev: MouseEvent) => {
+			document.documentElement.classList.remove(KEYBOARD_INTERACT);
+		},
+		true,
+	);
+
+	document.addEventListener(
+		'keydown',
+		(_ev: KeyboardEvent) => {
+			document.documentElement.classList.add(KEYBOARD_INTERACT);
+		},
+		{
+			once: false,
+			passive: false,
+			capture: true,
+		},
+	);
+	document.addEventListener(
+		'keyup',
+		(_ev: KeyboardEvent) => {
+			document.documentElement.classList.add(KEYBOARD_INTERACT);
+		},
+		{
+			once: false,
+			passive: false,
+			capture: true,
+		},
+	);
+
 	if (IS_PRE_RENDERED) {
 		initPreactVDOMHook();
 		hydrate(<App />, document.body);

@@ -1,7 +1,35 @@
 import { css } from 'twind';
 
+import { KEYBOARD_INTERACT } from './utils.js';
+
 export const twindReset = () => css`
 	@layer base {
+		:root#twind.${KEYBOARD_INTERACT} > body * {
+			@apply focus:outline-none
+				ring(
+					focus:4
+					focus:purple-600
+					focus:offset-2
+				)
+				focus:border-transparent;
+		}
+
+		:root#twind:not(.${KEYBOARD_INTERACT}) > body * {
+			@apply focus:outline-none;
+		}
+
+		:root#twind:not(.${KEYBOARD_INTERACT}) > body input[type~='text'],
+		:root#twind:not(.${KEYBOARD_INTERACT}) > body input[type~='password'],
+		:root#twind:not(.${KEYBOARD_INTERACT}) > body input:not([type]) {
+			@apply focus:outline-none
+				ring(
+					focus:4
+					focus:green-800
+					focus:offset-2
+				)
+				focus:border-transparent;
+		}
+
 		:root#twind > body {
 			font-family: sans-serif;
 
@@ -53,7 +81,20 @@ export const twindReset = () => css`
 export const twindConfig = {
 	variants: [['is-rtl', '&[dir=rtl]']],
 	hash: false,
+	// hash(className, defaultHash) {
+	// 	return defaultHash(className);
+	// },
 	rules: [
+		[
+			'child-span', //  { /* ${theme('colors.black')} */}
+			(_, { e: _escape, h: _hash, theme: _theme }) => {
+				return {
+					'& > span': {
+						'@apply': 'bg-red-200',
+					},
+				};
+			},
+		],
 		[
 			'test-scope',
 			{

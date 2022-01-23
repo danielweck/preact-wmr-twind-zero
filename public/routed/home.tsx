@@ -17,7 +17,11 @@ export const RoutedHome: FunctionalComponent<unknown> = (_props: RenderableProps
 			</p>
 			<div class="test-scope">
 				<p>
-					this is a paragraph <span>with a child span</span> element.
+					this is a paragraph{' '}
+					<span class="child-span">
+						with a <span>child</span> span
+					</span>{' '}
+					element.
 				</p>
 				<h4>heading</h4>
 			</div>

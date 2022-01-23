@@ -6,3 +6,5 @@ export const PUBLIC_PATH_ROOT = process.env.WMR_PUBLIC_PATH_ROOT || '/';
 
 // client-side live dev server !== page prerendered via WMR 'build' mode
 export const IS_PRE_RENDERED = !IS_CLIENT_SIDE || !!document.querySelector('script[type=isodata]');
+
+export const KEYBOARD_INTERACT = 'KEYBOARD_INTERACT';
