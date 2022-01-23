@@ -1,8 +1,7 @@
-import type { Class as TClass } from 'twind';
-
-export type Class = TClass;
-
-// Both tw() and shortcut():
+// tw():
+// Parameters<(tokens: string) => string>
+//
+// shortcut():
 // Parameters<(strings: TemplateStringsArray | Class, ...interpolations: Class[]) => string>
 
 export type TClassProps = {

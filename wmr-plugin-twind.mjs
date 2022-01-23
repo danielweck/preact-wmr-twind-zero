@@ -72,29 +72,32 @@ export function wmrTwindPlugin(config) {
 
 			console.log(`${DEBUG_PREFIX}${green('stylesheet reset and process Twind tagged template literals...')}\n`);
 
-			code = code.replace(REGEXP_TWIND_TAGGED_TEMPLATE_LITERALS, (_match, $1, $2) => {
-				// Removes line breaks and collapses whitespaces
-				const classList = $2.replace(/\s\s*/gm, ' ').trim();
+			code = code.replace(
+				REGEXP_TWIND_TAGGED_TEMPLATE_LITERALS,
+				(_match, /** @type {string} */ $1, /** @type {string} */ $2) => {
+					// Removes line breaks and collapses whitespaces
+					const classList = $2.replace(/\s\s*/gm, ' ').trim();
 
-				if ($1 === 'twindTw') {
-					// Replaces tagged template literals (i.e. prefixed with the Twind function)
-					// with plain template literals (i.e. potentially-interporlated strings).
-					return `\`${classList}\``;
-				}
+					if ($1 === 'twindTw') {
+						// Replaces tagged template literals (i.e. prefixed with the Twind function)
+						// with plain template literals (i.e. potentially-interporlated strings).
+						return `\`${classList}\``;
+					}
 
-				// _tw is always defined here,
-				// this is just to satisfy the TypeScript compiler
-				const s = shortcut(classList);
-				const twindResult = _tw ? _tw(s) : 'no-twind?!';
+					// _tw is always defined here,
+					// this is just to satisfy the TypeScript compiler
+					const s = shortcut(classList);
+					const twindResult = _tw ? _tw(s) : 'no-twind?!';
 
-				console.log(`${DEBUG_PREFIX}${green('--------> shortcut: ')}${classList} => ${cyan(s)} => ${red(twindResult)}\n`);
+					console.log(`${DEBUG_PREFIX}${green('--------> shortcut: ')}${classList} => ${cyan(s)} => ${red(twindResult)}\n`);
 
-				if (_twindSheet && !_twindSheet.target.length) {
-					throw new Error(`${DEBUG_PREFIX}${red('empty stylesheet?!')} -- ${red(twindResult)}\n`);
-				}
+					if (_twindSheet && !_twindSheet.target.length) {
+						throw new Error(`${DEBUG_PREFIX}${red('empty stylesheet?!')} -- ${red(twindResult)}\n`);
+					}
 
-				return `\`${twindResult}\``;
-			});
+					return `\`${twindResult}\``;
+				},
+			);
 
 			// Sanity check in both build and dev modes:
 			// there should not be any remaining Twind *tagged* template literals.
@@ -103,10 +106,13 @@ export function wmrTwindPlugin(config) {
 				throw new Error(`${DEBUG_PREFIX}${red('not all Twind tagged template literals were transformed!')}\n`);
 			}
 
-			code = code.replace(REGEXP_MULTILINE_JSX_CLASS_PROPS, (_match, $1, $2) => {
-				// Removes line breaks and collapses whitespaces
-				return `${$1}="${$2.replace(/\s\s*/gm, ' ').trim()}"`;
-			});
+			code = code.replace(
+				REGEXP_MULTILINE_JSX_CLASS_PROPS,
+				(_match, /** @type {string} */ $1, /** @type {string} */ $2) => {
+					// Removes line breaks and collapses whitespaces
+					return `${$1}="${$2.replace(/\s\s*/gm, ' ').trim()}"`;
+				},
+			);
 
 			if (config.publicPath !== '/') {
 				// TODO: because of Preact WMR workaround for config.publicPath, the async module imports fail :(

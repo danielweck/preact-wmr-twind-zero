@@ -59,7 +59,7 @@ export default defineConfig(async (config) => {
 				const DEBUG_PREFIX = `\nWMR IMPORT_TYPE PLUGIN (${config.mode}) [${cyan(id.replace(process.cwd(), ''))}]:\n`;
 				const re = /^import(.*)({.+})\s*from\s*['|"](.+)['|"]/gm;
 				return {
-					code: code.replace(re, (match, $1, $2, $3) => {
+					code: code.replace(re, (match, /** @type {string} */ $1, /** @type {string} */ $2, /** @type {string} */ $3) => {
 						if (!$2.includes('type ')) {
 							return match; // preserve as-is
 						}

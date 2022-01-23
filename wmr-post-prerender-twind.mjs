@@ -75,7 +75,7 @@ setTimeout(async () => {
 			)} (inline CSS)`.replace(/\.\//g, '');
 
 			let preactCss = '';
-			html = html.replace(TWIND_REGEXP, (_match, $1) => {
+			html = html.replace(TWIND_REGEXP, (_match, /** @type {string} */ $1) => {
 				preactCss += $1;
 				const buff = Buffer.from($1);
 				const sizeBefore = buff.length;
