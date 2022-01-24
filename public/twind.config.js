@@ -29,7 +29,61 @@ export const twindReset = () => css`
 				)
 				focus:border-transparent;
 		}
+	}
+`;
 
+/** @type {import('twind').TwindUserConfig<import('twind').BaseTheme>} */
+export const twindConfig = {
+	variants: [['is-rtl', '&[dir=rtl]']],
+	hash: false,
+	// hash(className, defaultHash) {
+	// if (/^[~@]\(/.test(className)) {
+	// 	// shortcut `~(...)`
+	// 	// apply `@(...)`
+	// 	return defaultHash(className)
+	//   }
+	// 	return defaultHash(className);
+	// },
+	rules: [
+		[
+			'child-span', //  { /* ${theme('colors.black')} */}
+			(_, { e: _escape, h: _hash, theme: _theme }) => {
+				return {
+					'& > span': {
+						'@apply': 'bg-red-200',
+					},
+				};
+			},
+		],
+		[
+			'test-scope',
+			{
+				'&': {
+					'@apply': 'p-4 m-4 bg-black text-white',
+				},
+				'& p': {
+					'@apply': 'p-8 bg-red-100 text-blue-600',
+				},
+				'& p > span': {
+					'@apply': 'underline px-4 py-4 text-red-300',
+				},
+				'& > p': {
+					'font-family': 'serif',
+					color: 'magenta',
+				},
+				'& p span': {
+					'font-size': '200%',
+				},
+				'& > h4': {
+					'@apply': 'uppercase font-extrabold',
+					padding: '1em',
+					'background-color': 'blue',
+				},
+			},
+		],
+	],
+	// preflight: false, // uncomment this to manually / visually check the generated stylesheet more easily
+	preflight: css`
 		:root#twind > body {
 			font-family: sans-serif;
 
@@ -74,55 +128,7 @@ export const twindReset = () => css`
 		:root#twind > body h4 {
 			font-family: serif;
 		}
-	}
-`;
-
-/** @type {import('twind').TwindUserConfig<import('twind').BaseTheme>} */
-export const twindConfig = {
-	variants: [['is-rtl', '&[dir=rtl]']],
-	hash: false,
-	// hash(className, defaultHash) {
-	// 	return defaultHash(className);
-	// },
-	rules: [
-		[
-			'child-span', //  { /* ${theme('colors.black')} */}
-			(_, { e: _escape, h: _hash, theme: _theme }) => {
-				return {
-					'& > span': {
-						'@apply': 'bg-red-200',
-					},
-				};
-			},
-		],
-		[
-			'test-scope',
-			{
-				'&': {
-					'@apply': 'p-4 m-4 bg-black text-white',
-				},
-				'& p': {
-					'@apply': 'p-8 bg-red-100 text-blue-600',
-				},
-				'& p > span': {
-					'@apply': 'underline px-4 py-4 text-red-300',
-				},
-				'& > p': {
-					'font-family': 'serif',
-					color: 'magenta',
-				},
-				'& p span': {
-					'font-size': '200%',
-				},
-				'& > h4': {
-					'@apply': 'uppercase font-extrabold',
-					padding: '1em',
-					'background-color': 'blue',
-				},
-			},
-		],
-	],
-	// preflight: false, // uncomment this to manually / visually check the generated stylesheet more easily
+	`,
 	// preflight: [
 	// 	{
 	// 		'@layer base': {
