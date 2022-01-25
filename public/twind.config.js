@@ -50,7 +50,7 @@ export const twindConfig = {
 			(_, { e: _escape, h: _hash, theme: _theme }) => {
 				return {
 					'& > span': {
-						'@apply': 'bg-red-200',
+						'@apply': 'bg-red-200 after:content-[\'*\']',
 					},
 				};
 			},
