@@ -2,10 +2,10 @@ lockfileVersion: 5.3
 
 specifiers:
   '@parcel/css': ^1.1.0
-  '@twind/preset-autoprefix': ^1.0.0-next.23
-  '@twind/preset-ext': ^1.0.0-next.23
-  '@twind/preset-tailwind': ^1.0.0-next.23
-  '@twind/preset-tailwind-forms': ^1.0.0-next.23
+  '@twind/preset-autoprefix': ^1.0.0-next.24
+  '@twind/preset-ext': ^1.0.0-next.24
+  '@twind/preset-tailwind': ^1.0.0-next.24
+  '@twind/preset-tailwind-forms': ^1.0.0-next.24
   '@twind/typescript-plugin': ^0.3.4
   '@types/node': ^16.11.21
   '@typescript-eslint/eslint-plugin': ^5.10.1
@@ -32,12 +32,12 @@ specifiers:
   preact-iso: ^2.3.0
   prettier: ^2.5.1
   rimraf: ^3.0.2
-  rollup: ^2.66.0
+  rollup: ^2.66.1
   stylelint: ^14.3.0
   stylelint-config-html: ^1.0.0
   stylelint-config-prettier: ^9.0.3
   stylelint-config-standard: ^24.0.0
-  twind: ^1.0.0-next.23
+  twind: ^1.0.0-next.24
   typescript: ^4.5.5
   wmr: ^3.7.2
 
@@ -47,10 +47,10 @@ dependencies:
 
 devDependencies:
   '@parcel/css': 1.1.0
-  '@twind/preset-autoprefix': 1.0.0-next.23_ae5a7a085755e9841c5e88e9048db707
-  '@twind/preset-ext': 1.0.0-next.23_604635182c286ffec78aca3929d54760
-  '@twind/preset-tailwind': 1.0.0-next.23_ae5a7a085755e9841c5e88e9048db707
-  '@twind/preset-tailwind-forms': 1.0.0-next.23_604635182c286ffec78aca3929d54760
+  '@twind/preset-autoprefix': 1.0.0-next.24_64708e4dee0de6b09213130d5b70381f
+  '@twind/preset-ext': 1.0.0-next.24_658f0c06e4b023b49843ec21172e2228
+  '@twind/preset-tailwind': 1.0.0-next.24_64708e4dee0de6b09213130d5b70381f
+  '@twind/preset-tailwind-forms': 1.0.0-next.24_658f0c06e4b023b49843ec21172e2228
   '@twind/typescript-plugin': 0.3.4
   '@types/node': 16.11.21
   '@typescript-eslint/eslint-plugin': 5.10.1_0f442f6b60390429061d5d9b6bcaaba6
@@ -75,12 +75,12 @@ devDependencies:
   postcss-syntax: 0.36.2
   prettier: 2.5.1
   rimraf: 3.0.2
-  rollup: 2.66.0
+  rollup: 2.66.1
   stylelint: 14.3.0
   stylelint-config-html: 1.0.0_387acde72b94c028532b3c9cd4a4cddd
   stylelint-config-prettier: 9.0.3_stylelint@14.3.0
   stylelint-config-standard: 24.0.0_stylelint@14.3.0
-  twind: 1.0.0-next.23_typescript@4.5.5
+  twind: 1.0.0-next.24_typescript@4.5.5
   typescript: 4.5.5
   wmr: 3.7.2
 
@@ -498,11 +498,11 @@ packages:
     resolution: {integrity: sha512-qEru2uaH1vKZNCZR4rFCUZaflsBP7IWiGcIoQe22qi5tm+HEG/yPdhSba+ZCNTWk2xyYpx/nEFkncDY3orEx3w==}
     dev: true
 
-  /@twind/preset-autoprefix/1.0.0-next.23_ae5a7a085755e9841c5e88e9048db707:
-    resolution: {integrity: sha512-8zq/j09G3UJMRAoZQPBYIQQwFXvdLe0bd2VvAI57In4WKnPh2UJW/GsdaT+uZkhRj3isk9oz/bTEXXt9cu3t1A==}
+  /@twind/preset-autoprefix/1.0.0-next.24_64708e4dee0de6b09213130d5b70381f:
+    resolution: {integrity: sha512-7OcrhPVP53FtuFSgYPK4scmW7QZTW8J+dCVa+ymlQsRJLy3Q4sgF9H05fsN4MNiKoC4mK+oXL2tg0ue3c8n6MA==}
     engines: {node: '>=12.4'}
     peerDependencies:
-      twind: 1.0.0-next.23
+      twind: 1.0.0-next.24
       typescript: ^4.4.0
     peerDependenciesMeta:
       typescript:
@@ -510,56 +510,56 @@ packages:
     dependencies:
       '@swc/helpers': 0.3.2
       style-vendorizer: 2.1.1
-      twind: 1.0.0-next.23_typescript@4.5.5
+      twind: 1.0.0-next.24_typescript@4.5.5
       typescript: 4.5.5
     dev: true
 
-  /@twind/preset-ext/1.0.0-next.23_604635182c286ffec78aca3929d54760:
-    resolution: {integrity: sha512-uOsBfnE2bvi6uzM0XtuXgrZegLPDAGDpnwwgab2ATzls3Y4Hmb4uK5+NRsWOoX1SEPg//I3fqqcgUrL1ZzqkdA==}
+  /@twind/preset-ext/1.0.0-next.24_658f0c06e4b023b49843ec21172e2228:
+    resolution: {integrity: sha512-k/w7PXfH/BuvccygQLZVc6+IHPIohP1PVHW5u/SJAJ9ajEgNngTt1yutyjVSFyyPUdti30/aKyJTemSh1EXOyQ==}
     engines: {node: '>=12.4'}
     peerDependencies:
-      '@twind/preset-tailwind': 1.0.0-next.23
-      twind: 1.0.0-next.23
+      '@twind/preset-tailwind': 1.0.0-next.24
+      twind: 1.0.0-next.24
       typescript: ^4.4.0
     peerDependenciesMeta:
       typescript:
         optional: true
     dependencies:
       '@swc/helpers': 0.3.2
-      '@twind/preset-tailwind': 1.0.0-next.23_ae5a7a085755e9841c5e88e9048db707
-      twind: 1.0.0-next.23_typescript@4.5.5
+      '@twind/preset-tailwind': 1.0.0-next.24_64708e4dee0de6b09213130d5b70381f
+      twind: 1.0.0-next.24_typescript@4.5.5
       typescript: 4.5.5
     dev: true
 
-  /@twind/preset-tailwind-forms/1.0.0-next.23_604635182c286ffec78aca3929d54760:
-    resolution: {integrity: sha512-D7jmRsgjeYrkzhYxqQyk5LShVeZ9utc6yR/kTPOW/yGynL1POtvinUUmyKefFzlmjg5yuIS7RpC71ZBCpUhItA==}
+  /@twind/preset-tailwind-forms/1.0.0-next.24_658f0c06e4b023b49843ec21172e2228:
+    resolution: {integrity: sha512-jb5hbzMTP8cvR4FcTn9xElkZBxHS00Aclx+Br6t9mdMooKnVsx9qV4B+990rQOot5B9MQgnesaEhZDpM8CDldA==}
     engines: {node: '>=12.4'}
     peerDependencies:
-      '@twind/preset-tailwind': 1.0.0-next.23
-      twind: 1.0.0-next.23
+      '@twind/preset-tailwind': 1.0.0-next.24
+      twind: 1.0.0-next.24
       typescript: ^4.4.0
     peerDependenciesMeta:
       typescript:
         optional: true
     dependencies:
       '@swc/helpers': 0.3.2
-      '@twind/preset-tailwind': 1.0.0-next.23_ae5a7a085755e9841c5e88e9048db707
-      twind: 1.0.0-next.23_typescript@4.5.5
+      '@twind/preset-tailwind': 1.0.0-next.24_64708e4dee0de6b09213130d5b70381f
+      twind: 1.0.0-next.24_typescript@4.5.5
       typescript: 4.5.5
     dev: true
 
-  /@twind/preset-tailwind/1.0.0-next.23_ae5a7a085755e9841c5e88e9048db707:
-    resolution: {integrity: sha512-6FjLiv5FISZ7pgGXsQDg/lUG4HvL7YPKs/enafNVRVGQ7N2ku8UYXAba/1K92j5iGTDqLo9rH29G3hlF2T+Vdg==}
+  /@twind/preset-tailwind/1.0.0-next.24_64708e4dee0de6b09213130d5b70381f:
+    resolution: {integrity: sha512-Qh4q4BBqquZgLrRaJLCYxmSHCaeIK0/fwXj5zTkAqjRJqvX1DP/IfeXEtOi9/SNzlzx57oebJeUXVjKJVIP13A==}
     engines: {node: '>=12.4'}
     peerDependencies:
-      twind: 1.0.0-next.23
+      twind: 1.0.0-next.24
       typescript: ^4.4.0
     peerDependenciesMeta:
       typescript:
         optional: true
     dependencies:
       '@swc/helpers': 0.3.2
-      twind: 1.0.0-next.23_typescript@4.5.5
+      twind: 1.0.0-next.24_typescript@4.5.5
       typescript: 4.5.5
     dev: true
 
@@ -4282,8 +4282,8 @@ packages:
       glob: 7.2.0
     dev: true
 
-  /rollup/2.66.0:
-    resolution: {integrity: sha512-L6mKOkdyP8HK5kKJXaiWG7KZDumPJjuo1P+cfyHOJPNNTK3Moe7zCH5+fy7v8pVmHXtlxorzaBjvkBMB23s98g==}
+  /rollup/2.66.1:
+    resolution: {integrity: sha512-crSgLhSkLMnKr4s9iZ/1qJCplgAgrRY+igWv8KhG/AjKOJ0YX/WpmANyn8oxrw+zenF3BXWDLa7Xl/QZISH+7w==}
     engines: {node: '>=10.0.0'}
     hasBin: true
     optionalDependencies:
@@ -4953,8 +4953,8 @@ packages:
       typescript: 4.5.5
     dev: true
 
-  /twind/1.0.0-next.23_typescript@4.5.5:
-    resolution: {integrity: sha512-vqI8tsyyxwrNNhSnqPEgiDnsm5Lzvl8RZjyFqUQv7TqSoCcpYEGYYKUA87iwqUOcl5EaLJwRzGyXBVQffPnPBg==}
+  /twind/1.0.0-next.24_typescript@4.5.5:
+    resolution: {integrity: sha512-mAB7djGXG/QagAonxQr4YNBx+2E560ks2t+jMTd9N1ktr75Z4jexp6DtisgRghF7hrtVDYZJOxaHyxm2gj+vow==}
     engines: {node: '>=12.4'}
     peerDependencies:
       typescript: ^4.4.0
