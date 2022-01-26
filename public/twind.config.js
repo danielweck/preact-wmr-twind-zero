@@ -50,8 +50,8 @@ export const twindConfig = {
 			(_, { e: _escape, h: _hash, theme: _theme }) => {
 				return {
 					'& > span': {
-						// eslint-disable-next-line prettier/prettier
-						'@apply': 'bg-red-200 after:content-[\'*\']',
+						// eslint-disable-next-line
+						'@apply': "bg-red-200 after:content-['*']",
 					},
 				};
 			},
