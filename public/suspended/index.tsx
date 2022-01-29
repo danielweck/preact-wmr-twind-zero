@@ -2,8 +2,8 @@ import type { FunctionalComponent, RenderableProps } from 'preact';
 import { ErrorBoundary } from 'preact-iso/lazy';
 import { Router } from 'preact-iso/router';
 
-import { IS_PRE_RENDERED } from '../utils.js';
-import { SuspendedLazy } from './lazy/lazy-island.js';
+import { IS_PRE_RENDERED } from '../utils';
+import { SuspendedLazy } from './lazy/lazy-island';
 
 // This subrouter exists only to facilitate the generation of "critical" vs. "secondary" CSS stylesheets,
 // via the post-build script that parses all the Twind stylesheets

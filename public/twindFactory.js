@@ -1,7 +1,7 @@
 import { twind } from 'twind';
 
-import { twindReset } from './twind.config.js';
-import { twConfig } from './twindConfig.js';
+import { twindReset } from './twind.config';
+import { twConfig } from './twindConfig';
 
 /**
  * @template { string[] | CSSStyleSheet } [TSheet=string[]]

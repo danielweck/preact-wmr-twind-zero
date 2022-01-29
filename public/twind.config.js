@@ -1,6 +1,6 @@
 import { css } from 'twind';
 
-import { KEYBOARD_INTERACT } from './utils.js';
+import { KEYBOARD_INTERACT } from './utils';
 
 export const twindReset = () => css`
 	@layer base {

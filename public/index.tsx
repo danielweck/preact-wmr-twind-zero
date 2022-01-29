@@ -4,15 +4,15 @@ import lazy, { ErrorBoundary } from 'preact-iso/lazy';
 import type { PrerenderResult } from 'preact-iso/prerender';
 import { LocationProvider, Route, Router } from 'preact-iso/router';
 
-import { initPreactVDOMHook } from './preact-vnode-options-hook.js';
-import { Routed404 } from './routed/_404.js';
-import { RoutedHome } from './routed/home.js';
-import { RoutedNonLazy } from './routed/non-lazy.js';
-import { RoutedRoute } from './routed/route.js';
-import { RoutedSuspendedSubRouter } from './suspended/index.js';
-import { IS_CLIENT_SIDE, IS_PRE_RENDERED, KEYBOARD_INTERACT, PUBLIC_PATH_ROOT } from './utils.js';
+import { initPreactVDOMHook } from './preact-vnode-options-hook';
+import { Routed404 } from './routed/_404';
+import { RoutedHome } from './routed/home';
+import { RoutedNonLazy } from './routed/non-lazy';
+import { RoutedRoute } from './routed/route';
+import { RoutedSuspendedSubRouter } from './suspended/index';
+import { IS_CLIENT_SIDE, IS_PRE_RENDERED, KEYBOARD_INTERACT, PUBLIC_PATH_ROOT } from './utils';
 
-if (process.env.NODE_ENV === 'development') {
+if (globalThis.process?.env.NODE_ENV === 'development') {
 	(async () => {
 		// @ts-expect-error TS7016
 		await import('preact/debug');
@@ -48,13 +48,13 @@ if (process.env.NODE_ENV === 'development') {
 // }
 
 // Code splitting
-// const RoutedLazy = lazy(() => import('./routed/lazy.js'));
+// const RoutedLazy = lazy(() => import('./routed/lazy'));
 const RoutedLazy = lazy(
 	() =>
-		new Promise<typeof import('./routed/lazy.js')>((resolve) => {
+		new Promise<typeof import('./routed/lazy')>((resolve) => {
 			setTimeout(
 				() => {
-					resolve(import('./routed/lazy.js'));
+					resolve(import('./routed/lazy'));
 				},
 				IS_CLIENT_SIDE ? 1000 : 0,
 			);
@@ -257,7 +257,7 @@ if (IS_CLIENT_SIDE) {
 		initPreactVDOMHook();
 		hydrate(<App />, document.body);
 	} else {
-		// here in this code branch (no isodata): process.env.NODE_ENV === 'development'
+		// here in this code branch (no isodata): globalThis.process?.env.NODE_ENV === 'development'
 		// we use await import to force code splitting => this code bundle will not be loaded in production
 
 		// TODO: because of Preact WMR workaround for config.PUBLIC_PATH_ROOT, this import fails :(
@@ -265,7 +265,7 @@ if (IS_CLIENT_SIDE) {
 
 		/* PREACT_WMR_BUILD_STRIP_CODE_BEGIN */
 		(async () => {
-			const { initPreactVDOMHook_Twind } = await import('./preact-vnode-options-hook--twind.js');
+			const { initPreactVDOMHook_Twind } = await import('./preact-vnode-options-hook--twind');
 			const _tw = initPreactVDOMHook_Twind();
 			hydrate(<App />, document.body);
 		})();

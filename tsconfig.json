@@ -11,21 +11,26 @@
 				"enable": true
 			}
 		],
+		"useDefineForClassFields": true,
 		"jsx": "preserve",
 		"jsxFactory": "preact.h",
 		"jsxFragmentFactory": "preact.Fragment",
 		"allowJs": true,
 		"checkJs": true,
 		"strict": true,
+		"forceConsistentCasingInFileNames": true,
 		"strictNullChecks": true,
+		"isolatedModules": true,
 		"noEmit": true,
-		"moduleResolution": "node",
+		"moduleResolution": "Node",
+		"esModuleInterop": false,
 		"target": "ESNext",
-		"module": "esnext",
+		"module": "ESNext",
 		"resolveJsonModule": true,
 		"allowSyntheticDefaultImports": true,
 		"downlevelIteration": true,
 		"skipLibCheck": true,
+		"lib": ["DOM", "DOM.Iterable", "ESNext"],
 		"rootDir": "./",
 		"rootDirs": ["./", "./public/"],
 		"baseUrl": ".",
@@ -39,5 +44,7 @@
 		"disableFilenameBasedTypeAcquisition": true,
 		"include": ["rollup"]
 	},
-	"exclude": ["node_modules", "dist", "doc", ".github", ".vscode"]
+	"include": ["public"],
+	"exclude": ["node_modules", "dist", "doc", ".github", ".vscode"],
+	"references": [{ "path": "./tsconfig.node.json" }]
 }

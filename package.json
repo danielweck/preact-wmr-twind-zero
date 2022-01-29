@@ -7,15 +7,18 @@
 		"yarn": ">=1"
 	},
 	"scripts": {
-		"clean": "rimraf \"./dist\" && rimraf \"./.cache\" && rimraf \"./.tmp\"",
+		"clean": "rimraf \"./dist\" && rimraf \"./.cache\" && rimraf \"./node_modules/.vite\" && rimraf \"./.tmp\"",
 		"start": "npm run clean && cross-env DEBUG=* wmr",
 		"build": "npm run clean && cross-env DEBUG=* wmr build --prerender && npm run afterbuild",
 		"build-repeat-if-fail": "(npm run build || npm run build || npm run build || npm run build || npm run build || npm run build || npm run build || npm run build || npm run build || npm run build || exit 0) || echo OK",
-		"afterbuild": "node \"./wmr-post-prerender-twind.mjs\"",
 		"build-github": "npm run clean && cross-env DEBUG=* BUILD_FOR_GITHUB=1 wmr build --prerender && npm run afterbuild",
 		"build-github-repeat-if-fail": "(npm run build-github || npm run build-github || npm run build-github || npm run build-github || npm run build-github || npm run build-github || npm run build-github || npm run build-github || npm run build-github || npm run build-github || exit 0) || echo OK",
 		"build-viz": "npm run clean && cross-env DEBUG=* wmr build --prerender --visualize && npm run afterbuild",
 		"serve": "cross-env DEBUG=* wmr serve",
+		"start:vite": "npm run clean && cross-env DEBUG=*,-babel vite",
+		"build:vite": "npm run clean && cross-env DEBUG=*,-babel vite build",
+		"serve:vite": "cross-env DEBUG=* vite preview",
+		"afterbuild": "node \"./wmr-post-prerender-twind.mjs\"",
 		"serve-http2": "cross-env DEBUG=* wmr serve --http2",
 		"lint:eslint": "eslint \"./**/*.{ts,tsx,js,tsx,mjs}\"",
 		"lint:editorconfig": "eclint check '**/*' '!.tmp/**/*' '!package-lock.json' '!package.json' '!yarn.lock' '!pnpm-lock.yaml' '!.cache/**/*' '!.vscode/**/*' '!.git/**/*' '!node_modules/**/*' '!.github/**/*' '!.history/**/*' '!dist/**/*'",
@@ -34,6 +37,7 @@
 	},
 	"devDependencies": {
 		"@parcel/css": "^1.1.0",
+		"@preact/preset-vite": "^2.1.7",
 		"@twind/preset-autoprefix": "^1.0.0-next.27",
 		"@twind/preset-ext": "^1.0.0-next.27",
 		"@twind/preset-tailwind": "^1.0.0-next.27",
@@ -69,6 +73,7 @@
 		"stylelint-config-standard": "^24.0.0",
 		"twind": "^1.0.0-next.27",
 		"typescript": "^4.5.5",
+		"vite": "^2.7.13",
 		"wmr": "^3.7.2"
 	}
 }

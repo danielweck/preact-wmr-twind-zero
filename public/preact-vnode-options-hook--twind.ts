@@ -1,7 +1,7 @@
 import { type BaseTheme, type Sheet, type Twind, cssom } from 'twind';
 
 import { initPreactVDOMHook } from './preact-vnode-options-hook';
-import { createTwindInstance } from './twindFactory.js';
+import { createTwindInstance } from './twindFactory';
 
 let _tw: Twind<BaseTheme, CSSStyleSheet | string[]>;
 

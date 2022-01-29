@@ -2,8 +2,8 @@ import type { FunctionalComponent, RenderableProps } from 'preact';
 import { useState } from 'preact/hooks';
 import { ErrorBoundary } from 'preact-iso/lazy';
 
-import { SuspendedLazy } from '../suspended/lazy/lazy-island.js';
-import { twindShortcut, twindTw } from '../twindish.js';
+import { SuspendedLazy } from '../suspended/lazy/lazy-island';
+import { twindShortcut, twindTw } from '../twindish';
 
 const SuspendedLazyLoader: FunctionalComponent<unknown> = (_props: RenderableProps<unknown>) => {
 	const [isLazyLoaded, setLazyLoaded] = useState(false);
@@ -50,7 +50,7 @@ export const RoutedRoute: FunctionalComponent<unknown> = (_props: RenderableProp
 	// and also noting that this will perform whitespace collapse + string trim,
 	// resulting in cleaner smaller JSX hydration code
 	// (this is automatically done for class/className props too, not just the twindTw / twindShortcut functions)
-	const other = process.env.NOPE
+	const other = globalThis.process?.env.NOPE
 		? twindTw`text-pink-600`
 		: `
         
