@@ -2,10 +2,10 @@ lockfileVersion: 5.3
 
 specifiers:
   '@parcel/css': ^1.1.0
-  '@twind/preset-autoprefix': ^1.0.0-next.27
-  '@twind/preset-ext': ^1.0.0-next.27
-  '@twind/preset-tailwind': ^1.0.0-next.27
-  '@twind/preset-tailwind-forms': ^1.0.0-next.27
+  '@twind/preset-autoprefix': ^1.0.0-next.28
+  '@twind/preset-ext': ^1.0.0-next.28
+  '@twind/preset-tailwind': ^1.0.0-next.28
+  '@twind/preset-tailwind-forms': ^1.0.0-next.28
   '@twind/typescript-plugin': ^0.3.4
   '@types/node': ^16.11.21
   '@typescript-eslint/eslint-plugin': ^5.10.1
@@ -37,7 +37,7 @@ specifiers:
   stylelint-config-html: ^1.0.0
   stylelint-config-prettier: ^9.0.3
   stylelint-config-standard: ^24.0.0
-  twind: ^1.0.0-next.27
+  twind: ^1.0.0-next.28
   typescript: ^4.5.5
   wmr: ^3.7.2
 
@@ -47,10 +47,10 @@ dependencies:
 
 devDependencies:
   '@parcel/css': 1.1.0
-  '@twind/preset-autoprefix': 1.0.0-next.27_49fa3a6e162ed67b7dd87069b8e478ae
-  '@twind/preset-ext': 1.0.0-next.27_49fa3a6e162ed67b7dd87069b8e478ae
-  '@twind/preset-tailwind': 1.0.0-next.27_49fa3a6e162ed67b7dd87069b8e478ae
-  '@twind/preset-tailwind-forms': 1.0.0-next.27_c6c4b8a5a3b043930d403625183868b0
+  '@twind/preset-autoprefix': 1.0.0-next.28_43c48a36ff5c244ce5674e13919a6b76
+  '@twind/preset-ext': 1.0.0-next.28_43c48a36ff5c244ce5674e13919a6b76
+  '@twind/preset-tailwind': 1.0.0-next.28_43c48a36ff5c244ce5674e13919a6b76
+  '@twind/preset-tailwind-forms': 1.0.0-next.28_fab30623afd72675786bd7582386be2d
   '@twind/typescript-plugin': 0.3.4
   '@types/node': 16.11.21
   '@typescript-eslint/eslint-plugin': 5.10.1_5bb2413551d07429e4087fb9ca3ae3ea
@@ -80,7 +80,7 @@ devDependencies:
   stylelint-config-html: 1.0.0_387acde72b94c028532b3c9cd4a4cddd
   stylelint-config-prettier: 9.0.3_stylelint@14.3.0
   stylelint-config-standard: 24.0.0_stylelint@14.3.0
-  twind: 1.0.0-next.27_typescript@4.5.5
+  twind: 1.0.0-next.28_typescript@4.5.5
   typescript: 4.5.5
   wmr: 3.7.2
 
@@ -498,11 +498,11 @@ packages:
     resolution: {integrity: sha512-qEru2uaH1vKZNCZR4rFCUZaflsBP7IWiGcIoQe22qi5tm+HEG/yPdhSba+ZCNTWk2xyYpx/nEFkncDY3orEx3w==}
     dev: true
 
-  /@twind/preset-autoprefix/1.0.0-next.27_49fa3a6e162ed67b7dd87069b8e478ae:
-    resolution: {integrity: sha512-PbvdVGObjvFW+mN/8GPql8s1WpLHPy7oRBtIChT6FGE+67t1oH5tsrUE4D3Zsps2s1tmlKQ4GIbH+3BOLvIm7w==}
+  /@twind/preset-autoprefix/1.0.0-next.28_43c48a36ff5c244ce5674e13919a6b76:
+    resolution: {integrity: sha512-05GOi/JnJo30Ob8CJii2nDd3Pc5erw1YHQX0p52LA6vZ+01BG5gYKtHOB8vk/6iHq36jFg+J0CRD5D1E1JVYBg==}
     engines: {node: '>=12.4'}
     peerDependencies:
-      twind: 1.0.0-next.27
+      twind: 1.0.0-next.28
       typescript: ^4.4.0
     peerDependenciesMeta:
       typescript:
@@ -510,54 +510,54 @@ packages:
     dependencies:
       '@swc/helpers': 0.3.2
       style-vendorizer: 2.1.1
-      twind: 1.0.0-next.27_typescript@4.5.5
+      twind: 1.0.0-next.28_typescript@4.5.5
       typescript: 4.5.5
     dev: true
 
-  /@twind/preset-ext/1.0.0-next.27_49fa3a6e162ed67b7dd87069b8e478ae:
-    resolution: {integrity: sha512-RoKSfEc+fzGNfhvLtplV4XuCJk+ZxaZ1uiKLM6SChoRHHu5ecuAbRgX86umBfu8w12wS6zzu26hfazf+kPobMg==}
+  /@twind/preset-ext/1.0.0-next.28_43c48a36ff5c244ce5674e13919a6b76:
+    resolution: {integrity: sha512-/awVgBeu6vvAk8uffFnSNeJmGIvPlRowlQ1KEkZhuQj/gUNuuUG3bUcXdWGqufTKgVATFBfa4vqmI67Yvu3+Iw==}
     engines: {node: '>=12.4'}
     peerDependencies:
-      twind: 1.0.0-next.27
+      twind: 1.0.0-next.28
       typescript: ^4.4.0
     peerDependenciesMeta:
       typescript:
         optional: true
     dependencies:
       '@swc/helpers': 0.3.2
-      twind: 1.0.0-next.27_typescript@4.5.5
+      twind: 1.0.0-next.28_typescript@4.5.5
       typescript: 4.5.5
     dev: true
 
-  /@twind/preset-tailwind-forms/1.0.0-next.27_c6c4b8a5a3b043930d403625183868b0:
-    resolution: {integrity: sha512-r++SHK0r4gwcktIKLQxY0Jxqvs1LhAL7Sp0/Q8IUCcXr/wOdru6J56FPJv8/W+kaYVcIAXCxwZwlm0M1GG5AZA==}
+  /@twind/preset-tailwind-forms/1.0.0-next.28_fab30623afd72675786bd7582386be2d:
+    resolution: {integrity: sha512-kcA1ZDOy3W4eR/HPDMZ/cvt2IQ6PO+6b8YZ6HjiWrS39LyJ7/c3P7SPz83iI4F6xZuGCuCZacd0wX+t9Q3L7eg==}
     engines: {node: '>=12.4'}
     peerDependencies:
-      '@twind/preset-tailwind': 1.0.0-next.27
-      twind: 1.0.0-next.27
+      '@twind/preset-tailwind': 1.0.0-next.28
+      twind: 1.0.0-next.28
       typescript: ^4.4.0
     peerDependenciesMeta:
       typescript:
         optional: true
     dependencies:
       '@swc/helpers': 0.3.2
-      '@twind/preset-tailwind': 1.0.0-next.27_49fa3a6e162ed67b7dd87069b8e478ae
-      twind: 1.0.0-next.27_typescript@4.5.5
+      '@twind/preset-tailwind': 1.0.0-next.28_43c48a36ff5c244ce5674e13919a6b76
+      twind: 1.0.0-next.28_typescript@4.5.5
       typescript: 4.5.5
     dev: true
 
-  /@twind/preset-tailwind/1.0.0-next.27_49fa3a6e162ed67b7dd87069b8e478ae:
-    resolution: {integrity: sha512-Qjq/3wjKWc3OTsQuggt7Z2mkcUMu3WQtEXSMffVmSMQDrZftoAautWZiZkC4hr2vyQiSAx3WpQ8QO/J4J1gqhw==}
+  /@twind/preset-tailwind/1.0.0-next.28_43c48a36ff5c244ce5674e13919a6b76:
+    resolution: {integrity: sha512-88tUoU02xEtVXMqg/mx0eFtshQsP2Z+brpKPszr2+Ese1ppqYaSIRjhyP1LPg7gb11Xgm5e3X7CbbKQBC8RxNA==}
     engines: {node: '>=12.4'}
     peerDependencies:
-      twind: 1.0.0-next.27
+      twind: 1.0.0-next.28
       typescript: ^4.4.0
     peerDependenciesMeta:
       typescript:
         optional: true
     dependencies:
       '@swc/helpers': 0.3.2
-      twind: 1.0.0-next.27_typescript@4.5.5
+      twind: 1.0.0-next.28_typescript@4.5.5
       typescript: 4.5.5
     dev: true
 
@@ -1074,7 +1074,7 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001303
+      caniuse-lite: 1.0.30001304
       electron-to-chromium: 1.4.57
       escalade: 3.1.1
       node-releases: 2.0.1
@@ -1150,8 +1150,8 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /caniuse-lite/1.0.30001303:
-    resolution: {integrity: sha512-/Mqc1oESndUNszJP0kx0UaQU9kEv9nNtJ7Kn8AdA0mNnH8eR1cj0kG+NbNuC1Wq/b21eA8prhKRA3bbkjONegQ==}
+  /caniuse-lite/1.0.30001304:
+    resolution: {integrity: sha512-bdsfZd6K6ap87AGqSHJP/s1V+U6Z5lyrcbBu3ovbCCf8cSYpwTtGrCBObMpJqwxfTbLW6YTIdbb1jEeTelcpYQ==}
     dev: true
 
   /chalk/2.4.2:
@@ -1782,7 +1782,7 @@ packages:
       '@mdn/browser-compat-data': 3.3.14
       ast-metadata-inferer: 0.7.0
       browserslist: 4.19.1
-      caniuse-lite: 1.0.30001303
+      caniuse-lite: 1.0.30001304
       core-js: 3.20.3
       eslint: 8.8.0
       find-up: 5.0.0
@@ -4951,8 +4951,8 @@ packages:
       typescript: 4.5.5
     dev: true
 
-  /twind/1.0.0-next.27_typescript@4.5.5:
-    resolution: {integrity: sha512-fgf7PLIXLm0FxhUsYyOe77riLQMDwKk+auVNXsHH7dqQbpl6qwbjBJYbMwtyQ/jXpliAJtPmC1jqJSjFalQBmQ==}
+  /twind/1.0.0-next.28_typescript@4.5.5:
+    resolution: {integrity: sha512-emDfID0rD8QMsXBXQKX2E9UHvaNSivk26Jn7sR18SaX5ocS6VsTvrabnbTGz7fZXo3VvFjYcVmuSib6A4ASqmA==}
     engines: {node: '>=12.4'}
     peerDependencies:
       typescript: ^4.4.0
