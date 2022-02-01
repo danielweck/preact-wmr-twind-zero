@@ -54,7 +54,7 @@ export function wmrTwindPlugin(config) {
 			if (!_tw) {
 				console.log(`${DEBUG_PREFIX}${green('lazy create stylesheet and init Twind')}\n`);
 
-				_twindSheet = virtual();
+				_twindSheet = virtual(false);
 
 				_tw = createTwindInstance(_twindSheet);
 			} else {

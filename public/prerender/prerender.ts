@@ -8,7 +8,7 @@ import { resetTwindInstance } from '../twindFactory.js';
 
 // Global module-level stylesheet,
 // reset for each WMR-prerendered file
-const _twindSheet = virtual();
+const _twindSheet = virtual(false);
 
 // Custom Preact VNode 'options' hook
 // that interprets Twind component props (class, classname, etc.)
