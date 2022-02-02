@@ -16,7 +16,6 @@ jobs:
   build:
     timeout-minutes: 10
     if: "github.event_name == 'pull_request' || !contains(github.event.head_commit.message, 'skip ci')"
-    name: Node v${{ matrix.node }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -26,6 +25,7 @@ jobs:
         include:
           - os: ubuntu-latest
             osname: linux
+    name: Node v${{ matrix.node }} on ${{ matrix.os }} (${{ matrix.osname }})
     env:
       GIHUB_ACTIONS_OS_NAME: ${{ matrix.osname }}
     steps:
@@ -47,7 +47,8 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node }}
-        cache: pnpm
+    #    cache: pnpm
+    #    cache-dependency-path: '**/pnpm-lock.yaml'
     #- run: npm --global install npm@^8
     - name: PNPM cache
       uses: actions/cache@v2
@@ -58,7 +59,8 @@ jobs:
           ${{ runner.os }}-
     # - run: npm --global install pnpm
     # - run: pnpm install --frozen-lockfile
-    - uses: pnpm/action-setup@v2.0.1
+    - name: PNPM install
+      uses: pnpm/action-setup@v2.0.1
       with:
         version: 6.29.1
         run_install: |
