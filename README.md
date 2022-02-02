@@ -47,7 +47,7 @@ FYI: my original stream of consciousness in a Twind discussion thread: https://g
 ### Prerequisites
 
 - NodeJS 16+ ( https://nodejs.org )
-- `pnpm install` ( https://pnpm.io or can be installed via NodeJS CorePack)
+- `pnpm install --frozen-lockfile` ( https://pnpm.io or can be installed via NodeJS CorePack)
 
 Alternative package managers:
 

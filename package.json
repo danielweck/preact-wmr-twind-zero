@@ -2,10 +2,9 @@
 	"type": "module",
 	"engines": {
 		"node": ">=16",
-		"npm": ">=8",
-		"pnpm": ">=6",
-		"yarn": ">=1"
+		"pnpm": ">=6"
 	},
+	"packageManager": "pnpm@6.29.1",
 	"scripts": {
 		"prepare": "husky install",
 		"clean": "rimraf \"./dist\" && rimraf \"./.cache\" && rimraf \"./.tmp\"",
@@ -23,7 +22,7 @@
 		"lint-prettier": "prettier --check --no-write --loglevel log \"./\"",
 		"lint-stylelint": "stylelint \"./public/**/*.{html,htm,css,ts,tsx,js,tsx,mjs,cjs}\"",
 		"lint": "npm run lint:editorconfig && npm run lint:eslint && npm run lint-stylelint && npm run lint-prettier && npm run typescript",
-		"eslint-fix": "eslint --cache --fix \"./**/*.{ts,tsx,js,tsx,mjs,cjs}\"",
+		"eslint-fix": "cross-env TIMING=1 eslint --cache --fix \"./**/*.{ts,tsx,js,tsx,mjs,cjs}\"",
 		"prettier-fix": "prettier --ignore-unknown --write \"./**/!(pnpm-lock.yaml)*.{html,htm,css,json,md,yml,yaml,svg,xml,ts,tsx,js,tsx,mjs,cjs}\"",
 		"stylelint-fix": "stylelint --fix \"./public/**/*.{html,htm,css,ts,tsx,js,tsx,mjs,cjs}\"",
 		"lint-fix": "npm run eslint-fix && npm run prettier-fix && npm run stylelint-fix",
@@ -48,10 +47,10 @@
 		"@commitlint/cli": "^16.1.0",
 		"@commitlint/config-conventional": "^16.0.0",
 		"@parcel/css": "^1.2.0",
-		"@twind/preset-autoprefix": "^1.0.0-next.33",
-		"@twind/preset-ext": "^1.0.0-next.33",
-		"@twind/preset-tailwind": "^1.0.0-next.33",
-		"@twind/preset-tailwind-forms": "^1.0.0-next.33",
+		"@twind/preset-autoprefix": "^1.0.0-next.34",
+		"@twind/preset-ext": "^1.0.0-next.34",
+		"@twind/preset-tailwind": "^1.0.0-next.34",
+		"@twind/preset-tailwind-forms": "^1.0.0-next.34",
 		"@twind/typescript-plugin": "^0.3.5",
 		"@types/node": "^16.11.22",
 		"@typescript-eslint/eslint-plugin": "^5.10.2",
@@ -78,12 +77,12 @@
 		"postcss-syntax": "^0.36.2",
 		"prettier": "^2.5.1",
 		"rimraf": "^3.0.2",
-		"rollup": "^2.66.1",
+		"rollup": "^2.67.0",
 		"stylelint": "^14.3.0",
 		"stylelint-config-html": "^1.0.0",
 		"stylelint-config-prettier": "^9.0.3",
 		"stylelint-config-standard": "^24.0.0",
-		"twind": "^1.0.0-next.33",
+		"twind": "^1.0.0-next.34",
 		"typescript": "^4.5.5",
 		"wmr": "^3.7.2"
 	}
