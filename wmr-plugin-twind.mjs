@@ -32,7 +32,7 @@ const REGEXP_MULTILINE_JSX_CLASS_PROPS = /(class|className)[\s]*=[\s]*{[\s]*`([^
 export function wmrTwindPlugin(config) {
 	// in WMR build/prerender mode, we execute Twind via a transient stylesheet.
 	// See lazy instantiation further down below...
-	/** @type {import('twind').Twind<import('twind').BaseTheme, string[]> | undefined} */
+	/** @type {import('twind').Twind<import('twind').BaseTheme & import('@twind/preset-tailwind').TailwindTheme, string[]> | undefined} */
 	let _tw;
 	/** @type {import('twind').Sheet<string[]> | undefined} */
 	let _twindSheet;

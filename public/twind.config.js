@@ -32,7 +32,7 @@ export const twindReset = () => css`
 	}
 `;
 
-/** @type {import('twind').TwindUserConfig<import('twind').BaseTheme>} */
+/** @type {import('twind').TwindUserConfig<import('twind').BaseTheme, import('twind').Preset<import('twind').BaseTheme>[]>} */
 export const twindConfig = {
 	variants: [['is-rtl', '&[dir=rtl]']],
 	hash: false,
