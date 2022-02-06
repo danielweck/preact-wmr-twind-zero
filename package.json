@@ -2,10 +2,9 @@
 	"type": "module",
 	"engines": {
 		"node": ">=16",
-		"npm": ">=8",
-		"pnpm": ">=6",
-		"yarn": ">=1"
+		"pnpm": ">=6"
 	},
+	"packageManager": "pnpm@6.29.1",
 	"scripts": {
 		"prepare": "husky install",
 		"clean": "rimraf \"./dist\" && rimraf \"./.cache\" && rimraf \"./.tmp\"",
@@ -23,7 +22,7 @@
 		"lint-prettier": "prettier --check --no-write --loglevel log \"./\"",
 		"lint-stylelint": "stylelint \"./public/**/*.{html,htm,css,ts,tsx,js,tsx,mjs,cjs}\"",
 		"lint": "npm run lint:editorconfig && npm run lint:eslint && npm run lint-stylelint && npm run lint-prettier && npm run typescript",
-		"eslint-fix": "eslint --cache --fix \"./**/*.{ts,tsx,js,tsx,mjs,cjs}\"",
+		"eslint-fix": "cross-env TIMING=1 eslint --cache --fix \"./**/*.{ts,tsx,js,tsx,mjs,cjs}\"",
 		"prettier-fix": "prettier --ignore-unknown --write \"./**/!(pnpm-lock.yaml)*.{html,htm,css,json,md,yml,yaml,svg,xml,ts,tsx,js,tsx,mjs,cjs}\"",
 		"stylelint-fix": "stylelint --fix \"./public/**/*.{html,htm,css,ts,tsx,js,tsx,mjs,cjs}\"",
 		"lint-fix": "npm run eslint-fix && npm run prettier-fix && npm run stylelint-fix",

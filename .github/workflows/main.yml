@@ -2,23 +2,30 @@ name: CI
 on:
   push:
     branches: [ main ]
+    paths-ignore:
+      - '.husky'
     tags-ignore:
       - '*'
   pull_request:
     branches: [ main ]
+    paths-ignore:
+      - '.husky'
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
   build:
+    timeout-minutes: 10
     if: "github.event_name == 'pull_request' || !contains(github.event.head_commit.message, 'skip ci')"
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
+        node: ['16.x']
         os: [ubuntu-latest]
         include:
           - os: ubuntu-latest
             osname: linux
+    name: Node v${{ matrix.node }} on ${{ matrix.os }} (${{ matrix.osname }})
     env:
       GIHUB_ACTIONS_OS_NAME: ${{ matrix.osname }}
     steps:
@@ -36,30 +43,44 @@ jobs:
     - name: Git config local dump (post)
       run: 'git config --list || echo NO_GIT_GLOBAL_CONFIG || true'
       shell: bash
-    - uses: actions/setup-node@v2
+    - name: Node v${{ matrix.node }}
+      uses: actions/setup-node@v2
       with:
-        node-version: '16'
-    - run: node --version && npm --version
+        node-version: ${{ matrix.node }}
+    #    cache: pnpm
+    #    cache-dependency-path: '**/pnpm-lock.yaml'
     #- run: npm --global install npm@^8
     - name: PNPM cache
       uses: actions/cache@v2
       with:
         path: ~/.pnpm-store
-        key: ${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+        key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
         restore-keys: |
-          ${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
-    - run: npm --global install pnpm
-    - run: pnpm --version
+          ${{ runner.os }}-
+    # - run: npm --global install pnpm
+    # - run: pnpm install --frozen-lockfile
+    - name: PNPM install
+      uses: pnpm/action-setup@v2.0.1
+      with:
+        version: 6.29.1
+        run_install: |
+          - recursive: false
+            args: [--frozen-lockfile]
+    #    - args: [--global, typescript]
+    - name: ENV
+      run: |
+        echo cwd: `pwd`;
+        echo branch `git branch --show-current`;
+        echo node `node --version`;
+        echo npm `npm --version`;
+        echo pnpm `pnpm --version`
     - run: git --no-pager diff
-    #- run: npm cache clean --force
-    #- run: npm cache verify
-    - run: pnpm install --frozen-lockfile
     - name: PR action (just lint)
       if: ${{ github.event_name == 'pull_request' }}
-      run: npm run lint
+      run: pnpm lint
     - name: non-PR action (lint and build)
       if: ${{ github.event_name != 'pull_request' }}
-      run: npm run lint && npm run build-github-repeat-if-fail && ls -R dist && mv dist/preact-wmr-twind-zero/* dist/ && rm -r dist/preact-wmr-twind-zero && rm dist/*.ts && rm dist/chunks/prerender*
+      run: pnpm lint && pnpm build-github-repeat-if-fail && ls -R dist && mv dist/preact-wmr-twind-zero/* dist/ && rm -r dist/preact-wmr-twind-zero && rm dist/*.ts && rm dist/chunks/prerender*
     - name: Checkout GH-PAGES
       if: ${{ github.event_name != 'pull_request' }}
       uses: actions/checkout@v2
@@ -73,6 +94,7 @@ jobs:
           cd gh-pages
           ls -als
           cp -r ../dist/* ./
+          touch .nojekyll
           ls -als
           git config user.name "Daniel Weck"
           git config user.email daniel.weck@gmail.com
