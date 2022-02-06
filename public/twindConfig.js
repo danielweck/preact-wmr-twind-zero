@@ -11,7 +11,7 @@ export const twConfig = defineConfig({
 	presets: [
 		twindPresetAutoprefix(),
 		...asArray(twindConfig.presets),
-		twindPresetTailwind({ enablePreflight: true }),
+		twindPresetTailwind({ disablePreflight: false }),
 		twindPresetTailwindForms({ strategy: 'class' }),
 		twindPresetExt(),
 	],
