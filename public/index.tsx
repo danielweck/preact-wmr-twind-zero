@@ -9,6 +9,7 @@ import { Routed404 } from './routed/_404.js';
 import { RoutedHome } from './routed/home.js';
 import { RoutedNonLazy } from './routed/non-lazy.js';
 import { RoutedRoute } from './routed/route.js';
+import { StaticNoHydrate } from './static-no-hydrate.js';
 import { RoutedSuspendedSubRouter } from './suspended/index.js';
 import { IS_CLIENT_SIDE, IS_PRE_RENDERED, KEYBOARD_INTERACT, PUBLIC_PATH_ROOT } from './utils.js';
 
@@ -208,15 +209,31 @@ export const App = () => {
 					</a>
 				</li>
 			</ul>
-			<p
-				dir="rtl"
-				class={`
+			<StaticNoHydrate>
+				<p
+					dir="rtl"
+					class={`
 					is-rtl:font-bold
 					is-rtl:text-6xl
 				`}
-			>
-				RTL (bold)
-			</p>
+				>
+					RTL (bold)
+				</p>
+				<p>
+					<button
+						onClick={() => {
+							alert('BUTTON CLICKY');
+						}}
+					>
+						CLICK HERE TO TEST "StaticSkipHydrate"
+					</button>
+					<span class={onRouteChangeWasCalled ? 'text-red-600' : 'text-green-600'}>
+						{onRouteChangeWasCalled
+							? '[onRouteChangeWasCalled] (this should never display)'
+							: '[!onRouteChangeWasCalled] (this should always display)'}
+					</span>
+				</p>
+			</StaticNoHydrate>
 		</LocationProvider>
 	);
 };
@@ -253,6 +270,8 @@ if (IS_CLIENT_SIDE) {
 		},
 	);
 
+	// note: IS_PRE_RENDERED includes IS_SERVER_SIDE,
+	// but here we are inside a IS_CLIENT_SIDE conditional code branch
 	if (IS_PRE_RENDERED) {
 		initPreactVDOMHook();
 		hydrate(<App />, document.body);
