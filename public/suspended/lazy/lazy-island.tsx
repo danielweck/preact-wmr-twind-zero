@@ -1,4 +1,5 @@
-import lazy from 'preact-iso/lazy';
+import { type FunctionalComponent, type RenderableProps } from 'preact';
+import lazy, { ErrorBoundary } from 'preact-iso/lazy';
 
 import { IS_CLIENT_SIDE } from '../../utils.js';
 
@@ -15,3 +16,15 @@ export const SuspendedLazy = lazy(
 			);
 		}),
 );
+
+export const SuspendedLazy_: FunctionalComponent<unknown> = (_props: RenderableProps<unknown>) => {
+	return (
+		<ErrorBoundary
+			onError={(err) => {
+				console.log('ErrorBoundary onError (SuspendedLazy): ', err);
+			}}
+		>
+			<SuspendedLazy />
+		</ErrorBoundary>
+	);
+};

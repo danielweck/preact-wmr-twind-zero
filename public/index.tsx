@@ -11,7 +11,7 @@ import { RoutedNonLazy } from './routed/non-lazy.js';
 import { RoutedRoute } from './routed/route.js';
 import { StaticNoHydrate } from './static-no-hydrate.js';
 import { RoutedSuspendedSubRouter } from './suspended/index.js';
-import { SuspendedStaticNoHydrate } from './suspended/static-no-hydrate/lazy-island.js';
+import { SuspendedStaticNoHydrate_ } from './suspended/static-no-hydrate/lazy-island.js';
 import { IS_CLIENT_SIDE, IS_PRE_RENDERED, KEYBOARD_INTERACT, PUBLIC_PATH_ROOT } from './utils.js';
 
 if (process.env.NODE_ENV === 'development') {
@@ -234,13 +234,7 @@ export const App = ({ prerenderIndex }: { prerenderIndex?: number }) => {
 			</StaticNoHydrate>
 
 			<StaticNoHydrate>
-				<ErrorBoundary
-					onError={(err) => {
-						console.log('ErrorBoundary onError (SuspendedStaticNoHydrate): ', err);
-					}}
-				>
-					<SuspendedStaticNoHydrate />
-				</ErrorBoundary>
+				<SuspendedStaticNoHydrate_ />
 			</StaticNoHydrate>
 		</LocationProvider>
 	);

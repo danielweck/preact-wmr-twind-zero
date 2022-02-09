@@ -1,8 +1,7 @@
 import type { FunctionalComponent, RenderableProps } from 'preact';
 import { useState } from 'preact/hooks';
-import { ErrorBoundary } from 'preact-iso/lazy';
 
-import { SuspendedLazy } from '../suspended/lazy/lazy-island.js';
+import { SuspendedLazy_ } from '../suspended/lazy/lazy-island.js';
 import { twindShortcut, twindTw } from '../twindish.js';
 
 const SuspendedLazyLoader: FunctionalComponent<unknown> = (_props: RenderableProps<unknown>) => {
@@ -11,13 +10,7 @@ const SuspendedLazyLoader: FunctionalComponent<unknown> = (_props: RenderablePro
 	return (
 		<>
 			{isLazyLoaded ? (
-				<ErrorBoundary
-					onError={(err) => {
-						console.log('ErrorBoundary onError (SuspendedLazy): ', err);
-					}}
-				>
-					<SuspendedLazy />
-				</ErrorBoundary>
+				<SuspendedLazy_ />
 			) : (
 				<>
 					<button
