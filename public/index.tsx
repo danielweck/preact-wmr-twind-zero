@@ -11,6 +11,7 @@ import { RoutedNonLazy } from './routed/non-lazy.js';
 import { RoutedRoute } from './routed/route.js';
 import { StaticNoHydrate } from './static-no-hydrate.js';
 import { RoutedSuspendedSubRouter } from './suspended/index.js';
+import { SuspendedStaticNoHydrate } from './suspended/static-no-hydrate/lazy-island.js';
 import { IS_CLIENT_SIDE, IS_PRE_RENDERED, KEYBOARD_INTERACT, PUBLIC_PATH_ROOT } from './utils.js';
 
 if (process.env.NODE_ENV === 'development') {
@@ -62,10 +63,23 @@ const RoutedLazy = lazy(
 		}),
 );
 
-export const App = () => {
+// "prerenderIndex": 0,
+// "ssr": true,
+// "url": "/route-path/",
+// "route": {
+// 	"url": "/route-path/",
+// 	"_discoveredBy": {
+// 		"url": "/"
+// 	}
+// }
+export const App = ({ prerenderIndex }: { prerenderIndex?: number }) => {
 	const [onRouteChangeWasCalled, setOnRouteChangeWasCalled] = useState(false);
 	return (
 		<LocationProvider>
+			<StaticNoHydrate>
+				<p>prerenderIndex: {prerenderIndex}</p>
+			</StaticNoHydrate>
+
 			<h1>Router status:</h1>
 			<p
 				class={`
@@ -153,7 +167,7 @@ export const App = () => {
 							setOnRouteChangeWasCalled(true);
 						}}
 					>
-						<RoutedHome path={`${PUBLIC_PATH_ROOT}${IS_PRE_RENDERED ? '/' : ''}`} />
+						<RoutedHome path={`${PUBLIC_PATH_ROOT}`} />
 						<RoutedLazy path={`${PUBLIC_PATH_ROOT}routed-lazy${IS_PRE_RENDERED ? '/' : ''}`} />
 						<RoutedNonLazy path={`${PUBLIC_PATH_ROOT}routed-non-lazy${IS_PRE_RENDERED ? '/' : ''}`} />
 						<Route component={RoutedRoute} path={`${PUBLIC_PATH_ROOT}routed-route${IS_PRE_RENDERED ? '/' : ''}`} />
@@ -164,15 +178,15 @@ export const App = () => {
 			</div>
 
 			<h1>Twind critical/secondary stylesheet tests:</h1>
-			<p class="text-3xl">
+			<p class={'text-3xl'}>
 				This paragraphs and others located in different routes share the same <strong>text-3xl</strong> Twind style, but it
 				isn't duplicated in the pre-rendered "secondary" stylesheet, it is hoisted in the "critical" styles.
 			</p>
 			<p
 				class={`
-						bg-yellow-200
-						text-black
-					`}
+					bg-yellow-200
+					text-black
+				`}
 			>
 				This text has a <strong>yellow-200</strong> background (unique to this paragraph, not shared with any other route or
 				component)
@@ -209,30 +223,24 @@ export const App = () => {
 					</a>
 				</li>
 			</ul>
+
 			<StaticNoHydrate>
-				<p
-					dir="rtl"
-					class={`
-					is-rtl:font-bold
-					is-rtl:text-6xl
-				`}
+				<p>STATIC NO HYDRATE (HTML/JSX component code below is not shipped to client, only pre-rendered :)</p>
+				<span class={onRouteChangeWasCalled ? 'text-red-600' : 'text-green-600'}>
+					{onRouteChangeWasCalled
+						? '[onRouteChangeWasCalled] (this should never display (except in dev mode))'
+						: '[!onRouteChangeWasCalled] (this should always display (except in dev mode))'}
+				</span>
+			</StaticNoHydrate>
+
+			<StaticNoHydrate>
+				<ErrorBoundary
+					onError={(err) => {
+						console.log('ErrorBoundary onError (SuspendedStaticNoHydrate): ', err);
+					}}
 				>
-					RTL (bold)
-				</p>
-				<p>
-					<button
-						onClick={() => {
-							alert('BUTTON CLICKY');
-						}}
-					>
-						CLICK HERE TO TEST "StaticSkipHydrate"
-					</button>
-					<span class={onRouteChangeWasCalled ? 'text-red-600' : 'text-green-600'}>
-						{onRouteChangeWasCalled
-							? '[onRouteChangeWasCalled] (this should never display)'
-							: '[!onRouteChangeWasCalled] (this should always display)'}
-					</span>
-				</p>
+					<SuspendedStaticNoHydrate />
+				</ErrorBoundary>
 			</StaticNoHydrate>
 		</LocationProvider>
 	);
@@ -274,23 +282,30 @@ if (IS_CLIENT_SIDE) {
 	// but here we are inside a IS_CLIENT_SIDE conditional code branch
 	if (IS_PRE_RENDERED) {
 		initPreactVDOMHook();
-		hydrate(<App />, document.body);
+		hydrate(<App prerenderIndex={999} />, document.body);
 	} else {
 		// here in this code branch (no isodata): process.env.NODE_ENV === 'development'
 		// we use await import to force code splitting => this code bundle will not be loaded in production
 
 		// TODO: because of Preact WMR workaround for config.PUBLIC_PATH_ROOT, this import fails :(
 		// ... so we strip the code at build time by detecting the following HTML comment:
-
+		//
+		// THIS?
+		// const $import = new Function('s', 'return import(s)');
+		// const m = await $import('file:///preact-vnode-options-hook--twind.js');
+		// m.initPreactVDOMHook_Twind
+		//
 		/* PREACT_WMR_BUILD_STRIP_CODE_BEGIN */
 		(async () => {
 			const { initPreactVDOMHook_Twind } = await import('./preact-vnode-options-hook--twind.js');
 			const _tw = initPreactVDOMHook_Twind();
-			hydrate(<App />, document.body);
+			hydrate(<App prerenderIndex={-1} />, document.body);
 		})();
 		/* PREACT_WMR_BUILD_STRIP_CODE_END */
 	}
 }
+
+let _prerenderIndex = 0;
 
 // See ==> https://github.com/preactjs/wmr/blob/main/packages/wmr/src/lib/prerender.js
 //
@@ -313,8 +328,24 @@ export async function prerender(data: Record<string, any>): Promise<
 	// const $import = new Function('s', 'return import(s)');
 	// const { preactWmrPrerenderForTwind } = await $import('file:///' + path.resolve(cwd, './prerender/prerender.js'));
 
+	// console.log(`))) PRERENDER DATA: ${JSON.stringify(data, null, 4)}`);
+
 	// TODO: data props?
-	const res = await preactWmrPrerenderForTwind(data.url, <App {...data} />, { props: data });
+	// <App {...data} />
+	const res = await preactWmrPrerenderForTwind(data.url, <App prerenderIndex={_prerenderIndex++} />, {
+		props: data,
+	});
+	// const res = await preactWmrPrerenderForTwind(data.url, cloneElement(<App />, { prerenderIndex: _prerenderIndex++ }), {
+	// 	props: data,
+	// });
+	// // const $App = new Function('$', 'return (p) => $.apply($, [p])');
+	// const $App = new Function('$', 'return $');
+	// // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// // @ts-expect-error
+	// const res = await preactWmrPrerenderForTwind(data.url, $App(App), {
+	// 	maxDepth: 10,
+	// 	props: { prerenderIndex: _prerenderIndex++, ...data },
+	// });
 
 	const elements = new Set([
 		{ type: 'meta', props: { property: 'og:title', content: 'SEO title' } as Record<string, string> },

@@ -2,35 +2,39 @@ import { css } from 'twind';
 
 import { KEYBOARD_INTERACT } from './utils.js';
 
-export const twindReset = () => css`
-	@layer base {
-		:root#twind.${KEYBOARD_INTERACT} > body * {
-			@apply focus:outline-none
+const SKIP_PREFLIGHT = false;
+
+export const twindReset = SKIP_PREFLIGHT
+	? () => ''
+	: () => css`
+			@layer base {
+				:root#twind.${KEYBOARD_INTERACT} > body * {
+					@apply focus:outline-none
 				ring(
 					focus:4
 					focus:purple-600
 					focus:offset-2
 				)
 				focus:border-transparent;
-		}
+				}
 
-		:root#twind:not(.${KEYBOARD_INTERACT}) > body * {
-			@apply focus:outline-none;
-		}
+				:root#twind:not(.${KEYBOARD_INTERACT}) > body * {
+					@apply focus:outline-none;
+				}
 
-		:root#twind:not(.${KEYBOARD_INTERACT}) > body input[type~='text'],
-		:root#twind:not(.${KEYBOARD_INTERACT}) > body input[type~='password'],
-		:root#twind:not(.${KEYBOARD_INTERACT}) > body input:not([type]) {
-			@apply focus:outline-none
+				:root#twind:not(.${KEYBOARD_INTERACT}) > body input[type~='text'],
+				:root#twind:not(.${KEYBOARD_INTERACT}) > body input[type~='password'],
+				:root#twind:not(.${KEYBOARD_INTERACT}) > body input:not([type]) {
+					@apply focus:outline-none
 				ring(
 					focus:4
 					focus:green-800
 					focus:offset-2
 				)
 				focus:border-transparent;
-		}
-	}
-`;
+				}
+			}
+	  `;
 
 /** @type {import('twind').TwindUserConfig<import('twind').BaseTheme, import('twind').Preset<import('twind').BaseTheme>[]>} */
 export const twindConfig = {
@@ -84,52 +88,54 @@ export const twindConfig = {
 		],
 	],
 	// preflight: false, // uncomment this to manually / visually check the generated stylesheet more easily
-	preflight: css`
-		:root#twind > body {
-			font-family: sans-serif;
+	preflight: SKIP_PREFLIGHT
+		? false
+		: css`
+				:root#twind > body {
+					font-family: sans-serif;
 
-			@apply bg-yellow-100 text-black;
+					@apply bg-yellow-100 text-black;
 
-			border: 3px solid red;
-		}
+					border: 3px solid blue;
+				}
 
-		:root#twind[dir='ltr'] {
-			--is-ltr: 'true';
-			--is-rtl: 'false';
-		}
+				:root#twind[dir='ltr'] {
+					--is-ltr: 'true';
+					--is-rtl: 'false';
+				}
 
-		:root#twind[dir='rtl'] {
-			--is-rtl: 'true';
-			--is-ltr: 'false';
-		}
+				:root#twind[dir='rtl'] {
+					--is-rtl: 'true';
+					--is-ltr: 'false';
+				}
 
-		:root#twind > body a[href] {
-			@apply underline text-blue-700;
+				:root#twind > body a[href] {
+					@apply underline text-blue-700;
 
-			&:hover {
-				@apply font-bold text-blue-800;
-			}
-		}
+					&:hover {
+						@apply font-bold text-blue-800;
+					}
+				}
 
-		:root#twind > body h1 {
-			@apply font-bold uppercase text-3xl m-4;
+				:root#twind > body h1 {
+					@apply font-bold uppercase text-3xl m-4;
 
-			&:hover {
-				@apply text-blue-800;
-			}
-		}
+					&:hover {
+						@apply text-blue-800;
+					}
+				}
 
-		:root#twind > body h2 {
-			@apply font-bold uppercase text-xl m-2;
-		}
+				:root#twind > body h2 {
+					@apply font-bold uppercase text-xl m-2;
+				}
 
-		:root#twind > body h1,
-		:root#twind > body h2,
-		:root#twind > body h3,
-		:root#twind > body h4 {
-			font-family: serif;
-		}
-	`,
+				:root#twind > body h1,
+				:root#twind > body h2,
+				:root#twind > body h3,
+				:root#twind > body h4 {
+					font-family: serif;
+				}
+		  `,
 	// preflight: [
 	// 	{
 	// 		'@layer base': {

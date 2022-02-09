@@ -5,6 +5,8 @@ import fs from 'fs';
 import { cyan, green } from 'kolorist';
 import path from 'path';
 
+const SKIP_CSS_MINIFY = false;
+
 // eslint-disable-next-line import/no-named-as-default-member
 const { browserslistToTargets, transform } = parcelCss;
 
@@ -80,13 +82,16 @@ setTimeout(async () => {
 				const buff = Buffer.from($1);
 				const sizeBefore = buff.length;
 
-				const { code: parcelCssBuffer, map: _map } = transform({
-					filename: relativeCssPath,
-					code: buff,
-					minify: true,
-					sourceMap: false,
-					targets,
-				});
+				const { code: parcelCssBuffer, map: _map } = SKIP_CSS_MINIFY
+					? { code: buff, map: undefined }
+					: transform({
+							filename: relativeCssPath,
+							code: buff,
+							minify: true,
+							sourceMap: false,
+							targets,
+					  });
+				// const optimisedCss = parcelCssBuffer.toString();
 
 				const sizeAfter = parcelCssBuffer.length;
 				const sizeSaved = sizeBefore - sizeAfter;
@@ -108,6 +113,12 @@ setTimeout(async () => {
 			}
 
 			htmlCssMap[htmlFilePath] = preactCss;
+
+			// if (htmlFilePath.indexOf('static-no-hydrate') >= 0) {
+			// 	console.log(htmlFilePath);
+			// 	console.log('=====> (1)');
+			// 	console.log(preactCss);
+			// }
 		}
 	}
 	const htmlFilePaths = Object.keys(htmlCssMap);
@@ -118,8 +129,12 @@ setTimeout(async () => {
 		const cssSelfLines = cssSelf.split('\n');
 		/** @type {string[]} */
 		const hydrateCss = [];
+
 		htmlFilePaths.forEach((otherHtmlFilePath) => {
 			if (htmlFilePath === otherHtmlFilePath) {
+				// if (htmlFilePath.indexOf('static-no-hydrate') >= 0) {
+				// 	console.log('(SKIP LOOP)');
+				// }
 				return;
 			}
 			const cssOther = htmlCssMap[otherHtmlFilePath];
@@ -139,7 +154,13 @@ setTimeout(async () => {
 			htmlFilePath,
 		)}.css`.replace(/\.\//g, '');
 
-		const hydrateCssStr = hydrateCss.join('');
+		const hydrateCssStr = hydrateCss.join(SKIP_CSS_MINIFY ? '\n' : '');
+
+		// if (htmlFilePath.indexOf('static-no-hydrate') >= 0) {
+		// 	console.log(htmlFilePath);
+		// 	console.log('=====> (2)');
+		// 	console.log(hydrateCssStr);
+		// }
 
 		// Uncomment this line to compare ParcelCSS minified+optimised output with Twind's original stylesheet
 		// fs.writeFileSync(`${fullCssPath}.before-parcel.css`, hydrateCssStr, { encoding: 'utf8' });
@@ -148,14 +169,18 @@ setTimeout(async () => {
 
 		const buff = Buffer.from(hydrateCssStr);
 		const sizeBefore = buff.length;
-		const { code: parcelCssBuffer, map: _map } = transform({
-			filename: cssFileHref,
-			code: buff,
-			minify: true,
-			sourceMap: false,
-			targets,
-		});
+
+		const { code: parcelCssBuffer, map: _map } = SKIP_CSS_MINIFY
+			? { code: buff, map: undefined }
+			: transform({
+					filename: cssFileHref,
+					code: buff,
+					minify: true,
+					sourceMap: false,
+					targets,
+			  });
 		// const optimisedCss = parcelCssBuffer.toString();
+
 		const sizeAfter = parcelCssBuffer.length;
 		const sizeSaved = sizeBefore - sizeAfter;
 		totalCssBytesSaved += sizeSaved;

@@ -1,6 +1,6 @@
 import type { FunctionalComponent, RenderableProps } from 'preact';
 
-export const SuspendedLazy: FunctionalComponent<unknown> = (_props: RenderableProps<unknown>) => {
+export const SuspendedLazyComp: FunctionalComponent<unknown> = (_props: RenderableProps<unknown>) => {
 	return (
 		<div
 			class={`
@@ -14,7 +14,6 @@ export const SuspendedLazy: FunctionalComponent<unknown> = (_props: RenderablePr
 			<p
 				class={`
 					bg-green-200
-					text-black
 					text-3xl
 				`}
 			>
@@ -34,4 +33,4 @@ export const SuspendedLazy: FunctionalComponent<unknown> = (_props: RenderablePr
 	);
 };
 // For the dynamic await import (code splitting)
-export default SuspendedLazy;
+export default SuspendedLazyComp;

@@ -6,20 +6,33 @@ export const StaticNoHydrate: FunctionalComponent<unknown> = (props: RenderableP
 	// note: IS_PRE_RENDERED includes IS_SERVER_SIDE,
 	// so here we must ensure IS_CLIENT_SIDE
 	if (IS_CLIENT_SIDE && IS_PRE_RENDERED) {
-		// return <></>;
-		// return <div>BOOM</div>;
-		return (
-			<div>
-				{(Array.isArray(props.children) ? props.children : [props.children])
-					.filter((c) => typeof c !== 'undefined' && c !== null)
-					.map((_c) => NO_HYDRATE)}
-			</div>
-		);
+		// return (
+		// 	<div>
+		// 		{(Array.isArray(props.children) ? props.children : [props.children])
+		// 			.filter((c) => typeof c !== 'undefined' && c !== null)
+		// 			.map((_c) => NO_HYDRATE)}
+		// 	</div>
+		// );
+		return NO_HYDRATE;
 	}
-	return <div>{props.children}</div>;
+	return (
+		<div
+			class={`
+				bg-pink-200
+				border-solid
+				border-2
+				border-pink-800
+				rounded
+			`}
+			data-static-no-hydrate
+		>
+			{props.children}
+		</div>
+	);
 };
 
 // https://gist.github.com/developit/e94cd0da8479aacd1bbdedd612c1975f
+// also see: https://github.com/preactjs/preact-www/blob/master/src/lib/hydrator.js
 
 const S = {};
 
@@ -34,7 +47,7 @@ export class NoHydrate extends Component {
 		if (e === S) (this as unknown as any).__d = true;
 	}
 	render() {
-		return h(Suspender, null, []);
+		return h(Suspender, null, null);
 	}
 }
 

@@ -4,6 +4,7 @@ import { Router } from 'preact-iso/router';
 
 import { IS_PRE_RENDERED } from '../utils.js';
 import { SuspendedLazy } from './lazy/lazy-island.js';
+import { SuspendedStaticNoHydrate } from './static-no-hydrate/lazy-island.js';
 
 // This subrouter exists only to facilitate the generation of "critical" vs. "secondary" CSS stylesheets,
 // via the post-build script that parses all the Twind stylesheets
@@ -19,7 +20,10 @@ export const RoutedSuspendedSubRouter: FunctionalComponent<unknown> = (_props: R
 				console.log('ErrorBoundary onError (sub router): ', err);
 			}}
 		>
-			<Router>{[<SuspendedLazy path={`/lazy${IS_PRE_RENDERED ? '/' : ''}`} />]}</Router>
+			<Router>
+				<SuspendedLazy path={`/lazy${IS_PRE_RENDERED ? '/' : ''}`} />
+				<SuspendedStaticNoHydrate path={`/static-no-hydrate${IS_PRE_RENDERED ? '/' : ''}`} />
+			</Router>
 		</ErrorBoundary>
 	);
 };

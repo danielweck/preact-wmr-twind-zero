@@ -23,7 +23,7 @@ export default defineConfig(async (config) => {
 	// config.visualize = true;
 
 	// so that "visualize" reports meaningful sizes
-	config.minify = true;
+	config.minify = false;
 
 	config.port = 8080;
 	config.host = '127.0.0.1';
@@ -40,7 +40,8 @@ export default defineConfig(async (config) => {
 	// ask WMR to prerender route not explicitly linked to in source code
 	config.customRoutes = [
 		'/_404-not-found', // This is only to ensure that the 404 page stylesheet is processed at post-build stage to segregate "critical" vs. "secondary" styles.
-		config.publicPath.startsWith('//') ? `${PUBLIC_PATH_ROOT}suspended/lazy` : '/suspended/lazy', // Same reason as 404 above, but this is for self-contained lazy/async components (see /public/suspended/index.tsx).
+		`${config.publicPath.startsWith('//') ? PUBLIC_PATH_ROOT : '/'}suspended/lazy`, // Same reason as 404 above, but this is for self-contained lazy/async components (see /public/suspended/index.tsx).
+		`${config.publicPath.startsWith('//') ? PUBLIC_PATH_ROOT : '/'}suspended/static-no-hydrate`,
 	];
 
 	config.plugins.push(wmrTwindPlugin(config));

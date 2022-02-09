@@ -7,7 +7,6 @@ export const RoutedNonLazy: FunctionalComponent<unknown> = (_props: RenderablePr
 			<p
 				class={`
 					bg-yellow-600
-					text-black
 					text-3xl
 				`}
 			>

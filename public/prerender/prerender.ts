@@ -24,7 +24,7 @@ export const preactWmrPrerenderForTwind = async (
 		cssTextContent: string;
 	}
 > => {
-	const DEBUG_PREFIX = `\nWMR TWIND PRERENDER [${url}]:\n`;
+	const DEBUG_PREFIX = `\n===================== WMR TWIND PRERENDER [${url}]:\n`;
 
 	console.log(`${DEBUG_PREFIX}...\n`);
 
@@ -46,11 +46,37 @@ export const preactWmrPrerenderForTwind = async (
 
 	const result = await prerender(app, options);
 
+	// import { cloneElement } from 'preact';
+	// const vnode = options?.props ? cloneElement(app, options.props) : app;
+	// console.log(`]]] PREACT ISO PRERENDER 1: ${typeof vnode} ${JSON.stringify(vnode, null, 4)}`);
+	// const result = await prerender(vnode); // , options.macDepth
+	// const resetVnodeTree = (v: typeof vnode & { __c?: { __v: null; props: { children: [] | null } | null } | null }) => {
+	// 	if (v.__c) {
+	// 		v.__c.__v = null; // === v
+	// 		v.__c.__H.__[0].__c = null; // === v.__c
+	// 		// console.log(`resetVnodeTree: ${v.__c.__h.length}`);
+	// 		// if (v.__c.props?.children) {
+	// 		// 	for (const child of v.__c.props.children) {
+	// 		// 		if (child) {
+	// 		// 			resetVnodeTree(child);
+	// 		// 		}
+	// 		// 	}
+	// 		// }
+	// 	}
+	// 	// console.log(` ---- ${JSON.stringify(v.__c, null, 4)}`);
+	// };
+	// resetVnodeTree(vnode);
+	// // const { __c, ...vnode__ } = vnode_;
+	// console.log(`]]] PREACT ISO PRERENDER 2: ${typeof vnode} ${JSON.stringify(vnode, null, 4)}`);
+
 	if (!_twindSheet.target.length) {
 		const msg = `${DEBUG_PREFIX}stylesheet is empty after prerender?!\n${result.html}\n`;
 		console.log(msg);
 		// throw new Error(msg);
 	}
+	// else {
+	// 	console.log(_twindSheet.target.join('\n'));
+	// }
 
 	return {
 		...result,
