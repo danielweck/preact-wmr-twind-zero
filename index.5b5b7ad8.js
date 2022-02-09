@@ -381,25 +381,28 @@ const PUBLIC_PATH_ROOT = "/preact-wmr-twind-zero/" ;
 // note: includes IS_SERVER_SIDE
 const IS_PRE_RENDERED = !IS_CLIENT_SIDE || !!document.querySelector('script[type=isodata]');
 
-const KEYBOARD_INTERACT = 'KEYBOARD_INTERACT';// Code splitting
-// export const SuspendedLazy = lazy(() => import('./island.js'));
-const SuspendedLazy = lazy(
+const KEYBOARD_INTERACT = 'KEYBOARD_INTERACT';const SuspendedLazy = lazy(
 	() =>
 		new Promise((resolve) => {
 			setTimeout(
 				() => {
-					resolve(import('./chunks/island.5d965db9.js'));
+					resolve(import('./chunks/island.807b8ce0.js'));
 				},
 				IS_CLIENT_SIDE ? 1000 : 0,
 			);
 		}),
-);const SuspendedLazyLoader = (_props) => {
+);
+const SuspendedLazy_ = (_props) => {
+	return (
+		m$1`<${ErrorBoundary} onError=${(err) => {
+				console.log('ErrorBoundary onError (SuspendedLazy): ', err);
+			}}><${SuspendedLazy}/><//>`
+	);
+};const SuspendedLazyLoader = (_props) => {
 	const [isLazyLoaded, setLazyLoaded] = l(false);
 
 	return (
-		m$1`${isLazyLoaded ? m$1`<${ErrorBoundary} onError=${err => {
-  console.log('ErrorBoundary onError (SuspendedLazy): ', err);
-}}><${SuspendedLazy}/><//>` : m$1`<button class="p-2 m-2 border-2 rounded border-dotted border-purple-500" onClick=${() => {
+		m$1`${isLazyLoaded ? m$1`<${SuspendedLazy_}/>` : m$1`<button class="p-2 m-2 border-2 rounded border-dotted border-purple-500" onClick=${() => {
   setLazyLoaded(true);
 }}> CLICK HERE TO LAZY-LOAD </button><span>(1s simulated network delay on first load, then "cache" hit)</span>`}`
 	);
@@ -459,7 +462,14 @@ const NO_HYDRATE = v$1(NoHydrate, null, []);
 const Suspender = (_props) => {
 	throw S;
 	// return null;
-};const SuspendedStaticNoHydrate = lazy(() => import('./chunks/island.0d8e1b02.js'));const RoutedSuspendedSubRouter = (_props) => {
+};const SuspendedStaticNoHydrate = lazy(() => import('./chunks/island.989c3732.js'));
+const SuspendedStaticNoHydrate_ = (_props) => {
+	return (
+		m$1`<${ErrorBoundary} onError=${(err) => {
+				console.log('ErrorBoundary onError (SuspendedStaticNoHydrate): ', err);
+			}}><${SuspendedStaticNoHydrate}/><//>`
+	);
+};const RoutedSuspendedSubRouter = (_props) => {
 	return (
 		m$1`<${ErrorBoundary} onError=${(err) => {
 				console.log('ErrorBoundary onError (sub router): ', err);
@@ -470,7 +480,7 @@ const Suspender = (_props) => {
 		new Promise((resolve) => {
 			setTimeout(
 				() => {
-					resolve(import('./chunks/lazy.8d60b7c6.js'));
+					resolve(import('./chunks/lazy.ca24c53c.js'));
 				},
 				IS_CLIENT_SIDE ? 1000 : 0,
 			);
@@ -485,9 +495,7 @@ const App = ({ prerenderIndex }) => {
 							setOnRouteChangeWasCalled(true);
 						}}><${RoutedHome} path=${`${PUBLIC_PATH_ROOT}`}/><${RoutedLazy} path=${`${PUBLIC_PATH_ROOT}routed-lazy${IS_PRE_RENDERED ? '/' : ''}`}/><${RoutedNonLazy} path=${`${PUBLIC_PATH_ROOT}routed-non-lazy${IS_PRE_RENDERED ? '/' : ''}`}/><${Route} component=${RoutedRoute} path=${`${PUBLIC_PATH_ROOT}routed-route${IS_PRE_RENDERED ? '/' : ''}`}/><${Routed404} default/><${RoutedSuspendedSubRouter} path=${`${PUBLIC_PATH_ROOT}suspended/*`}/><//><//></div><h1>Twind critical/secondary stylesheet tests:</h1><p class=${'text-3xl'}> This paragraphs and others located in different routes share the same <strong>text-3xl</strong> Twind style, but it isn't duplicated in the pre-rendered "secondary" stylesheet, it is hoisted in the "critical" styles. </p><p class="bg-yellow-200 text-black"> This text has a <strong>yellow-200</strong> background (unique to this paragraph, not shared with any other route or component) </p><h1>404 Not Found links:</h1><ul><li><span class="inline-block text-yellow-300 mr-1.5"> ███ </span><a href=${`${PUBLIC_PATH_ROOT}not-found-blank`} rel="noreferrer noopener" target="_BLANK"> 404 (target BLANK) </a></li><li><span class="inline-block text-yellow-300 mr-1.5"> ███ </span><a href=${`${PUBLIC_PATH_ROOT}not-found-inpage`} target="_top"> 404 (in page) </a></li></ul><${StaticNoHydrate}><p>STATIC NO HYDRATE (HTML/JSX component code below is not shipped to client, only pre-rendered :)</p><span class=${onRouteChangeWasCalled ? 'text-red-600' : 'text-green-600'}>${onRouteChangeWasCalled
 						? '[onRouteChangeWasCalled] (this should never display (except in dev mode))'
-						: '[!onRouteChangeWasCalled] (this should always display (except in dev mode))'}</span><//><${StaticNoHydrate}><${ErrorBoundary} onError=${(err) => {
-						console.log('ErrorBoundary onError (SuspendedStaticNoHydrate): ', err);
-					}}><${SuspendedStaticNoHydrate}/><//><//><//>`
+						: '[!onRouteChangeWasCalled] (this should always display (except in dev mode))'}</span><//><${StaticNoHydrate}><${SuspendedStaticNoHydrate_}/><//><//>`
 	);
 };
 if (IS_CLIENT_SIDE) {
@@ -543,7 +551,7 @@ async function prerender(data)
 
  {
 	// Must be dynamic import for code splitting and avoid include in client bundle
-	const { preactWmrPrerenderForTwind } = await import('./chunks/prerender.d1db0067.js');
+	const { preactWmrPrerenderForTwind } = await import('./chunks/prerender.bf3b3e72.js');
 	// // TODO? trick Rollup into *not* transforming the `import()`
 	// const $import = new Function('s', 'return import(s)');
 	// const { preactWmrPrerenderForTwind } = await $import('file:///' + path.resolve(cwd, './prerender/prerender.js'));
