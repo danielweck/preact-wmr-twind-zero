@@ -34,6 +34,7 @@ export function wmrTwindPlugin(config) {
 	// See lazy instantiation further down below...
 	/** @type {import('twind').Twind<import('twind').BaseTheme & import('@twind/preset-tailwind').TailwindTheme, string[]> | undefined} */
 	let _tw;
+	// The Twind stylesheet is not actually used anywhere, this is just to generate the classnames (not the actual styles / rules)
 	/** @type {import('twind').Sheet<string[]> | undefined} */
 	let _twindSheet;
 
@@ -78,18 +79,27 @@ export function wmrTwindPlugin(config) {
 					// Removes line breaks and collapses whitespaces
 					const classList = $2.replace(/\s\s*/gm, ' ').trim();
 
-					if ($1 === 'twindTw') {
+					const isPlainTwind = $1 === 'twindTw';
+
+					if (isPlainTwind) {
 						// Replaces tagged template literals (i.e. prefixed with the Twind function)
 						// with plain template literals (i.e. potentially-interporlated strings).
 						return `\`${classList}\``;
 					}
 
+					// isPlainTwind is always false here, this is just to demonstrate that applying Twind here doesn't work,
+					// as the resulting class must still pass through Preact's 'options.VNode' processor!
+					const s = isPlainTwind ? classList : shortcut(classList);
 					// _tw is always defined here,
 					// this is just to satisfy the TypeScript compiler
-					const s = shortcut(classList);
 					const twindResult = _tw ? _tw(s) : 'no-twind?!';
 
-					console.log(`${DEBUG_PREFIX}${green('--------> shortcut: ')}${classList} => ${cyan(s)} => ${red(twindResult)}\n`);
+					// isPlainTwind is always false here (see comment above)
+					if (isPlainTwind) {
+						console.log(`${DEBUG_PREFIX}${green('--------> twind (plain): ')}${classList} => ${red(twindResult)}\n`);
+					} else {
+						console.log(`${DEBUG_PREFIX}${green('--------> shortcut: ')}${classList} => ${cyan(s)} => ${red(twindResult)}\n`);
+					}
 
 					if (_twindSheet && !_twindSheet.target.length) {
 						throw new Error(`${DEBUG_PREFIX}${red('empty stylesheet?!')} -- ${red(twindResult)}\n`);

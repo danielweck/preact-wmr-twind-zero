@@ -11,8 +11,8 @@ import { RoutedNonLazy } from './routed/non-lazy.js';
 import { RoutedRoute } from './routed/route.js';
 import { StaticNoHydrate } from './static-no-hydrate.js';
 import { RoutedSuspendedSubRouter } from './suspended/index.js';
-import { SuspendedStaticNoHydrate_ } from './suspended/static-no-hydrate/lazy-island.js';
-import { IS_CLIENT_SIDE, IS_PRE_RENDERED, KEYBOARD_INTERACT, PUBLIC_PATH_ROOT } from './utils.js';
+import { twindTw } from './twindish.js';
+import { IS_CLIENT_SIDE, IS_PRE_RENDER, KEYBOARD_INTERACT, LAZY_TIMEOUT, PUBLIC_PATH_ROOT } from './utils.js';
 
 if (process.env.NODE_ENV === 'development') {
 	(async () => {
@@ -54,12 +54,9 @@ if (process.env.NODE_ENV === 'development') {
 const RoutedLazy = lazy(
 	() =>
 		new Promise<typeof import('./routed/lazy.js')>((resolve) => {
-			setTimeout(
-				() => {
-					resolve(import('./routed/lazy.js'));
-				},
-				IS_CLIENT_SIDE ? 1000 : 0,
-			);
+			setTimeout(() => {
+				resolve(import('./routed/lazy.js'));
+			}, LAZY_TIMEOUT);
 		}),
 );
 
@@ -74,9 +71,22 @@ const RoutedLazy = lazy(
 // }
 export const App = ({ prerenderIndex }: { prerenderIndex?: number }) => {
 	const [onRouteChangeWasCalled, setOnRouteChangeWasCalled] = useState(false);
+
+	// the following demonstrates the use of options.VNode processor
+	// to ensure the production of all possible Twind's classes! (conditional ternary)
+	// see the non-class JSX prop below ('data-tw' instead of say 'tw' prop, to avoid TypeScript compiler error)
+	const cls1 = twindTw`text-red-600`;
+	const cls2 = twindTw`text-green-600`;
+	const clazz = onRouteChangeWasCalled ? cls1 : cls2;
+
 	return (
 		<LocationProvider>
-			<StaticNoHydrate>
+			<StaticNoHydrate label="1">
+				<p>
+					STATIC NO HYDRATE (in dev mode, this should be -1, in a prerendered build, this should be a fixed number
+					corresponding to the SSG sequence index, NOT 999 which would otherwise indicate that the fragment has incorrectly
+					been hydrated)
+				</p>
 				<p>prerenderIndex: {prerenderIndex}</p>
 			</StaticNoHydrate>
 
@@ -91,6 +101,15 @@ export const App = ({ prerenderIndex }: { prerenderIndex?: number }) => {
 			>
 				{onRouteChangeWasCalled ? 'SPA route (post-hydration)' : 'Initial route (static SSR / SSG)'}
 			</p>
+
+			<StaticNoHydrate label="2">
+				<p>STATIC NO HYDRATE</p>
+				<span class={clazz} data-tw={cls1}>
+					{onRouteChangeWasCalled
+						? '[onRouteChangeWasCalled] (this should NEVER display in prerender builds (does show in dev mode))'
+						: '[!onRouteChangeWasCalled] (this should ALWAYS display in prerender builds (does show in dev mode))'}
+				</span>
+			</StaticNoHydrate>
 
 			<h1>Router links:</h1>
 			<ul>
@@ -116,7 +135,7 @@ export const App = ({ prerenderIndex }: { prerenderIndex?: number }) => {
 					>
 						&#x2588;&#x2588;&#x2588;
 					</span>
-					<a href={`${PUBLIC_PATH_ROOT}routed-lazy${IS_PRE_RENDERED ? '/' : ''}?param=lazy#hash-lazy`}>Routed Lazy</a> (1s
+					<a href={`${PUBLIC_PATH_ROOT}routed-lazy${IS_PRE_RENDER ? '/' : ''}?param=lazy#hash-lazy`}>Routed Lazy</a> (1s
 					simulated network delay on first load, then "cache" hit)
 				</li>
 				<li>
@@ -129,7 +148,7 @@ export const App = ({ prerenderIndex }: { prerenderIndex?: number }) => {
 					>
 						&#x2588;&#x2588;&#x2588;
 					</span>
-					<a href={`${PUBLIC_PATH_ROOT}routed-non-lazy${IS_PRE_RENDERED ? '/' : ''}?param=non-lazy#hash-non-lazy`}>
+					<a href={`${PUBLIC_PATH_ROOT}routed-non-lazy${IS_PRE_RENDER ? '/' : ''}?param=non-lazy#hash-non-lazy`}>
 						Routed Non Lazy
 					</a>
 				</li>
@@ -143,7 +162,7 @@ export const App = ({ prerenderIndex }: { prerenderIndex?: number }) => {
 					>
 						&#x2588;&#x2588;&#x2588;
 					</span>
-					<a href={`${PUBLIC_PATH_ROOT}routed-route${IS_PRE_RENDERED ? '/' : ''}?param=route#hash-route`}>Routed Route</a>{' '}
+					<a href={`${PUBLIC_PATH_ROOT}routed-route${IS_PRE_RENDER ? '/' : ''}?param=route#hash-route`}>Routed Route</a>{' '}
 					(contains lazy component)
 				</li>
 			</ul>
@@ -168,9 +187,9 @@ export const App = ({ prerenderIndex }: { prerenderIndex?: number }) => {
 						}}
 					>
 						<RoutedHome path={`${PUBLIC_PATH_ROOT}`} />
-						<RoutedLazy path={`${PUBLIC_PATH_ROOT}routed-lazy${IS_PRE_RENDERED ? '/' : ''}`} />
-						<RoutedNonLazy path={`${PUBLIC_PATH_ROOT}routed-non-lazy${IS_PRE_RENDERED ? '/' : ''}`} />
-						<Route component={RoutedRoute} path={`${PUBLIC_PATH_ROOT}routed-route${IS_PRE_RENDERED ? '/' : ''}`} />
+						<RoutedLazy path={`${PUBLIC_PATH_ROOT}routed-lazy${IS_PRE_RENDER ? '/' : ''}`} />
+						<RoutedNonLazy path={`${PUBLIC_PATH_ROOT}routed-non-lazy${IS_PRE_RENDER ? '/' : ''}`} />
+						<Route component={RoutedRoute} path={`${PUBLIC_PATH_ROOT}routed-route${IS_PRE_RENDER ? '/' : ''}`} />
 						<Routed404 default />
 						<RoutedSuspendedSubRouter path={`${PUBLIC_PATH_ROOT}suspended/*`} />
 					</Router>
@@ -223,19 +242,6 @@ export const App = ({ prerenderIndex }: { prerenderIndex?: number }) => {
 					</a>
 				</li>
 			</ul>
-
-			<StaticNoHydrate>
-				<p>STATIC NO HYDRATE (HTML/JSX component code below is not shipped to client, only pre-rendered :)</p>
-				<span class={onRouteChangeWasCalled ? 'text-red-600' : 'text-green-600'}>
-					{onRouteChangeWasCalled
-						? '[onRouteChangeWasCalled] (this should never display (except in dev mode))'
-						: '[!onRouteChangeWasCalled] (this should always display (except in dev mode))'}
-				</span>
-			</StaticNoHydrate>
-
-			<StaticNoHydrate>
-				<SuspendedStaticNoHydrate_ />
-			</StaticNoHydrate>
 		</LocationProvider>
 	);
 };
@@ -272,11 +278,15 @@ if (IS_CLIENT_SIDE) {
 		},
 	);
 
-	// note: IS_PRE_RENDERED includes IS_SERVER_SIDE,
+	// note: IS_PRE_RENDER includes IS_SERVER_SIDE,
 	// but here we are inside a IS_CLIENT_SIDE conditional code branch
-	if (IS_PRE_RENDERED) {
+	if (IS_PRE_RENDER) {
 		initPreactVDOMHook();
 		hydrate(<App prerenderIndex={999} />, document.body);
+
+		// window is safe, as in conditional IS_CLIENT_SIDE
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		(window as any).PREACTWMR_HYDRATED = true;
 	} else {
 		// here in this code branch (no isodata): process.env.NODE_ENV === 'development'
 		// we use await import to force code splitting => this code bundle will not be loaded in production
@@ -294,6 +304,10 @@ if (IS_CLIENT_SIDE) {
 			const { initPreactVDOMHook_Twind } = await import('./preact-vnode-options-hook--twind.js');
 			const _tw = initPreactVDOMHook_Twind();
 			hydrate(<App prerenderIndex={-1} />, document.body);
+
+			// window is safe, as in conditional IS_CLIENT_SIDE
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			(window as any).PREACTWMR_HYDRATED = true;
 		})();
 		/* PREACT_WMR_BUILD_STRIP_CODE_END */
 	}

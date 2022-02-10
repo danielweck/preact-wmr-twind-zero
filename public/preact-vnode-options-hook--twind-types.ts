@@ -7,6 +7,7 @@
 export type TClassProps = {
 	class?: string;
 	className?: string;
+	'data-tw'?: string;
 };
 
 export type TwindProps = TClassProps;

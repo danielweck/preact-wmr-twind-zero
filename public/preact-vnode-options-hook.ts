@@ -39,7 +39,7 @@ export const initPreactVDOMHook = (tw?: (val: string) => string) => {
 
 		const classes = new Set<string>();
 
-		for (const p of ['class', 'className'] as Array<keyof TClassProps>) {
+		for (const p of ['class', 'className', 'data-tw'] as Array<keyof TClassProps>) {
 			if (p in props) {
 				const pp = props[p];
 				if (!pp) {
@@ -55,7 +55,7 @@ export const initPreactVDOMHook = (tw?: (val: string) => string) => {
 				// 	console.log(`##### [[\x1b[36m${pp}\x1b[0m]] =======> [[\x1b[33m${c}\x1b[0m]]`);
 				// }
 
-				if (typeof c === 'string') {
+				if (typeof c === 'string' && (p === 'class' || p === 'className')) {
 					classes.add(c);
 				}
 
