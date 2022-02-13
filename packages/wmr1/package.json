@@ -10,7 +10,7 @@
 	},
 	"scripts": {
 		"postinstall": "pnpm patch-preact-types",
-		"patch-preact-types": "cpy \"node_modules/preact/hooks/src/index.d.ts\" \".\" --rename=\".types/preact-hooks_.d.ts\" && sed \"1s/^/export as namespace preacthooks;\\n/\" \".types/preact-hooks_.d.ts\" > \".types/preact-hooks__.d.ts\" && sed \"s/from '\\.\\.\\/\\.\\.';/from '..\\/node_modules\\/preact\\/src';/\" \".types/preact-hooks__.d.ts\" > \".types/preact-hooks.d.ts\" && rimraf \".types/preact-hooks_.d.ts\" && rimraf \".types/preact-hooks__.d.ts\"",
+		"patch-preact-types": "cpy \"node_modules/preact/hooks/src/index.d.ts\" \".\" --rename=\".types/preact-hooks_.d.ts\" && sed \"1s/^/export as namespace preacthooks;\\n/\" \".types/preact-hooks_.d.ts\" > \".types/preact-hooks__.d.ts\" && sed \"s/from '\\.\\.\\/\\.\\.';/from '..\\/node_modules\\/preact\\/src\\/index.js';/\" \".types/preact-hooks__.d.ts\" > \".types/preact-hooks.d.ts\" && rimraf \".types/preact-hooks_.d.ts\" && rimraf \".types/preact-hooks__.d.ts\"",
 		"clean": "rimraf \"./dist\" && rimraf \"./.cache\" && rimraf \"./.tmp\"",
 		"start": "pnpm clean && cross-env DEBUG=* wmr",
 		"build-no-prerender": "pnpm clean && cross-env DEBUG=* wmr build",

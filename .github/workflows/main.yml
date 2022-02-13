@@ -89,7 +89,7 @@ jobs:
         path: gh-pages
     - name: Copy dist to GH-PAGES
       run: |
-          cp gh-pages/.gitignore dist/
+          cp gh-pages/.gitignore ../packages/wmr1/dist/
           rm -rf gh-pages/*
           cd gh-pages
           ls -als
