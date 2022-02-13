@@ -1,8 +1,8 @@
 import { func } from '@preact-wmr-twind-zero/shared';
-// import { func as func2 } from '@preact-wmr-twind-zero/shared/func.js';
-// import { other } from '@preact-wmr-twind-zero/shared/sub';
-// import { foo } from '@preact-wmr-twind-zero/shared/sub/foo.js';
-// import { other as other2 } from '@preact-wmr-twind-zero/shared/sub/other.js';
+import { func as func2 } from '@preact-wmr-twind-zero/shared/func.js';
+import { other } from '@preact-wmr-twind-zero/shared/sub';
+import { foo } from '@preact-wmr-twind-zero/shared/sub/foo.js';
+import { other as other2 } from '@preact-wmr-twind-zero/shared/sub/other.js';
 import { useState } from 'preact/hooks';
 import hydrate from 'preact-iso/hydrate';
 import lazy, { ErrorBoundary } from 'preact-iso/lazy';
@@ -20,10 +20,10 @@ import { twindTw } from './twindish.js';
 import { IS_CLIENT_SIDE, IS_PRE_RENDER, KEYBOARD_INTERACT, LAZY_TIMEOUT, PUBLIC_PATH_ROOT } from './utils.js';
 
 console.log(func());
-// console.log(func2());
-// console.log(other());
-// console.log(other2());
-// console.log(foo());
+console.log(func2());
+console.log(other());
+console.log(other2());
+console.log(foo());
 
 if (process.env.NODE_ENV === 'development') {
 	(async () => {
@@ -94,7 +94,7 @@ export const App = ({ prerenderIndex }: { prerenderIndex?: number }) => {
 		<LocationProvider>
 			<StaticNoHydrate label="1">
 				<p>
-					STATIC NO HYDRATE (in dev mode, this should be -1, in a prerendered build, this should be a fixed number
+					.STATIC NO HYDRATE (in dev mode, this should be -1, in a prerendered build, this should be a fixed number
 					corresponding to the SSG sequence index, NOT 999 which would otherwise indicate that the fragment has incorrectly
 					been hydrated)
 				</p>

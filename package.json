@@ -16,8 +16,11 @@
 	"scripts": {
 		"prepare": "husky install",
 		"clean": "pnpm --recursive clean",
-		"build": "pnpm --recursive build",
-		"typescript": "pnpm --recursive typescript",
+		"build_": "pnpm --recursive build",
+		"build": "pnpm turbo run build",
+		"build-github": "pnpm turbo run build-github",
+		"typescript_": "pnpm --recursive typescript",
+		"typescript": "pnpm turbo run typescript",
 		"lint:eslint": "eslint \"./**/*.{ts,tsx,js,tsx,mjs,cjs}\"",
 		"lint:editorconfig": "eclint check '**/*' '!package-lock.json' '!yarn.lock' '!pnpm-lock.yaml' '!.husky/**/*' '!.vscode/**/*' '!.git/**/*' '!.github/**/*' '!**/.history/**/*' '!packages/**/dist/**/*' '!**/.tmp/**/*' '!**/node_modules/**/*' '!**/.cache/**/*' '!**/package.json'",
 		"lint:prettier": "prettier --check --no-write --loglevel log \"./\"",
@@ -69,6 +72,7 @@
 		"stylelint-config-html": "^1.0.0",
 		"stylelint-config-prettier": "^9.0.3",
 		"stylelint-config-standard": "^25.0.0",
+		"turbo": "^1.1.2",
 		"typescript": "next"
 	}
 }

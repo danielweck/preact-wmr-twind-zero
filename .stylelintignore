@@ -19,3 +19,4 @@
 **/.eslintcache
 **/.types
 !**/twind.config.js
+.turbo
