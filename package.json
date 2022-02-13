@@ -21,6 +21,8 @@
 		"build-github": "pnpm turbo run build-github",
 		"typescript_": "pnpm --recursive typescript",
 		"typescript": "pnpm turbo run typescript",
+		"serve": "pnpm --filter @preact-wmr-twind-zero/wmr1 serve",
+		"start": "pnpm --filter @preact-wmr-twind-zero/wmr1 start",
 		"lint:eslint": "eslint \"./**/*.{ts,tsx,js,tsx,mjs,cjs}\"",
 		"lint:editorconfig": "eclint check '**/*' '!package-lock.json' '!yarn.lock' '!pnpm-lock.yaml' '!.husky/**/*' '!.vscode/**/*' '!.git/**/*' '!.github/**/*' '!**/.history/**/*' '!packages/**/dist/**/*' '!**/.tmp/**/*' '!**/node_modules/**/*' '!**/.cache/**/*' '!**/package.json'",
 		"lint:prettier": "prettier --check --no-write --loglevel log \"./\"",
