@@ -6,6 +6,7 @@ import { asArray, defineConfig } from 'twind';
 
 import { twindConfig } from './twind.config.js';
 
+// @ts-expect-error TS2345
 export const twConfig = defineConfig({
 	...twindConfig,
 	presets: [

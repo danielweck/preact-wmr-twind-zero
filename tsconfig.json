@@ -1,43 +1,19 @@
 {
 	"compileOnSave": false,
 	"compilerOptions": {
-		"plugins": [
-			{
-				"name": "@twind/typescript-plugin",
-				"tags": ["tw", "twind", "twindTw", "twindShortcut"],
-				"attributes": ["class", "className"],
-				"styles": ["style", "styled"],
-				"debug": true,
-				"enable": true
-			}
-		],
-		"jsx": "preserve",
-		"jsxFactory": "preact.h",
-		"jsxFragmentFactory": "preact.Fragment",
+		"declaration": true,
 		"allowJs": true,
 		"checkJs": true,
 		"strict": true,
 		"strictNullChecks": true,
-		"noEmit": true,
-		"moduleResolution": "node",
-		"target": "ESNext",
-		"module": "esnext",
-		"resolveJsonModule": true,
+		"target": "ES2020",
+		"module": "es2020",
+		"moduleResolution": "nodenext",
 		"allowSyntheticDefaultImports": true,
 		"downlevelIteration": true,
 		"skipLibCheck": true,
-		"rootDir": "./",
-		"rootDirs": ["./", "./public/"],
-		"baseUrl": ".",
-		"paths": {
-			"~/*": ["./public/*"],
-			"/*": ["./public/*"]
-		}
-	},
-	"typeAcquisition": {
-		"enable": true,
-		"disableFilenameBasedTypeAcquisition": true,
-		"include": ["rollup"]
-	},
-	"exclude": ["node_modules", "dist", "doc", ".github", ".vscode"]
+		"esModuleInterop": false,
+		"importsNotUsedAsValues": "error",
+		"preserveValueImports": false
+	}
 }

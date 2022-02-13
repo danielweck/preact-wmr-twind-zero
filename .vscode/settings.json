@@ -3,6 +3,8 @@
   "typescript.tsserver.trace": "off",
   "files.exclude": {
     "**/.git": true,
+    "**/.cache": true,
+    "**/.tmp": true,
     "**/.DS_Store": true,
     "**/.vscode": false,
     "**/.history": true,
@@ -12,8 +14,11 @@
     "**/package-lock.json": true,
     "**/pnpm-lock.yaml": true,
     "**/yarn.lock": true,
-    "**/dist": true,
     "**/.eslintcache": true,
+    "**/stats.html": true,
+  },
+  "search.exclude": {
+    "**/dist": true
   },
   "typescript.surveys.enabled": false,
   "editor.tabSize": 4,

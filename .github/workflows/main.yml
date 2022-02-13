@@ -62,7 +62,7 @@ jobs:
     - name: PNPM install
       uses: pnpm/action-setup@v2.0.1
       with:
-        version: 6.29.1
+        version: 6.30.1
         run_install: |
           - recursive: false
             args: [--frozen-lockfile]
@@ -80,7 +80,7 @@ jobs:
       run: pnpm lint
     - name: non-PR action (lint and build)
       if: ${{ github.event_name != 'pull_request' }}
-      run: pnpm lint && pnpm build-github-repeat-if-fail && ls -R dist && mv dist/preact-wmr-twind-zero/* dist/ && rm -r dist/preact-wmr-twind-zero && rm dist/*.ts && rm dist/chunks/prerender*
+      run: pnpm lint && pnpm typescript && pnpm --filter @preact-wmr-twind-zero/wmr1 build-github-repeat-if-fail && ls -R packages/wmr1/dist && mv packages/wmr1/dist/preact-wmr-twind-zero/* packages/wmr1/dist/ && rm -r packages/wmr1/dist/preact-wmr-twind-zero && rm packages/wmr1/dist/*.ts && rm packages/wmr1/dist/chunks/prerender*
     - name: Checkout GH-PAGES
       if: ${{ github.event_name != 'pull_request' }}
       uses: actions/checkout@v2
@@ -93,7 +93,7 @@ jobs:
           rm -rf gh-pages/*
           cd gh-pages
           ls -als
-          cp -r ../dist/* ./
+          cp -r ../packages/wmr1/dist/* ./
           touch .nojekyll
           ls -als
           git config user.name "Daniel Weck"

@@ -1,3 +1,8 @@
+import { func } from '@preact-wmr-twind-zero/shared';
+// import { func as func2 } from '@preact-wmr-twind-zero/shared/func.js';
+// import { other } from '@preact-wmr-twind-zero/shared/sub';
+// import { foo } from '@preact-wmr-twind-zero/shared/sub/foo.js';
+// import { other as other2 } from '@preact-wmr-twind-zero/shared/sub/other.js';
 import { useState } from 'preact/hooks';
 import hydrate from 'preact-iso/hydrate';
 import lazy, { ErrorBoundary } from 'preact-iso/lazy';
@@ -13,6 +18,12 @@ import { StaticNoHydrate } from './static-no-hydrate.js';
 import { RoutedSuspendedSubRouter } from './suspended/index.js';
 import { twindTw } from './twindish.js';
 import { IS_CLIENT_SIDE, IS_PRE_RENDER, KEYBOARD_INTERACT, LAZY_TIMEOUT, PUBLIC_PATH_ROOT } from './utils.js';
+
+console.log(func());
+// console.log(func2());
+// console.log(other());
+// console.log(other2());
+// console.log(foo());
 
 if (process.env.NODE_ENV === 'development') {
 	(async () => {

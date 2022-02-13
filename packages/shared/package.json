@@ -1,0 +1,39 @@
+{
+	"name": "@preact-wmr-twind-zero/shared",
+	"repository": "https://github.com/danielweck/preact-wmr-twind-zero/",
+	"author": "Daniel Weck (daniel.weck@gmail.com)",
+	"version": "0.0.0",
+	"type": "module",
+	"module": "./dist/esm/src/index.js",
+	"exports": {
+		".": {
+			"import": "./dist/esm/src/index.js",
+			"require_": "./dist/cjs/src/index.js"
+		},
+		"./*": {
+			"import": "./dist/esm/src/*",
+			"require_": "./dist/cjs/src/*"
+		},
+		"./sub": {
+			"import": "./dist/esm/src/sub/other.js",
+			"require_": "./dist/cjs/src/sub/other.js"
+		},
+		"./sub/*": {
+			"import": "./dist/esm/src/sub/*",
+			"require_": "./dist/cjs/src/sub/*"
+		}
+	},
+	"engines": {
+		"node": ">=16",
+		"pnpm": ">=6"
+	},
+	"scripts": {
+		"clean": "rimraf \"./dist\"",
+		"start": "pnpm build",
+		"build": "pnpm clean && pnpm typescript",
+		"typescript": "tsc --version && tsc --project tsconfig.json && tsc --project tsconfig-cjs.json"
+	},
+	"files": [
+		"dist/src"
+	]
+}

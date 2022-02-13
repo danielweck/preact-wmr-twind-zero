@@ -1,0 +1,14 @@
+{
+	"extends": "../../tsconfig.json",
+	"compilerOptions": {
+		"composite": true,
+		"declarationMap": true,
+		"outDir": "./dist/esm",
+		"rootDir": "./",
+		"rootDirs": ["./"],
+		"baseUrl": ".",
+		"allowJs": false,
+		"checkJs": false
+	},
+	"include": ["./src"]
+}

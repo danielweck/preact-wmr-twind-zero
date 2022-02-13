@@ -3,6 +3,7 @@
 **/.cache
 **/node_modules
 **/.tmp
-stats.html
+**/stats.html
 **/dist
 **/.eslintcache
+**/.types

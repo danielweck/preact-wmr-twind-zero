@@ -1,4 +1,4 @@
-import { type FunctionalComponent, type RenderableProps } from 'preact';
+import type { FunctionalComponent, RenderableProps } from 'preact';
 import lazy, { ErrorBoundary } from 'preact-iso/lazy';
 
 import { LAZY_TIMEOUT } from '../../utils.js';

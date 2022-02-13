@@ -58,15 +58,15 @@ Alternative package managers:
 
 ### Development server (vanilla Preact WMR):
 
-- `npm run start` (CTRL+C to kill the source "watcher" process and HTTP server)
+- `pnpm start` (CTRL+C to kill the source "watcher" process and HTTP server)
 - Open your web browser at URL `http://127.0.0.1:8080`
 
 ### SSG pre-rendering / whole-site static SSR (vanilla Preact WMR):
 
-- `npm run build` (if you experience a "segmentation fault" in your console, or if the build ends prematurely without `dist` files, try again until it works ... this is a known Preact WMR bug with Node 16)
-- `npm run build-repeat-if-fail` (this will attempt the build several times to work around the above random possible CLI error)
-- `npm run build-viz` (this adds Preact WMR's option `--visualize` and the generated bundle dependency treemap will automatically be opened in your default web browser)
-- `npm run serve` (CTRL+C to kill the HTTP server)
+- `pnpm build` (if you experience a "segmentation fault" in your console, or if the build ends prematurely without `dist` files, try again until it works ... this is a known Preact WMR bug with Node 16)
+- `pnpm build-repeat-if-fail` (this will attempt the build several times to work around the above random possible CLI error)
+- `pnpm build-viz` (this adds Preact WMR's option `--visualize` and the generated bundle dependency treemap will automatically be opened in your default web browser)
+- `pnpm serve` (CTRL+C to kill the HTTP server)
 - Open your web browser at URL `http://127.0.0.1:8080`
 
 ## Zero-runtime Twind?

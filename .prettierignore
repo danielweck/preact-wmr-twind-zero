@@ -9,5 +9,6 @@
 **/pnpm-lock.yaml
 **/dist
 **/.tmp
-stats.html
+**/stats.html
 **/.eslintcache
+**/.types

@@ -15,7 +15,7 @@ module.exports = {
 	},
 	settings: {
 		react: {
-			version: 'detect',
+			version: '17',
 		},
 		'import/parsers': {
 			'@typescript-eslint/parser': ['.ts', '.tsx'],
@@ -44,7 +44,10 @@ module.exports = {
 		'simple-import-sort/imports': 'error',
 		'simple-import-sort/exports': 'error',
 		'import/order': 0,
-		'import/no-unresolved': 'error',
+		// 'import/no-unresolved': 'error',
+		// https://github.com/import-js/eslint-plugin-import/issues/1868
+		'import/no-unresolved': ['error', { ignore: ['^@preact-wmr-twind-zero.+'] }],
+		'import/extensions': 0,
 		'jest/no-deprecated-functions': 0,
 		eqeqeq: 2,
 		quotes: ['error', 'single'],

@@ -1,6 +1,6 @@
 import { type Options, type VNode, options } from 'preact';
 
-import type { TClassProps, TwindProps } from './preact-vnode-options-hook--twind-types';
+import type { TClassProps, TwindProps } from './preact-vnode-options-hook--twind-types.js';
 
 let _preactOptionsVNodeOriginal: ((vnode: VNode<TwindProps>) => void) | undefined | -1 = -1;
 

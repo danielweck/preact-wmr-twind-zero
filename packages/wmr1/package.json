@@ -1,0 +1,46 @@
+{
+	"name": "@preact-wmr-twind-zero/wmr1",
+	"repository": "https://github.com/danielweck/preact-wmr-twind-zero/",
+	"author": "Daniel Weck (daniel.weck@gmail.com)",
+	"version": "0.0.0",
+	"type": "module",
+	"engines": {
+		"node": ">=16",
+		"pnpm": ">=6"
+	},
+	"scripts": {
+		"postinstall": "pnpm patch-preact-types",
+		"patch-preact-types": "cpy \"node_modules/preact/hooks/src/index.d.ts\" \".\" --rename=\".types/preact-hooks_.d.ts\" && sed \"1s/^/export as namespace preacthooks;\\n/\" \".types/preact-hooks_.d.ts\" > \".types/preact-hooks__.d.ts\" && sed \"s/from '\\.\\.\\/\\.\\.';/from '..\\/node_modules\\/preact\\/src';/\" \".types/preact-hooks__.d.ts\" > \".types/preact-hooks.d.ts\" && rimraf \".types/preact-hooks_.d.ts\" && rimraf \".types/preact-hooks__.d.ts\"",
+		"clean": "rimraf \"./dist\" && rimraf \"./.cache\" && rimraf \"./.tmp\"",
+		"start": "pnpm clean && cross-env DEBUG=* wmr",
+		"build-no-prerender": "pnpm clean && cross-env DEBUG=* wmr build",
+		"build": "pnpm clean && cross-env DEBUG=* wmr build --prerender && pnpm afterbuild",
+		"build-repeat-if-fail": "(pnpm build || pnpm build || pnpm build || pnpm build || pnpm build || pnpm build || pnpm build || pnpm build || pnpm build || pnpm build || exit 0) || echo OK",
+		"afterbuild": "node \"./wmr-post-prerender-twind.mjs\"",
+		"build-github": "pnpm clean && cross-env DEBUG=* BUILD_FOR_GITHUB=1 wmr build --prerender && pnpm afterbuild",
+		"build-github-repeat-if-fail": "(pnpm build-github || pnpm build-github || pnpm build-github || pnpm build-github || pnpm build-github || pnpm build-github || pnpm build-github || pnpm build-github || pnpm build-github || pnpm build-github || exit 0) || echo OK",
+		"build-viz": "pnpm clean && cross-env DEBUG=* wmr build --prerender --visualize && pnpm afterbuild",
+		"serve": "cross-env DEBUG=* wmr serve",
+		"serve-http2": "cross-env DEBUG=* wmr serve --http2",
+		"typescript": "tsc --version && tsc --project tsconfig.json",
+		"typescript_": "tsc --version && tsc --traceresolution --project tsconfig.json"
+	},
+	"dependencies": {
+		"@preact-wmr-twind-zero/shared": "^0.0.0",
+		"preact": "^10.6.5",
+		"preact-iso": "^2.3.0"
+	},
+	"devDependencies": {
+		"@parcel/css": "^1.2.0",
+		"@twind/preset-autoprefix": "^1.0.0-next.35",
+		"@twind/preset-ext": "^1.0.0-next.35",
+		"@twind/preset-tailwind": "^1.0.0-next.35",
+		"@twind/preset-tailwind-forms": "^1.0.0-next.35",
+		"@twind/typescript-plugin": "^0.3.5",
+		"browserslist": "^4.19.1",
+		"kolorist": "^1.5.1",
+		"rollup": "^2.67.2",
+		"twind": "^1.0.0-next.35",
+		"wmr": "^3.7.2"
+	}
+}

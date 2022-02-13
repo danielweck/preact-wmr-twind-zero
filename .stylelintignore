@@ -9,12 +9,13 @@
 **/pnpm-lock.yaml
 **/dist
 **/.tmp
-stats.html
+**/stats.html
 **/*.js
 **/*.ts
 **/*.mjs
 **/*.cjs
 **/*.jsx
 **/*.tsx
-!twind.config.js
 **/.eslintcache
+**/.types
+!**/twind.config.js
