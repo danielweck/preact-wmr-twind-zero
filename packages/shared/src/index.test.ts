@@ -8,6 +8,7 @@ test('index assync() string test', async () => {
 	assert.is(await assync(), 'assync async');
 });
 
+// eslint-disable-next-line jest/expect-expect
 test('index func() string test', () => {
 	assert.is(func(), 'func other foo');
 });

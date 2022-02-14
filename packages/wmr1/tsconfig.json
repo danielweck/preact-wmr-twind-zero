@@ -3,6 +3,10 @@
 	"extends": "./tsconfig.build.json",
 	"compilerOptions": {
 		"paths": {
+			"~/*": ["./public/*"],
+			"/*": ["./public/*"],
+			"preact": ["types/preact/index.d.ts"],
+			"preact/hooks": ["types/preact/hooks/index.d.ts"],
 			"@preact-wmr-twind-zero/shared": ["../packages/shared/src/index.ts"],
 			"@preact-wmr-twind-zero/shared/sub": ["../packages/shared/src/sub/other.ts"],
 			"@preact-wmr-twind-zero/shared/sub/*": ["../packages/shared/src/sub/*"],

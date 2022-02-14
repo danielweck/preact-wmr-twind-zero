@@ -130,15 +130,15 @@ const defaultParserOptions = {
 	// extraFileExtensions: ['.cjs'],
 	// extensions: ['.cjs'],
 };
-const defaultTsObj = {
-	extends: [...defaultExtends, 'plugin:@typescript-eslint/recommended-requiring-type-checking'],
-	plugins: [...defaultPlugins, '@typescript-eslint'],
-	rules: {
-		...defaultRules,
-	},
-	settings: defaultSettings,
-	env: defaultEnv,
-};
+// const defaultTsObj = {
+// 	extends: [...defaultExtends, 'plugin:@typescript-eslint/recommended-requiring-type-checking'],
+// 	plugins: [...defaultPlugins, '@typescript-eslint'],
+// 	rules: {
+// 		...defaultRules,
+// 	},
+// 	settings: defaultSettings,
+// 	env: defaultEnv,
+// };
 
 module.exports = {
 	parser: '@typescript-eslint/parser',
@@ -156,32 +156,32 @@ module.exports = {
 		// 		node: true,
 		// 	},
 		// },
-		{
-			...defaultTsObj,
-			parserOptions: {
-				...defaultParserOptions,
-				project: ['./packages/shared/tsconfig.json'],
-			},
-			files: [
-				'./packages/shared/**/*.ts',
-				'./packages/shared/**/*.tsx',
-				'./packages/shared/**/*.js',
-				'./packages/shared/**/*.jsx',
-			],
-		},
-		{
-			...defaultTsObj,
-			parserOptions: {
-				...defaultParserOptions,
-				project: ['./packages/wmr1/tsconfig.build.json'],
-			},
-			files: [
-				'./packages/wmr1/**/*.ts',
-				'./packages/wmr1/**/*.tsx',
-				'./packages/wmr1/**/*.js',
-				'./packages/wmr1/**/*.jsx',
-			],
-		},
+		// {
+		// 	...defaultTsObj,
+		// 	parserOptions: {
+		// 		...defaultParserOptions,
+		// 		project: ['./packages/shared/tsconfig.json'],
+		// 	},
+		// 	files: [
+		// 		'./packages/shared/**/*.ts',
+		// 		'./packages/shared/**/*.tsx',
+		// 		'./packages/shared/**/*.js',
+		// 		'./packages/shared/**/*.jsx',
+		// 	],
+		// },
+		// {
+		// 	...defaultTsObj,
+		// 	parserOptions: {
+		// 		...defaultParserOptions,
+		// 		project: ['./packages/wmr1/tsconfig.build.json'],
+		// 	},
+		// 	files: [
+		// 		'./packages/wmr1/**/*.ts',
+		// 		'./packages/wmr1/**/*.tsx',
+		// 		'./packages/wmr1/**/*.js',
+		// 		'./packages/wmr1/**/*.jsx',
+		// 	],
+		// },
 	],
 	// overrides: [
 	// 	{
