@@ -1,37 +1,43 @@
 {
-  "typescript.tsdk": "./node_modules/typescript/lib",
-  "typescript.tsserver.trace": "off",
-  "files.exclude": {
-    "**/.git": true,
-    "**/.cache": true,
-    "**/.tmp": true,
-    "**/.DS_Store": true,
-    "**/.vscode": false,
-    "**/.history": true,
-    "**/.gitmodules": true,
-    "**/.idea": true,
-    "**/node_modules*": true,
-    "**/package-lock.json": true,
-    "**/pnpm-lock.yaml": true,
-    "**/yarn.lock": true,
-    "**/.eslintcache": true,
-    "**/stats.html": true,
-  },
-  "search.exclude": {
-    "**/dist": true
-  },
-  "typescript.surveys.enabled": false,
-  "editor.tabSize": 4,
-  "editor.useTabStops": true,
-  "javascript.preferences.quoteStyle": "single",
-  "typescript.preferences.quoteStyle": "single",
-  "prettier.singleQuote": true,
-  "css.validate": false,
-  "less.validate": false,
-  "scss.validate": false,
-  "stylelint.validate": ["css", "html", "javascript", "typescript", "typescriptreact"],
-  "editor.suggest.showStatusBar": true,
-  "editor.quickSuggestions": {
-    "strings": false
-  }
+	"typescript.tsdk": "./node_modules/typescript/lib",
+	"typescript.tsserver.trace": "off",
+	"files.exclude": {
+		"**/.git": true,
+		"**/.cache": true,
+		"**/.tmp": true,
+		"**/.DS_Store": true,
+		"**/.vscode": false,
+		"**/.history": true,
+		"**/.gitmodules": true,
+		"**/.idea": true,
+		"**/node_modules*": true,
+		"**/package-lock.json": true,
+		"**/pnpm-lock.yaml": true,
+		"**/yarn.lock": true,
+		"**/.eslintcache": true,
+		"**/stats.html": true
+	},
+	"search.exclude": {
+		"**/dist": true
+	},
+	"typescript.surveys.enabled": false,
+	"editor.tabSize": 4,
+	"editor.useTabStops": true,
+	"javascript.preferences.quoteStyle": "single",
+	"typescript.preferences.quoteStyle": "single",
+	"prettier.singleQuote": true,
+	"css.validate": false,
+	"less.validate": false,
+	"scss.validate": false,
+	"stylelint.validate": ["css", "html", "javascript", "typescript", "typescriptreact"],
+	"editor.suggest.showStatusBar": true,
+	"editor.quickSuggestions": {
+		"strings": false
+	},
+	"eslint.workingDirectories": [
+		{
+			"directory": ".",
+			"changeProcessCWD": true
+		}
+	]
 }

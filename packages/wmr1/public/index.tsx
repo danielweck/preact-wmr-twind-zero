@@ -25,7 +25,12 @@ console.log(other());
 console.log(other2());
 console.log(foo());
 
+const _window = (IS_CLIENT_SIDE ? window : {}) as typeof window & {
+	PREACTWMR_HYDRATED: boolean | undefined;
+};
+
 if (process.env.NODE_ENV === 'development') {
+	// eslint-disable-next-line @typescript-eslint/no-floating-promises
 	(async () => {
 		// @ts-expect-error TS7016
 		await import('preact/debug');
@@ -297,7 +302,7 @@ if (IS_CLIENT_SIDE) {
 
 		// window is safe, as in conditional IS_CLIENT_SIDE
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		(window as any).PREACTWMR_HYDRATED = true;
+		_window.PREACTWMR_HYDRATED = true;
 	} else {
 		// here in this code branch (no isodata): process.env.NODE_ENV === 'development'
 		// we use await import to force code splitting => this code bundle will not be loaded in production
@@ -311,6 +316,7 @@ if (IS_CLIENT_SIDE) {
 		// m.initPreactVDOMHook_Twind
 		//
 		/* PREACT_WMR_BUILD_STRIP_CODE_BEGIN */
+		// eslint-disable-next-line @typescript-eslint/no-floating-promises
 		(async () => {
 			const { initPreactVDOMHook_Twind } = await import('./preact-vnode-options-hook--twind.js');
 			const _tw = initPreactVDOMHook_Twind();
@@ -318,7 +324,7 @@ if (IS_CLIENT_SIDE) {
 
 			// window is safe, as in conditional IS_CLIENT_SIDE
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			(window as any).PREACTWMR_HYDRATED = true;
+			_window.PREACTWMR_HYDRATED = true;
 		})();
 		/* PREACT_WMR_BUILD_STRIP_CODE_END */
 	}
@@ -351,7 +357,7 @@ export async function prerender(data: Record<string, any>): Promise<
 
 	// TODO: data props?
 	// <App {...data} />
-	const res = await preactWmrPrerenderForTwind(data.url, <App prerenderIndex={_prerenderIndex++} />, {
+	const res = await preactWmrPrerenderForTwind(data.url as string, <App prerenderIndex={_prerenderIndex++} />, {
 		props: data,
 	});
 	// const res = await preactWmrPrerenderForTwind(data.url, cloneElement(<App />, { prerenderIndex: _prerenderIndex++ }), {

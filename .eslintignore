@@ -2,6 +2,7 @@
 **/.history/*
 .github/*
 .git/*
+.DS_Store
 **/.cache/*
 **/node_modules/*
 **/package-lock.json
@@ -13,3 +14,5 @@
 **/.eslintcache
 **/.types
 .turbo
+*.tsbuildinfo
+vitest.config.ts.js

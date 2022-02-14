@@ -3,6 +3,10 @@ import { useEffect, useRef } from 'preact/hooks';
 
 import { IS_CLIENT_SIDE, IS_PRE_RENDER } from './utils.js';
 
+const _window = (IS_CLIENT_SIDE ? window : {}) as typeof window & {
+	PREACTWMR_HYDRATED: boolean | undefined;
+};
+
 type T = { label: string };
 export const StaticNoHydrate: FunctionalComponent<T> = (props: RenderableProps<T>) => {
 	const hasRenderedAtLeastOnce = useRef(false);
@@ -11,7 +15,7 @@ export const StaticNoHydrate: FunctionalComponent<T> = (props: RenderableProps<T
 	}, []);
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const hydrated = IS_CLIENT_SIDE && (window as any).PREACTWMR_HYDRATED;
+	const hydrated = _window.PREACTWMR_HYDRATED;
 	// note: IS_PRE_RENDER includes IS_SERVER_SIDE,
 	// so here we must ensure IS_CLIENT_SIDE
 	if (IS_CLIENT_SIDE && IS_PRE_RENDER && (!hydrated || hasRenderedAtLeastOnce.current)) {
@@ -23,7 +27,9 @@ export const StaticNoHydrate: FunctionalComponent<T> = (props: RenderableProps<T
 		// 	</div>
 		// );
 		console.log(
-			`NO_HYDRATE: ${props.label} (hydrated: ${hydrated}, hasRenderedAtLeastOnce: ${hasRenderedAtLeastOnce.current})`,
+			`NO_HYDRATE: ${props.label} (hydrated: ${String(hydrated)}, hasRenderedAtLeastOnce: ${String(
+				hasRenderedAtLeastOnce.current,
+			)})`,
 		);
 		return NO_HYDRATE;
 	}
@@ -60,7 +66,7 @@ export class NoHydrate extends Component {
 	componentDidCatch(e: unknown) {
 		// mark the component as dirty to trigger suspend, but do not re-render:
 
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
 		if (e === S) (this as unknown as any).__d = true;
 	}
 	render() {

@@ -77,10 +77,10 @@ jobs:
     - run: git --no-pager diff
     - name: PR action (just lint)
       if: ${{ github.event_name == 'pull_request' }}
-      run: pnpm lint
+      run: pnpm lint && pnpm typescript && pnpm test
     - name: non-PR action (lint and build)
       if: ${{ github.event_name != 'pull_request' }}
-      run: pnpm lint && pnpm typescript && pnpm build-github && ls -R packages/wmr1/dist && mv packages/wmr1/dist/preact-wmr-twind-zero/* packages/wmr1/dist/ && rm -r packages/wmr1/dist/preact-wmr-twind-zero && rm packages/wmr1/dist/*.ts && rm packages/wmr1/dist/chunks/prerender*
+      run: pnpm lint && pnpm typescript && pnpm test && pnpm build-github && ls -R packages/wmr1/dist && mv packages/wmr1/dist/preact-wmr-twind-zero/* packages/wmr1/dist/ && rm -r packages/wmr1/dist/preact-wmr-twind-zero && rm packages/wmr1/dist/*.ts && rm packages/wmr1/dist/chunks/prerender*
     - name: Checkout GH-PAGES
       if: ${{ github.event_name != 'pull_request' }}
       uses: actions/checkout@v2

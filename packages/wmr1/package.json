@@ -1,8 +1,21 @@
 {
 	"name": "@preact-wmr-twind-zero/wmr1",
-	"repository": "https://github.com/danielweck/preact-wmr-twind-zero/",
-	"author": "Daniel Weck (daniel.weck@gmail.com)",
 	"version": "0.0.0",
+	"description": "Preact WMR Twind 'zero runtime' monorepo - WMR demo 1",
+	"homepage": "https://github.com/danielweck/preact-wmr-twind-zero/blob/main/README.md",
+	"repository": "github:danielweck/preact-wmr-twind-zero/",
+	"bugs": "https://github.com/danielweck/preact-wmr-twind-zero/issues",
+	"author": "Daniel Weck (https://github.com/danielweck)",
+	"keywords": [
+		"Preact",
+		"WMR",
+		"Twind",
+		"SSG",
+		"Critical CSS Stylesheet",
+		"Performance",
+		"Web Vitals"
+	],
+	"license": "BSD3",
 	"type": "module",
 	"engines": {
 		"node": ">=16",
@@ -24,8 +37,8 @@
 		"build-viz": "pnpm clean && cross-env DEBUG=* wmr build --prerender --visualize && pnpm afterbuild",
 		"serve": "cross-env DEBUG=* wmr serve",
 		"serve-http2": "cross-env DEBUG=* wmr serve --http2",
-		"typescript": "tsc --version && tsc --project tsconfig.json",
-		"typescript_": "tsc --version && tsc --traceresolution --project tsconfig.json"
+		"typescript": "tsc --version && tsc --project tsconfig.build.json",
+		"typescript_": "tsc --version && tsc --traceresolution --project tsconfig.build.json"
 	},
 	"dependencies": {
 		"@preact-wmr-twind-zero/shared": "^0.0.0",

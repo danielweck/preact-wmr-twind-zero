@@ -3,5 +3,5 @@ export const foo = () => {
 };
 
 export const ass = async () => {
-	return 'async';
+	return Promise.resolve('async');
 };

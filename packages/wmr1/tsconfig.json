@@ -1,37 +1,12 @@
 {
-	"extends": "../../tsconfig.json",
+	"$schema": "http://json.schemastore.org/tsconfig",
+	"extends": "./tsconfig.build.json",
 	"compilerOptions": {
-		"noEmit": true,
-		"rootDir": "./",
-		"rootDirs": ["./", "./public/"],
-		"baseUrl": ".",
 		"paths": {
-			"~/*": ["./public/*"],
-			"/*": ["./public/*"],
-			"preact": ["types/preact/index.d.ts"],
-			"preact/hooks": ["types/preact/hooks/index.d.ts"]
-		},
-		"plugins": [
-			{
-				"name": "@twind/typescript-plugin",
-				"tags": ["tw", "twind", "twindTw", "twindShortcut"],
-				"attributes": ["class", "className"],
-				"styles": ["style", "styled"],
-				"debug": true,
-				"enable": true
-			}
-		],
-		"jsx": "preserve",
-		"jsxFactory": "preact.h",
-		"jsxFragmentFactory": "preact.Fragment",
-		"resolveJsonModule": true
-	},
-	"typeAcquisition": {
-		"enable": true,
-		"disableFilenameBasedTypeAcquisition": true,
-		"include": ["rollup"]
-	},
-	"include": ["public/**/*"],
-
-	"references": [{ "path": "../shared/tsconfig.json" }]
+			"@preact-wmr-twind-zero/shared": ["../packages/shared/src/index.ts"],
+			"@preact-wmr-twind-zero/shared/sub": ["../packages/shared/src/sub/other.ts"],
+			"@preact-wmr-twind-zero/shared/sub/*": ["../packages/shared/src/sub/*"],
+			"@preact-wmr-twind-zero/shared/*": ["../packages/shared/src/*"]
+		}
+	}
 }

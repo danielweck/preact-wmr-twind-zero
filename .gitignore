@@ -8,3 +8,5 @@
 **/.eslintcache
 **/.types
 .turbo
+*.tsbuildinfo
+vitest.config.ts.js

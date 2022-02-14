@@ -1,9 +1,22 @@
 {
 	"name": "preact-wmr-twind-zero",
-	"repository": "https://github.com/danielweck/preact-wmr-twind-zero/",
-	"author": "Daniel Weck (daniel.weck@gmail.com)",
-	"private": true,
 	"version": "0.0.0",
+	"description": "Preact WMR Twind 'zero runtime' monorepo",
+	"homepage": "https://github.com/danielweck/preact-wmr-twind-zero/blob/main/README.md",
+	"repository": "github:danielweck/preact-wmr-twind-zero/",
+	"bugs": "https://github.com/danielweck/preact-wmr-twind-zero/issues",
+	"author": "Daniel Weck (https://github.com/danielweck)",
+	"keywords": [
+		"Preact",
+		"WMR",
+		"Twind",
+		"SSG",
+		"Critical CSS Stylesheet",
+		"Performance",
+		"Web Vitals"
+	],
+	"license": "BSD3",
+	"private": true,
 	"workspaces": [
 		"packages/*"
 	],
@@ -16,31 +29,33 @@
 	"scripts": {
 		"prepare": "husky install",
 		"clean": "pnpm --recursive clean",
-		"build_": "pnpm --recursive build",
+		"test": "uvu packages/shared \".test\\.ts\" --require tsm --bail --ignore dist",
+		"build_": "pnpm --recursive --if-present --filter=./packages build",
 		"build": "pnpm turbo run build",
 		"build-github": "pnpm turbo run build-github",
 		"typescript_": "pnpm --recursive typescript",
 		"typescript": "pnpm turbo run typescript",
 		"serve": "pnpm --filter @preact-wmr-twind-zero/wmr1 serve",
 		"start": "pnpm --filter @preact-wmr-twind-zero/wmr1 start",
-		"lint:eslint": "eslint \"./**/*.{ts,tsx,js,tsx,mjs,cjs}\"",
-		"lint:editorconfig": "eclint check '**/*' '!package-lock.json' '!yarn.lock' '!pnpm-lock.yaml' '!.husky/**/*' '!.vscode/**/*' '!.git/**/*' '!.github/**/*' '!**/.history/**/*' '!packages/**/dist/**/*' '!**/.tmp/**/*' '!**/node_modules/**/*' '!**/.cache/**/*' '!**/package.json'",
+		"lint:eslint": "eslint \"./**/*.{ts,tsx,js,jsx,mjs,cjs}\"",
+		"lint:editorconfig": "eclint check '**/*' '!vitest.config.ts.js' '!package-lock.json' '!yarn.lock' '!pnpm-lock.yaml' '!.husky/**/*' '!.vscode/**/*' '!.git/**/*' '!.github/**/*' '!**/.history/**/*' '!packages/**/dist/**/*' '!**/.tmp/**/*' '!**/node_modules/**/*' '!**/.cache/**/*' '!**/package.json'",
 		"lint:prettier": "prettier --check --no-write --loglevel log \"./\"",
-		"lint:stylelint": "stylelint \"./packages/**/public/**/*.{html,htm,css,ts,tsx,js,tsx,mjs,cjs}\"",
+		"lint:stylelint": "stylelint \"./packages/**/public/**/*.{html,htm,css,ts,tsx,js,jsx,mjs,cjs}\"",
 		"lint": "pnpm lint:editorconfig && pnpm lint:eslint && pnpm lint:stylelint && pnpm lint:prettier",
-		"lint-fix:eslint": "cross-env TIMING=1 eslint --cache --fix \"./**/*.{ts,tsx,js,tsx,mjs,cjs}\"",
-		"lint-fix:prettier": "prettier --ignore-unknown --write \"./**/!(pnpm-lock.yaml)*.{html,htm,css,json,md,yml,yaml,svg,xml,ts,tsx,js,tsx,mjs,cjs}\"",
-		"lint-fix:stylelint": "stylelint --fix \"./packages/**/public/**/*.{html,htm,css,ts,tsx,js,tsx,mjs,cjs}\"",
+		"lint-fix:eslint": "cross-env TIMING=1 eslint --cache --fix \"./**/*.{ts,tsx,js,jsx,mjs,cjs}\"",
+		"lint-fix:prettier": "prettier --ignore-unknown --write \"./**/!(pnpm-lock.yaml)*.{html,htm,css,json,md,yml,yaml,svg,xml,ts,tsx,js,jsx,mjs,cjs}\"",
+		"lint-fix:stylelint": "stylelint --fix \"./packages/**/public/**/*.{html,htm,css,ts,tsx,js,jsx,mjs,cjs}\"",
 		"lint-fix": "pnpm lint-fix:eslint && pnpm lint-fix:prettier && pnpm lint-fix:stylelint"
 	},
 	"lint-staged": {
-		"*.{ts,tsx,js,tsx,mjs,cjs}": [
-			"pnpm lint-fix:eslint"
+		"*.{ts,tsx,js,jsx,mjs,cjs}": [
+			"pnpm lint-fix:eslint",
+			"pnpm test"
 		],
-		"!(pnpm-lock.yaml)*.{html,htm,css,json,md,yml,yaml,svg,xml,ts,tsx,js,tsx,mjs,cjs}": [
+		"!(pnpm-lock.yaml)*.{html,htm,css,json,md,yml,yaml,svg,xml,ts,tsx,js,jsx,mjs,cjs}": [
 			"pnpm lint-fix:prettier"
 		],
-		"*.{html,htm,css,ts,tsx,js,tsx,mjs,cjs}": [
+		"*.{html,htm,css,ts,tsx,js,jsx,mjs,cjs}": [
 			"pnpm lint-fix:stylelint"
 		]
 	},
@@ -64,7 +79,7 @@
 		"eslint-plugin-simple-import-sort": "^7.0.0",
 		"eslint-plugin-unused-imports": "^2.0.0",
 		"husky": "^7.0.4",
-		"lint-staged": "^12.3.3",
+		"lint-staged": "^12.3.4",
 		"postcss-html": "^1.3.0",
 		"postcss-jsx": "^0.36.4",
 		"postcss-syntax": "^0.36.2",
@@ -74,7 +89,10 @@
 		"stylelint-config-html": "^1.0.0",
 		"stylelint-config-prettier": "^9.0.3",
 		"stylelint-config-standard": "^25.0.0",
+		"tslib": "^2.3.1",
+		"tsm": "^2.2.1",
 		"turbo": "^1.1.2",
-		"typescript": "next"
+		"typescript": "next",
+		"uvu": "^0.5.3"
 	}
 }

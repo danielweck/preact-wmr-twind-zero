@@ -1,26 +1,39 @@
 {
 	"name": "@preact-wmr-twind-zero/shared",
-	"repository": "https://github.com/danielweck/preact-wmr-twind-zero/",
-	"author": "Daniel Weck (daniel.weck@gmail.com)",
 	"version": "0.0.0",
+	"description": "Preact WMR Twind 'zero runtime' monorepo - shared code",
+	"homepage": "https://github.com/danielweck/preact-wmr-twind-zero/blob/main/README.md",
+	"repository": "github:danielweck/preact-wmr-twind-zero/",
+	"bugs": "https://github.com/danielweck/preact-wmr-twind-zero/issues",
+	"author": "Daniel Weck (https://github.com/danielweck)",
+	"keywords": [
+		"Preact",
+		"WMR",
+		"Twind",
+		"SSG",
+		"Critical CSS Stylesheet",
+		"Performance",
+		"Web Vitals"
+	],
+	"license": "BSD3",
 	"type": "module",
 	"module": "./dist/esm/src/index.js",
 	"exports": {
 		".": {
 			"import": "./dist/esm/src/index.js",
-			"require_": "./dist/cjs/src/index.js"
+			"require": "./dist/cjs/src/index.js"
 		},
 		"./*": {
 			"import": "./dist/esm/src/*",
-			"require_": "./dist/cjs/src/*"
+			"require": "./dist/cjs/src/*"
 		},
 		"./sub": {
 			"import": "./dist/esm/src/sub/other.js",
-			"require_": "./dist/cjs/src/sub/other.js"
+			"require": "./dist/cjs/src/sub/other.js"
 		},
 		"./sub/*": {
 			"import": "./dist/esm/src/sub/*",
-			"require_": "./dist/cjs/src/sub/*"
+			"require": "./dist/cjs/src/sub/*"
 		}
 	},
 	"engines": {
@@ -31,9 +44,14 @@
 		"clean": "rimraf \"./dist\"",
 		"start": "pnpm build",
 		"build": "pnpm clean && pnpm typescript",
-		"typescript": "tsc --version && tsc --project tsconfig.json && tsc --project tsconfig-cjs.json"
+		"typescript": "tsc --version && tsc --project tsconfig.build.json && tsc --project tsconfig.build-cjs.json"
 	},
 	"files": [
-		"dist/src"
-	]
+		"dist"
+	],
+	"publishConfig": {
+		"tag": "latest",
+		"access": "public",
+		"directory": "dist"
+	}
 }

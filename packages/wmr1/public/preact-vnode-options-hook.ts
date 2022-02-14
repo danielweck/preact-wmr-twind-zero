@@ -9,6 +9,7 @@ export const initPreactVDOMHook = (tw?: (val: string) => string) => {
 		// console.log(
 		// 	'initPreactVDOMHook initPreactVDOMHook initPreactVDOMHook initPreactVDOMHook initPreactVDOMHook initPreactVDOMHook',
 		// );
+		// eslint-disable-next-line @typescript-eslint/unbound-method
 		_preactOptionsVNodeOriginal = options.vnode;
 	}
 	const preactOptionsVNodeOriginal = _preactOptionsVNodeOriginal as Options['vnode'];
