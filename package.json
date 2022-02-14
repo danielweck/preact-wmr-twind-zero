@@ -29,7 +29,10 @@
 	"scripts": {
 		"prepare": "husky install",
 		"clean": "pnpm --recursive clean",
-		"test": "uvu packages/shared \".test\\.ts\" --require tsm --bail --ignore dist",
+		"__test-uvu": "uvu packages/shared \".test\\.ts\" --require tsm --bail --ignore dist",
+		"test": "pnpm vitest --run",
+		"test:ui": "pnpm vitest --ui --run",
+		"test:coverage": "pnpm vitest --coverage --run",
 		"build_": "pnpm --recursive --if-present --filter=./packages build",
 		"build": "pnpm turbo run build",
 		"build-github": "pnpm turbo run build-github",
@@ -46,18 +49,6 @@
 		"lint-fix:prettier": "prettier --ignore-unknown --write \"./**/!(pnpm-lock.yaml)*.{html,htm,css,json,md,yml,yaml,svg,xml,ts,tsx,js,jsx,mjs,cjs}\"",
 		"lint-fix:stylelint": "stylelint --fix \"./packages/**/public/**/*.{html,htm,css,ts,tsx,js,jsx,mjs,cjs}\"",
 		"lint-fix": "pnpm lint-fix:eslint && pnpm lint-fix:prettier && pnpm lint-fix:stylelint"
-	},
-	"lint-staged": {
-		"*.{ts,tsx,js,jsx,mjs,cjs}": [
-			"pnpm lint-fix:eslint",
-			"pnpm test"
-		],
-		"!(pnpm-lock.yaml)*.{html,htm,css,json,md,yml,yaml,svg,xml,ts,tsx,js,jsx,mjs,cjs}": [
-			"pnpm lint-fix:prettier"
-		],
-		"*.{html,htm,css,ts,tsx,js,jsx,mjs,cjs}": [
-			"pnpm lint-fix:stylelint"
-		]
 	},
 	"devDependencies": {
 		"@commitlint/cli": "^16.2.1",
@@ -90,9 +81,8 @@
 		"stylelint-config-prettier": "^9.0.3",
 		"stylelint-config-standard": "^25.0.0",
 		"tslib": "^2.3.1",
-		"tsm": "^2.2.1",
 		"turbo": "^1.1.2",
 		"typescript": "next",
-		"uvu": "^0.5.3"
+		"vitest": "^0.3.5"
 	}
 }

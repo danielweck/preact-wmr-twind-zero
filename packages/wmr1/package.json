@@ -54,6 +54,7 @@
 		"@twind/preset-ext": "^1.0.0-next.36",
 		"@twind/preset-tailwind": "^1.0.0-next.36",
 		"@twind/preset-tailwind-forms": "^1.0.0-next.36",
+		"@twind/preset-typography": "^1.0.0-next.36",
 		"@twind/typescript-plugin": "^0.3.5",
 		"browserslist": "^4.19.1",
 		"kolorist": "^1.5.1",

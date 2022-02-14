@@ -24,7 +24,7 @@ export const SuspendedStaticNoHydrateComp: FunctionalComponent<unknown> = (_prop
 					Javascript bundle to render the lazy-loaded async component)
 				</button>
 			</p>
-			<p>
+			<p class="prose prose-slate lg:prose-xl">
 				The standard Lorem Ipsum passage, used since the 1500s "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
 				do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
 				ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
