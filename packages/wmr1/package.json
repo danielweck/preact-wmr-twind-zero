@@ -42,7 +42,7 @@
 	},
 	"dependencies": {
 		"@preact-wmr-twind-zero/shared": "^0.0.0",
-		"preact": "^10.6.5",
+		"preact": "^10.6.6",
 		"preact-iso": "^2.3.0"
 	},
 	"devDependencies": {

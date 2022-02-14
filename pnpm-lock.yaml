@@ -88,15 +88,15 @@ importers:
       '@twind/typescript-plugin': ^0.3.5
       browserslist: ^4.19.1
       kolorist: ^1.5.1
-      preact: ^10.6.5
+      preact: ^10.6.6
       preact-iso: ^2.3.0
       rollup: ^2.67.2
       twind: ^1.0.0-next.35
       wmr: ^3.7.2
     dependencies:
       '@preact-wmr-twind-zero/shared': link:../shared
-      preact: 10.6.5
-      preact-iso: 2.3.0_preact@10.6.5
+      preact: 10.6.6
+      preact-iso: 2.3.0_preact@10.6.6
     devDependencies:
       '@parcel/css': 1.2.0
       '@twind/preset-autoprefix': 1.0.0-next.35_71271a515623359e0ef721bdfb161265
@@ -1792,8 +1792,8 @@ packages:
       which: 2.0.2
     dev: true
 
-  /css-functions-list/3.0.0:
-    resolution: {integrity: sha512-rfwhBOvXVFcKrSwmLxD8JQyuEEy/3g3Y9FMI2l6iV558Coeo1ucXypXb4rwrVpk5Osh5ViXp2DTgafw8WxglhQ==}
+  /css-functions-list/3.0.1:
+    resolution: {integrity: sha512-PriDuifDt4u4rkDgnqRCLnjfMatufLmWNfQnGCq34xZwpY3oabwhB9SqRBmuvWUgndbemCFlKqg+nO7C2q0SBw==}
     engines: {node: '>=12.22'}
     dev: true
 
@@ -4844,17 +4844,17 @@ packages:
       source-map-js: 1.0.2
     dev: true
 
-  /preact-iso/2.3.0_preact@10.6.5:
+  /preact-iso/2.3.0_preact@10.6.6:
     resolution: {integrity: sha512-taJmRidbWrjHEhoVoxXS2Kvxa6X3jXSsTtD7rSYeJuxnPNr1ghCu1JUzCrRxmZwTUNWIqwUpNi+AJoLtvCPN7g==}
     peerDependencies:
       preact: '>=10'
       preact-render-to-string: '>=5'
     dependencies:
-      preact: 10.6.5
+      preact: 10.6.6
     dev: false
 
-  /preact/10.6.5:
-    resolution: {integrity: sha512-i+LXM6JiVjQXSt2jG2vZZFapGpCuk1fl8o6ii3G84MA3xgj686FKjs4JFDkmUVhtxyq21+4ay74zqPykz9hU6w==}
+  /preact/10.6.6:
+    resolution: {integrity: sha512-dgxpTFV2vs4vizwKohYKkk7g7rmp1wOOcfd4Tz3IB3Wi+ivZzsn/SpeKJhRENSE+n8sUfsAl4S3HiCVT923ABw==}
     dev: false
 
   /prelude-ls/1.2.1:
@@ -5619,7 +5619,7 @@ packages:
       balanced-match: 2.0.0
       colord: 2.9.2
       cosmiconfig: 7.0.1
-      css-functions-list: 3.0.0
+      css-functions-list: 3.0.1
       debug: 4.3.3
       execall: 2.0.0
       fast-glob: 3.2.11

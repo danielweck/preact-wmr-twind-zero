@@ -25,7 +25,7 @@
 		"node": ">=16",
 		"pnpm": ">=6"
 	},
-	"packageManager": "pnpm@6.30.1",
+	"packageManager": "pnpm@6.31.0",
 	"scripts": {
 		"prepare": "husky install",
 		"clean": "pnpm --recursive clean",
