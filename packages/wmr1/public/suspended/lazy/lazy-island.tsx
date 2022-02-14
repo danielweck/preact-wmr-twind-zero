@@ -1,6 +1,8 @@
 import type { FunctionalComponent, RenderableProps } from 'preact';
-import lazy, { ErrorBoundary } from 'preact-iso/lazy';
+import { ErrorBoundary } from 'preact-iso/lazy';
 
+import { lazy, Suspense } from '../../.patched/suspense.js';
+import { twindTw } from '../../twindish.js';
 import { LAZY_TIMEOUT } from '../../utils.js';
 
 // Code splitting
@@ -15,13 +17,19 @@ export const SuspendedLazy = lazy(
 );
 
 export const SuspendedLazy_: FunctionalComponent<unknown> = (_props: RenderableProps<unknown>) => {
+	const clz = twindTw`
+		text-blue-500
+		bg-pink-400
+	`;
 	return (
 		<ErrorBoundary
 			onError={(err) => {
 				console.log('ErrorBoundary onError (SuspendedLazy): ', err);
 			}}
 		>
-			<SuspendedLazy />
+			<Suspense data-tw={clz} fallback={<p class={clz}>LOADING...</p>}>
+				<SuspendedLazy />
+			</Suspense>
 		</ErrorBoundary>
 	);
 };

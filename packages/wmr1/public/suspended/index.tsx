@@ -3,7 +3,7 @@ import { ErrorBoundary } from 'preact-iso/lazy';
 import { Router } from 'preact-iso/router';
 
 import { IS_PRE_RENDER } from '../utils.js';
-import { SuspendedLazy } from './lazy/lazy-island.js';
+import { SuspendedLazy_ } from './lazy/lazy-island.js';
 import { SuspendedStaticNoHydrate } from './static-no-hydrate/lazy-island.js';
 
 // This subrouter exists only to facilitate the generation of "critical" vs. "secondary" CSS stylesheets,
@@ -21,7 +21,7 @@ export const RoutedSuspendedSubRouter: FunctionalComponent<unknown> = (_props: R
 			}}
 		>
 			<Router>
-				<SuspendedLazy path={`/lazy${IS_PRE_RENDER ? '/' : ''}`} />
+				<SuspendedLazy_ path={`/lazy${IS_PRE_RENDER ? '/' : ''}`} />
 				<SuspendedStaticNoHydrate path={`/static-no-hydrate${IS_PRE_RENDER ? '/' : ''}`} />
 			</Router>
 		</ErrorBoundary>

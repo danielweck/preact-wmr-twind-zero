@@ -22,9 +22,12 @@
 		"pnpm": ">=6"
 	},
 	"scripts": {
-		"postinstall": "pnpm patch-preact-types",
-		"patch-preact-types": "cpy \"node_modules/preact/hooks/src/index.d.ts\" \".\" --rename=\".types/preact-hooks_.d.ts\" && sed \"1s/^/export as namespace preacthooks;\\n/\" \".types/preact-hooks_.d.ts\" > \".types/preact-hooks__.d.ts\" && sed \"s/from '\\.\\.\\/\\.\\.';/from '..\\/node_modules\\/preact\\/src\\/index.js';/\" \".types/preact-hooks__.d.ts\" > \".types/preact-hooks.d.ts\" && rimraf \".types/preact-hooks_.d.ts\" && rimraf \".types/preact-hooks__.d.ts\"",
-		"clean": "rimraf \"./dist\" && rimraf \"./.cache\" && rimraf \"./.tmp\"",
+		"postinstall": "pnpm clean && rimraf \"./.types\" && rimraf \"./public/.patched\" && pnpm patch-preact-types && pnpm patch-preact-suspense-1 && pnpm patch-preact-suspense-2 && pnpm patch-preact-suspense-3",
+		"patch-preact-suspense-1": "cpy \"node_modules/preact/compat/src/suspense.js\" \".\" --rename=\"public/.patched/suspense_.js\" && sed -e \"s/^options\\._catchError = function/if (0) options._catchError = function/\" -e \"s/\\._catchError/.__e/g\" -e \"s/\\.\\/util/.\\/util.js/\" -e \"s/\\._parentDom/.__P/g\" -e \"s/\\._parent/.__/g\" -e \"s/\\._component/.__c/g\" -e \"s/\\._childDidSuspend/.__c/g\" -e \"s/\\._dom/.__e/g\" -e \"s/\\._dom/.__e/g\" -e \"s/\\._children/.__k/g\" -e \"s/\\._onResolve/.__R/g\" -e \"s/\\._hydrating/.__h/g\" -e \"s/\\._cleanup/.__c/g\" -e \"s/\\.__hooks/.__H/g\" -e \"s/\\._list/.__/g\" -e \"s/\\._originalParentDom/.__O/g\" -e \"s/\\._original/.__v/g\" -e \"s/\\._pendingSuspensionCount/.__u/g\" -e \"s/\\._suspenders/._suspenders/g\" -e \"s/\\._forwarded/.__f/g\" -e \"s/\\._detachOnNextRender/.__b/g\" -e \"s/\\._nextDom/.__d/g\" -e \"s/\\._force/.__e/g\" -e \"s/\\_suspended/__e/g\" -e \"s/\\._vnode/.__v/g\" \"public/.patched/suspense_.js\" > \"public/.patched/suspense.js\" && rimraf \"public/.patched/suspense_.js\"",
+		"patch-preact-suspense-2": "cpy \"node_modules/preact/compat/src/util.js\" \".\" --rename=\"public/.patched/util.js\"",
+		"patch-preact-suspense-3": "cpy \"node_modules/preact/compat/src/suspense.d.ts\" \".\" --rename=\"public/.patched/suspense_.d.ts\" && sed -e \"s/\\.\\.\\/\\.\\.\\/src/..\\/..\\/node_modules\\/preact\\/src\\/index.js/\" \"public/.patched/suspense_.d.ts\" > \"public/.patched/suspense.d.ts\" && rimraf \"public/.patched/suspense_.d.ts\"",
+		"patch-preact-types": "cpy \"node_modules/preact/hooks/src/index.d.ts\" \".\" --rename=\".types/preact-hooks_.d.ts\" && sed -e \"1s/^/export as namespace preacthooks;\\n/\" -e \"s/from '\\.\\.\\/\\.\\.';/from '..\\/node_modules\\/preact\\/src\\/index.js';/\" \".types/preact-hooks_.d.ts\" > \".types/preact-hooks.d.ts\" && rimraf \".types/preact-hooks_.d.ts\"",
+		"clean": "rimraf \"./dist\" && rimraf \"./.cache\" && rimraf \"./.tmp\" && rimraf \"./.turbo\"",
 		"start": "pnpm clean && cross-env DEBUG=* wmr",
 		"build-no-prerender": "pnpm clean && cross-env DEBUG=* wmr build",
 		"build_": "pnpm clean && cross-env DEBUG=* wmr build --prerender && pnpm afterbuild",
@@ -46,16 +49,16 @@
 		"preact-iso": "^2.3.0"
 	},
 	"devDependencies": {
-		"@parcel/css": "^1.2.0",
-		"@twind/preset-autoprefix": "^1.0.0-next.35",
-		"@twind/preset-ext": "^1.0.0-next.35",
-		"@twind/preset-tailwind": "^1.0.0-next.35",
-		"@twind/preset-tailwind-forms": "^1.0.0-next.35",
+		"@parcel/css": "^1.3.1",
+		"@twind/preset-autoprefix": "^1.0.0-next.36",
+		"@twind/preset-ext": "^1.0.0-next.36",
+		"@twind/preset-tailwind": "^1.0.0-next.36",
+		"@twind/preset-tailwind-forms": "^1.0.0-next.36",
 		"@twind/typescript-plugin": "^0.3.5",
 		"browserslist": "^4.19.1",
 		"kolorist": "^1.5.1",
 		"rollup": "^2.67.2",
-		"twind": "^1.0.0-next.35",
+		"twind": "^1.0.0-next.36",
 		"wmr": "^3.7.2"
 	}
 }

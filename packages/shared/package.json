@@ -41,7 +41,7 @@
 		"pnpm": ">=6"
 	},
 	"scripts": {
-		"clean": "rimraf \"./dist\"",
+		"clean": "rimraf \"./dist\" && rimraf \"./.turbo\"",
 		"start": "pnpm build",
 		"build": "pnpm clean && pnpm typescript",
 		"typescript": "tsc --version && tsc --project tsconfig.build.json && tsc --project tsconfig.build-cjs.json"

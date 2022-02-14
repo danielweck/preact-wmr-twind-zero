@@ -38,7 +38,7 @@
 		"serve": "pnpm --filter @preact-wmr-twind-zero/wmr1 serve",
 		"start": "pnpm --filter @preact-wmr-twind-zero/wmr1 start",
 		"lint:eslint": "eslint \"./**/*.{ts,tsx,js,jsx,mjs,cjs}\"",
-		"lint:editorconfig": "eclint check '**/*' '!vitest.config.ts.js' '!package-lock.json' '!yarn.lock' '!pnpm-lock.yaml' '!.husky/**/*' '!.vscode/**/*' '!.git/**/*' '!.github/**/*' '!**/.history/**/*' '!packages/**/dist/**/*' '!**/.tmp/**/*' '!**/node_modules/**/*' '!**/.cache/**/*' '!**/package.json'",
+		"lint:editorconfig": "eclint check '**/*' '!vitest.config.ts.js' '!package-lock.json' '!yarn.lock' '!pnpm-lock.yaml' '!.husky/**/*' '!.vscode/**/*' '!.git/**/*' '!.github/**/*' '!**/.history/**/*' '!**/.patched/**/*' '!packages/**/dist/**/*' '!**/.tmp/**/*' '!**/node_modules/**/*' '!**/.cache/**/*' '!**/package.json'",
 		"lint:prettier": "prettier --check --no-write --loglevel log \"./\"",
 		"lint:stylelint": "stylelint \"./packages/**/public/**/*.{html,htm,css,ts,tsx,js,jsx,mjs,cjs}\"",
 		"lint": "pnpm lint:editorconfig && pnpm lint:eslint && pnpm lint:stylelint && pnpm lint:prettier",

@@ -16,3 +16,4 @@
 .turbo
 *.tsbuildinfo
 vitest.config.ts.js
+**/.patched/*
