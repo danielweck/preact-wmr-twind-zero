@@ -7,6 +7,8 @@ import { twindShortcut, twindTw } from '../twindish.js';
 const SuspendedLazyLoader: FunctionalComponent<unknown> = (_props: RenderableProps<unknown>) => {
 	const [isLazyLoaded, setLazyLoaded] = useState(false);
 
+	// eslint-disable-next-line quotes
+	const cls = "before:content-['zob']";
 	return (
 		<>
 			{isLazyLoaded ? (
@@ -28,7 +30,7 @@ const SuspendedLazyLoader: FunctionalComponent<unknown> = (_props: RenderablePro
 					>
 						CLICK HERE TO LAZY-LOAD
 					</button>
-					<span>(1s simulated network delay on first load, then "cache" hit)</span>
+					<span class={cls}>(1s simulated network delay on first load, then "cache" hit)</span>
 				</>
 			)}
 		</>
