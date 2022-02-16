@@ -7,8 +7,7 @@ export const Routed404: FunctionalComponent<unknown> = (_props: RenderableProps<
 			<p
 				class={`
 					bg-yellow-300
-					text-black
-					text-3xl
+					text(black 3xl)
 				`}
 			>
 				This text has a <strong>yellow-300</strong> background (unique to this paragraph, not shared with any other route or

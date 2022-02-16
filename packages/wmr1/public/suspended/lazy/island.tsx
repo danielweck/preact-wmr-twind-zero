@@ -1,14 +1,20 @@
 import type { FunctionalComponent, RenderableProps } from 'preact';
 
+import { twindTw } from '../../twindish.js';
+
 export const SuspendedLazyComp: FunctionalComponent<unknown> = (_props: RenderableProps<unknown>) => {
+	const other0 = twindTw`block`;
+	const other1 = twindTw`nope`;
+	const other2 = twindTw`rounded`;
 	return (
 		<div
-			class={`
+			class={`${other0}
 				border-solid
-				border-4
-				border-pink-600
-				rounded
-			`}
+				${`
+					${other1}
+					border(4 pink-600)
+					${other2}
+				`}`}
 		>
 			<h3>Suspended &rarr; Lazy</h3>
 			<p

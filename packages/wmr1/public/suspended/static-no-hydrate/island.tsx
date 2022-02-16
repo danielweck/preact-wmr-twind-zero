@@ -6,8 +6,7 @@ export const SuspendedStaticNoHydrateComp: FunctionalComponent<unknown> = (_prop
 			<p
 				dir="rtl"
 				class={`
-					is-rtl:font-bold
-					is-rtl:text-6xl
+					is-rtl:(font-bold text-6xl)
 				`}
 			>
 				RTL (bold)

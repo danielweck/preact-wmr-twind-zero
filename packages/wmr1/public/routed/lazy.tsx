@@ -10,8 +10,7 @@ export const RoutedLazy: FunctionalComponent<unknown> = (_props: RenderableProps
 			<p
 				class={`
 					bg-yellow-500
-					text-black
-					text-3xl
+					text(black 3xl)
 				`}
 			>
 				This text has a <strong>yellow-500</strong> background (unique to this paragraph, not shared with any other route or

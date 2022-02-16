@@ -41,9 +41,7 @@ export const StaticNoHydrate: FunctionalComponent<T> = (props: RenderableProps<T
 		<div
 			class={`
 				bg-pink-200
-				border-solid
-				border-2
-				border-pink-800
+				border(solid 2 pink-800)
 				rounded
 			`}
 			data-static-no-hydrate

@@ -18,16 +18,17 @@ export const SuspendedLazy = lazy(
 
 export const SuspendedLazy_: FunctionalComponent<unknown> = (_props: RenderableProps<unknown>) => {
 	const clz = twindTw`
-		text-blue-500
+		text(blue-500 3xl)
 		bg-pink-400
 	`;
+	const clzz = clz; // testing the Babel visitor
 	return (
 		<ErrorBoundary
 			onError={(err) => {
 				console.log('ErrorBoundary onError (SuspendedLazy): ', err);
 			}}
 		>
-			<Suspense data-tw={clz} fallback={<p class={clz}>LOADING...</p>}>
+			<Suspense data-tw={clz} fallback={<p class={clzz}>LOADING...</p>}>
 				<SuspendedLazy />
 			</Suspense>
 		</ErrorBoundary>

@@ -17,3 +17,5 @@
 *.tsbuildinfo
 vitest.config.ts.js
 **/.patched/*
+**/.pnpm-debug.log
+

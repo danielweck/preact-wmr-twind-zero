@@ -7,9 +7,8 @@ export const RoutedHome: FunctionalComponent<unknown> = (_props: RenderableProps
 			<p
 				class={`
 					bg-yellow-400
-					text-black
+					text(black 3xl)
 					non-twind-class-token
-					text-3xl
 				`}
 			>
 				This text has a <strong>yellow-400</strong> background (unique to this paragraph, not shared with any other route or

@@ -8,7 +8,7 @@ const SuspendedLazyLoader: FunctionalComponent<unknown> = (_props: RenderablePro
 	const [isLazyLoaded, setLazyLoaded] = useState(false);
 
 	// eslint-disable-next-line quotes
-	const cls = "before:content-['zob']";
+	const cls = twindTw`before:content-['zob']`;
 	return (
 		<>
 			{isLazyLoaded ? (
@@ -19,10 +19,8 @@ const SuspendedLazyLoader: FunctionalComponent<unknown> = (_props: RenderablePro
 						class={`
 							p-2
 							m-2
-							border-2
+							border(2 dotted purple-500)
 							rounded
-							border-dotted
-							border-purple-500
 						`}
 						onClick={() => {
 							setLazyLoaded(true);
@@ -45,18 +43,19 @@ export const RoutedRoute: FunctionalComponent<unknown> = (_props: RenderableProp
 	// and also noting that this will perform whitespace collapse + string trim,
 	// resulting in cleaner smaller JSX hydration code
 	// (this is automatically done for class/className props too, not just the twindTw / twindShortcut functions)
-	const other = process.env.NOPE
+	const other3 = process.env.NOPE
 		? twindTw`text-pink-600`
 		: `
         
         text-black
         
         `;
+	const other4 = twindTw`bg-yellow-700`;
 	const paraClass = twindTw`
 		
-		
+		${other3}
 		bg-yellow-700
-		${other}
+		${other4}
 		
 		
 		`;

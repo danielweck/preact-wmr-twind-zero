@@ -111,8 +111,7 @@ export const App = ({ prerenderIndex }: { prerenderIndex?: number }) => {
 				class={`
 						bg-pink-600
 						p-1.5
-						text-white
-						text-3xl
+						text(white text-3xl)
 					`}
 			>
 				{onRouteChangeWasCalled ? 'SPA route (post-hydration)' : 'Initial route (static SSR / SSG)'}
@@ -184,14 +183,7 @@ export const App = ({ prerenderIndex }: { prerenderIndex?: number }) => {
 			</ul>
 
 			<h1>Router content:</h1>
-			<div
-				class={`
-						border-solid
-						border-4
-						border-pink-600
-						rounded
-					`}
-			>
+			<div class="border(solid 4 pink-600) rounded">
 				<ErrorBoundary
 					onError={(err) => {
 						console.log('ErrorBoundary onError (top router): ', err);
