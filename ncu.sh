@@ -1,1 +1,1 @@
-ncu --reject '/^@preact-wmr-twind-zero.*$/' --deep
+ncu --reject '/^@preact-wmr-twind-zero\/.*$/' --deep

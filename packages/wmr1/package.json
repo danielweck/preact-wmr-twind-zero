@@ -49,7 +49,7 @@
 		"preact-iso": "^2.3.0"
 	},
 	"devDependencies": {
-		"@babel/core": "^7.17.4",
+		"@babel/core": "^7.17.5",
 		"@babel/plugin-syntax-jsx": "^7.16.7",
 		"@babel/plugin-syntax-typescript": "^7.16.7",
 		"@parcel/css": "^1.3.2",
@@ -59,9 +59,9 @@
 		"@twind/preset-tailwind-forms": "^1.0.0-next.37",
 		"@twind/preset-typography": "^1.0.0-next.37",
 		"@twind/typescript-plugin": "^0.3.5",
-		"browserslist": "^4.19.1",
+		"browserslist": "^4.19.3",
 		"kolorist": "^1.5.1",
-		"rollup": "^2.67.2",
+		"rollup": "^2.67.3",
 		"twind": "^1.0.0-next.37",
 		"wmr": "^3.7.2"
 	}
