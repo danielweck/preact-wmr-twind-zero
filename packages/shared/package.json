@@ -11,6 +11,7 @@
 		"WMR",
 		"Twind",
 		"SSG",
+		"Server Side Pre-rendering",
 		"Critical CSS Stylesheet",
 		"Performance",
 		"Web Vitals"
@@ -44,7 +45,9 @@
 		"clean": "rimraf \"./dist\" && rimraf \"./.turbo\"",
 		"start": "pnpm build",
 		"build": "pnpm clean && pnpm typescript",
-		"typescript": "tsc --version && tsc --project tsconfig.build.json && tsc --project tsconfig.build-cjs.json"
+		"typescript": "tsc --version && pnpm typescript-esm",
+		"typescript-esm": "tsc --project tsconfig.build.json",
+		"typescript-cjs": "tsc --project tsconfig.build-cjs.json"
 	},
 	"files": [
 		"dist"

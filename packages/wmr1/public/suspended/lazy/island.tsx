@@ -1,3 +1,4 @@
+import { SlotContent } from '@preact-wmr-twind-zero/preact-things/slots.js';
 import type { FunctionalComponent, RenderableProps } from 'preact';
 
 import { twindTw } from '../../twindish.js';
@@ -35,6 +36,11 @@ export const SuspendedLazyComp: FunctionalComponent<unknown> = (_props: Renderab
 				`}
 				placeholder="Tailwind Forms preset class (unique to this component)"
 			/>
+
+			<SlotContent name="second slot">
+				<p>Slot Content (A)</p>
+				<p class="text-blue-500">Slot Content (B)</p>
+			</SlotContent>
 		</div>
 	);
 };

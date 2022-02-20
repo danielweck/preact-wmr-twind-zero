@@ -1,16 +1,18 @@
 {
 	"$schema": "http://json.schemastore.org/tsconfig",
-	"extends": "./tsconfig.build.json",
-	"compilerOptions": {
-		"paths": {
-			"~/*": ["./public/*"],
-			"/*": ["./public/*"],
-			"preact": ["types/preact/index.d.ts"],
-			"preact/hooks": ["types/preact/hooks/index.d.ts"],
-			"@preact-wmr-twind-zero/shared": ["../packages/shared/src/index.ts"],
-			"@preact-wmr-twind-zero/shared/sub": ["../packages/shared/src/sub/other.ts"],
-			"@preact-wmr-twind-zero/shared/sub/*": ["../packages/shared/src/sub/*"],
-			"@preact-wmr-twind-zero/shared/*": ["../packages/shared/src/*"]
-		}
-	}
+	"extends": "./tsconfig.build.json"
+	// "compilerOptions": {
+	// 	"paths": {
+	// 		"~/*": ["./public/*"],
+	// 		"/*": ["./public/*"],
+	// 		"preact": ["../preact-things/types/preact/index.d.ts"],
+	// 		"preact/hooks": ["../preact-things/types/preact/hooks/index.d.ts"],
+	// 		// "@preact-wmr-twind-zero/preact-things": ["../preact-things/src/index.ts"],
+	// 		// "@preact-wmr-twind-zero/preact-things/*": ["../preact-things/src/*"],
+	// 		// "@preact-wmr-twind-zero/shared": ["../shared/src/index.ts"],
+	// 		// "@preact-wmr-twind-zero/shared/sub": ["../shared/src/sub/other.ts"],
+	// 		// "@preact-wmr-twind-zero/shared/sub/*": ["../shared/src/sub/*"],
+	// 		// "@preact-wmr-twind-zero/shared/*": ["../shared/src/*"]
+	// 	}
+	// }
 }

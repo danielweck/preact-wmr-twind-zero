@@ -1,3 +1,4 @@
+import { SlotContent } from '@preact-wmr-twind-zero/preact-things/slots.js';
 import type { FunctionalComponent, RenderableProps } from 'preact';
 import { useState } from 'preact/hooks';
 
@@ -5,17 +6,24 @@ import { SuspendedLazy_ } from '../suspended/lazy/lazy-island.js';
 import { twindShortcut, twindTw } from '../twindish.js';
 
 const SuspendedLazyLoader: FunctionalComponent<unknown> = (_props: RenderableProps<unknown>) => {
-	const [isLazyLoaded, setLazyLoaded] = useState(false);
+	const [isLazyLoading, setLazyLoading] = useState(false);
 
 	// eslint-disable-next-line quotes
 	const cls = twindTw`before:content-['zob']`;
 	return (
 		<>
-			{isLazyLoaded ? (
-				<SuspendedLazy_ />
+			{isLazyLoading ? (
+				<>
+					<SlotContent name="first slot">
+						<p>Slot Content (1)</p>
+						<p class="text-blue-400">Slot Content (2)</p>
+					</SlotContent>
+					<SuspendedLazy_ />
+				</>
 			) : (
 				<>
 					<button
+						data-tw="text-blue-400"
 						class={`
 							p-2
 							m-2
@@ -23,7 +31,7 @@ const SuspendedLazyLoader: FunctionalComponent<unknown> = (_props: RenderablePro
 							rounded
 						`}
 						onClick={() => {
-							setLazyLoaded(true);
+							setLazyLoading(true);
 						}}
 					>
 						CLICK HERE TO LAZY-LOAD

@@ -1,9 +1,11 @@
+import { lazy, Suspense } from '@preact-wmr-twind-zero/preact-things/xpatched/suspense.js';
 import type { FunctionalComponent, RenderableProps } from 'preact';
 import { ErrorBoundary } from 'preact-iso/lazy';
 
-import { lazy, Suspense } from '../../.patched/suspense.js';
 import { twindTw } from '../../twindish.js';
 import { LAZY_TIMEOUT } from '../../utils.js';
+
+// import { lazy, Suspense } from '../../../../preact-things/src/xpatched/suspense.js';
 
 // Code splitting
 // export const SuspendedLazy = lazy(() => import('./island.js'));

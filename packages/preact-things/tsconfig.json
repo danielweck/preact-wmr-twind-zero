@@ -10,8 +10,12 @@
 		"allowJs": false,
 		"checkJs": false,
 		"paths": {
-			"uvu": ["../../node_modules/uvu/index.d.ts"]
-		}
+			"preact": ["./types/preact/index.d.ts"],
+			"preact/hooks": ["./types/preact/hooks/index.d.ts"]
+		},
+		"jsx": "react",
+		"jsxFactory": "h",
+		"jsxFragmentFactory": "Fragment"
 	},
 	"include": ["./src"]
 }

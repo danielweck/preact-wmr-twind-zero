@@ -16,5 +16,5 @@
 .turbo
 *.tsbuildinfo
 vitest.config.ts.js
-**/.patched/*
+**/xpatched/*
 **/.pnpm-debug.log

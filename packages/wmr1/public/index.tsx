@@ -1,3 +1,4 @@
+import { ContextSlotsProvider, Slot } from '@preact-wmr-twind-zero/preact-things/slots.js';
 import { func } from '@preact-wmr-twind-zero/shared';
 import { func as func2 } from '@preact-wmr-twind-zero/shared/func.js';
 import { other } from '@preact-wmr-twind-zero/shared/sub';
@@ -97,159 +98,170 @@ export const App = ({ prerenderIndex }: { prerenderIndex?: number }) => {
 
 	return (
 		<LocationProvider>
-			<StaticNoHydrate label="1">
-				<p>
-					.STATIC NO HYDRATE (in dev mode, this should be -1, in a prerendered build, this should be a fixed number
-					corresponding to the SSG sequence index, NOT 999 which would otherwise indicate that the fragment has incorrectly
-					been hydrated)
-				</p>
-				<p>prerenderIndex: {prerenderIndex}</p>
-			</StaticNoHydrate>
+			<ContextSlotsProvider>
+				<StaticNoHydrate label="1">
+					<p>
+						.STATIC NO HYDRATE (in dev mode, this should be -1, in a prerendered build, this should be a fixed number
+						corresponding to the SSG sequence index, NOT 999 which would otherwise indicate that the fragment has incorrectly
+						been hydrated)
+					</p>
+					<p>prerenderIndex: {prerenderIndex}</p>
+				</StaticNoHydrate>
 
-			<h1>Router status:</h1>
-			<p
-				class={`
+				<h1>Router status:</h1>
+				<p
+					class={`
 						bg-pink-600
 						p-1.5
 						text(white text-3xl)
 					`}
-			>
-				{onRouteChangeWasCalled ? 'SPA route (post-hydration)' : 'Initial route (static SSR / SSG)'}
-			</p>
+				>
+					{onRouteChangeWasCalled ? 'SPA route (post-hydration)' : 'Initial route (static SSR / SSG)'}
+				</p>
 
-			<StaticNoHydrate label="2">
-				<p>STATIC NO HYDRATE</p>
-				<span class={clazz} data-tw={cls1}>
-					{onRouteChangeWasCalled
-						? '[onRouteChangeWasCalled] (this should NEVER display in prerender builds (does show in dev mode))'
-						: '[!onRouteChangeWasCalled] (this should ALWAYS display in prerender builds (does show in dev mode))'}
-				</span>
-			</StaticNoHydrate>
+				<StaticNoHydrate label="2">
+					<p>STATIC NO HYDRATE</p>
+					<span class={clazz} data-tw={cls1}>
+						{onRouteChangeWasCalled
+							? '[onRouteChangeWasCalled] (this should NEVER display in prerender builds (does show in dev mode))'
+							: '[!onRouteChangeWasCalled] (this should ALWAYS display in prerender builds (does show in dev mode))'}
+					</span>
+				</StaticNoHydrate>
 
-			<h1>Router links:</h1>
-			<ul>
-				<li>
-					<span
-						class={`
+				<h1>Router links:</h1>
+				<ul>
+					<li>
+						<span
+							class={`
 								inline-block
 								text-yellow-400
 								mr-1.5
 							`}
-					>
-						&#x2588;&#x2588;&#x2588;
-					</span>
-					<a href={`${PUBLIC_PATH_ROOT}?param=home#hash-home`}>Routed Home</a>
-				</li>
-				<li>
-					<span
-						class={`
+						>
+							&#x2588;&#x2588;&#x2588;
+						</span>
+						<a href={`${PUBLIC_PATH_ROOT}?param=home#hash-home`}>Routed Home</a>
+					</li>
+					<li>
+						<span
+							class={`
 								inline-block
 								text-yellow-500
 								mr-1.5
 							`}
-					>
-						&#x2588;&#x2588;&#x2588;
-					</span>
-					<a href={`${PUBLIC_PATH_ROOT}routed-lazy${IS_PRE_RENDER ? '/' : ''}?param=lazy#hash-lazy`}>Routed Lazy</a> (1s
-					simulated network delay on first load, then "cache" hit)
-				</li>
-				<li>
-					<span
-						class={`
+						>
+							&#x2588;&#x2588;&#x2588;
+						</span>
+						<a href={`${PUBLIC_PATH_ROOT}routed-lazy${IS_PRE_RENDER ? '/' : ''}?param=lazy#hash-lazy`}>Routed Lazy</a> (1s
+						simulated network delay on first load, then "cache" hit)
+					</li>
+					<li>
+						<span
+							class={`
 								inline-block
 								text-yellow-600
 								mr-1.5
 							`}
-					>
-						&#x2588;&#x2588;&#x2588;
-					</span>
-					<a href={`${PUBLIC_PATH_ROOT}routed-non-lazy${IS_PRE_RENDER ? '/' : ''}?param=non-lazy#hash-non-lazy`}>
-						Routed Non Lazy
-					</a>
-				</li>
-				<li>
-					<span
-						class={`
+						>
+							&#x2588;&#x2588;&#x2588;
+						</span>
+						<a href={`${PUBLIC_PATH_ROOT}routed-non-lazy${IS_PRE_RENDER ? '/' : ''}?param=non-lazy#hash-non-lazy`}>
+							Routed Non Lazy
+						</a>
+					</li>
+					<li>
+						<span
+							class={`
 								inline-block
 								text-yellow-700
 								mr-1.5
 							`}
-					>
-						&#x2588;&#x2588;&#x2588;
-					</span>
-					<a href={`${PUBLIC_PATH_ROOT}routed-route${IS_PRE_RENDER ? '/' : ''}?param=route#hash-route`}>Routed Route</a>{' '}
-					(contains lazy component)
-				</li>
-			</ul>
+						>
+							&#x2588;&#x2588;&#x2588;
+						</span>
+						<a href={`${PUBLIC_PATH_ROOT}routed-route${IS_PRE_RENDER ? '/' : ''}?param=route#hash-route`}>Routed Route</a>{' '}
+						(contains lazy component and triggers slots / named portals)
+					</li>
+				</ul>
 
-			<h1>Router content:</h1>
-			<div class="border(solid 4 pink-600) rounded">
-				<ErrorBoundary
-					onError={(err) => {
-						console.log('ErrorBoundary onError (top router): ', err);
-					}}
-				>
-					<Router
-						onRouteChange={() => {
-							setOnRouteChangeWasCalled(true);
+				<h1>First Slot:</h1>
+				<hr />
+				<Slot name="first slot" />
+				<hr />
+				<h1>Second Slot:</h1>
+				<hr />
+				<Slot name="second slot" />
+				<hr />
+
+				<h1>Router content:</h1>
+				<div class="border(solid 4 pink-600) rounded">
+					<ErrorBoundary
+						onError={(err) => {
+							console.log('ErrorBoundary onError (top router): ', err);
 						}}
 					>
-						<RoutedHome path={`${PUBLIC_PATH_ROOT}`} />
-						<RoutedLazy path={`${PUBLIC_PATH_ROOT}routed-lazy${IS_PRE_RENDER ? '/' : ''}`} />
-						<RoutedNonLazy path={`${PUBLIC_PATH_ROOT}routed-non-lazy${IS_PRE_RENDER ? '/' : ''}`} />
-						<Route component={RoutedRoute} path={`${PUBLIC_PATH_ROOT}routed-route${IS_PRE_RENDER ? '/' : ''}`} />
-						<Routed404 default />
-						<RoutedSuspendedSubRouter path={`${PUBLIC_PATH_ROOT}suspended/*`} />
-					</Router>
-				</ErrorBoundary>
-			</div>
+						<Router
+							onRouteChange={() => {
+								setOnRouteChangeWasCalled(true);
+							}}
+						>
+							<RoutedHome path={`${PUBLIC_PATH_ROOT}`} />
+							<RoutedLazy path={`${PUBLIC_PATH_ROOT}routed-lazy${IS_PRE_RENDER ? '/' : ''}`} />
+							<RoutedNonLazy path={`${PUBLIC_PATH_ROOT}routed-non-lazy${IS_PRE_RENDER ? '/' : ''}`} />
+							<Route component={RoutedRoute} path={`${PUBLIC_PATH_ROOT}routed-route${IS_PRE_RENDER ? '/' : ''}`} />
+							<Routed404 default />
+							<RoutedSuspendedSubRouter path={`${PUBLIC_PATH_ROOT}suspended/*`} />
+						</Router>
+					</ErrorBoundary>
+				</div>
 
-			<h1>Twind critical/secondary stylesheet tests:</h1>
-			<p class={'text-3xl'}>
-				This paragraphs and others located in different routes share the same <strong>text-3xl</strong> Twind style, but it
-				isn't duplicated in the pre-rendered "secondary" stylesheet, it is hoisted in the "critical" styles.
-			</p>
-			<p
-				class={`
+				<h1>Twind critical/secondary stylesheet tests:</h1>
+				<p class={'text-3xl'}>
+					This paragraphs and others located in different routes share the same <strong>text-3xl</strong> Twind style, but it
+					isn't duplicated in the pre-rendered "secondary" stylesheet, it is hoisted in the "critical" styles.
+				</p>
+				<p
+					class={`
 					bg-yellow-200
 					text-black
 				`}
-			>
-				This text has a <strong>yellow-200</strong> background (unique to this paragraph, not shared with any other route or
-				component)
-			</p>
+				>
+					This text has a <strong>yellow-200</strong> background (unique to this paragraph, not shared with any other route
+					or component)
+				</p>
 
-			<h1>404 Not Found links:</h1>
-			<ul>
-				<li>
-					<span
-						class={`
+				<h1>404 Not Found links:</h1>
+				<ul>
+					<li>
+						<span
+							class={`
 								inline-block
 								text-yellow-300
 								mr-1.5
 							`}
-					>
-						&#x2588;&#x2588;&#x2588;
-					</span>
-					<a href={`${PUBLIC_PATH_ROOT}not-found-blank`} rel="noreferrer noopener" target="_BLANK">
-						404 (target BLANK)
-					</a>
-				</li>
-				<li>
-					<span
-						class={`
+						>
+							&#x2588;&#x2588;&#x2588;
+						</span>
+						<a href={`${PUBLIC_PATH_ROOT}not-found-blank`} rel="noreferrer noopener" target="_BLANK">
+							404 (target BLANK)
+						</a>
+					</li>
+					<li>
+						<span
+							class={`
 								inline-block
 								text-yellow-300
 								mr-1.5
 							`}
-					>
-						&#x2588;&#x2588;&#x2588;
-					</span>
-					<a href={`${PUBLIC_PATH_ROOT}not-found-inpage`} target="_top">
-						404 (in page)
-					</a>
-				</li>
-			</ul>
+						>
+							&#x2588;&#x2588;&#x2588;
+						</span>
+						<a href={`${PUBLIC_PATH_ROOT}not-found-inpage`} target="_top">
+							404 (in page)
+						</a>
+					</li>
+				</ul>
+			</ContextSlotsProvider>
 		</LocationProvider>
 	);
 };
@@ -293,7 +305,6 @@ if (IS_CLIENT_SIDE) {
 		hydrate(<App prerenderIndex={999} />, document.body);
 
 		// window is safe, as in conditional IS_CLIENT_SIDE
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		_window.PREACTWMR_HYDRATED = true;
 	} else {
 		// here in this code branch (no isodata): process.env.NODE_ENV === 'development'
@@ -315,7 +326,6 @@ if (IS_CLIENT_SIDE) {
 			hydrate(<App prerenderIndex={-1} />, document.body);
 
 			// window is safe, as in conditional IS_CLIENT_SIDE
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			_window.PREACTWMR_HYDRATED = true;
 		})();
 		/* PREACT_WMR_BUILD_STRIP_CODE_END */

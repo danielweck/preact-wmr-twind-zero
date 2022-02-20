@@ -1,5 +1,4 @@
-export const IS_CLIENT_SIDE = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
-export const IS_SERVER_SIDE = !IS_CLIENT_SIDE;
+import { IS_CLIENT_SIDE } from '@preact-wmr-twind-zero/preact-things/utils.js';
 
 export const LAZY_TIMEOUT = IS_CLIENT_SIDE ? 1000 : 0;
 
@@ -26,3 +25,5 @@ export const IS_PRE_RENDER = !IS_CLIENT_SIDE || !!isodataScript;
 // };
 
 export const KEYBOARD_INTERACT = 'KEYBOARD_INTERACT';
+
+export { IS_CLIENT_SIDE, IS_SERVER_SIDE } from '@preact-wmr-twind-zero/preact-things';

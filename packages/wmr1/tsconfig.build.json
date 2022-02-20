@@ -9,8 +9,8 @@
 		"paths": {
 			"~/*": ["./public/*"],
 			"/*": ["./public/*"],
-			"preact": ["types/preact/index.d.ts"],
-			"preact/hooks": ["types/preact/hooks/index.d.ts"]
+			"preact": ["../preact-things/types/preact/index.d.ts"],
+			"preact/hooks": ["../preact-things/types/preact/hooks/index.d.ts"]
 		},
 		// "plugins": [
 		// 	{
@@ -32,7 +32,7 @@
 		"disableFilenameBasedTypeAcquisition": true,
 		"include": ["rollup"]
 	},
-	"include": ["public/**/*"],
+	"include": ["public/**/*"]
 
-	"references": [{ "path": "../shared/tsconfig.build.json" }, { "path": "../shared/tsconfig.build-cjs.json" }]
+	// "references": [{ "path": "../shared/tsconfig.build.json" }, { "path": "../preact-things/tsconfig.build.json" }]
 }
