@@ -298,6 +298,79 @@ if (IS_CLIENT_SIDE) {
 		},
 	);
 
+	// import { createRootFragment } from '@preact-wmr-twind-zero/preact-things/render-hydrate-replace-node.js';
+	// import { render as preactRender, hydrate as preactHydrate } from 'preact';
+	// setTimeout(() => {
+	// 	const root1 = createRootFragment(document.head, [
+	// 		document.getElementById('replaceMe1'),
+	// 		document.getElementById('replaceMe2'),
+	// 	] as Element[]);
+
+	// 	// Note that with hydrate() instead of render(),
+	// 	// <noscript id="replaceMe1"> remains ID == 'replaceMe1'
+	// 	// and data-id does not become 'did-replace1'
+	// 	// ... but id="replacedID1" replaces id="originalID1" (children)
+	// 	preactHydrate(
+	// 		<>
+	// 			<noscript data-id="did-replace1">
+	// 				<h1 data-id="replacedID1">REPLACED 1!</h1>
+	// 				<p title="replacedTitle1">non-pre-rendered HTML 1!</p>
+	// 			</noscript>
+	// 			<noscript data-id="did-replace2">
+	// 				<h1 data-id="replacedID2">REPLACED 2!</h1>
+	// 				<p title="replacedTitle2">non-pre-rendered HTML 2!</p>
+	// 			</noscript>
+	// 		</>,
+	// 		root1,
+	// 	);
+
+	// 	const root2 = createRootFragment(document.head, [
+	// 		document.getElementById('replaceMeA'),
+	// 		document.getElementById('replaceMeB'),
+	// 	] as Element[]);
+
+	// 	// Note that with render() instead of hydrate(),
+	// 	// <noscript id="replaceMeA"> becomes ID == '' if unspecified
+	// 	// ... and id="replacedIDA" replaces id="originalIDA"
+	// 	preactRender(
+	// 		<>
+	// 			<noscript id="replaceMeA" data-id="did-replaceA">
+	// 				<h1 data-id="replacedIDA">REPLACED A!</h1>
+	// 				<p title="replacedTitleA">non-pre-rendered HTML A!</p>
+	// 			</noscript>
+	// 			<noscript id="replaceMeB" data-id="did-replaceB">
+	// 				<h1 data-id="replacedIDB">REPLACED B!</h1>
+	// 				<p title="replacedTitleB">non-pre-rendered HTML B!</p>
+	// 			</noscript>
+	// 		</>,
+	// 		root2,
+	// 	);
+
+	// 	setTimeout(() => {
+	// 		const root3 = createRootFragment(document.head, [
+	// 			document.getElementById('replaceMeA'),
+	// 			document.getElementById('replaceMeB'),
+	// 		] as Element[]);
+
+	// 		// Note that with hydrate() instead of render(),
+	// 		// <noscript id="did-replaceA"> remains ID == 'did-replaceA'
+	// 		// ... but the data-id and title attributes remain stuck in the previous render
+	// 		preactHydrate(
+	// 			<>
+	// 				<noscript data-id="did-replaceA_">
+	// 					<h1 data-id="replacedIDA_">REPLACED A_!</h1>
+	// 					<p title="replacedTitleA_">non-pre-rendered HTML A_!</p>
+	// 				</noscript>
+	// 				<noscript data-id="did-replaceB_">
+	// 					<h1 data-id="replacedIDB_">REPLACED B_!</h1>
+	// 					<p title="replacedTitleB_">non-pre-rendered HTML B_!</p>
+	// 				</noscript>
+	// 			</>,
+	// 			root3,
+	// 		);
+	// 	}, 2000);
+	// }, 2000);
+
 	// note: IS_PRE_RENDER includes IS_SERVER_SIDE,
 	// but here we are inside a IS_CLIENT_SIDE conditional code branch
 	if (IS_PRE_RENDER) {
@@ -311,24 +384,26 @@ if (IS_CLIENT_SIDE) {
 		// we use await import to force code splitting => this code bundle will not be loaded in production
 
 		// TODO: because of Preact WMR workaround for config.PUBLIC_PATH_ROOT, this import fails :(
-		// ... so we strip the code at build time by detecting the following HTML comment:
-		//
-		// THIS?
-		// const $import = new Function('s', 'return import(s)');
-		// const m = await $import('file:///preact-vnode-options-hook--twind.js');
-		// m.initPreactVDOMHook_Twind
+		// ... so we strip the code fragment at build time by detecting the following HTML comment in the raw/static source:
 		//
 		/* PREACT_WMR_BUILD_STRIP_CODE_BEGIN */
 		// eslint-disable-next-line @typescript-eslint/no-floating-promises
 		(async () => {
 			const { initPreactVDOMHook_Twind } = await import('./preact-vnode-options-hook--twind.js');
 			const _tw = initPreactVDOMHook_Twind();
+
 			hydrate(<App prerenderIndex={-1} />, document.body);
 
 			// window is safe, as in conditional IS_CLIENT_SIDE
 			_window.PREACTWMR_HYDRATED = true;
 		})();
 		/* PREACT_WMR_BUILD_STRIP_CODE_END */
+		//
+		// THIS instead? (I don't think so, this is just to avoid Rollup bundling detection)
+		// const $import = new Function('s', 'return import(s)');
+		// const m = await $import('file:///preact-vnode-options-hook--twind.js');
+		// m.initPreactVDOMHook_Twind
+		//
 	}
 }
 

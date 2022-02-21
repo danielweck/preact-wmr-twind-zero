@@ -13,6 +13,28 @@
 				text-decoration: underline;
 			}
 		</style>
+
+		<!-- BEGIN: island fragment render/hydrate test -->
+		<!-- noscript data-id="replaceMeA" id="replaceMeA">
+			<h1 data-id="originalID1">REPLACED A?</h1>
+			<p title="originalTitle1">non-pre-rendered HTML A?</p>
+		</noscript>
+		<noscript data-id="replaceMeB" id="replaceMeB">
+			<h1 data-id="originalID2">REPLACED B?</h1>
+			<p title="originalTitle2">non-pre-rendered HTML B?</p>
+		</noscript>
+		<noscript data-id="siblingAB">test AB</noscript>
+
+		<noscript data-id="replaceMe1" id="replaceMe1">
+			<h1 data-id="originalIDA">REPLACED 1?</h1>
+			<p title="originalTitleA">non-pre-rendered HTML 1?</p>
+		</noscript>
+		<noscript data-id="replaceMe2" id="replaceMe2">
+			<h1 data-id="originalIDB">REPLACED 2?</h1>
+			<p title="originalTitleB">non-pre-rendered HTML 2?</p>
+		</noscript>
+		<noscript data-id="sibling12">test 12</noscript -->
+		<!-- END: island fragment render/hydrate test -->
 	</head>
 	<body>
 		<script type="module" src="index.tsx"></script>
