@@ -38,6 +38,7 @@ export const SuspendedLazyComp: FunctionalComponent<unknown> = (_props: Renderab
 			/>
 
 			<SlotContent name="second slot">
+				<p>(lifecycle: AFTER lazy dynamic import)</p>
 				<p>Slot Content (A)</p>
 				<p class="text-blue-500">Slot Content (B)</p>
 			</SlotContent>

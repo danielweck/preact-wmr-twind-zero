@@ -18,23 +18,23 @@
 	],
 	"license": "BSD3",
 	"type": "module",
-	"module": "./dist/esm/src/index.js",
+	"module": "./dist/esm/index.js",
 	"exports": {
 		".": {
-			"import": "./dist/esm/src/index.js",
-			"require": "./dist/cjs/src/index.js"
+			"import": "./dist/esm/index.js",
+			"require": "./dist/cjs/index.js"
 		},
 		"./*": {
-			"import": "./dist/esm/src/*",
-			"require": "./dist/cjs/src/*"
+			"import": "./dist/esm/*",
+			"require": "./dist/cjs/*"
 		},
 		"./sub": {
-			"import": "./dist/esm/src/sub/other.js",
-			"require": "./dist/cjs/src/sub/other.js"
+			"import": "./dist/esm/sub/other.js",
+			"require": "./dist/cjs/sub/other.js"
 		},
 		"./sub/*": {
-			"import": "./dist/esm/src/sub/*",
-			"require": "./dist/cjs/src/sub/*"
+			"import": "./dist/esm/sub/*",
+			"require": "./dist/cjs/sub/*"
 		}
 	},
 	"engines": {

@@ -4,14 +4,14 @@
 	"compilerOptions": {
 		"declarationMap": true,
 		"outDir": "./dist/esm",
-		"rootDir": "./",
-		"rootDirs": ["./"],
+		"rootDir": "./src",
+		"rootDirs": ["./src"],
 		"baseUrl": ".",
 		"allowJs": false,
-		"checkJs": false,
-		"paths": {
-			"uvu": ["../../node_modules/uvu/index.d.ts"]
-		}
+		"checkJs": false
+		// "paths": {
+		// 	"uvu": ["../../node_modules/uvu/index.d.ts"]
+		// }
 	},
 	"include": ["./src"]
 }

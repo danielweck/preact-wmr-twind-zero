@@ -7,12 +7,14 @@
 	// 		"/*": ["./public/*"],
 	// 		"preact": ["../preact-things/types/preact/index.d.ts"],
 	// 		"preact/hooks": ["../preact-things/types/preact/hooks/index.d.ts"],
-	// 		// "@preact-wmr-twind-zero/preact-things": ["../preact-things/src/index.ts"],
-	// 		// "@preact-wmr-twind-zero/preact-things/*": ["../preact-things/src/*"],
-	// 		// "@preact-wmr-twind-zero/shared": ["../shared/src/index.ts"],
-	// 		// "@preact-wmr-twind-zero/shared/sub": ["../shared/src/sub/other.ts"],
-	// 		// "@preact-wmr-twind-zero/shared/sub/*": ["../shared/src/sub/*"],
-	// 		// "@preact-wmr-twind-zero/shared/*": ["../shared/src/*"]
+	// 		"@preact-wmr-twind-zero/preact-things": ["../preact-things/src/index.ts"],
+	// 		"@preact-wmr-twind-zero/preact-things/xpatched": ["../preact-things/src/xpatched/suspense.ts"],
+	// 		"@preact-wmr-twind-zero/preact-things/xpatched/*": ["../preact-things/src/xpatched/*"],
+	// 		"@preact-wmr-twind-zero/preact-things/*": ["../preact-things/src/*"],
+	// 		"@preact-wmr-twind-zero/shared": ["../shared/src/index.ts"],
+	// 		"@preact-wmr-twind-zero/shared/sub": ["../shared/src/sub/other.ts"],
+	// 		"@preact-wmr-twind-zero/shared/sub/*": ["../shared/src/sub/*"],
+	// 		"@preact-wmr-twind-zero/shared/*": ["../shared/src/*"]
 	// 	}
 	// }
 }

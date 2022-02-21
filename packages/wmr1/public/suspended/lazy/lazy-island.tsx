@@ -1,11 +1,10 @@
+import { SlotContent } from '@preact-wmr-twind-zero/preact-things/slots.js';
 import { lazy, Suspense } from '@preact-wmr-twind-zero/preact-things/xpatched/suspense.js';
 import type { FunctionalComponent, RenderableProps } from 'preact';
 import { ErrorBoundary } from 'preact-iso/lazy';
 
 import { twindTw } from '../../twindish.js';
 import { LAZY_TIMEOUT } from '../../utils.js';
-
-// import { lazy, Suspense } from '../../../../preact-things/src/xpatched/suspense.js';
 
 // Code splitting
 // export const SuspendedLazy = lazy(() => import('./island.js'));
@@ -30,7 +29,23 @@ export const SuspendedLazy_: FunctionalComponent<unknown> = (_props: RenderableP
 				console.log('ErrorBoundary onError (SuspendedLazy): ', err);
 			}}
 		>
-			<Suspense data-tw={clz} fallback={<p class={clzz}>LOADING...</p>}>
+			<Suspense
+				data-tw={clz}
+				fallback={
+					<>
+						<SlotContent name="second slot">
+							<p>(lifecycle: DURING-only lazy dynamic import, suspense fallback)</p>
+							<p>
+								<strong>Slot Content (1)</strong>
+							</p>
+							<p class="text-blue-500">
+								<strong>Slot Content (2)</strong>
+							</p>
+						</SlotContent>
+						<p class={clzz}>LOADING...</p>
+					</>
+				}
+			>
 				<SuspendedLazy />
 			</Suspense>
 		</ErrorBoundary>

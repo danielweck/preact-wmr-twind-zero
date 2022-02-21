@@ -4,8 +4,8 @@
 	"compilerOptions": {
 		"declarationMap": true,
 		"outDir": "./dist/esm",
-		"rootDir": "./",
-		"rootDirs": ["./"],
+		"rootDir": "./src",
+		"rootDirs": ["./src"],
 		"baseUrl": ".",
 		"allowJs": false,
 		"checkJs": false,

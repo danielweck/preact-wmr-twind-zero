@@ -15,6 +15,7 @@ const SuspendedLazyLoader: FunctionalComponent<unknown> = (_props: RenderablePro
 			{isLazyLoading ? (
 				<>
 					<SlotContent name="first slot">
+						<p>(lifecycle: DURING and AFTER lazy dynamic import)</p>
 						<p>Slot Content (1)</p>
 						<p class="text-blue-400">Slot Content (2)</p>
 					</SlotContent>

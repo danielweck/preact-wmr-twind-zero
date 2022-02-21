@@ -18,23 +18,23 @@
 	],
 	"license": "BSD3",
 	"type": "module",
-	"module": "./dist/esm/src/index.js",
+	"module": "./dist/esm/index.js",
 	"exports": {
 		".": {
-			"import": "./dist/esm/src/index.js",
-			"require": "./dist/cjs/src/index.js"
+			"import": "./dist/esm/index.js",
+			"require": "./dist/cjs/index.js"
 		},
 		"./*": {
-			"import": "./dist/esm/src/*",
-			"require": "./dist/cjs/src/*"
+			"import": "./dist/esm/*",
+			"require": "./dist/cjs/*"
 		},
 		"./xpatched": {
-			"import": "./dist/esm/src/xpatched/suspense.js",
-			"require": "./dist/cjs/src/xpatched/suspense.js"
+			"import": "./dist/esm/xpatched/suspense.js",
+			"require": "./dist/cjs/xpatched/suspense.js"
 		},
 		"./xpatched/*": {
-			"import": "./dist/esm/src/xpatched/*",
-			"require": "./dist/cjs/src/xpatched/*"
+			"import": "./dist/esm/xpatched/*",
+			"require": "./dist/cjs/xpatched/*"
 		}
 	},
 	"engines": {
@@ -54,7 +54,7 @@
 		"typescript": "tsc --version && pnpm typescript-esm && pnpm typescript-esm-copy",
 		"typescript-esm": "tsc --project tsconfig.build.json",
 		"typescript-cjs": "tsc --project tsconfig.build-cjs.json",
-		"typescript-esm-copy": "cpy src/xpatched/* dist/esm/src/xpatched"
+		"typescript-esm-copy": "cpy src/xpatched/* dist/esm/xpatched"
 	},
 	"dependencies": {
 		"preact": "^10.6.6",
