@@ -6,16 +6,6 @@
 	"repository": "github:danielweck/preact-wmr-twind-zero/",
 	"bugs": "https://github.com/danielweck/preact-wmr-twind-zero/issues",
 	"author": "Daniel Weck (https://github.com/danielweck)",
-	"keywords": [
-		"Preact",
-		"WMR",
-		"Twind",
-		"SSG",
-		"Server Side Pre-rendering",
-		"Critical CSS Stylesheet",
-		"Performance",
-		"Web Vitals"
-	],
 	"license": "BSD3",
 	"type": "module",
 	"engines": {
