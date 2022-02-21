@@ -1,3 +1,4 @@
+export * from './custom-element-hydrate.js';
 export * from './no-hydrate.js';
 export * from './render-hydrate-replace-node.js';
 export * from './slots.js';

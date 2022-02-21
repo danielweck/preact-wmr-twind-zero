@@ -38,6 +38,22 @@ if (process.env.NODE_ENV === 'development') {
 	})();
 }
 
+// import { CustomElementHydrator } from '@preact-wmr-twind-zero/preact-things/custom-element-hydrate.js';
+// <h1>CustomElementHydrator:</h1>
+// <CustomElementHydrator
+// 	href=""
+// 	data={{
+// 		test: true,
+// 		daniel: 'weck',
+// 		deep: {
+// 			yes: 1,
+// 			no: 0,
+// 			nil: null,
+// 			undef: undefined,
+// 		},
+// 	}}
+// />
+
 // Here, no need to wait for
 // document.DOMContentLoaded
 // or window.load
