@@ -58,7 +58,9 @@ if (IS_CLIENT_SIDE && typeof customElements !== 'undefined') {
 				}
 				const fragment = createRootFragment(this.parentNode as Element, childNodes);
 
-				import(url).then((m) => {
+				const $import = new Function('s', 'return import(s)');
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				$import(url).then((m: any) => {
 					const component = ((exportName ? m[exportName] : undefined) || m.default) as FunctionalComponent<unknown>;
 					hydrate(h(component, data as RenderableProps<Record<string, unknown>>, []), fragment);
 				});
