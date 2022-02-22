@@ -1,5 +1,5 @@
 import { transformSync } from '@babel/core';
-import { templateLiteral } from '@babel/types';
+import { isBooleanLiteral, isNumericLiteral, isStringLiteral, stringLiteral, templateLiteral } from '@babel/types';
 import { cyan, green, red } from 'kolorist';
 import { shortcut, virtual } from 'twind';
 
@@ -153,6 +153,35 @@ export function wmrTwindPlugin(config) {
 							throw new Error('XXXX');
 						},
 						TemplateLiteral: {
+							enter(p, s) {
+								/**
+								 * @type {import('@babel/types').TemplateLiteral}
+								 * */
+								const n = p.node;
+								if (DEBUG_BABEL) {
+									console.log(
+										`#BABEL#_2 ${cyan('JSXAttribute > JSXExpressionContainer > TemplateLiteral ENTRY')}: ${green(
+											JSON.stringify(n, null, 4),
+										)} (${red(s.filename)})`,
+									);
+								}
+								if (
+									n.expressions.length === 0 &&
+									n.quasis.length === 1 &&
+									n.quasis[0].type === 'TemplateElement' &&
+									n.quasis[0].tail
+								) {
+									p.replaceWith(stringLiteral(n.quasis[0].value.raw));
+									// p.skip();
+									if (DEBUG_BABEL) {
+										console.log(
+											`#BABEL#_2 ${cyan('JSXAttribute > JSXExpressionContainer > TemplateLiteral ENTRY (flattened)')}: ${green(
+												JSON.stringify(p.node, null, 4),
+											)} (${red(s.filename)})`,
+										);
+									}
+								}
+							},
 							exit(p, s) {
 								/**
 								 * @type {import('@babel/types').TemplateLiteral}
@@ -160,8 +189,32 @@ export function wmrTwindPlugin(config) {
 								const n = p.node;
 								if (DEBUG_BABEL) {
 									console.log(
-										`#BABEL#_2 ${cyan('JSXAttribute > JSXExpressionContainer > TemplateLiteral')}: ${green(
+										`#BABEL#_2 ${cyan('JSXAttribute > JSXExpressionContainer > TemplateLiteral EXIT')}: ${green(
 											JSON.stringify(n, null, 4),
+										)} (${red(s.filename)})`,
+									);
+								}
+
+								let changed = false;
+								for (let i = 0; i < n.expressions.length; i++) {
+									const expr = n.expressions[i];
+
+									if (isStringLiteral(expr) || isNumericLiteral(expr) || isBooleanLiteral(expr)) {
+										changed = true;
+
+										const str = expr.value;
+										const before = n.quasis[i].value;
+										const after = n.quasis[i + 1].value;
+										before.raw += str + after.raw;
+										before.cooked += str + after.cooked;
+										n.expressions.splice(i, 1);
+										n.quasis.splice(i + 1, 1);
+									}
+								}
+								if (DEBUG_BABEL && changed) {
+									console.log(
+										`#BABEL#_2 ${cyan('JSXAttribute > JSXExpressionContainer > TemplateLiteral EXIT (flattened)')}: ${green(
+											JSON.stringify(p.node, null, 4),
 										)} (${red(s.filename)})`,
 									);
 								}
