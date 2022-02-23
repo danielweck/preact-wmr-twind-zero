@@ -49,6 +49,7 @@
 		"@twind/typescript-plugin": "^0.3.5",
 		"browserslist": "^4.19.3",
 		"kolorist": "^1.5.1",
+		"preact-render-to-string": "^5.1.20",
 		"rollup": "^2.68.0",
 		"twind": "^1.0.0-next.37",
 		"wmr": "^3.7.2"

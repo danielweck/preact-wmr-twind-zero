@@ -1,8 +1,10 @@
 import { ContextSlotsProvider, Slot } from '@preact-wmr-twind-zero/preact-things/slots.js';
 import { func } from '@preact-wmr-twind-zero/shared';
 import { func as func2 } from '@preact-wmr-twind-zero/shared/func.js';
+// eslint-disable-next-line import/no-duplicates
 import { other } from '@preact-wmr-twind-zero/shared/sub';
 import { foo } from '@preact-wmr-twind-zero/shared/sub/foo.js';
+// eslint-disable-next-line import/no-duplicates
 import { other as other2 } from '@preact-wmr-twind-zero/shared/sub/other.js';
 import { useState } from 'preact/hooks';
 import hydrate from 'preact-iso/hydrate';
@@ -10,14 +12,15 @@ import lazy, { ErrorBoundary } from 'preact-iso/lazy';
 import type { PrerenderResult } from 'preact-iso/prerender';
 import { LocationProvider, Route, Router } from 'preact-iso/router';
 
-import { initPreactVDOMHook } from './preact-vnode-options-hook.js';
+import { initPreactVDOMHook } from '~/preact-vnode-options-hook.js';
+import { twindTw } from '~/twindish.js';
+
 import { Routed404 } from './routed/_404.js';
 import { RoutedHome } from './routed/home.js';
 import { RoutedNonLazy } from './routed/non-lazy.js';
 import { RoutedRoute } from './routed/route.js';
 import { StaticNoHydrate } from './static-no-hydrate.js';
 import { RoutedSuspendedSubRouter } from './suspended/index.js';
-import { twindTw } from './twindish.js';
 import { IS_CLIENT_SIDE, IS_PRE_RENDER, KEYBOARD_INTERACT, LAZY_TIMEOUT, PUBLIC_PATH_ROOT } from './utils.js';
 
 console.log(func());

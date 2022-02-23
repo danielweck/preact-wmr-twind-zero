@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+
+const path = require('path');
+
 const defaultSettings = {
 	react: {
 		version: '17',
@@ -6,14 +10,22 @@ const defaultSettings = {
 		'@typescript-eslint/parser': ['.ts', '.tsx'],
 	},
 	'import/resolver': {
+		// https://github.com/alexgorbatchev/eslint-import-resolver-typescript
 		typescript: {
 			alwaysTryTypes: true,
-			project: './tsconfig.json',
+			project: ['./tsconfig.json', 'packages/*/tsconfig.json', 'packages/*/tsconfig.*.json'],
 		},
+		// https://github.com/import-js/eslint-plugin-import/tree/main/resolvers/node
+		// node: {
+		// 	extensions: ['.js', '.jsx', '.ts', '.tsx', '.cjs', '.mjs'],
+		// 	// paths:
+		// 	// moduleDirectory:
+		// },
+		[path.resolve('./eslint-plugin-import-resolver.cjs')]: { someConfig: 1 },
 	},
 };
 // 'unused-imports' '@typescript-eslint'
-const defaultPlugins = ['import', 'simple-import-sort', 'prettier'];
+const defaultPlugins = ['import', 'simple-import-sort', 'prettier', 'promise'];
 const defaultExtends = [
 	'preact',
 	'eslint:recommended',
@@ -25,15 +37,21 @@ const defaultExtends = [
 	'plugin:import/errors',
 	'plugin:import/warnings',
 	'plugin:import/typescript',
+	'plugin:promise/recommended',
+	'plugin:node/recommended',
 ];
 const defaultRules = {
+	'node/no-unpublished-import': 0,
+	'node/no-missing-import': 0,
+	'node/no-unpublished-require': 0,
+	'node/no-extraneous-import': 0,
+	'node/no-unsupported-features/es-syntax': 0,
 	'simple-import-sort/imports': 'error',
 	'simple-import-sort/exports': 'error',
 	'import/order': 0,
 	// 'import/no-unresolved': 'error',
-	// https://github.com/import-js/eslint-plugin-import/issues/1868
-	'import/no-unresolved': ['error', { ignore: ['^@preact-wmr-twind-zero.+'] }],
-	'import/extensions': 0,
+	// 'import/no-unresolved': ['error', { ignore: ['^@preact-wmr-twind-zero.+'] }],
+	// 'import/extensions': 0,
 	'jest/no-deprecated-functions': 0,
 	eqeqeq: 2,
 	quotes: ['error', 'single'],
@@ -149,6 +167,10 @@ module.exports = {
 	plugins: defaultPlugins,
 	rules: defaultRules,
 	overrides: [
+		{
+			files: ['./**/*.cjs'],
+			rules: { '@typescript-eslint/no-var-requires': 0 },
+		},
 		// {
 		// 	files: ['./**/*.cjs'],
 		// 	env: {

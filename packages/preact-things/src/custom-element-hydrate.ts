@@ -59,11 +59,17 @@ if (IS_CLIENT_SIDE && typeof customElements !== 'undefined') {
 				const fragment = createRootFragment(this.parentNode as Element, childNodes);
 
 				const $import = new Function('s', 'return import(s)');
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				$import(url).then((m: any) => {
-					const component = ((exportName ? m[exportName] : undefined) || m.default) as FunctionalComponent<unknown>;
-					hydrate(h(component, data as RenderableProps<Record<string, unknown>>, []), fragment);
-				});
+				$import(url)
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
+					.then((m: any) => {
+						const component = ((exportName ? m[exportName] : undefined) || m.default) as FunctionalComponent<unknown>;
+						hydrate(h(component, data as RenderableProps<Record<string, unknown>>, []), fragment);
+						return null;
+					})
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
+					.catch((_err: any) => {
+						// noop
+					});
 			}
 		},
 	);
