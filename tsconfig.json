@@ -57,4 +57,13 @@
 		"experimentalDecorators": false,
 		"emitDecoratorMetadata": false
 	}
+	// :(
+	// package.json @types fail if not specified in export map as well as root
+	// ... works fine with ESM / MJS files,
+	// but breaks the TS compiler in VSCode (language service)
+	// as soon as a CJS file is opened (even if no imports at all!)
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-nocheck
+	// @ts-expect-error TS7016
+	// "exclude": ["./**/*.cjs"]
 }

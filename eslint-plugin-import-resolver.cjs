@@ -1,12 +1,19 @@
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference
+// <reference path="./node_modules/kolorist/dist/types/index.d.ts"/>
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference
+// <reference path="./node_modules/resolve.exports/index.d.ts"/>
+
 // https://github.com/import-js/eslint-plugin-import/blob/main/resolvers/README.md
 // https://github.com/import-js/eslint-plugin-import#resolvers
 
-const { builtinModules } = require('module'); // createRequire
-const path = require('path');
-
+// @ts-expect-error TS7016
 const { cyan, green, red } = require('kolorist');
 
+// @ts-expect-error TS7016
 const { resolve: resolveExports } = require('resolve.exports');
+
+const { builtinModules } = require('module'); // createRequire
+const path = require('path');
 
 // https://github.com/browserify/resolve
 // const { isCore } = require('resolve');

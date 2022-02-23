@@ -24,6 +24,7 @@ const defaultSettings = {
 		[path.resolve('./eslint-plugin-import-resolver.cjs')]: { someConfig: 1 },
 	},
 };
+// https://github.com/sweepline/eslint-plugin-unused-imports
 // 'unused-imports' '@typescript-eslint'
 const defaultPlugins = ['import', 'simple-import-sort', 'prettier', 'promise'];
 const defaultExtends = [
@@ -38,14 +39,15 @@ const defaultExtends = [
 	'plugin:import/warnings',
 	'plugin:import/typescript',
 	'plugin:promise/recommended',
-	'plugin:node/recommended',
+	// 'plugin:node/recommended', // eslint-plugin-node
+	// 'plugin:n/recommended', // eslint-plugin-n (FORK, support for ESM imports) see https://github.com/weiran-zsd/eslint-plugin-node/pull/10
 ];
 const defaultRules = {
-	'node/no-unpublished-import': 0,
-	'node/no-missing-import': 0,
-	'node/no-unpublished-require': 0,
-	'node/no-extraneous-import': 0,
-	'node/no-unsupported-features/es-syntax': 0,
+	// 'node/no-unpublished-import': 0,
+	// 'node/no-missing-import': 0,
+	// 'node/no-unpublished-require': 0,
+	// 'node/no-extraneous-import': 0,
+	// 'node/no-unsupported-features/es-syntax': 0,
 	'simple-import-sort/imports': 'error',
 	'simple-import-sort/exports': 'error',
 	'import/order': 0,
