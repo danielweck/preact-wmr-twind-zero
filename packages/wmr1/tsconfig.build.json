@@ -28,11 +28,11 @@
 		"jsxFragmentFactory": "preact.Fragment",
 		"resolveJsonModule": true
 	},
-	"typeAcquisition": {
-		"enable": true,
-		"disableFilenameBasedTypeAcquisition": true,
-		"include": ["rollup"]
-	},
+	// "typeAcquisition": {
+	// 	"enable": true,
+	// 	"disableFilenameBasedTypeAcquisition": true,
+	// 	"include": ["rollup"]
+	// },
 	"include": ["public/**/*"]
 
 	// "references": [{ "path": "../shared/tsconfig.build.json" }, { "path": "../preact-things/tsconfig.build.json" }]

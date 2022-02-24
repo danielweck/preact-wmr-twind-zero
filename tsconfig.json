@@ -1,6 +1,10 @@
 {
 	"$schema": "http://json.schemastore.org/tsconfig",
 	"compileOnSave": false,
+	// /Users/USER/Library/Caches/typescript/
+	"typeAcquisition": {
+		"enable": false
+	},
 	"compilerOptions": {
 		"lib": ["DOM", "DOM.Iterable", "ESNext"],
 		"declaration": true,

@@ -39,5 +39,6 @@
 			"directory": ".",
 			"changeProcessCWD": true
 		}
-	]
+	],
+	"typescript.disableAutomaticTypeAcquisition": true
 }

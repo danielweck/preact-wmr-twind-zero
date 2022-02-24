@@ -47,8 +47,7 @@
 		"typescript-esm-copy": "cpy src/xpatched/* dist/esm/xpatched"
 	},
 	"dependencies": {
-		"preact": "^10.6.6",
-		"preact-iso": "^2.3.0"
+		"preact": "^10.6.6"
 	},
 	"devDependencies": {
 		"preact-render-to-string": "^5.1.20"
