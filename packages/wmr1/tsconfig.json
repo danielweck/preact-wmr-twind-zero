@@ -1,20 +1,23 @@
 {
 	"$schema": "http://json.schemastore.org/tsconfig",
-	"extends": "./tsconfig.build.json"
-	// "compilerOptions": {
-	// 	"paths": {
-	// 		"~/*": ["./public/*"],
-	// 		"/*": ["./public/*"],
-	// 		"preact": ["../preact-things/types/preact/index.d.ts"],
-	// 		"preact/hooks": ["../preact-things/types/preact/hooks/index.d.ts"],
-	// 		"@preact-wmr-twind-zero/preact-things": ["../preact-things/src/index.ts"],
-	// 		"@preact-wmr-twind-zero/preact-things/xpatched": ["../preact-things/src/xpatched/suspense.ts"],
-	// 		"@preact-wmr-twind-zero/preact-things/xpatched/*": ["../preact-things/src/xpatched/*"],
-	// 		"@preact-wmr-twind-zero/preact-things/*": ["../preact-things/src/*"],
-	// 		"@preact-wmr-twind-zero/shared": ["../shared/src/index.ts"],
-	// 		"@preact-wmr-twind-zero/shared/sub": ["../shared/src/sub/other.ts"],
-	// 		"@preact-wmr-twind-zero/shared/sub/*": ["../shared/src/sub/*"],
-	// 		"@preact-wmr-twind-zero/shared/*": ["../shared/src/*"]
-	// 	}
-	// }
+	"extends": "./tsconfig.build.json",
+	"compilerOptions": {
+		"composite": true,
+		// "rootDirs": ["./public", "../preact-things/src", "../shared/src"],
+		"paths": {
+			"~/*": ["./public/*"],
+			"/*": ["./public/*"],
+			"preact": ["../preact-things/types/preact/index.d.ts"],
+			"preact/hooks": ["../preact-things/types/preact/hooks/index.d.ts"],
+			"@preact-wmr-twind-zero/preact-things": ["../preact-things/src/index.ts"],
+			"@preact-wmr-twind-zero/preact-things/xpatched": ["../preact-things/src/xpatched/suspense.ts"],
+			"@preact-wmr-twind-zero/preact-things/xpatched/*": ["../preact-things/src/xpatched/*"],
+			"@preact-wmr-twind-zero/preact-things/*": ["../preact-things/src/*"],
+			"@preact-wmr-twind-zero/shared": ["../shared/src/index.ts"],
+			"@preact-wmr-twind-zero/shared/sub": ["../shared/src/sub/other.ts"],
+			"@preact-wmr-twind-zero/shared/sub/*": ["../shared/src/sub/*"],
+			"@preact-wmr-twind-zero/shared/*": ["../shared/src/*"]
+		}
+	},
+	"references": [{ "path": "../shared/tsconfig.build.json" }, { "path": "../preact-things/tsconfig.build.json" }]
 }

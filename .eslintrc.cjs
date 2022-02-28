@@ -12,8 +12,9 @@ const defaultSettings = {
 	'import/resolver': {
 		// https://github.com/alexgorbatchev/eslint-import-resolver-typescript
 		typescript: {
-			alwaysTryTypes: true,
-			project: ['./tsconfig.json', 'packages/*/tsconfig.json', 'packages/*/tsconfig.*.json'],
+			alwaysTryTypes: false,
+			// project: ['./tsconfig.json', 'packages/*/tsconfig.json', 'packages/*/tsconfig.*.json'],
+			project: ['./packages/wmr1/tsconfig.build.json'],
 		},
 		// https://github.com/import-js/eslint-plugin-import/tree/main/resolvers/node
 		// node: {

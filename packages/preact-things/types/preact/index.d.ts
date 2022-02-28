@@ -4,3 +4,4 @@ declare module 'preact' {
 	// export * from '../../node_modules/preact/src/index';
 	export = preact;
 }
+// export * from '../../node_modules/preact/src/index.d.js';

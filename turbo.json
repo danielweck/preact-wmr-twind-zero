@@ -10,6 +10,10 @@
 			"dependsOn": ["^build"],
 			"outputs": ["packages/**/dist/**"]
 		},
+		"esbuild": {
+			"dependsOn": ["^esbuild"],
+			"outputs": ["packages/**/dist/**"]
+		},
 		"typescript": {
 			"dependsOn": ["^typescript"],
 			"outputs": ["packages/**/dist/**"]

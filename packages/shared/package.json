@@ -8,6 +8,8 @@
 	"author": "Daniel Weck (https://github.com/danielweck)",
 	"license": "BSD3",
 	"type": "module",
+	"types": "./dist/types/index.d.ts",
+	"main": "./dist/cjs/index.js",
 	"module": "./dist/esm/index.js",
 	"exports": {
 		".": {
@@ -35,9 +37,13 @@
 		"clean": "rimraf \"./dist\" && rimraf \"./.turbo\"",
 		"start": "pnpm build",
 		"build": "pnpm clean && pnpm typescript",
+		"esbuild": "pnpm esbuild-esm && pnpm esbuild-cjs",
+		"esbuild-esm": "esbuild \"./src/index.ts\" --format=esm --outfile=dist/esm-bundle.js --tsconfig=tsconfig.build.json --platform=browser --target=es2020 --bundle --sourcemap=external",
+		"esbuild-cjs": "esbuild \"./src/index.ts\" --format=cjs --outfile=dist/cjs-bundle.js --tsconfig=tsconfig.build.json --platform=browser --target=es2020 --bundle --sourcemap=external",
 		"typescript": "tsc --version && pnpm typescript-esm",
 		"typescript-esm": "tsc --project tsconfig.build.json",
-		"typescript-cjs": "tsc --project tsconfig.build-cjs.json"
+		"typescript-cjs": "tsc --project tsconfig.build-cjs.json",
+		"typescript-types": "tsc --project tsconfig.build.json --emitDeclarationOnly --outFile \"dist/types/index.d.ts\" --isolatedModules false"
 	},
 	"files": [
 		"dist"
