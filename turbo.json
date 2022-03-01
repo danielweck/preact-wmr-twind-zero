@@ -2,20 +2,20 @@
 	"$schema": "https://turborepo.org/schema.json",
 	"baseBranch": "origin/main",
 	"pipeline": {
-		"build": {
-			"dependsOn": ["^build"],
-			"outputs": ["dist/**"]
-		},
-		"esbuild": {
-			"dependsOn": ["^esbuild"],
-			"outputs": ["dist/**"]
-		},
 		"typescript": {
 			"dependsOn": ["^typescript"],
 			"outputs": ["dist/**"]
 		},
+		"build": {
+			"dependsOn": ["^build", "typescript"],
+			"outputs": ["dist/**"]
+		},
 		"build-github": {
-			"dependsOn": ["^build", "^build-github"],
+			"dependsOn": ["^build-github", "typescript"],
+			"outputs": ["dist/**"]
+		},
+		"esbuild": {
+			"dependsOn": ["^esbuild"],
 			"outputs": ["dist/**"]
 		},
 		"dev": {

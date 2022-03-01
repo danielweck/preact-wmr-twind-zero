@@ -91,11 +91,11 @@ jobs:
     - name: PR action (just lint)
       if: ${{ github.event_name == 'pull_request' }}
       # Note that 'lint:eslint' invokes 'typescript' (necessary precondition for import resolver), so strictly-speaking there is no need for `pnpm typescript` here, but Turbo will skip/not repeat, so no time wasted :)
-      run: pnpm typescript && pnpm lint && pnpm test
+      run: pnpm typescript -- --no-cache && pnpm lint && pnpm test
     - name: non-PR action (lint and build)
       if: ${{ github.event_name != 'pull_request' }}
-      # Note that 'lint:eslint' invokes 'typescript' (necessary precondition for import resolver), so strictly-speaking there is no need for `pnpm typescript` here, but Turbo will skip/not repeat, so no time wasted :)
-      run: pnpm typescript && pnpm lint && pnpm test && pnpm build-github && ls -R packages/wmr1/dist && mv packages/wmr1/dist/preact-wmr-twind-zero/* packages/wmr1/dist/ && rm -r packages/wmr1/dist/preact-wmr-twind-zero && rm packages/wmr1/dist/*.ts && rm packages/wmr1/dist/chunks/prerender*
+      # Note that 'lint:eslint' invokes 'typescript' (necessary precondition for import resolver), as well as 'build-github', so strictly-speaking there is no need for `pnpm typescript` here, but Turbo will skip/not repeat, so no time wasted :)
+      run: pnpm typescript -- --no-cache && pnpm lint && pnpm test && pnpm build-github && ls -R packages/wmr1/dist
     - name: Checkout GH-PAGES
       if: ${{ github.event_name != 'pull_request' }}
       uses: actions/checkout@v2

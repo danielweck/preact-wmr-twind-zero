@@ -63,7 +63,7 @@
 		"prepare": "husky install",
 		"clean": "pnpm --recursive clean",
 		"clean_": "pnpm turbo run clean",
-		"clean-turbo": "rimraf \"./.turbo\" && pnpm --recursive clean-turbo",
+		"clean-turbo": "rimraf \"node_modules/.cache/turbo\" && rimraf \"./.turbo\" && pnpm --recursive clean-turbo",
 		"__test-uvu": "uvu packages/shared \".test\\.ts\" --require tsm --bail --ignore dist",
 		"test": "pnpm vitest --run",
 		"test:ui": "pnpm vitest --ui --run",
