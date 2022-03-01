@@ -2,25 +2,21 @@
 	"$schema": "https://turborepo.org/schema.json",
 	"baseBranch": "origin/main",
 	"pipeline": {
-		"clean": {
-			"dependsOn": ["^clean"],
-			"outputs": ["packages/**/dist/**"]
-		},
 		"build": {
 			"dependsOn": ["^build"],
-			"outputs": ["packages/**/dist/**"]
+			"outputs": ["dist/**"]
 		},
 		"esbuild": {
 			"dependsOn": ["^esbuild"],
-			"outputs": ["packages/**/dist/**"]
+			"outputs": ["dist/**"]
 		},
 		"typescript": {
 			"dependsOn": ["^typescript"],
-			"outputs": ["packages/**/dist/**"]
+			"outputs": ["dist/**"]
 		},
 		"build-github": {
 			"dependsOn": ["^build", "^build-github"],
-			"outputs": ["packages/**/dist/**"]
+			"outputs": ["dist/**"]
 		},
 		"dev": {
 			"cache": false

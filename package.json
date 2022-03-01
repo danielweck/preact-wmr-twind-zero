@@ -62,6 +62,8 @@
 	"scripts": {
 		"prepare": "husky install",
 		"clean": "pnpm --recursive clean",
+		"clean_": "pnpm turbo run clean",
+		"clean-turbo": "rimraf \"./.turbo\" && pnpm --recursive clean-turbo",
 		"__test-uvu": "uvu packages/shared \".test\\.ts\" --require tsm --bail --ignore dist",
 		"test": "pnpm vitest --run",
 		"test:ui": "pnpm vitest --ui --run",
@@ -91,7 +93,7 @@
 		"@types/node": "^16.11.25",
 		"@typescript-eslint/eslint-plugin": "^5.13.0",
 		"@typescript-eslint/parser": "^5.13.0",
-		"cpy-cli": "^3.1.1",
+		"cpy-cli": "^4.0.0",
 		"cross-env": "^7.0.3",
 		"csstype": "^3.0.10",
 		"eclint": "^2.8.1",
@@ -124,6 +126,6 @@
 		"tslib": "^2.3.1",
 		"turbo": "^1.1.4",
 		"typescript": "next",
-		"vitest": "^0.5.8"
+		"vitest": "^0.5.9"
 	}
 }

@@ -34,9 +34,10 @@
 		"pnpm": ">=6"
 	},
 	"scripts": {
-		"clean": "rimraf \"./dist\" && rimraf \"./.turbo\"",
+		"clean": "rimraf \"./dist\"",
+		"clean-turbo": "rimraf \"./.turbo\"",
 		"start": "pnpm build",
-		"build": "pnpm clean && pnpm typescript",
+		"build": "pnpm typescript",
 		"esbuild": "pnpm esbuild-esm && pnpm esbuild-cjs",
 		"esbuild-esm": "esbuild \"./src/index.ts\" --format=esm --outfile=dist/esm-bundle.js --tsconfig=tsconfig.build.json --platform=browser --target=es2020 --bundle --sourcemap=external",
 		"esbuild-cjs": "esbuild \"./src/index.ts\" --format=cjs --outfile=dist/cjs-bundle.js --tsconfig=tsconfig.build.json --platform=browser --target=es2020 --bundle --sourcemap=external",

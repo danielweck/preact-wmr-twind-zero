@@ -14,7 +14,8 @@
 	},
 	"scripts": {
 		"postinstall": "pnpm clean",
-		"clean": "rimraf \"./dist\" && rimraf \"./.cache\" && rimraf \"./.tmp\" && rimraf \"./.turbo\"",
+		"clean": "rimraf \"./dist\" && rimraf \"./.cache\" && rimraf \"./.tmp\"",
+		"clean-turbo": "rimraf \"./.turbo\"",
 		"start": "pnpm clean && cross-env DEBUG=* wmr",
 		"build-no-prerender": "pnpm clean && cross-env DEBUG=\"*,-babel*\" wmr build",
 		"build_": "pnpm clean && cross-env DEBUG=\"*,-babel*\" wmr build --prerender && pnpm afterbuild",
