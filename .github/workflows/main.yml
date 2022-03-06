@@ -75,7 +75,7 @@ jobs:
       run: pnpm install --frozen-lockfile
       #uses: pnpm/action-setup@v2
       #with:
-      #  version: 6.31.0
+      #  version: 6.32.3
       #  run_install: |
       #    - recursive: false
       #      args: [--frozen-lockfile]
