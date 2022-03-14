@@ -38,7 +38,7 @@
 		"preact-iso": "^2.3.0"
 	},
 	"devDependencies": {
-		"@babel/core": "^7.17.5",
+		"@babel/core": "^7.17.7",
 		"@babel/plugin-syntax-jsx": "^7.16.7",
 		"@babel/plugin-syntax-typescript": "^7.16.7",
 		"@babel/types": "^7.17.0",
@@ -53,7 +53,7 @@
 		"browserslist": "^4.20.0",
 		"kolorist": "^1.5.1",
 		"preact-render-to-string": "^5.1.20",
-		"rollup": "^2.70.0",
+		"rollup": "^2.70.1",
 		"twind": "^1.0.0-next.37",
 		"wmr": "^3.7.2"
 	}
