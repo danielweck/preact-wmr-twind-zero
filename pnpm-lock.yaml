@@ -35,14 +35,14 @@ importers:
       prettier: ^2.6.0
       resolve.exports: ^1.1.0
       rimraf: ^3.0.2
-      stylelint: ^14.5.3
+      stylelint: ^14.6.0
       stylelint-config-html: ^1.0.0
       stylelint-config-prettier: ^9.0.3
       stylelint-config-standard: ^25.0.0
       tslib: ^2.3.1
       turbo: ^1.1.6
       typescript: next
-      vitest: ^0.6.1
+      vitest: ^0.6.3
     devDependencies:
       '@commitlint/cli': 16.2.3
       '@commitlint/config-conventional': 16.2.1
@@ -75,14 +75,14 @@ importers:
       prettier: 2.6.0
       resolve.exports: 1.1.0
       rimraf: 3.0.2
-      stylelint: 14.5.3
-      stylelint-config-html: 1.0.0_5a0e8a91b05709dd3bc8bbe41065947c
-      stylelint-config-prettier: 9.0.3_stylelint@14.5.3
-      stylelint-config-standard: 25.0.0_stylelint@14.5.3
+      stylelint: 14.6.0
+      stylelint-config-html: 1.0.0_f552817e5b8b1b7dca381d844218922e
+      stylelint-config-prettier: 9.0.3_stylelint@14.6.0
+      stylelint-config-standard: 25.0.0_stylelint@14.6.0
       tslib: 2.3.1
       turbo: 1.1.6
       typescript: 4.7.0-dev.20220316
-      vitest: 0.6.1
+      vitest: 0.6.3
 
   packages/preact-things:
     specifiers:
@@ -743,8 +743,8 @@ packages:
       '@parcel/css-win32-x64-msvc': 1.6.0
     dev: true
 
-  /@swc/helpers/0.3.6:
-    resolution: {integrity: sha512-xVl7Sddrl9/eMjEMqkH9lT8fLOGCuWHH9VmR2IBKQ8xTcjA6UQw4O3/4oS3xnyZHLtL9vC3P+C0kLneHpiqeEg==}
+  /@swc/helpers/0.3.8:
+    resolution: {integrity: sha512-aWItSZvJj4+GI6FWkjZR13xPNPctq2RRakzo+O6vN7bC2yjwdg5EFpgaSAUn95b7BGSgcflvzVDPoKmJv24IOg==}
     dev: true
 
   /@tsconfig/node10/1.0.8:
@@ -773,7 +773,7 @@ packages:
       typescript:
         optional: true
     dependencies:
-      '@swc/helpers': 0.3.6
+      '@swc/helpers': 0.3.8
       style-vendorizer: 2.1.1
       twind: 1.0.0-next.37_typescript@4.7.0-dev.20220316
       typescript: 4.7.0-dev.20220316
@@ -789,7 +789,7 @@ packages:
       typescript:
         optional: true
     dependencies:
-      '@swc/helpers': 0.3.6
+      '@swc/helpers': 0.3.8
       twind: 1.0.0-next.37_typescript@4.7.0-dev.20220316
       typescript: 4.7.0-dev.20220316
     dev: true
@@ -805,7 +805,7 @@ packages:
       typescript:
         optional: true
     dependencies:
-      '@swc/helpers': 0.3.6
+      '@swc/helpers': 0.3.8
       '@twind/preset-tailwind': 1.0.0-next.37_a599e936dd534d6e1db702e622d34ca4
       twind: 1.0.0-next.37_typescript@4.7.0-dev.20220316
       typescript: 4.7.0-dev.20220316
@@ -821,7 +821,7 @@ packages:
       typescript:
         optional: true
     dependencies:
-      '@swc/helpers': 0.3.6
+      '@swc/helpers': 0.3.8
       twind: 1.0.0-next.37_typescript@4.7.0-dev.20220316
       typescript: 4.7.0-dev.20220316
     dev: true
@@ -836,7 +836,7 @@ packages:
       typescript:
         optional: true
     dependencies:
-      '@swc/helpers': 0.3.6
+      '@swc/helpers': 0.3.8
       twind: 1.0.0-next.37_typescript@4.7.0-dev.20220316
       typescript: 4.7.0-dev.20220316
     dev: true
@@ -880,8 +880,8 @@ packages:
     resolution: {integrity: sha512-/ceqdqeRraGolFTcfoXNiqjyQhZzbINDngeoAq9GoHa8PPK1yNzTaxWjA6BFWp5Ua9JpXEMSS4s5i9tS0hOJtw==}
     dev: true
 
-  /@types/json-schema/7.0.9:
-    resolution: {integrity: sha512-qcUXuemtEu+E5wZSJHNxUXeCZhAfXKQ41D+duX+VYPde7xyEVZci+/oXKJL13tnRs9lR2pr4fod59GT6/X1/yQ==}
+  /@types/json-schema/7.0.10:
+    resolution: {integrity: sha512-BLO9bBq59vW3fxCpD4o0N4U+DXsvwvIcl+jofw0frQo/GrBFC+/jRZj1E7kgp6dvTyNmA4y6JCV5Id/r3mNP5A==}
     dev: true
 
   /@types/json5/0.0.29:
@@ -1023,7 +1023,7 @@ packages:
     peerDependencies:
       eslint: ^6.0.0 || ^7.0.0 || ^8.0.0
     dependencies:
-      '@types/json-schema': 7.0.9
+      '@types/json-schema': 7.0.10
       '@typescript-eslint/scope-manager': 5.15.0
       '@typescript-eslint/types': 5.15.0
       '@typescript-eslint/typescript-estree': 5.15.0_typescript@4.7.0-dev.20220316
@@ -5129,7 +5129,7 @@ packages:
     resolution: {integrity: sha512-gVO6Cwxtg8iX0X1W4xMhSc5WbQpiIBQDkhq3JkwebMRRgyhCfuvMrnPlTAGTRjfQPGRmzgjCOZ4drehTnLahHA==}
     dev: true
 
-  /stylelint-config-html/1.0.0_5a0e8a91b05709dd3bc8bbe41065947c:
+  /stylelint-config-html/1.0.0_f552817e5b8b1b7dca381d844218922e:
     resolution: {integrity: sha512-rKQUUWDpaYC7ybsS6tLxddjn6DxhjSIXybElSmcTyVQj3ExhmU3q+l41ktrlwHRyY0M5SkTkZiwngvYPYmsgSQ==}
     engines: {node: ^12 || >=14}
     peerDependencies:
@@ -5137,38 +5137,38 @@ packages:
       stylelint: '>=14.0.0'
     dependencies:
       postcss-html: 1.3.0
-      stylelint: 14.5.3
+      stylelint: 14.6.0
     dev: true
 
-  /stylelint-config-prettier/9.0.3_stylelint@14.5.3:
+  /stylelint-config-prettier/9.0.3_stylelint@14.6.0:
     resolution: {integrity: sha512-5n9gUDp/n5tTMCq1GLqSpA30w2sqWITSSEiAWQlpxkKGAUbjcemQ0nbkRvRUa0B1LgD3+hCvdL7B1eTxy1QHJg==}
     engines: {node: '>= 12'}
     hasBin: true
     peerDependencies:
       stylelint: '>=11.0.0'
     dependencies:
-      stylelint: 14.5.3
+      stylelint: 14.6.0
     dev: true
 
-  /stylelint-config-recommended/7.0.0_stylelint@14.5.3:
+  /stylelint-config-recommended/7.0.0_stylelint@14.6.0:
     resolution: {integrity: sha512-yGn84Bf/q41J4luis1AZ95gj0EQwRX8lWmGmBwkwBNSkpGSpl66XcPTulxGa/Z91aPoNGuIGBmFkcM1MejMo9Q==}
     peerDependencies:
       stylelint: ^14.4.0
     dependencies:
-      stylelint: 14.5.3
+      stylelint: 14.6.0
     dev: true
 
-  /stylelint-config-standard/25.0.0_stylelint@14.5.3:
+  /stylelint-config-standard/25.0.0_stylelint@14.6.0:
     resolution: {integrity: sha512-21HnP3VSpaT1wFjFvv9VjvOGDtAviv47uTp3uFmzcN+3Lt+RYRv6oAplLaV51Kf792JSxJ6svCJh/G18E9VnCA==}
     peerDependencies:
       stylelint: ^14.4.0
     dependencies:
-      stylelint: 14.5.3
-      stylelint-config-recommended: 7.0.0_stylelint@14.5.3
+      stylelint: 14.6.0
+      stylelint-config-recommended: 7.0.0_stylelint@14.6.0
     dev: true
 
-  /stylelint/14.5.3:
-    resolution: {integrity: sha512-omHETL+kGHR+fCXFK1SkZD/A+emCP9esggAdWEl8GPjTNeyRYj+H6uetRDcU+7E451zwWiUYGVAX+lApsAZgsQ==}
+  /stylelint/14.6.0:
+    resolution: {integrity: sha512-Xk2sqXYPi9nXgq70nBiZkbQm/QOOKd83NBTaBE1fXEWAEeRlgHnKC/E7kJFlT6K0SaNDOK5yIvR7GFPGsNLuOg==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
     hasBin: true
     dependencies:
@@ -5551,7 +5551,7 @@ packages:
       typescript:
         optional: true
     dependencies:
-      '@swc/helpers': 0.3.6
+      '@swc/helpers': 0.3.8
       csstype: 3.0.11
       typescript: 4.7.0-dev.20220316
     dev: true
@@ -5743,8 +5743,8 @@ packages:
       fsevents: 2.3.2
     dev: true
 
-  /vitest/0.6.1:
-    resolution: {integrity: sha512-rgHgTO3xHCrbgmqYdUz4ViO0g2ekHeOfV60J6+1c6Ypzk1EqCE2sN8IpF4TDGs6BOvWIsVd/ob5c6U4Ozzu92g==}
+  /vitest/0.6.3:
+    resolution: {integrity: sha512-0x5UeYQ5Mqniurxv9KT0+FI4IszLBbNBiBPSXSdyQAEodeq400Q00YB0f1qNbf7YsxyLqFJvGpoOTKJWUYm6mQ==}
     engines: {node: '>=14.14.0'}
     hasBin: true
     peerDependencies:
