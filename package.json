@@ -91,8 +91,8 @@
 		"@commitlint/cli": "^16.2.3",
 		"@commitlint/config-conventional": "^16.2.1",
 		"@types/node": "^16.11.26",
-		"@typescript-eslint/eslint-plugin": "^5.15.0",
-		"@typescript-eslint/parser": "^5.15.0",
+		"@typescript-eslint/eslint-plugin": "^5.16.0",
+		"@typescript-eslint/parser": "^5.16.0",
 		"cpy-cli": "^4.1.0",
 		"cross-env": "^7.0.3",
 		"csstype": "^3.0.11",
@@ -124,8 +124,8 @@
 		"stylelint-config-prettier": "^9.0.3",
 		"stylelint-config-standard": "^25.0.0",
 		"tslib": "^2.3.1",
-		"turbo": "^1.1.6",
+		"turbo": "^1.1.9",
 		"typescript": "next",
-		"vitest": "^0.7.4"
+		"vitest": "^0.7.7"
 	}
 }
