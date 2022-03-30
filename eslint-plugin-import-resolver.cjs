@@ -90,7 +90,8 @@ const resolve = (source, file, _config) => {
 	// 	return { found: true, path: null };
 	// }
 	if (builtins.has(source)) {
-		console.log(`${red('ESLINT PLUGIN IMPORT RESOLVER')} >> [${green(source)}] in [${cyan(file)}] (builtins)`);
+		console.log(`${red('ESLINT PLUGIN IMPORT RESOLVER 1')} >> [${green(source)}] in [${cyan(file)}] (builtins 1)`);
+		// return { found: false };
 		return { found: true, path: null };
 	}
 
@@ -99,8 +100,19 @@ const resolve = (source, file, _config) => {
 		// if (process.versions.pnp && moduleId.includes('__virtual__')) {
 		// 	moduleId = require('pnpapi').resolveVirtual(moduleId);
 		// }
+
+		// if (builtinModules.includes(moduleId)) {
+		// 	console.log(
+		// 		`${red('ESLINT PLUGIN IMPORT RESOLVER 2')} >> [${green(source)}] in [${cyan(file)}] ([${yellow(
+		// 			moduleId,
+		// 		)}]) (builtins 2)`,
+		// 	);
+		// 	// return { found: false };
+		// 	return { found: true, path: null };
+		// }
+
 		console.log(
-			`${red('ESLINT PLUGIN IMPORT RESOLVER')} >> [${green(source)}] in [${cyan(file)}] => [${green(moduleId)}] (CJS)`,
+			`${red('ESLINT PLUGIN IMPORT RESOLVER 3')} >> [${green(source)}] in [${cyan(file)}] => [${green(moduleId)}] (CJS)`,
 		);
 		return { found: true, path: moduleId };
 	} catch (/** @type {any} */ err1) {
@@ -133,7 +145,7 @@ const resolve = (source, file, _config) => {
 						return $1.replace(/\/dist\/cjs\//, '/dist/esm/');
 				  });
 			console.log(
-				`${red('ESLINT PLUGIN IMPORT RESOLVER')} >> [${green(source)}] in [${cyan(file)}] => [${green(moduleId)}] (ESM${
+				`${red('ESLINT PLUGIN IMPORT RESOLVER 4')} >> [${green(source)}] in [${cyan(file)}] => [${green(moduleId)}] (ESM${
 					ok ? '' : ' (fallback)'
 				})`,
 			);

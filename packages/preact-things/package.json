@@ -53,7 +53,7 @@
 		"typescript-types": "tsc --project tsconfig.build.json --emitDeclarationOnly --outFile \"dist/types/index.d.ts\" --isolatedModules false"
 	},
 	"dependencies": {
-		"preact": "^10.6.6"
+		"preact": "^10.7.0"
 	},
 	"devDependencies": {
 		"preact-render-to-string": "^5.1.20"
