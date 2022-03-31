@@ -12,45 +12,36 @@ export interface ReactionTracking {
 	mounted?: boolean;
 }
 
+const _uncommittedReactionRefs: Set<MutableRef<ReactionTracking | null>> = new Set();
+
 // ticks (milliseconds), same as Date.now() units
 const CLEANUP_TIME = 10_000;
 
-const uncommittedReactionRefs: Set<MutableRef<ReactionTracking | null>> = new Set();
+let _cleanupTimeout: ReturnType<typeof setTimeout> | undefined;
 
-let reactionCleanupHandle: ReturnType<typeof setTimeout> | undefined;
-
-const ensureCleanupTimerRunning = () => {
-	if (reactionCleanupHandle === undefined) {
-		reactionCleanupHandle = setTimeout(cleanUncommittedReactions, CLEANUP_TIME);
+const checkCleanupTimeout = () => {
+	if (_cleanupTimeout) {
+		return;
 	}
-};
+	_cleanupTimeout = setTimeout(() => {
+		_cleanupTimeout = undefined;
 
-const scheduleCleanupOfReactionIfLeaked = (ref: MutableRef<ReactionTracking | null>) => {
-	uncommittedReactionRefs.add(ref);
-	ensureCleanupTimerRunning();
-};
+		const now = Date.now();
 
-const recordReactionAsCommitted = (reactionRef: MutableRef<ReactionTracking | null>) => {
-	uncommittedReactionRefs.delete(reactionRef);
-};
+		for (const ref of _uncommittedReactionRefs) {
+			const tracking = ref.current;
 
-const cleanUncommittedReactions = () => {
-	reactionCleanupHandle = undefined;
-
-	const now = Date.now();
-	uncommittedReactionRefs.forEach((ref) => {
-		const tracking = ref.current;
-
-		if (tracking && now >= tracking.cleanAt) {
-			tracking.dispose();
-			ref.current = null;
-			uncommittedReactionRefs.delete(ref);
+			if (tracking && now >= tracking.cleanAt) {
+				tracking.dispose();
+				ref.current = null;
+				_uncommittedReactionRefs.delete(ref);
+			}
 		}
-	});
 
-	if (uncommittedReactionRefs.size > 0) {
-		ensureCleanupTimerRunning();
-	}
+		if (_uncommittedReactionRefs.size > 0) {
+			checkCleanupTimeout();
+		}
+	}, CLEANUP_TIME);
 };
 
 export const preactiveComponent = <T extends object>(
@@ -59,22 +50,28 @@ export const preactiveComponent = <T extends object>(
 ): FunctionComponent<T> => {
 	const componentDisplayName = Component.displayName || Component.name || '$';
 	const wrappedComponent: FunctionComponent<T> = function C(...args) {
-		const [, passNaNToUpdate] = useState(NaN);
+		const [, forceReRender] = useState(NaN);
 
 		const reactionTrackingRef = useRef<ReactionTracking | null>(null);
+
+		if (reactionTrackingRef.current) {
+			reactionTrackingRef.current.dispose();
+		}
 
 		let effectShouldUpdate = false;
 
 		useEffect(
 			() => {
-				recordReactionAsCommitted(reactionTrackingRef);
+				if (reactionTrackingRef) {
+					_uncommittedReactionRefs.delete(reactionTrackingRef);
+				}
 
 				if (reactionTrackingRef.current) {
 					reactionTrackingRef.current.mounted = true;
 				}
 
 				if (effectShouldUpdate) {
-					passNaNToUpdate(NaN);
+					forceReRender(NaN);
 				}
 
 				return () => {
@@ -92,8 +89,6 @@ export const preactiveComponent = <T extends object>(
 		let renderedComponent: ReturnType<typeof Component> | undefined;
 		let renderedComponentException: unknown | undefined;
 
-		reactionTrackingRef.current?.dispose();
-
 		const render = () => {
 			try {
 				renderedComponent = Component(...args);
@@ -105,7 +100,7 @@ export const preactiveComponent = <T extends object>(
 
 		const preactStatinObserverEffect = () => {
 			if (reactionTrackingRef.current?.mounted) {
-				passNaNToUpdate(NaN);
+				forceReRender(NaN);
 			} else {
 				effectShouldUpdate = true;
 			}
@@ -121,7 +116,9 @@ export const preactiveComponent = <T extends object>(
 				dispose,
 			};
 			reactionTrackingRef.current = trackingData;
-			scheduleCleanupOfReactionIfLeaked(reactionTrackingRef);
+
+			_uncommittedReactionRefs.add(reactionTrackingRef);
+			checkCleanupTimeout();
 		}
 
 		if (renderedComponentException) {
@@ -145,6 +142,5 @@ export const preactiveComponent = <T extends object>(
 	};
 
 	wrappedComponent.displayName = `wrappedComponent_${componentDisplayName}`;
-
 	return wrappedComponent;
 };
