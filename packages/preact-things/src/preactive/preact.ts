@@ -125,15 +125,18 @@ export const preactiveComponent = <T extends object>(
 		}
 
 		if (renderedComponentException) {
+			const error = renderedComponentException instanceof Error ? renderedComponentException : new Error('');
+			error.message = `preactiveComponent.renderedComponentException [${componentDisplayName}] --- ${error.message}`;
+
 			if (onError) {
 				try {
-					onError(renderedComponentException);
+					onError(error);
 				} catch (exception2) {
-					console.log(renderedComponentException);
+					console.log(error);
 					console.log('onError => ', exception2);
 				}
 			} else {
-				console.log(renderedComponentException);
+				console.log(error);
 			}
 			return null;
 		}
