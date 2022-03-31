@@ -124,12 +124,13 @@ export const preactiveBulkEffects = <T>(effect: PreactiveFunction<T>, onError?: 
 	} catch (exception) {
 		// _currentEffectDisplayName
 		if (onError) {
-			try {
-				onError(exception);
-			} catch (exception2) {
-				console.log(exception);
-				console.log('onError => ', exception2);
-			}
+			onError(exception);
+			// try {
+			// 	onError(exception);
+			// } catch (exception2) {
+			// 	console.log(exception);
+			// 	console.log('onError => ', exception2);
+			// }
 		} else {
 			console.log(exception);
 		}

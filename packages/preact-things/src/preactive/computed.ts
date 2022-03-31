@@ -15,7 +15,7 @@ export const preactiveComputedSignal = <T>(computeFunction: PreactiveFunction<T>
 	let hasChanges = true;
 	let computeFunctionException: unknown | undefined;
 
-	// const computeDisplayName = computeFunction.displayName || computeFunction.name || '$';
+	const computeDisplayName = computeFunction.displayName || computeFunction.name || '$';
 	const computeObserver: PreactiveFunction<void> & IsComputed = () => {
 		reactiveComputedValue = undefined;
 		computeFunctionException = undefined;
@@ -37,7 +37,7 @@ export const preactiveComputedSignal = <T>(computeFunction: PreactiveFunction<T>
 					reactiveComputedValue = computeFunction();
 				});
 			} catch (exception) {
-				computeFunctionException = exception; // computeDisplayName
+				computeFunctionException = exception;
 			} finally {
 				hasChanges = false;
 				popObserver();
@@ -45,7 +45,10 @@ export const preactiveComputedSignal = <T>(computeFunction: PreactiveFunction<T>
 		}
 
 		if (computeFunctionException) {
-			throw computeFunctionException;
+			const error = computeFunctionException instanceof Error ? computeFunctionException : new Error('');
+			error.message = `preactiveComputedSignal.computeFunction [${computeDisplayName}] --- ${error.message}`;
+
+			throw error;
 		}
 
 		return reactiveComputedValue;
