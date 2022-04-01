@@ -663,7 +663,7 @@ test('preactiveReaction(action, effect, {immediate, onError}) catches and trigge
 	expect(testPlan).toBe(1);
 });
 
-test('computed() creates a computed signal', () => {
+test('preactiveComputedSignal() creates a computed signal', () => {
 	const foo = preactiveSignal('foo');
 	const c = preactiveComputedSignal(() => {
 		return `${foo()}bar`;
@@ -671,7 +671,7 @@ test('computed() creates a computed signal', () => {
 	expect(c()).toBe('foobar');
 });
 
-test('computed() only re-computes when one of the dependencies change', () => {
+test('preactiveComputedSignal() only re-computes when one of the dependencies change', () => {
 	const foo = preactiveSignal('foo');
 	const bar = preactiveSignal('bar');
 	let count = 0;
@@ -687,7 +687,7 @@ test('computed() only re-computes when one of the dependencies change', () => {
 	expect(count).toBe(2);
 });
 
-test('computed() propagates changed signals of its dependencies', () => {
+test('preactiveComputedSignal() propagates changed signals of its dependencies', () => {
 	let testPlan = 0;
 	const foo = preactiveSignal('foo');
 	const bar = preactiveSignal('bar');
@@ -899,7 +899,7 @@ test('preactiveOnce() inside preactiveOnce() doesnt cancel tracking', () => {
 	expect(testPlan).toBe(1);
 });
 
-test('computed() updates even within an action', () => {
+test('preactiveComputedSignal() updates even within an action', () => {
 	let testPlan = 0;
 	const a = preactiveSignal('f');
 	const b = preactiveSignal('b');
@@ -951,7 +951,7 @@ test('createAction() wraps the action, inheriting arguments and return value', (
 	expect(testPlan).toBe(3);
 });
 
-test('computed() describes errors correctly', () => {
+test('preactiveComputedSignal() describes errors correctly', () => {
 	const a = preactiveComputedSignal(function ComputeA() {
 		throw new Error('foo1');
 	});
@@ -992,7 +992,7 @@ test('computed() describes errors correctly', () => {
 	expect((err3 as Error).message).toBe('preactiveComputedSignal.computeFunction [__ComputeC__] --- foo3');
 });
 
-test('computed() recovers from errors', () => {
+test('preactiveComputedSignal() recovers from errors', () => {
 	const errorOut = preactiveSignal(true);
 	const c = preactiveComputedSignal(function ComputeFoo() {
 		if (errorOut()) {

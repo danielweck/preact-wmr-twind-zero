@@ -12,7 +12,8 @@
 		"checkJs": false,
 		"paths": {
 			"preact": ["./types/preact/index.d.ts"],
-			"preact/hooks": ["./types/preact/hooks/index.d.ts"]
+			"preact/hooks": ["./types/preact/hooks/index.d.ts"],
+			"preact/test-utils": ["./types/preact/test-utils/index.d.ts"]
 		},
 		"jsx": "react",
 		"jsxFactory": "h",
