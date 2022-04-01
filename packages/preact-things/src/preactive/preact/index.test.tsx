@@ -1,14 +1,22 @@
+// @vitest-environment happy-dom
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable jest/no-commented-out-tests */
+
+// CJS vs. ESM woes :(
+// https://github.com/vitest-dev/vitest/issues/747#issuecomment-1085860826
+// import { cleanup, render, waitFor } from '@testing-library/preact';
+// ... so we use our local preact-testing-library.js file instead (copy-paste, including .d.ts typings)
 
 // This code was shamelessly adapted from Statin, for educational / learning purposes (lots of renaming, type re-organisation, etc. ... but otherwise same logic):
 // https://github.com/tomasklaen/statin-preact/blob/ea430a280f1577a7ae80aec5a030765ee3542e78/test.tsx#L1
 
-import { cleanup, render, waitFor } from '@testing-library/preact';
 import { Fragment, h, render as preactRender } from 'preact';
-import { setupRerender } from 'preact/test-utils';
+import { useState } from 'preact/hooks';
+import { ErrorBoundary } from 'preact-iso/lazy';
 import { afterEach, beforeEach, expect, test } from 'vitest';
 
+import { cleanup, render, waitFor } from '../../../preact-testing-library.js';
 import { suspendCache } from '../../suspend-cache.js';
 import { Suspense } from '../../xpatched/suspense.js';
 import { preactiveAction } from '../vanilla/action.js';
@@ -24,9 +32,11 @@ function onUnhandledRejection(event: any) {
 	_unhandledEvents.push(event);
 }
 
-let rerender: () => void;
+// let scratch;
+// let rerender: () => void;
 beforeEach(() => {
-	rerender = setupRerender();
+	// scratch = setupScratch();
+	// rerender = setupRerender();
 
 	_unhandledEvents = [];
 	if ('onunhandledrejection' in window) {
@@ -35,12 +45,13 @@ beforeEach(() => {
 });
 afterEach(() => {
 	cleanup();
+	// teardown(scratch);
 
 	if ('onunhandledrejection' in window) {
 		window.removeEventListener('unhandledrejection', onUnhandledRejection);
 
 		if (_unhandledEvents.length) {
-			throw _unhandledEvents[0].reason;
+			throw _unhandledEvents[0].reason ?? _unhandledEvents[0];
 		}
 	}
 });
@@ -275,66 +286,126 @@ test('preactiveComponent() recovers from errors', async () => {
 	expect(testPlan).toBe(3);
 });
 
-// eslint-disable-next-line jest/no-disabled-tests
-test.skip('preactiveComponent() handles Suspense / Lazy - thrown Promise that resolves', async () => {
+test('preact Component handles Suspense / Lazy - thrown Promise that resolves', async () => {
 	let testPlan = 0;
 	const container = document.createElement('div');
-	const doThrow = preactiveSignal(true);
-
-	// const Thrower = preactiveComponent(
-	// 	function Thrower({ throwSignal }: { throwSignal: PreactiveSignal<boolean> }) {
-	// 		if (throwSignal()) {
-	// 			console.log('daniel 0');
-	// 			throw new Promise((resolve, _reject) => {
-	// 				setTimeout(() => {
-	// 					console.log('daniel 2');
-	// 					resolve('promise resolve');
-	// 				}, 500);
-	// 			});
-	// 		}
-	// 		console.log('daniel 4');
-	// 		return <Fragment>success</Fragment>;
-	// 	},
-	// 	(exception) => {
-	// 		expect((exception as Error).message).toBe('preactiveComponent.renderedComponentException [Thrower2] --- ');
-	// 		testPlan++;
-	// 	},
-	// );
-
-	// const comp = (
-	// 	<Suspense fallback={<Fragment>'suspended'</Fragment>}>
-	// 		<Thrower throwSignal={doThrow} />
-	// 	</Suspense>
-	// );
 
 	const asyncFunc = async (): Promise<string> => {
 		return new Promise((resolve, _reject) => {
 			setTimeout(() => {
-				console.log('daniel 2');
 				resolve('success');
 			}, 500);
 		});
 	};
 
-	const Thrower = function Thrower() {
-		console.log('daniel 0');
-		const str = suspendCache(asyncFunc, [], 'my cache key');
-		console.log('daniel 4');
-		return <Fragment>{str}</Fragment>;
-	};
+	function Thrower() {
+		const [state, setState] = useState(0);
+		const str = suspendCache(asyncFunc, [], 'my cache key 1');
+		setTimeout(() => {
+			setState(1);
+		}, 500);
+		return <Fragment>{`${str}${state}`}</Fragment>;
+	}
 
+	// ErrorBoundary because of disabled options._catchError in patched Suspense! (if (0))
 	const comp = (
-		<Suspense fallback={<Fragment>'suspended'</Fragment>}>
-			<Thrower />
-		</Suspense>
+		<ErrorBoundary
+			onError={(err) => {
+				console.log('ErrorBoundary onError', err);
+			}}
+		>
+			<Suspense fallback={<Fragment>suspended</Fragment>}>
+				<Thrower />
+			</Suspense>
+		</ErrorBoundary>
 	);
-	console.log('daniel -1');
+	// const comp = (
+	// 	<Suspense fallback={<Fragment>suspended</Fragment>}>
+	// 		<Thrower />
+	// 	</Suspense>
+	// );
+
 	preactRender(comp, container);
 	// const { rerender } =
 	// render(comp, { container });
-	console.log('daniel 3');
-	rerender();
-	// console.log('daniel 5');
+	// rerender();
+
+	await waitFor(
+		() => {
+			expect(container.innerHTML).toBe('suspended');
+			testPlan++;
+		},
+		{ timeout: 300, interval: 200 },
+	);
+
+	await waitFor(
+		() => {
+			expect(container.innerHTML).toBe('success0');
+			testPlan++;
+		},
+		{ timeout: 500, interval: 30 },
+	);
+
+	await waitFor(
+		() => {
+			expect(container.innerHTML).toBe('success1');
+			testPlan++;
+		},
+		{ timeout: 1000, interval: 600 },
+	);
+
+	expect(testPlan).toBe(3);
+});
+
+test('preactiveComponent handles Suspense / Lazy - thrown Promise that resolves', async () => {
+	let testPlan = 0;
+	const container = document.createElement('div');
+	const doThrow = preactiveSignal(true);
+
+	const asyncFunc = async (): Promise<string> => {
+		return new Promise((resolve, _reject) => {
+			setTimeout(() => {
+				resolve('success');
+			}, 500);
+		});
+	};
+
+	const Thrower = preactiveComponent(
+		function Thrower({ throwSignal }: { throwSignal: PreactiveSignal<boolean> }) {
+			if (throwSignal()) {
+				const str = suspendCache(asyncFunc, [], 'my cache key 2');
+				return <Fragment>{str}</Fragment>;
+			}
+			return <Fragment>no throw</Fragment>;
+		},
+		(exception) => {
+			expect((exception as Error).message).toBe('preactiveComponent.renderedComponentException [Thrower2] --- ');
+			testPlan++;
+		},
+	);
+
+	// ErrorBoundary because of disabled options._catchError in patched Suspense! (if (0))
+	const comp = (
+		<ErrorBoundary
+			onError={(err) => {
+				console.log('ErrorBoundary onError', err);
+			}}
+		>
+			<Suspense fallback={<Fragment>suspended</Fragment>}>
+				<Thrower throwSignal={doThrow} />
+			</Suspense>
+		</ErrorBoundary>
+	);
+	// const comp = (
+	// 	<Suspense fallback={<Fragment>suspended</Fragment>}>
+	// 		<Thrower />
+	// 	</Suspense>
+	// );
+
+	preactRender(comp, container);
+	// const { rerender } =
+	// render(comp, { container });
+	// rerender();
 
 	await waitFor(
 		() => {
@@ -354,10 +425,13 @@ test.skip('preactiveComponent() handles Suspense / Lazy - thrown Promise that re
 
 	doThrow(false);
 
-	await waitFor(() => {
-		expect(container.innerHTML).toBe('success');
-		testPlan++;
-	});
+	await waitFor(
+		() => {
+			expect(container.innerHTML).toBe('no throw');
+			testPlan++;
+		},
+		{ timeout: 500, interval: 30 },
+	);
 
-	expect(testPlan).toBe(4);
+	expect(testPlan).toBe(3);
 });

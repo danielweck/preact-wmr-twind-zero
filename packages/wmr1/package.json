@@ -13,7 +13,7 @@
 		"pnpm": ">=6"
 	},
 	"scripts": {
-		"postinstall": "pnpm clean",
+		"postinstall": "pnpm clean && rimraf \"node_modules/preact/hooks/package.json\"",
 		"clean": "rimraf \"./dist\" && rimraf \"./.cache\" && rimraf \"./.tmp\"",
 		"clean-turbo": "rimraf \"node_modules/.cache/turbo\" && rimraf \"./.turbo\"",
 		"start": "pnpm clean && cross-env DEBUG=* wmr",

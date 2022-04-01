@@ -51,7 +51,7 @@
 		"pnpm": ">=6"
 	},
 	"scripts": {
-		"postinstall": "pnpm clean && rimraf \"./.types\" && rimraf \"./src/xpatched\" && pnpm patch-preact-types && pnpm patch-preact-suspense-1 && pnpm patch-preact-suspense-2 && pnpm patch-preact-suspense-3",
+		"postinstall": "pnpm clean && rimraf \"node_modules/preact/hooks/package.json\" && rimraf \"./.types\" && rimraf \"./src/xpatched\" && pnpm patch-preact-types && pnpm patch-preact-suspense-1 && pnpm patch-preact-suspense-2 && pnpm patch-preact-suspense-3",
 		"patch-preact-suspense-1": "cpy --cwd \"node_modules/preact/compat/src/\" \"suspense.js\" \"../../../../src/xpatched/\" --rename=\"suspense_.js\" && sed -e \"s/^options\\._catchError = function/if (0) options._catchError = function/\" -e \"s/\\._catchError/.__e/g\" -e \"s/\\.\\/util/.\\/util.js/\" -e \"s/\\._parentDom/.__P/g\" -e \"s/\\._parent/.__/g\" -e \"s/\\._component/.__c/g\" -e \"s/\\._childDidSuspend/.__c/g\" -e \"s/\\._dom/.__e/g\" -e \"s/\\._dom/.__e/g\" -e \"s/\\._children/.__k/g\" -e \"s/\\._onResolve/.__R/g\" -e \"s/\\._hydrating/.__h/g\" -e \"s/\\._cleanup/.__c/g\" -e \"s/\\.__hooks/.__H/g\" -e \"s/\\._list/.__/g\" -e \"s/\\._originalParentDom/.__O/g\" -e \"s/\\._original/.__v/g\" -e \"s/\\._pendingSuspensionCount/.__u/g\" -e \"s/\\._suspenders/._suspenders/g\" -e \"s/\\._forwarded/.__f/g\" -e \"s/\\._detachOnNextRender/.__b/g\" -e \"s/\\._nextDom/.__d/g\" -e \"s/\\._force/.__e/g\" -e \"s/\\_suspended/__e/g\" -e \"s/\\._vnode/.__v/g\" \"src/xpatched/suspense_.js\" > \"src/xpatched/suspense.js\" && rimraf \"src/xpatched/suspense_.js\"",
 		"patch-preact-suspense-2": "cpy --cwd \"node_modules/preact/compat/src/\" \"util.js\" \"../../../../src/xpatched/\" --rename=\"util.js\"",
 		"patch-preact-suspense-3_": "cpy --cwd \"node_modules/preact/compat/src/\" \"suspense.d.ts\" \"../../../../src/xpatched/\" --rename=\"suspense_.d.ts\" && sed -e \"s/\\.\\.\\/\\.\\.\\/src/..\\/..\\/node_modules\\/preact\\/src\\/index.js/\" \"src/xpatched/suspense_.d.ts\" > \"src/xpatched/suspense.d.ts\" && rimraf \"src/xpatched/suspense_.d.ts\"",
@@ -73,6 +73,9 @@
 		"preact": "^10.7.0"
 	},
 	"devDependencies": {
+		"@testing-library/dom": "^8.12.0",
+		"@testing-library/preact": "^2.0.1",
+		"preact-iso": "^2.3.0",
 		"preact-render-to-string": "^5.1.20"
 	},
 	"files": [

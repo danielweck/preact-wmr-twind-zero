@@ -1,5 +1,5 @@
 {
-	"*.{ts,tsx,js,jsx,mjs,cjs}": ["pnpm lint-fix:eslint", "vitest related --run --dom --silent"],
+	"*.{ts,tsx,js,jsx,mjs,cjs}": ["pnpm lint-fix:eslint", "vitest related --run --silent --config vitest.config.js"],
 	"!(pnpm-lock.yaml)*.{html,htm,css,json,md,yml,yaml,svg,xml,ts,tsx,js,jsx,mjs,cjs}": ["pnpm lint-fix:prettier"],
 	"*.{html,htm,css,ts,tsx,js,jsx,mjs,cjs}": ["pnpm lint-fix:stylelint"]
 }

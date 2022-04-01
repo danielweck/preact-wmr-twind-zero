@@ -122,9 +122,10 @@ export const preactiveComponent = <T extends object>(
 		}
 
 		if (renderedComponentException) {
-			// thrown Promise -> pass-through (handled by Suspense / Error Boundary higher up in the component tree)
-			if ((renderedComponentException as Promise<void>).then) {
-				console.log('renderedComponentException PROMISE (re-throwing ==> Suspense / Error Boundary)');
+			// "thenable" (Promise)
+			// thrown Promise must pass through (handled by Suspense / Error Boundary higher up in the component tree)
+			if (typeof (renderedComponentException as Promise<void>)?.then === 'function') {
+				// console.log('renderedComponentException PROMISE (re-throwing ==> Suspense / Error Boundary)');
 				throw renderedComponentException;
 			}
 
