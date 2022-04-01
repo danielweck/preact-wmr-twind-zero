@@ -1,14 +1,14 @@
-import { suspendCache } from '@preact-wmr-twind-zero/preact-things/suspend-cache.js';
+import { type ResolvedOrRejected, useSuspendCache } from '@preact-wmr-twind-zero/preact-things/suspend-cache.js';
 import { Suspense } from '@preact-wmr-twind-zero/preact-things/xpatched/suspense.js';
 import type { FunctionalComponent, RenderableProps } from 'preact';
 
-import { IS_CLIENT_SIDE } from '../utils.js';
+import { IS_CLIENT_SIDE, IS_PRE_RENDER } from '../utils.js';
 
 const asyncFunc = async (num: number): Promise<string> => {
 	return new Promise((resolve) => {
 		setTimeout(() => {
-			resolve(`Fulfilled: ${num} ${IS_CLIENT_SIDE ? 'CLIENT' : 'SERVER'}`);
-		}, 1000);
+			resolve(`Fulfilled: ${num} [${new Date().toUTCString()}] ${IS_CLIENT_SIDE ? 'CLIENT' : 'SERVER'}`);
+		}, 2000);
 	});
 };
 // preloadCache(asyncFunc, [111]);
@@ -16,9 +16,39 @@ const asyncFunc = async (num: number): Promise<string> => {
 // const val = peekCache([111], 'my cache key');
 
 const SuspendedCache: FunctionalComponent<unknown> = (_props: RenderableProps<unknown>) => {
-	const [success, failure] = suspendCache(asyncFunc, [111], 'my cache key');
+	let hydrationValue: ResolvedOrRejected<typeof asyncFunc> | undefined;
+
+	// TODO:
+	// PREACTWMR_HYDRATE_SUSPEND_CACHE
+	// should be unique property name based on useSuspendCache key
+	if (IS_PRE_RENDER && IS_CLIENT_SIDE) {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const ssr = (window as any).PREACTWMR_HYDRATE_SUSPEND_CACHE;
+		if (typeof ssr !== 'undefined') {
+			hydrationValue = [`_${ssr.data}_`, undefined];
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			(window as any).PREACTWMR_HYDRATE_SUSPEND_CACHE = undefined;
+		}
+	}
+	const [success, failure] = useSuspendCache(asyncFunc, [111], 'my cache key', {
+		hydrationValue,
+	});
+	if (IS_PRE_RENDER && !IS_CLIENT_SIDE) {
+		if (typeof success !== 'undefined') {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			(globalThis as any).PREACTWMR_HYDRATE_SUSPEND_CACHE = success;
+		}
+	}
 	const str = typeof success !== 'undefined' ? success : typeof failure !== 'undefined' ? `${failure}` : '?!';
-	return <p>{str}</p>;
+	return (
+		<p
+			onClick={() => {
+				alert(str);
+			}}
+		>
+			{str}
+		</p>
+	);
 };
 
 export const RoutedHome: FunctionalComponent<unknown> = (_props: RenderableProps<unknown>) => {

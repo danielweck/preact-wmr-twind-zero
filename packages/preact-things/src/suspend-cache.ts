@@ -1,5 +1,7 @@
 // Inspired from: https://github.com/pmndrs/suspend-react/blob/8803996f2fcfbb927d855c2f5d74f66a2d5045a3/src/index.ts
 
+import { useState } from 'preact/hooks';
+
 const DEFAULT_IS_EQUAL = (a: unknown, b: unknown): boolean => {
 	return a === b;
 };
@@ -19,14 +21,19 @@ function isShallowEqual(arrA: unknown[], arrB: unknown[], isEqual = DEFAULT_IS_E
 	return true;
 }
 
-type Options = { removeFromCacheTimeout?: number; isEqual?: typeof DEFAULT_IS_EQUAL };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type Options<Fn extends (...args: any) => any> = {
+	hydrationValue?: ResolvedOrRejected<Fn>;
+	removeFromCacheTimeout?: number;
+	isEqual?: typeof DEFAULT_IS_EQUAL;
+};
 
-type ResolvedType<T> = T extends Promise<infer V> ? V : never;
+export type ResolvedType<T> = T extends Promise<infer V> ? V : never;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type AsyncFunc = (...asyncFuncArgs: Array<any>) => Promise<any>;
+export type AsyncFunc = (...asyncFuncArgs: Array<any>) => Promise<any>;
 
-type PromiseCacheItem<Fn extends AsyncFunc = AsyncFunc> = {
+export type PromiseCacheItem<Fn extends AsyncFunc = AsyncFunc> = {
 	promise: ReturnType<Fn>;
 	asyncFuncArgs: Parameters<Fn>;
 	key: string;
@@ -40,7 +47,7 @@ type PromiseCacheItem<Fn extends AsyncFunc = AsyncFunc> = {
 const _PROMISE_CACHE: PromiseCacheItem<AsyncFunc>[] = [];
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type ResolvedOrRejected<Fn extends (...args: any) => any> =
+export type ResolvedOrRejected<Fn extends (...args: any) => any> =
 	| [success: ResolvedType<ReturnType<Fn>>, failure: undefined]
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	| [success: undefined, failure: any];
@@ -49,9 +56,11 @@ function queryCache<Fn extends AsyncFunc>(
 	asyncFunc: Fn,
 	asyncFuncArgs: Parameters<Fn>,
 	key: string,
-	options: Options = {},
-	doPreload = false,
+	options: Options<Fn> = {},
+	forceReRender: (() => void) | undefined,
 ): ResolvedOrRejected<Fn> | undefined {
+	const doPreload = !forceReRender;
+
 	for (const cacheEntry of _PROMISE_CACHE) {
 		const argsEqual = isShallowEqual(asyncFuncArgs, cacheEntry.asyncFuncArgs, cacheEntry.isEqual);
 		if (!argsEqual || key !== cacheEntry.key) {
@@ -89,24 +98,36 @@ function queryCache<Fn extends AsyncFunc>(
 			? options.removeFromCacheTimeout
 			: undefined;
 
-	const promise = asyncFunc(...asyncFuncArgs).then(
-		(fulfilledValue) => {
-			cacheEntry.fulfilledValue = fulfilledValue;
+	const promise = asyncFunc(...asyncFuncArgs)
+		.then(
+			(fulfilledValue) => {
+				cacheEntry.fulfilledValue = fulfilledValue;
 
-			if (cacheEntry.removeFromCacheTimeout) {
-				setTimeout(() => {
-					removeFromCache(cacheEntry.asyncFuncArgs, cacheEntry.key);
-				}, cacheEntry.removeFromCacheTimeout);
+				if (cacheEntry.removeFromCacheTimeout) {
+					setTimeout(() => {
+						removeFromCache(cacheEntry.asyncFuncArgs, cacheEntry.key);
+					}, cacheEntry.removeFromCacheTimeout);
+				}
+
+				return fulfilledValue;
+			},
+			(rejectedReason) => {
+				cacheEntry.rejectedReason = rejectedReason;
+			},
+		)
+		.finally(() => {
+			if (typeof options.hydrationValue !== 'undefined') {
+				delete options.hydrationValue;
+				if (forceReRender) {
+					// Promise.resolve(() => {
+					// 	// microtask
+					// });
+					setTimeout(() => {
+						forceReRender();
+					});
+				}
 			}
-
-			return fulfilledValue;
-		},
-		(rejectedReason) => {
-			cacheEntry.rejectedReason = rejectedReason;
-		},
-	);
-	// .catch((rejectedReason) => {
-	// });
+		});
 
 	const cacheEntry: PromiseCacheItem<AsyncFunc> = {
 		asyncFuncArgs,
@@ -121,25 +142,34 @@ function queryCache<Fn extends AsyncFunc>(
 		return undefined;
 	}
 
+	if (typeof options.hydrationValue !== 'undefined') {
+		return options.hydrationValue;
+	}
+
 	throw promise;
 }
 
-export const suspendCache = <Fn extends AsyncFunc>(
+export const useSuspendCache = <Fn extends AsyncFunc>(
 	asyncFunc: Fn,
 	asyncFuncArgs: Parameters<Fn>,
 	key: string,
-	options?: Options,
+	options?: Options<Fn>,
 ): ResolvedOrRejected<Fn> => {
-	return queryCache(asyncFunc, asyncFuncArgs, key, options, false) as ReturnType<typeof suspendCache>;
+	const [, forceReRender_] = useState(NaN);
+	const forceReRender = () => {
+		forceReRender_(NaN);
+	};
+
+	return queryCache(asyncFunc, asyncFuncArgs, key, options, forceReRender) as ReturnType<typeof useSuspendCache>;
 };
 
 export const preloadCache = <Fn extends AsyncFunc>(
 	asyncFunc: Fn,
 	asyncFuncArgs: Parameters<Fn>,
 	key: string,
-	options?: Options,
+	options?: Options<Fn>,
 ): void => {
-	queryCache(asyncFunc, asyncFuncArgs, key, options, true);
+	queryCache(asyncFunc, asyncFuncArgs, key, options, undefined);
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

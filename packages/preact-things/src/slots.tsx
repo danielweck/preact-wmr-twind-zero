@@ -6,8 +6,8 @@ import { IS_CLIENT_SIDE } from './utils.js';
 // SOURCE:
 // https://github.com/preactjs/wmr/commits/c5216427035c7bd814e0526e109445b149dbf76c/docs/public/lib/slots.js
 
-type TFunc = (v: ComponentChildren) => void;
-type TTuple = [name: string, fn: TFunc];
+export type TFunc = (v: ComponentChildren) => void;
+export type TTuple = [name: string, fn: TFunc];
 
 function createSlotContext() {
 	const slots: Record<string, ComponentChildren> = {};
@@ -52,7 +52,7 @@ export const ContextSlotsProvider: FunctionalComponent<unknown> = (props: Render
 	// return h(ContextSlots.Provider as FunctionalComponent<TProps>, { value, ...rest }, children);
 };
 
-type TSlot = {
+export type TSlot = {
 	name: string;
 };
 export const Slot: FunctionalComponent<TSlot> = (props: RenderableProps<TSlot>) => {

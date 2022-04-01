@@ -7,7 +7,7 @@ import { IS_CLIENT_SIDE } from './utils.js';
 
 const CUSTOM_ELEMENT_NAME = 'preact-hydrator';
 
-type T = {
+export type T = {
 	href: string;
 	data: Record<string, unknown>;
 };

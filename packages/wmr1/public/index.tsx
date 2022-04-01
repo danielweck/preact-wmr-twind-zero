@@ -451,6 +451,9 @@ export async function prerender(data: Record<string, any>): Promise<
 
 	// console.log(`))) PRERENDER DATA: ${JSON.stringify(data, null, 4)}`);
 
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	(globalThis as any).PREACTWMR_HYDRATE_SUSPEND_CACHE = undefined;
+
 	// TODO: data props?
 	// <App {...data} />
 	const res = await preactWmrPrerenderForTwind(data.url as string, <App prerenderIndex={_prerenderIndex++} />, {
@@ -467,8 +470,7 @@ export async function prerender(data: Record<string, any>): Promise<
 	// 	maxDepth: 10,
 	// 	props: { prerenderIndex: _prerenderIndex++, ...data },
 	// });
-
-	const elements = new Set([
+	const arr = [
 		{ type: 'meta', props: { property: 'og:title', content: 'SEO title' } as Record<string, string> },
 		{ type: 'style', props: { id: res.cssId, children: res.cssTextContent } },
 		{
@@ -479,7 +481,21 @@ export async function prerender(data: Record<string, any>): Promise<
 					'if (!window.location.pathname.endsWith("/") && !/\\.html?/.test(window.location.pathname)) { window.location = window.location.origin + window.location.pathname + "/" + window.location.search + window.location.hash; }',
 			},
 		},
-	]);
+	];
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	if ((globalThis as any).PREACTWMR_HYDRATE_SUSPEND_CACHE) {
+		arr.push({
+			type: 'script',
+			props: {
+				type: 'text/javascript',
+				children: `window.PREACTWMR_HYDRATE_SUSPEND_CACHE = JSON.parse('{"data":${JSON.stringify(
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
+					(globalThis as any).PREACTWMR_HYDRATE_SUSPEND_CACHE,
+				)}}');`,
+			},
+		});
+	}
+	const elements = new Set(arr);
 	return {
 		html: res.html,
 		links: res.links,

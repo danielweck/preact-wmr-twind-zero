@@ -1,7 +1,7 @@
 // https://gist.github.com/developit/f4c67a2ede71dc2fab7f357f39cff28c
 // https://preactjs.com/guide/v8/api-reference/#preactrender
 
-type FakeNode = {
+export type FakeNode = {
 	nodeType: number;
 	parentNode: Element;
 	childNodes: Node[];
@@ -11,7 +11,7 @@ type FakeNode = {
 	appendChild: (c: Node, r: Node) => void;
 	removeChild: (c: Node) => void;
 };
-interface Element_ extends Element {
+export interface Element_ extends Element {
 	__k: FakeNode | undefined;
 }
 export const createRootFragment = (parent: Element, replaceNode: Node | Node[]) => {

@@ -8,7 +8,7 @@ const _window = (IS_CLIENT_SIDE ? window : {}) as typeof window & {
 	PREACTWMR_HYDRATED: boolean | undefined;
 };
 
-type T = { label: string };
+export type T = { label: string };
 export const StaticNoHydrate: FunctionalComponent<T> = (props: RenderableProps<T>) => {
 	const hasRenderedAtLeastOnce = useRef(false);
 	useEffect(() => {
