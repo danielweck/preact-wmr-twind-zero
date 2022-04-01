@@ -27,7 +27,8 @@
 		"./sub/*": {
 			"import": "./dist/esm/sub/*",
 			"require": "./dist/cjs/sub/*"
-		}
+		},
+		"./package.json": "./package.json"
 	},
 	"engines": {
 		"node": ">=16",

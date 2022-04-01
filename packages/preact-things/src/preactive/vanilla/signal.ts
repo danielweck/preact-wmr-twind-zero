@@ -4,15 +4,19 @@ import { hasPendingObservers, registerDependencyForCurrentObserver, triggerObser
 import type { PreactiveSignal } from './types.js';
 
 let _strictSignalMustChangeInsideAction = true;
-export const setStrictSignalMustChangeInsideAction = (value: boolean) => {
-	_strictSignalMustChangeInsideAction = value;
+export const setStrictSignalMustChangeInsideAction = (strict: boolean) => {
+	_strictSignalMustChangeInsideAction = strict;
 };
 
 export const preactiveSignal = <T>(reactiveValue: T): PreactiveSignal<T> => {
 	function preactiveSignalFunction_(value?: T) {
 		// typeof value !=== 'undefined' wouldn't work as can be valid value to write()
 		// so must use 'arguments' which requires named 'function' (not arrow function)!
-		return arguments.length ? write(value as T) : read();
+		if (arguments.length) {
+			write(value as T);
+			return preactiveSignalFunction.reactiveValue;
+		}
+		return read();
 	}
 	const preactiveSignalFunction = preactiveSignalFunction_ as PreactiveSignal<T>; // because Function.length must be 'never' (to prevent misuse of Array.length etc.)
 
@@ -29,6 +33,7 @@ export const preactiveSignal = <T>(reactiveValue: T): PreactiveSignal<T> => {
 		if (!written) {
 			preactiveSignalFunction.onReactiveValueChanged();
 		}
+		return preactiveSignalFunction.reactiveValue;
 	};
 
 	// preactiveSignalFunction.toJSON = () => {

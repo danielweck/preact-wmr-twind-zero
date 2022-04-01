@@ -13,6 +13,118 @@ import type { PreactiveFunction } from './types.js';
 
 setStrictSignalMustChangeInsideAction(false);
 
+test('signal.editReactiveValue() returns the reactive value', () => {
+	let testPlan = 0;
+	const s = preactiveSignal('foo');
+	const v = s.editReactiveValue((value) => {
+		expect(value).toBe('foo');
+		testPlan++;
+		return 'bar';
+	});
+	expect(v).toBe('bar');
+	testPlan++;
+	expect(testPlan).toBe(2);
+});
+
+test('signal.write() returns the reactive value (like signal.read(), for chaining)', () => {
+	let testPlan = 0;
+	const s = preactiveSignal('foo');
+	expect(s()).toBe('foo');
+	testPlan++;
+	expect(s('bar')).toBe('bar');
+	testPlan++;
+	expect(testPlan).toBe(2);
+});
+
+test('signal.editReactiveValue() returns the reactive value (array new)', () => {
+	let testPlan = 0;
+	const arr = ['foo'];
+	const arr2 = ['foo', 'bar'];
+	const s = preactiveSignal(arr);
+	const v = s.editReactiveValue((value) => {
+		expect(value).toBe(arr);
+		testPlan++;
+		expect(value).toEqual(['foo']);
+		testPlan++;
+		return arr2;
+	});
+	expect(v).not.toBe(arr);
+	testPlan++;
+	expect(v).toBe(arr2);
+	testPlan++;
+	expect(v).toEqual(['foo', 'bar']);
+	testPlan++;
+	const ret = s();
+	expect(ret).not.toBe(arr);
+	testPlan++;
+	expect(ret).toBe(arr2);
+	testPlan++;
+	expect(ret).toEqual(['foo', 'bar']);
+	testPlan++;
+	expect(testPlan).toBe(8);
+});
+
+test('signal.editReactiveValue() returns the reactive value (array push)', () => {
+	let testPlan = 0;
+	const arr = ['foo'];
+	const s = preactiveSignal(arr);
+	const v = s.editReactiveValue((value) => {
+		expect(value).toBe(arr);
+		testPlan++;
+		expect(value).toEqual(['foo']);
+		testPlan++;
+		value.push('bar');
+		return value;
+	});
+	expect(v).toBe(arr);
+	testPlan++;
+	expect(v).toEqual(['foo', 'bar']);
+	testPlan++;
+	const ret = s();
+	expect(ret).toBe(arr);
+	testPlan++;
+	expect(ret).toEqual(['foo', 'bar']);
+	testPlan++;
+	expect(testPlan).toBe(6);
+});
+
+test('signal.write() returns the reactive value (like signal.read(), for chaining) (array new)', () => {
+	let testPlan = 0;
+	const arr = ['foo'];
+	const arr2 = ['foo', 'bar'];
+	const s = preactiveSignal(arr);
+	expect(s()).toBe(arr);
+	testPlan++;
+	expect(s()).toEqual(['foo']);
+	testPlan++;
+	const ret = s(arr2);
+	expect(ret).not.toBe(arr);
+	testPlan++;
+	expect(ret).toBe(arr2);
+	testPlan++;
+	expect(ret).toEqual(['foo', 'bar']);
+	testPlan++;
+	expect(testPlan).toBe(5);
+});
+
+test('signal.write() returns the reactive value (like signal.read(), for chaining) (array push)', () => {
+	let testPlan = 0;
+	const arr = ['foo'];
+	const s = preactiveSignal(arr);
+	expect(s()).toBe(arr);
+	testPlan++;
+	expect(s()).toEqual(['foo']);
+	testPlan++;
+	const v = s();
+	v.push('bar');
+	const ret = s(v);
+	expect(ret).toBe(v);
+	testPlan++;
+	expect(ret).toEqual(['foo', 'bar']);
+	testPlan++;
+	expect(testPlan).toBe(4);
+});
+
 test('calling a signal with no argument reads it', () => {
 	const s = preactiveSignal('foo');
 	expect(s()).toBe('foo');

@@ -3,8 +3,8 @@
 import type { FunctionComponent } from 'preact';
 import { type MutableRef, useEffect, useRef, useState } from 'preact/hooks';
 
-import { preactiveOnce } from './reaction.js';
-import type { OnError, PreactiveFunction } from './types.js';
+import { preactiveOnce } from '../vanilla/reaction.js';
+import type { OnError, PreactiveFunction } from '../vanilla/types.js';
 
 export interface ReactionTracking {
 	dispose: PreactiveFunction<void>;

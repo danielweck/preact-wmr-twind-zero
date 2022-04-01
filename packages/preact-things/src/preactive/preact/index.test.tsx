@@ -7,10 +7,10 @@ import { render } from '@testing-library/preact';
 import { Fragment, h } from 'preact';
 import { expect, test } from 'vitest';
 
-import { preactiveAction } from './action.js';
-import { preactiveComponent } from './preact.js';
-import { preactiveSignal, setStrictSignalMustChangeInsideAction } from './signal.js';
-import type { PreactiveSignal } from './types.js';
+import { preactiveAction } from '../vanilla/action.js';
+import { preactiveSignal, setStrictSignalMustChangeInsideAction } from '../vanilla/signal.js';
+import type { PreactiveSignal } from '../vanilla/types.js';
+import { preactiveComponent } from './index.js';
 
 setStrictSignalMustChangeInsideAction(false);
 
@@ -23,7 +23,9 @@ async function waitFor<T extends () => any>(
 	let lastError: unknown;
 
 	while (Date.now() < timeoutTime) {
-		await new Promise((resolve) => setTimeout(resolve, interval));
+		await new Promise((resolve) => {
+			return setTimeout(resolve, interval);
+		});
 		try {
 			return fn();
 		} catch (error) {

@@ -23,10 +23,10 @@ export type PreactiveDependency<T> = PreactiveSignal<T> | PreactiveFunction<void
 
 // extends ToJson<T>
 export interface PreactiveSignal<T> extends PreactiveFunction<T>, ForbidLength {
-	(reactiveValue: T): void;
+	(reactiveValue: T): T;
 	reactiveValue: T;
 	onReactiveValueChanged: () => void;
-	editReactiveValue: (editor: (reactiveValue: T) => T) => void;
+	editReactiveValue: (editor: (reactiveValue: T) => T) => T;
 }
 
 // extends ToJson<T>
