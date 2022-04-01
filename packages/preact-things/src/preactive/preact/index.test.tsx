@@ -17,7 +17,7 @@ import { ErrorBoundary } from 'preact-iso/lazy';
 import { afterEach, beforeEach, expect, test } from 'vitest';
 
 import { cleanup, render, waitFor } from '../../../preact-testing-library.js';
-import { suspendCache } from '../../suspend-cache.js';
+import { clearCache, suspendCache } from '../../suspend-cache.js';
 import { Suspense } from '../../xpatched/suspense.js';
 import { preactiveAction } from '../vanilla/action.js';
 import { preactiveSignal, setStrictSignalMustChangeInsideAction } from '../vanilla/signal.js';
@@ -44,6 +44,7 @@ beforeEach(() => {
 	}
 });
 afterEach(() => {
+	clearCache();
 	cleanup();
 	// teardown(scratch);
 
@@ -300,7 +301,8 @@ test('preact Component handles Suspense / Lazy - thrown Promise that resolves', 
 
 	function Thrower() {
 		const [state, setState] = useState(0);
-		const str = suspendCache(asyncFunc, [], 'my cache key 1');
+		const [success, failure] = suspendCache(asyncFunc, [], 'my cache key');
+		const str = typeof success !== 'undefined' ? success : typeof failure !== 'undefined' ? `${failure}` : '?!';
 		setTimeout(() => {
 			setState(1);
 		}, 500);
@@ -309,15 +311,17 @@ test('preact Component handles Suspense / Lazy - thrown Promise that resolves', 
 
 	// ErrorBoundary because of disabled options._catchError in patched Suspense! (if (0))
 	const comp = (
-		<ErrorBoundary
-			onError={(err) => {
-				console.log('ErrorBoundary onError', err);
-			}}
-		>
-			<Suspense fallback={<Fragment>suspended</Fragment>}>
-				<Thrower />
-			</Suspense>
-		</ErrorBoundary>
+		<div>
+			<ErrorBoundary
+				onError={(err) => {
+					console.log('ErrorBoundary onError', err);
+				}}
+			>
+				<Suspense fallback={<Fragment>suspended</Fragment>}>
+					<Thrower />
+				</Suspense>
+			</ErrorBoundary>
+		</div>
 	);
 	// const comp = (
 	// 	<Suspense fallback={<Fragment>suspended</Fragment>}>
@@ -332,7 +336,7 @@ test('preact Component handles Suspense / Lazy - thrown Promise that resolves', 
 
 	await waitFor(
 		() => {
-			expect(container.innerHTML).toBe('suspended');
+			expect(container.innerHTML).toBe('<div>suspended</div>');
 			testPlan++;
 		},
 		{ timeout: 300, interval: 200 },
@@ -340,7 +344,7 @@ test('preact Component handles Suspense / Lazy - thrown Promise that resolves', 
 
 	await waitFor(
 		() => {
-			expect(container.innerHTML).toBe('success0');
+			expect(container.innerHTML).toBe('<div>success0</div>');
 			testPlan++;
 		},
 		{ timeout: 500, interval: 30 },
@@ -348,7 +352,86 @@ test('preact Component handles Suspense / Lazy - thrown Promise that resolves', 
 
 	await waitFor(
 		() => {
-			expect(container.innerHTML).toBe('success1');
+			expect(container.innerHTML).toBe('<div>success1</div>');
+			testPlan++;
+		},
+		{ timeout: 1000, interval: 600 },
+	);
+
+	expect(testPlan).toBe(3);
+});
+
+test('preact Component handles Suspense / Lazy - thrown Promise that rejects', async () => {
+	let testPlan = 0;
+	const container = document.createElement('div');
+
+	const asyncFunc = async (): Promise<string> => {
+		return new Promise((_resolve, reject) => {
+			setTimeout(() => {
+				reject('failure');
+
+				// throw new Error('failure'); // gets caught in the timeout closure
+				// reject(new Error('failure')); // error.message === 'Error: failure'
+			}, 500);
+		});
+	};
+
+	function Thrower() {
+		const [state, setState] = useState(0);
+
+		const [success, failure] = suspendCache(asyncFunc, [], 'my cache key');
+		const str = typeof success !== 'undefined' ? success : typeof failure !== 'undefined' ? `${failure}` : '?!';
+
+		setTimeout(() => {
+			setState(1);
+		}, 500);
+		return <Fragment>{`${str}${state}`}</Fragment>;
+	}
+
+	// ErrorBoundary because of disabled options._catchError in patched Suspense! (if (0))
+	const comp = (
+		<div>
+			<ErrorBoundary
+				onError={(err) => {
+					console.log('ErrorBoundary onError', err);
+				}}
+			>
+				<Suspense fallback={<Fragment>suspended</Fragment>}>
+					<Thrower />
+				</Suspense>
+			</ErrorBoundary>
+		</div>
+	);
+	// const comp = (
+	// 	<Suspense fallback={<Fragment>suspended</Fragment>}>
+	// 		<Thrower />
+	// 	</Suspense>
+	// );
+
+	preactRender(comp, container);
+	// const { rerender } =
+	// render(comp, { container });
+	// rerender();
+
+	await waitFor(
+		() => {
+			expect(container.innerHTML).toBe('<div>suspended</div>');
+			testPlan++;
+		},
+		{ timeout: 300, interval: 200 },
+	);
+
+	await waitFor(
+		() => {
+			expect(container.innerHTML).toBe('<div>failure0</div>');
+			testPlan++;
+		},
+		{ timeout: 500, interval: 30 },
+	);
+
+	await waitFor(
+		() => {
+			expect(container.innerHTML).toBe('<div>failure1</div>');
 			testPlan++;
 		},
 		{ timeout: 1000, interval: 600 },
@@ -373,7 +456,8 @@ test('preactiveComponent handles Suspense / Lazy - thrown Promise that resolves'
 	const Thrower = preactiveComponent(
 		function Thrower({ throwSignal }: { throwSignal: PreactiveSignal<boolean> }) {
 			if (throwSignal()) {
-				const str = suspendCache(asyncFunc, [], 'my cache key 2');
+				const [success, failure] = suspendCache(asyncFunc, [], 'my cache key');
+				const str = typeof success !== 'undefined' ? success : typeof failure !== 'undefined' ? `${failure}` : '?!';
 				return <Fragment>{str}</Fragment>;
 			}
 			return <Fragment>no throw</Fragment>;
@@ -386,15 +470,17 @@ test('preactiveComponent handles Suspense / Lazy - thrown Promise that resolves'
 
 	// ErrorBoundary because of disabled options._catchError in patched Suspense! (if (0))
 	const comp = (
-		<ErrorBoundary
-			onError={(err) => {
-				console.log('ErrorBoundary onError', err);
-			}}
-		>
-			<Suspense fallback={<Fragment>suspended</Fragment>}>
-				<Thrower throwSignal={doThrow} />
-			</Suspense>
-		</ErrorBoundary>
+		<div>
+			<ErrorBoundary
+				onError={(err) => {
+					console.log('ErrorBoundary onError', err);
+				}}
+			>
+				<Suspense fallback={<Fragment>suspended</Fragment>}>
+					<Thrower throwSignal={doThrow} />
+				</Suspense>
+			</ErrorBoundary>
+		</div>
 	);
 	// const comp = (
 	// 	<Suspense fallback={<Fragment>suspended</Fragment>}>
@@ -409,7 +495,7 @@ test('preactiveComponent handles Suspense / Lazy - thrown Promise that resolves'
 
 	await waitFor(
 		() => {
-			expect(container.innerHTML).toBe('suspended');
+			expect(container.innerHTML).toBe('<div>suspended</div>');
 			testPlan++;
 		},
 		{ timeout: 300, interval: 200 },
@@ -417,7 +503,7 @@ test('preactiveComponent handles Suspense / Lazy - thrown Promise that resolves'
 
 	await waitFor(
 		() => {
-			expect(container.innerHTML).toBe('success');
+			expect(container.innerHTML).toBe('<div>success</div>');
 			testPlan++;
 		},
 		{ timeout: 500, interval: 30 },
@@ -427,7 +513,92 @@ test('preactiveComponent handles Suspense / Lazy - thrown Promise that resolves'
 
 	await waitFor(
 		() => {
-			expect(container.innerHTML).toBe('no throw');
+			expect(container.innerHTML).toBe('<div>no throw</div>');
+			testPlan++;
+		},
+		{ timeout: 500, interval: 30 },
+	);
+
+	expect(testPlan).toBe(3);
+});
+
+test('preactiveComponent handles Suspense / Lazy - thrown Promise that rejects', async () => {
+	let testPlan = 0;
+	const container = document.createElement('div');
+	const doThrow = preactiveSignal(true);
+
+	const asyncFunc = async (): Promise<string> => {
+		return new Promise((_resolve, reject) => {
+			setTimeout(() => {
+				reject('failure');
+
+				// throw new Error('failure'); // gets caught in the timeout closure
+				// reject(new Error('failure')); // error.message === 'Error: failure'
+			}, 500);
+		});
+	};
+
+	const Thrower = preactiveComponent(
+		function Thrower({ throwSignal }: { throwSignal: PreactiveSignal<boolean> }) {
+			if (throwSignal()) {
+				const [success, failure] = suspendCache(asyncFunc, [], 'my cache key');
+				const str = typeof success !== 'undefined' ? success : typeof failure !== 'undefined' ? `${failure}` : '?!';
+				return <Fragment>{str}</Fragment>;
+			}
+			return <Fragment>no throw</Fragment>;
+		},
+		(exception) => {
+			expect((exception as Error).message).toBe('preactiveComponent.renderedComponentException [Thrower2] --- ');
+			testPlan++;
+		},
+	);
+
+	// ErrorBoundary because of disabled options._catchError in patched Suspense! (if (0))
+	const comp = (
+		<div>
+			<ErrorBoundary
+				onError={(err) => {
+					console.log('ErrorBoundary onError', err);
+				}}
+			>
+				<Suspense fallback={<Fragment>suspended</Fragment>}>
+					<Thrower throwSignal={doThrow} />
+				</Suspense>
+			</ErrorBoundary>
+		</div>
+	);
+	// const comp = (
+	// 	<Suspense fallback={<Fragment>suspended</Fragment>}>
+	// 		<Thrower />
+	// 	</Suspense>
+	// );
+
+	preactRender(comp, container);
+	// const { rerender } =
+	// render(comp, { container });
+	// rerender();
+
+	await waitFor(
+		() => {
+			expect(container.innerHTML).toBe('<div>suspended</div>');
+			testPlan++;
+		},
+		{ timeout: 300, interval: 200 },
+	);
+
+	await waitFor(
+		() => {
+			expect(container.innerHTML).toBe('<div>failure</div>');
+			testPlan++;
+		},
+		{ timeout: 500, interval: 30 },
+	);
+
+	doThrow(false);
+
+	await waitFor(
+		() => {
+			expect(container.innerHTML).toBe('<div>no throw</div>');
 			testPlan++;
 		},
 		{ timeout: 500, interval: 30 },

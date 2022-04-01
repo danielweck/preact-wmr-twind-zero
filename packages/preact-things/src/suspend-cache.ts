@@ -39,13 +39,19 @@ type PromiseCacheItem<Fn extends AsyncFunc = AsyncFunc> = {
 
 const _PROMISE_CACHE: PromiseCacheItem<AsyncFunc>[] = [];
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type ResolvedOrRejected<Fn extends (...args: any) => any> =
+	| [success: ResolvedType<ReturnType<Fn>>, failure: undefined]
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	| [success: undefined, failure: any];
+
 function queryCache<Fn extends AsyncFunc>(
 	asyncFunc: Fn,
 	asyncFuncArgs: Parameters<Fn>,
 	key: string,
 	options: Options = {},
 	doPreload = false,
-): ResolvedType<ReturnType<Fn>> | undefined {
+): ResolvedOrRejected<Fn> | undefined {
 	for (const cacheEntry of _PROMISE_CACHE) {
 		const argsEqual = isShallowEqual(asyncFuncArgs, cacheEntry.asyncFuncArgs, cacheEntry.isEqual);
 		if (!argsEqual || key !== cacheEntry.key) {
@@ -58,12 +64,19 @@ function queryCache<Fn extends AsyncFunc>(
 		}
 
 		if (cacheEntry.rejectedReason) {
-			throw cacheEntry.rejectedReason;
+			// cannot throw here, somehow trips the re-render :(
+			// throw cacheEntry.rejectedReason;
+			//
+			// const error = cacheEntry.rejectedReason instanceof Error ? cacheEntry.rejectedReason : new Error('');
+			// error.message = `${cacheEntry.rejectedReason}`;
+			// throw error;
+
+			return [undefined, cacheEntry.rejectedReason];
 		}
 
 		// Note: the Promise fulfilledValue can be falsy, including undefined / null
 		if (Object.prototype.hasOwnProperty.call(cacheEntry, 'fulfilledValue')) {
-			return cacheEntry.fulfilledValue;
+			return [cacheEntry.fulfilledValue, undefined];
 		}
 
 		// hand over to Preact's suspense / error boundary
@@ -92,6 +105,9 @@ function queryCache<Fn extends AsyncFunc>(
 			cacheEntry.rejectedReason = rejectedReason;
 		},
 	);
+	// .catch((rejectedReason) => {
+	// });
+
 	const cacheEntry: PromiseCacheItem<AsyncFunc> = {
 		asyncFuncArgs,
 		key,
@@ -113,7 +129,7 @@ export const suspendCache = <Fn extends AsyncFunc>(
 	asyncFuncArgs: Parameters<Fn>,
 	key: string,
 	options?: Options,
-): ResolvedType<ReturnType<Fn>> => {
+): ResolvedOrRejected<Fn> => {
 	return queryCache(asyncFunc, asyncFuncArgs, key, options, false) as ReturnType<typeof suspendCache>;
 };
 
@@ -122,7 +138,7 @@ export const preloadCache = <Fn extends AsyncFunc>(
 	asyncFuncArgs: Parameters<Fn>,
 	key: string,
 	options?: Options,
-) => {
+): void => {
 	queryCache(asyncFunc, asyncFuncArgs, key, options, true);
 };
 

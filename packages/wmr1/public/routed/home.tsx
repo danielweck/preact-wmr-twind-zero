@@ -16,7 +16,8 @@ const asyncFunc = async (num: number): Promise<string> => {
 // const val = peekCache([111], 'my cache key');
 
 const SuspendedCache: FunctionalComponent<unknown> = (_props: RenderableProps<unknown>) => {
-	const str = suspendCache(asyncFunc, [111], 'my cache key');
+	const [success, failure] = suspendCache(asyncFunc, [111], 'my cache key');
+	const str = typeof success !== 'undefined' ? success : typeof failure !== 'undefined' ? `${failure}` : '?!';
 	return <p>{str}</p>;
 };
 
