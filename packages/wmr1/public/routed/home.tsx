@@ -1,53 +1,177 @@
-import { type ResolvedOrRejected, useSuspendCache } from '@preact-wmr-twind-zero/preact-things/suspend-cache.js';
+import { removeFromCache } from '@preact-wmr-twind-zero/preact-things/suspend-cache.js';
 import { Suspense } from '@preact-wmr-twind-zero/preact-things/xpatched/suspense.js';
+import { deepEqual } from 'fast-equals';
 import type { FunctionalComponent, RenderableProps } from 'preact';
+import { useRef, useState } from 'preact/hooks';
 
-import { IS_CLIENT_SIDE, IS_PRE_RENDER } from '../utils.js';
+import { useSuspendCache } from '~/suspend-cache/use-suspend-cache-with-hydration.js';
 
-const asyncFunc = async (num: number): Promise<string> => {
+import { IS_CLIENT_SIDE } from '../utils.js';
+
+const asyncFunc1 = async (
+	num: number,
+	str: string,
+): Promise<{
+	str: string;
+	arr: number[];
+}> => {
 	return new Promise((resolve) => {
-		setTimeout(() => {
-			resolve(`Fulfilled: ${num} [${new Date().toUTCString()}] ${IS_CLIENT_SIDE ? 'CLIENT' : 'SERVER'}`);
-		}, 2000);
+		setTimeout(
+			() => {
+				resolve({
+					str: `<Ful&filled> 1: ${num} ${str} [${new Date().toUTCString()}] ${IS_CLIENT_SIDE ? 'CLIENT' : 'SERVER'}`,
+					arr: [888, 777],
+				});
+			},
+			IS_CLIENT_SIDE ? 2000 : 0,
+		);
 	});
 };
-// preloadCache(asyncFunc, [111]);
-// const removed = removeFromCache([111], 'my cache key');
-// const val = peekCache([111], 'my cache key');
+// eslint-disable-next-line quotes
+const suspendCacheKey1 = "my 'cache' key 1";
+const suspendCacheArgs1 = [111, '1<1>1'] as Parameters<typeof asyncFunc1>;
+// preloadCache(asyncFunc1, suspendCacheArgs1, suspendCacheKey1, {
+// 	// hydration: undefined, // Omit<>
+// });
+// const removed = removeFromCache(suspendCacheArgs1, suspendCacheKey1);
+// const val = peekCache(suspendCacheArgs1, suspendCacheKey1);
 
-const SuspendedCache: FunctionalComponent<unknown> = (_props: RenderableProps<unknown>) => {
-	let hydrationValue: ResolvedOrRejected<typeof asyncFunc> | undefined;
+const SuspendedCache1: FunctionalComponent<unknown> = (_props: RenderableProps<unknown>) => {
+	const renderCount = useRef(0);
+	renderCount.current++;
 
-	// TODO:
-	// PREACTWMR_HYDRATE_SUSPEND_CACHE
-	// should be unique property name based on useSuspendCache key
-	if (IS_PRE_RENDER && IS_CLIENT_SIDE) {
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const ssr = (window as any).PREACTWMR_HYDRATE_SUSPEND_CACHE;
-		if (typeof ssr !== 'undefined') {
-			hydrationValue = [`_${ssr.data}_`, undefined];
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			(window as any).PREACTWMR_HYDRATE_SUSPEND_CACHE = undefined;
-		}
-	}
-	const [success, failure] = useSuspendCache(asyncFunc, [111], 'my cache key', {
-		hydrationValue,
+	const [success, failure] = useSuspendCache(asyncFunc1, suspendCacheArgs1, suspendCacheKey1, {
+		// NO NEED HERE, THE DEFAULT SHALLOW EQUAL IS SUFFICENT:
+		// isEqual: (a, b) => {
+		// 	return deepEqual(a, b);
+		// },
 	});
-	if (IS_PRE_RENDER && !IS_CLIENT_SIDE) {
-		if (typeof success !== 'undefined') {
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			(globalThis as any).PREACTWMR_HYDRATE_SUSPEND_CACHE = success;
-		}
-	}
-	const str = typeof success !== 'undefined' ? success : typeof failure !== 'undefined' ? `${failure}` : '?!';
+
+	const [, forceReRender_] = useState(NaN);
+	const forceReRender = () => {
+		// TODO check isMounted?
+		forceReRender_(NaN);
+	};
+
+	const str =
+		typeof success !== 'undefined'
+			? JSON.stringify(success, null, 4)
+			: typeof failure !== 'undefined'
+			? `${failure}`
+			: '?!';
 	return (
-		<p
-			onClick={() => {
-				alert(str);
-			}}
-		>
-			{str}
-		</p>
+		<>
+			<button
+				class={`
+					p-2
+					m-2
+					border(2 dashed purple-500)
+					rounded
+				`}
+				onClick={() => {
+					removeFromCache(suspendCacheArgs1, suspendCacheKey1);
+					forceReRender();
+				}}
+			>
+				FORCE REFRESH [NO CACHE] ({renderCount.current})
+			</button>
+			<p
+				onClick={() => {
+					alert(str);
+				}}
+			>
+				$1
+				<pre>{str}</pre>
+			</p>
+		</>
+	);
+};
+
+const asyncFunc2 = async (
+	num: number,
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	arr: any[],
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	obj: any,
+): Promise<
+	Array<{
+		str: string;
+		n?: number;
+	}>
+> => {
+	return new Promise((resolve) => {
+		setTimeout(
+			() => {
+				resolve([
+					{
+						str: `<Ful&filled> 2: ${num} ${arr.length} ${Object.keys(obj)} [${new Date().toUTCString()}] ${
+							IS_CLIENT_SIDE ? 'CLIENT' : 'SERVER'
+						}`,
+						n: 999,
+					},
+					{
+						str: 'other',
+					},
+				]);
+			},
+			IS_CLIENT_SIDE ? 4000 : 1000,
+		);
+	});
+};
+
+const SuspendedCache2: FunctionalComponent<unknown> = (_props: RenderableProps<unknown>) => {
+	const renderCount = useRef(0);
+	renderCount.current++;
+
+	// eslint-disable-next-line quotes
+	const s = "1'2'3";
+	const [success, failure] = useSuspendCache(
+		asyncFunc2,
+		// eslint-disable-next-line quotes
+		[222, ['2<<2>>2', 222], { a: 123, b: [s, { c: 1234 }] }],
+		'my cache key 2',
+		{
+			isEqual: (a, b) => {
+				return deepEqual(a, b);
+			},
+		},
+	);
+
+	const [, forceReRender_] = useState(NaN);
+	const forceReRender = () => {
+		// TODO check isMounted?
+		forceReRender_(NaN);
+	};
+
+	const str =
+		typeof success !== 'undefined'
+			? JSON.stringify(success, null, 4)
+			: typeof failure !== 'undefined'
+			? `${failure}`
+			: '?!';
+	return (
+		<>
+			<button
+				class={`
+					p-2
+					m-2
+					border(2 dashed purple-500)
+					rounded
+				`}
+				onClick={() => {
+					forceReRender();
+				}}
+			>
+				FORCE REFRESH [FROM CACHE] ({renderCount.current})
+			</button>
+			<p
+				onClick={() => {
+					alert(str);
+				}}
+			>
+				<pre>{str}</pre>
+			</p>
+		</>
 	);
 };
 
@@ -65,8 +189,8 @@ export const RoutedHome: FunctionalComponent<unknown> = (_props: RenderableProps
 				This text has a <strong>yellow-400</strong> background (unique to this paragraph, not shared with any other route or
 				component)
 			</p>
-			<Suspense fallback={<p>SUSPENSE CACHE...</p>}>
-				<SuspendedCache />
+			<Suspense fallback={<p>SUSPENSE CACHE 1...</p>}>
+				<SuspendedCache1 />
 			</Suspense>
 			<div class="test-scope">
 				<p>
@@ -78,6 +202,9 @@ export const RoutedHome: FunctionalComponent<unknown> = (_props: RenderableProps
 				</p>
 				<h4>heading</h4>
 			</div>
+			<Suspense fallback={<p>SUSPENSE CACHE 2...</p>}>
+				<SuspendedCache2 />
+			</Suspense>
 		</section>
 	);
 };

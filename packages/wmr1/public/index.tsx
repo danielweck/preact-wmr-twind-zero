@@ -20,6 +20,10 @@ import { RoutedHome } from './routed/home.js';
 import { RoutedNonLazy } from './routed/non-lazy.js';
 import { RoutedRoute } from './routed/route.js';
 import { StaticNoHydrate } from './static-no-hydrate.js';
+import {
+	suspendCacheHydrationObtainPrerenderingServerJavascript,
+	suspendCacheHydrationResetPrerenderingServerContext,
+} from './suspend-cache/suspend-cache-hydration.js';
 import { RoutedSuspendedSubRouter } from './suspended/index.js';
 import { IS_CLIENT_SIDE, IS_PRE_RENDER, KEYBOARD_INTERACT, LAZY_TIMEOUT, PUBLIC_PATH_ROOT } from './utils.js';
 
@@ -451,8 +455,7 @@ export async function prerender(data: Record<string, any>): Promise<
 
 	// console.log(`))) PRERENDER DATA: ${JSON.stringify(data, null, 4)}`);
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	(globalThis as any).PREACTWMR_HYDRATE_SUSPEND_CACHE = undefined;
+	suspendCacheHydrationResetPrerenderingServerContext();
 
 	// TODO: data props?
 	// <App {...data} />
@@ -472,32 +475,31 @@ export async function prerender(data: Record<string, any>): Promise<
 	// });
 	const arr = [
 		{ type: 'meta', props: { property: 'og:title', content: 'SEO title' } as Record<string, string> },
-		{ type: 'style', props: { id: res.cssId, children: res.cssTextContent } },
+		{ type: 'style', props: { id: res.cssId, textContent: res.cssTextContent } },
 		{
 			type: 'script',
 			props: {
 				type: 'text/javascript',
-				children:
+				textContent:
 					'if (!window.location.pathname.endsWith("/") && !/\\.html?/.test(window.location.pathname)) { window.location = window.location.origin + window.location.pathname + "/" + window.location.search + window.location.hash; }',
 			},
 		},
 	];
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	if ((globalThis as any).PREACTWMR_HYDRATE_SUSPEND_CACHE) {
+
+	const hydrationJavascript = suspendCacheHydrationObtainPrerenderingServerJavascript();
+	if (hydrationJavascript) {
 		arr.push({
 			type: 'script',
 			props: {
 				type: 'text/javascript',
-				children: `window.PREACTWMR_HYDRATE_SUSPEND_CACHE = JSON.parse('{"data":${JSON.stringify(
-					// eslint-disable-next-line @typescript-eslint/no-explicit-any
-					(globalThis as any).PREACTWMR_HYDRATE_SUSPEND_CACHE,
-				)}}');`,
+				textContent: hydrationJavascript.replace(/\$1/g, '&#36;'),
 			},
 		});
 	}
+
 	const elements = new Set(arr);
 	return {
-		html: res.html,
+		html: res.html.replace(/\$1/g, '&#36;'), // res.html ? res.html.replace(/\$1/g, '&#36;') : '',
 		links: res.links,
 		data: {
 			// xxx: true, // ensures <script type="isodata" /> is generated so we can later check the DOM for its existence, but not needed here as 'data' includes ssr:true already

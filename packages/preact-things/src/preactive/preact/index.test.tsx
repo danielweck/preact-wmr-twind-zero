@@ -17,7 +17,7 @@ import { ErrorBoundary } from 'preact-iso/lazy';
 import { afterEach, beforeEach, expect, test } from 'vitest';
 
 import { cleanup, render, waitFor } from '../../../preact-testing-library.js';
-import { clearCache, useSuspendCache } from '../../suspend-cache.js';
+import { clearCache, suspendCache } from '../../suspend-cache.js';
 import { Suspense } from '../../xpatched/suspense.js';
 import { preactiveAction } from '../vanilla/action.js';
 import { preactiveSignal, setStrictSignalMustChangeInsideAction } from '../vanilla/signal.js';
@@ -301,7 +301,7 @@ test('preact Component handles Suspense / Lazy - thrown Promise that resolves', 
 
 	function Thrower() {
 		const [state, setState] = useState(0);
-		const [success, failure] = useSuspendCache(asyncFunc, [], 'my cache key');
+		const [success, failure] = suspendCache(asyncFunc, [], 'my cache key');
 		const str = typeof success !== 'undefined' ? success : typeof failure !== 'undefined' ? `${failure}` : '?!';
 		setTimeout(() => {
 			setState(1);
@@ -379,7 +379,7 @@ test('preact Component handles Suspense / Lazy - thrown Promise that rejects', a
 	function Thrower() {
 		const [state, setState] = useState(0);
 
-		const [success, failure] = useSuspendCache(asyncFunc, [], 'my cache key');
+		const [success, failure] = suspendCache(asyncFunc, [], 'my cache key');
 		const str = typeof success !== 'undefined' ? success : typeof failure !== 'undefined' ? `${failure}` : '?!';
 
 		setTimeout(() => {
@@ -456,8 +456,7 @@ test('preactiveComponent handles Suspense / Lazy - thrown Promise that resolves'
 	const Thrower = preactiveComponent(
 		function Thrower({ throwSignal }: { throwSignal: PreactiveSignal<boolean> }) {
 			if (throwSignal()) {
-				// eslint-disable-next-line react-hooks/rules-of-hooks
-				const [success, failure] = useSuspendCache(asyncFunc, [], 'my cache key');
+				const [success, failure] = suspendCache(asyncFunc, [], 'my cache key');
 				const str = typeof success !== 'undefined' ? success : typeof failure !== 'undefined' ? `${failure}` : '?!';
 				return <Fragment>{str}</Fragment>;
 			}
@@ -542,8 +541,7 @@ test('preactiveComponent handles Suspense / Lazy - thrown Promise that rejects',
 	const Thrower = preactiveComponent(
 		function Thrower({ throwSignal }: { throwSignal: PreactiveSignal<boolean> }) {
 			if (throwSignal()) {
-				// eslint-disable-next-line react-hooks/rules-of-hooks
-				const [success, failure] = useSuspendCache(asyncFunc, [], 'my cache key');
+				const [success, failure] = suspendCache(asyncFunc, [], 'my cache key');
 				const str = typeof success !== 'undefined' ? success : typeof failure !== 'undefined' ? `${failure}` : '?!';
 				return <Fragment>{str}</Fragment>;
 			}

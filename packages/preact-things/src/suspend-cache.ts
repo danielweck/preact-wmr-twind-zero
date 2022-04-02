@@ -1,12 +1,10 @@
 // Inspired from: https://github.com/pmndrs/suspend-react/blob/8803996f2fcfbb927d855c2f5d74f66a2d5045a3/src/index.ts
 
-import { useState } from 'preact/hooks';
-
-const DEFAULT_IS_EQUAL = (a: unknown, b: unknown): boolean => {
+export const DEFAULT_IS_EQUAL = (a: unknown, b: unknown): boolean => {
 	return a === b;
 };
 
-function isShallowEqual(arrA: unknown[], arrB: unknown[], isEqual = DEFAULT_IS_EQUAL) {
+export const isShallowEqual = (arrA: unknown[], arrB: unknown[], isEqual = DEFAULT_IS_EQUAL) => {
 	if (arrA === arrB) {
 		return true;
 	}
@@ -19,11 +17,20 @@ function isShallowEqual(arrA: unknown[], arrB: unknown[], isEqual = DEFAULT_IS_E
 		}
 	}
 	return true;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export interface HydrationOptions<Fn extends (...args: any) => any> {
+	obtainInitialValueForPrerenderedClient: (key: string) => ResolvedOrRejected<Fn> | undefined;
+	registerInitialValueInPrerenderingServer: (key: string, value: ResolvedOrRejected<Fn>) => void;
+	notifyNewValueInPrerenderedClient: (key: string, value: ResolvedOrRejected<Fn>) => void;
+	isPrerenderedClient: () => boolean;
+	isPrerenderingServer: () => boolean;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type Options<Fn extends (...args: any) => any> = {
-	hydrationValue?: ResolvedOrRejected<Fn>;
+export type SuspendCacheOptions<Fn extends (...args: any) => any> = {
+	hydration?: HydrationOptions<Fn>;
 	removeFromCacheTimeout?: number;
 	isEqual?: typeof DEFAULT_IS_EQUAL;
 };
@@ -56,10 +63,16 @@ function queryCache<Fn extends AsyncFunc>(
 	asyncFunc: Fn,
 	asyncFuncArgs: Parameters<Fn>,
 	key: string,
-	options: Options<Fn> = {},
-	forceReRender: (() => void) | undefined,
+	options: SuspendCacheOptions<Fn> = {},
+	doPreload: boolean,
 ): ResolvedOrRejected<Fn> | undefined {
-	const doPreload = !forceReRender;
+	const cacheKey = `(${key})${asyncFuncArgs.reduce(
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		(previousValue: string, currentValue: any, currentIndex: number, _array: any[]) => {
+			return `${previousValue}(${currentIndex}:£${JSON.stringify(currentValue)}£)`;
+		},
+		'',
+	)}`;
 
 	for (const cacheEntry of _PROMISE_CACHE) {
 		const argsEqual = isShallowEqual(asyncFuncArgs, cacheEntry.asyncFuncArgs, cacheEntry.isEqual);
@@ -116,16 +129,19 @@ function queryCache<Fn extends AsyncFunc>(
 			},
 		)
 		.finally(() => {
-			if (typeof options.hydrationValue !== 'undefined') {
-				delete options.hydrationValue;
-				if (forceReRender) {
-					// Promise.resolve(() => {
-					// 	// microtask
-					// });
-					setTimeout(() => {
-						forceReRender();
-					});
-				}
+			if (doPreload) {
+				return;
+			}
+			if (options.hydration?.isPrerenderingServer()) {
+				options.hydration.registerInitialValueInPrerenderingServer(cacheKey, [
+					cacheEntry.fulfilledValue,
+					cacheEntry.rejectedReason,
+				]);
+			} else if (options.hydration?.isPrerenderedClient()) {
+				options.hydration.notifyNewValueInPrerenderedClient(cacheKey, [
+					cacheEntry.fulfilledValue,
+					cacheEntry.rejectedReason,
+				]);
 			}
 		});
 
@@ -142,48 +158,50 @@ function queryCache<Fn extends AsyncFunc>(
 		return undefined;
 	}
 
-	if (typeof options.hydrationValue !== 'undefined') {
-		return options.hydrationValue;
+	if (options.hydration?.isPrerenderedClient()) {
+		const val = options.hydration.obtainInitialValueForPrerenderedClient(cacheKey);
+		if (val) {
+			return val;
+		}
 	}
 
 	throw promise;
 }
 
-export const useSuspendCache = <Fn extends AsyncFunc>(
+export const suspendCache = <Fn extends AsyncFunc>(
 	asyncFunc: Fn,
 	asyncFuncArgs: Parameters<Fn>,
 	key: string,
-	options?: Options<Fn>,
+	options?: SuspendCacheOptions<Fn>,
 ): ResolvedOrRejected<Fn> => {
-	const [, forceReRender_] = useState(NaN);
-	const forceReRender = () => {
-		forceReRender_(NaN);
-	};
-
-	return queryCache(asyncFunc, asyncFuncArgs, key, options, forceReRender) as ReturnType<typeof useSuspendCache>;
+	return queryCache(asyncFunc, asyncFuncArgs, key, options, false) as ReturnType<typeof suspendCache>;
 };
 
 export const preloadCache = <Fn extends AsyncFunc>(
 	asyncFunc: Fn,
 	asyncFuncArgs: Parameters<Fn>,
 	key: string,
-	options?: Options<Fn>,
+	options?: Omit<SuspendCacheOptions<Fn>, 'hydration'>,
 ): void => {
-	queryCache(asyncFunc, asyncFuncArgs, key, options, undefined);
+	queryCache(asyncFunc, asyncFuncArgs, key, options, true);
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const peekCache = (asyncFuncArgs: any[], key: string): PromiseCacheItem['fulfilledValue'] | undefined => {
+export const peekCache = <Fn extends AsyncFunc>(
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	asyncFuncArgs: any[],
+	key: string,
+): ResolvedOrRejected<Fn> | undefined => {
 	for (const cacheEntry of _PROMISE_CACHE) {
 		const argsEqual = isShallowEqual(asyncFuncArgs, cacheEntry.asyncFuncArgs, cacheEntry.isEqual);
 
 		// CACHE HIT
 		if (argsEqual && key === cacheEntry.key) {
-			// Note: the Promise fulfilledValue can be falsy, including undefined / null
-			if (Object.prototype.hasOwnProperty.call(cacheEntry, 'fulfilledValue')) {
-				return cacheEntry.fulfilledValue;
-			}
-			return undefined;
+			// // Note: the Promise fulfilledValue can be falsy, including undefined / null
+			// if (Object.prototype.hasOwnProperty.call(cacheEntry, 'fulfilledValue')) {
+			// 	return cacheEntry.fulfilledValue;
+			// }
+			// return undefined;
+			return [cacheEntry.fulfilledValue, cacheEntry.rejectedReason];
 		}
 	}
 	return undefined;
@@ -194,8 +212,11 @@ export const clearCache = () => {
 	_PROMISE_CACHE.length = 0;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const removeFromCache = (asyncFuncArgs: any[], key: string): boolean => {
+export const removeFromCache = <Fn extends AsyncFunc>(
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	asyncFuncArgs: any[],
+	key: string,
+): ResolvedOrRejected<Fn> | undefined => {
 	// const i = _PROMISE_CACHE.findIndex((cacheEntry) => {
 	// 	const argsEqual = isShallowEqual(asyncFuncArgs, cacheEntry.asyncFuncArgs, cacheEntry.isEqual);
 	// 	return argsEqual && key === cacheEntry.key;
@@ -209,9 +230,9 @@ export const removeFromCache = (asyncFuncArgs: any[], key: string): boolean => {
 		const argsEqual = isShallowEqual(asyncFuncArgs, cacheEntry.asyncFuncArgs, cacheEntry.isEqual);
 		if (argsEqual && key === cacheEntry.key) {
 			_PROMISE_CACHE.splice(i, 1);
-			return true;
+			return [cacheEntry.fulfilledValue, cacheEntry.rejectedReason];
 		}
 	}
 
-	return false;
+	return undefined;
 };

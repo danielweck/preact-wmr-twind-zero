@@ -94,6 +94,7 @@
 		"@types/node": "^16.11.26",
 		"@typescript-eslint/eslint-plugin": "^5.17.0",
 		"@typescript-eslint/parser": "^5.17.0",
+		"browserslist": "^4.20.2",
 		"cpy-cli": "^4.1.0",
 		"cross-env": "^7.0.3",
 		"csstype": "^3.0.11",
