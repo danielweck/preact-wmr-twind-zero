@@ -60,14 +60,13 @@ if (IS_CLIENT_SIDE && typeof customElements !== 'undefined') {
 
 				const $import = new Function('s', 'return import(s)');
 				$import(url)
-					// eslint-disable-next-line @typescript-eslint/no-explicit-any
-					.then((m: any) => {
-						const component = ((exportName ? m[exportName] : undefined) || m.default) as FunctionalComponent<unknown>;
+					.then((m: { [exportName: string]: FunctionalComponent<unknown> }) => {
+						const component = exportName ? m[exportName] : m.default;
 						hydrate(h(component, data as RenderableProps<Record<string, unknown>>, []), fragment);
 						return null;
 					})
-					// eslint-disable-next-line @typescript-eslint/no-explicit-any
-					.catch((_err: any) => {
+					// @ts-expect-error TS7006
+					.catch((_err) => {
 						// noop
 					});
 			}

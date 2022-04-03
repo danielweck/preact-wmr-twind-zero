@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { hasPendingObservers, registerDependencyForCurrentObserver, triggerObserversForDependency } from './core.js';
 import type { PreactiveSignal } from './types.js';
 

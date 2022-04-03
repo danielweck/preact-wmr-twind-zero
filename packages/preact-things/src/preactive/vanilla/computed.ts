@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import {
 	clearDependenciesForObserver,
 	popObserver,
@@ -26,7 +24,9 @@ export const preactiveComputedSignal = <T>(computeFunction: PreactiveFunction<T>
 	// computeObserver.displayName = computeDisplayName;
 	computeObserver.isComputed = true;
 
-	const preactiveComputedSignalFunction: PreactiveComputedSignal<T> = (() => {
+	const preactiveComputedSignalFunction: PreactiveComputedSignal<T> & {
+		observer?: typeof computeObserver;
+	} = (() => {
 		registerDependencyForCurrentObserver(computeObserver);
 
 		if (hasChanges) {
@@ -60,7 +60,7 @@ export const preactiveComputedSignal = <T>(computeFunction: PreactiveFunction<T>
 	// };
 
 	// prevents garbage collection
-	(preactiveComputedSignalFunction as any).observer = computeObserver;
+	preactiveComputedSignalFunction.observer = computeObserver;
 
 	return preactiveComputedSignalFunction;
 };

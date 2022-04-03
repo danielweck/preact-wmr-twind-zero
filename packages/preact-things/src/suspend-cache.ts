@@ -19,8 +19,7 @@ export const isShallowEqual = (arrA: unknown[], arrB: unknown[], isEqual = DEFAU
 	return true;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export interface HydrationOptions<Fn extends (...args: any) => any> {
+export interface HydrationOptions<Fn extends AsyncFunc> {
 	obtainInitialValueForPrerenderedClient: (key: string) => ResolvedOrRejected<Fn> | undefined;
 	registerInitialValueInPrerenderingServer: (key: string, value: ResolvedOrRejected<Fn>) => void;
 	notifyNewValueInPrerenderedClient: (key: string, value: ResolvedOrRejected<Fn>) => void;
@@ -28,8 +27,7 @@ export interface HydrationOptions<Fn extends (...args: any) => any> {
 	isPrerenderingServer: () => boolean;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type SuspendCacheOptions<Fn extends (...args: any) => any> = {
+export type SuspendCacheOptions<Fn extends AsyncFunc> = {
 	hydration?: HydrationOptions<Fn>;
 	removeFromCacheTimeout?: number;
 	isEqual?: typeof DEFAULT_IS_EQUAL;
@@ -38,26 +36,27 @@ export type SuspendCacheOptions<Fn extends (...args: any) => any> = {
 export type ResolvedType<T> = T extends Promise<infer V> ? V : never;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type AsyncFunc = (...asyncFuncArgs: Array<any>) => Promise<any>;
+export type NotUndefined<T = any> = Exclude<T, undefined>;
 
-export type PromiseCacheItem<Fn extends AsyncFunc = AsyncFunc> = {
+// export type MaybeAsyncFunc = (...funcArgs: NotUndefined[]) => NotUndefined;
+
+export type AsyncFunc = (...funcArgs: NotUndefined[]) => Promise<NotUndefined>;
+
+export type PromiseCacheItem<Fn extends AsyncFunc> = {
 	promise: ReturnType<Fn>;
 	asyncFuncArgs: Parameters<Fn>;
 	key: string;
 	isEqual?: typeof DEFAULT_IS_EQUAL;
 	removeFromCacheTimeout?: number; // > 0
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	rejectedReason?: any;
+	rejectedReason?: unknown;
 	fulfilledValue?: ResolvedType<ReturnType<Fn>>;
 };
 
 const _PROMISE_CACHE: PromiseCacheItem<AsyncFunc>[] = [];
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type ResolvedOrRejected<Fn extends (...args: any) => any> =
+export type ResolvedOrRejected<Fn extends AsyncFunc> =
 	| [success: ResolvedType<ReturnType<Fn>>, failure: undefined]
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	| [success: undefined, failure: any];
+	| [success: undefined, failure: unknown];
 
 function queryCache<Fn extends AsyncFunc>(
 	asyncFunc: Fn,
@@ -67,8 +66,7 @@ function queryCache<Fn extends AsyncFunc>(
 	doPreload: boolean,
 ): ResolvedOrRejected<Fn> | undefined {
 	const cacheKey = `(${key})${asyncFuncArgs.reduce(
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		(previousValue: string, currentValue: any, currentIndex: number, _array: any[]) => {
+		(previousValue: string, currentValue: unknown, currentIndex: number, _array: unknown[]) => {
 			return `${previousValue}(${currentIndex}:£${JSON.stringify(currentValue)}£)`;
 		},
 		'',
@@ -187,8 +185,7 @@ export const preloadCache = <Fn extends AsyncFunc>(
 };
 
 export const peekCache = <Fn extends AsyncFunc>(
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	asyncFuncArgs: any[],
+	asyncFuncArgs: Parameters<Fn>,
 	key: string,
 ): ResolvedOrRejected<Fn> | undefined => {
 	for (const cacheEntry of _PROMISE_CACHE) {
@@ -213,8 +210,7 @@ export const clearCache = () => {
 };
 
 export const removeFromCache = <Fn extends AsyncFunc>(
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	asyncFuncArgs: any[],
+	asyncFuncArgs: Parameters<Fn>,
 	key: string,
 ): ResolvedOrRejected<Fn> | undefined => {
 	// const i = _PROMISE_CACHE.findIndex((cacheEntry) => {

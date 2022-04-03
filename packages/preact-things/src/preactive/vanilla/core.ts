@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { isTrackingPaused } from './tracking.js';
 import type { IsComputed, OnError, PreactiveDependency, PreactiveFunction } from './types.js';
 

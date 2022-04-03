@@ -4,10 +4,6 @@ import { useEffect, useRef } from 'preact/hooks';
 
 import { IS_CLIENT_SIDE, IS_PRE_RENDER } from './utils.js';
 
-const _window = (IS_CLIENT_SIDE ? window : {}) as typeof window & {
-	PREACTWMR_HYDRATED: boolean | undefined;
-};
-
 export type T = { label: string };
 export const StaticNoHydrate: FunctionalComponent<T> = (props: RenderableProps<T>) => {
 	const hasRenderedAtLeastOnce = useRef(false);
@@ -15,7 +11,7 @@ export const StaticNoHydrate: FunctionalComponent<T> = (props: RenderableProps<T
 		hasRenderedAtLeastOnce.current = true;
 	}, []);
 
-	const hydrated = _window.PREACTWMR_HYDRATED;
+	const hydrated = window.PREACTWMR_HYDRATED;
 	// note: IS_PRE_RENDER includes IS_SERVER_SIDE,
 	// so here we must ensure IS_CLIENT_SIDE
 	if (IS_CLIENT_SIDE && IS_PRE_RENDER && (!hydrated || hasRenderedAtLeastOnce.current)) {

@@ -1,6 +1,5 @@
 // @vitest-environment happy-dom
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable jest/no-commented-out-tests */
 
 // CJS vs. ESM woes :(
@@ -9,7 +8,7 @@
 // ... so we use our local preact-testing-library.js file instead (copy-paste, including .d.ts typings)
 
 // This code was shamelessly adapted from Statin, for educational / learning purposes (lots of renaming, type re-organisation, etc. ... but otherwise same logic):
-// https://github.com/tomasklaen/statin-preact/blob/ea430a280f1577a7ae80aec5a030765ee3542e78/test.tsx#L1
+// https://github.com/tomasklaen/statin-preact/blob/ea430a280f1577a7ae80aec5a030765ee3542e78/test.tsx
 
 import { Fragment, h, render as preactRender } from 'preact';
 import { useState } from 'preact/hooks';
@@ -26,8 +25,8 @@ import { preactiveComponent } from './index.js';
 
 setStrictSignalMustChangeInsideAction(false);
 
-let _unhandledEvents: any[] = [];
-function onUnhandledRejection(event: any) {
+let _unhandledEvents: PromiseRejectionEvent[] = [];
+function onUnhandledRejection(event: PromiseRejectionEvent) {
 	console.log('onUnhandledRejection', event);
 	_unhandledEvents.push(event);
 }

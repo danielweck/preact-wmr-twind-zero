@@ -33,9 +33,15 @@ console.log(other());
 console.log(other2());
 console.log(foo());
 
-const _window = (IS_CLIENT_SIDE ? window : {}) as typeof window & {
+interface PreactWmrHydrated {
 	PREACTWMR_HYDRATED: boolean | undefined;
-};
+}
+
+declare global {
+	// eslint-disable-next-line @typescript-eslint/no-empty-interface
+	interface Window extends PreactWmrHydrated {}
+}
+// const _window = (IS_CLIENT_SIDE ? window : {}) as typeof window & PreactWmrHydrated;
 
 if (process.env.NODE_ENV === 'development') {
 	// eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -401,7 +407,7 @@ if (IS_CLIENT_SIDE) {
 		hydrate(<App prerenderIndex={999} />, document.body);
 
 		// window is safe, as in conditional IS_CLIENT_SIDE
-		_window.PREACTWMR_HYDRATED = true;
+		window.PREACTWMR_HYDRATED = true;
 	} else {
 		// here in this code branch (no isodata): process.env.NODE_ENV === 'development'
 		// we use await import to force code splitting => this code bundle will not be loaded in production
@@ -418,7 +424,7 @@ if (IS_CLIENT_SIDE) {
 			hydrate(<App prerenderIndex={-1} />, document.body);
 
 			// window is safe, as in conditional IS_CLIENT_SIDE
-			_window.PREACTWMR_HYDRATED = true;
+			window.PREACTWMR_HYDRATED = true;
 		})();
 		/* PREACT_WMR_BUILD_STRIP_CODE_END */
 		//
@@ -433,9 +439,7 @@ if (IS_CLIENT_SIDE) {
 let _prerenderIndex = 0;
 
 // See ==> https://github.com/preactjs/wmr/blob/main/packages/wmr/src/lib/prerender.js
-//
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function prerender(data: Record<string, any>): Promise<
+export async function prerender(data: Record<string, unknown>): Promise<
 	PrerenderResult & {
 		// This WMR typing is missing in PrerenderResult?!
 		head: {
@@ -444,7 +448,7 @@ export async function prerender(data: Record<string, any>): Promise<
 				props: Record<string, string>;
 			}>;
 		};
-		data: Record<string, string>;
+		data: Record<string, unknown>;
 	}
 > {
 	// Must be dynamic import for code splitting and avoid include in client bundle
@@ -467,8 +471,6 @@ export async function prerender(data: Record<string, any>): Promise<
 	// });
 	// // const $App = new Function('$', 'return (p) => $.apply($, [p])');
 	// const $App = new Function('$', 'return $');
-	// // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// // @ts-expect-error
 	// const res = await preactWmrPrerenderForTwind(data.url, $App(App), {
 	// 	maxDepth: 10,
 	// 	props: { prerenderIndex: _prerenderIndex++, ...data },
@@ -501,6 +503,7 @@ export async function prerender(data: Record<string, any>): Promise<
 	return {
 		html: res.html.replace(/\$1/g, '&#36;'), // res.html ? res.html.replace(/\$1/g, '&#36;') : '',
 		links: res.links,
+		// JSON.stringify(data) in WMR's packages/wmr/src/lib/prerender.js
 		data: {
 			// xxx: true, // ensures <script type="isodata" /> is generated so we can later check the DOM for its existence, but not needed here as 'data' includes ssr:true already
 			...data,

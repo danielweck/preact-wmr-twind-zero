@@ -174,6 +174,19 @@ module.exports = {
 			files: ['./**/*.cjs'],
 			rules: { '@typescript-eslint/no-var-requires': 0 },
 		},
+		{
+			files: ['*.ts', '*.tsx'],
+			rules: {
+				'@typescript-eslint/consistent-type-imports': [
+					'error',
+					{
+						prefer: 'type-imports',
+						disallowTypeAnnotations: false,
+					},
+				],
+			},
+		},
+
 		// {
 		// 	files: ['./**/*.cjs'],
 		// 	env: {

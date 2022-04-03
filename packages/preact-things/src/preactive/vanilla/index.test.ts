@@ -7,7 +7,7 @@ import { expect, test } from 'vitest';
 
 import { createPreactiveAction, preactiveAction } from './action.js';
 import { preactiveComputedSignal } from './computed.js';
-import { preactiveOnce, preactiveReaction } from './reaction.js';
+import { preactiveOnceReaction, preactiveReaction } from './reaction.js';
 import { preactiveSignal, setStrictSignalMustChangeInsideAction } from './signal.js';
 import type { PreactiveFunction } from './types.js';
 
@@ -186,10 +186,10 @@ test('signal.reactiveValue points to the current value', () => {
 // 	expect(nameFn('FOO', () => {}).displayName).toBe( 'FOO');
 // });
 
-test('preactiveOnce() listens and execute effect once', () => {
+test('preactiveOnceReaction() listens and execute effect once', () => {
 	const s = preactiveSignal('foo');
 	let count = 0;
-	preactiveOnce(
+	preactiveOnceReaction(
 		(_dispose) => {
 			s();
 		},
@@ -204,10 +204,10 @@ test('preactiveOnce() listens and execute effect once', () => {
 	expect(count).toBe(1);
 });
 
-test('preactiveOnce() passes a disposer to action as 1st argument', () => {
+test('preactiveOnceReaction() passes a disposer to action as 1st argument', () => {
 	const s = preactiveSignal('foo');
 	let count = 0;
-	preactiveOnce(
+	preactiveOnceReaction(
 		(dispose) => {
 			s();
 			dispose();
@@ -220,11 +220,11 @@ test('preactiveOnce() passes a disposer to action as 1st argument', () => {
 	expect(count).toBe(0);
 });
 
-test('preactiveOnce() internal disposer clears even dependencies created after its been called', () => {
+test('preactiveOnceReaction() internal disposer clears even dependencies created after its been called', () => {
 	const a = preactiveSignal('foo');
 	const b = preactiveSignal('foo');
 	let count = 0;
-	preactiveOnce(
+	preactiveOnceReaction(
 		(dispose) => {
 			a();
 			dispose();
@@ -253,7 +253,7 @@ test('signal.editReactiveValue() runs immediately, and passes the current value 
 test('signal.editReactiveValue() sends a changed signal after editor finishes', () => {
 	const s = preactiveSignal(['foo', 'bar']);
 	let testPlan = 0;
-	preactiveOnce(
+	preactiveOnceReaction(
 		(_dispose) => {
 			s();
 		},
@@ -343,7 +343,7 @@ test('preactiveReaction(action, {onError}) catches and triggers onError 1', () =
 		{
 			onErrorWithDisposer: (exception, _dispose) => {
 				expect((exception as Error).message).toBe(
-					'preactiveReaction.createOnceLoop.preactiveOnce [MyReaction1] ==> [preactiveReaction(effect.displayName)] --- preactiveOnce [actionWrap_MyReaction1] ==> [onceEffect_effectWrap_$] --- foo',
+					'preactiveReaction.createOnceLoop.preactiveOnceReaction [MyReaction1] ==> [preactiveReaction(effect.displayName)] --- preactiveOnceReaction [actionWrap_MyReaction1] ==> [onceEffect_effectWrap_$] --- foo',
 				);
 				testPlan++;
 			},
@@ -361,7 +361,7 @@ test('preactiveReaction(action, {onError}) catches and triggers onError 2', () =
 	preactiveReaction(MyReaction2, undefined, {
 		onErrorWithDisposer: (exception, _dispose) => {
 			expect((exception as Error).message).toBe(
-				'preactiveReaction.createOnceLoop.preactiveOnce [MyReaction2] ==> [preactiveReaction(effect.displayName)] --- preactiveOnce [actionWrap_MyReaction2] ==> [onceEffect_effectWrap_$] --- bar',
+				'preactiveReaction.createOnceLoop.preactiveOnceReaction [MyReaction2] ==> [preactiveReaction(effect.displayName)] --- preactiveOnceReaction [actionWrap_MyReaction2] ==> [onceEffect_effectWrap_$] --- bar',
 			);
 			testPlan++;
 		},
@@ -380,7 +380,7 @@ test('preactiveReaction(action, {onError}) catches and triggers onError 3', () =
 	preactiveReaction(MyReaction3, undefined, {
 		onErrorWithDisposer: (exception, _dispose) => {
 			expect((exception as Error).message).toBe(
-				'preactiveReaction.createOnceLoop.preactiveOnce [__MyReaction3__] ==> [preactiveReaction(effect.displayName)] --- preactiveOnce [actionWrap___MyReaction3__] ==> [onceEffect_effectWrap_$] --- here',
+				'preactiveReaction.createOnceLoop.preactiveOnceReaction [__MyReaction3__] ==> [preactiveReaction(effect.displayName)] --- preactiveOnceReaction [actionWrap___MyReaction3__] ==> [onceEffect_effectWrap_$] --- here',
 			);
 			testPlan++;
 		},
@@ -573,7 +573,7 @@ test('preactiveReaction(action, effect) detects and disposes circular reactions'
 	preactiveReaction(myAction, myEffect, {
 		onErrorWithDisposer: (exception, _dispose) => {
 			expect((exception as Error)?.message).toBe(
-				'preactiveReaction.createOnceLoop.preactiveOnce [myAction] ==> [myEffect] --- preactiveOnce.observer.preactiveBulkEffects [actionWrap_myAction] ==> [onceEffect_effectWrap_myEffect] --- MAX_REACTION_DEPTH!! (100)',
+				'preactiveReaction.createOnceLoop.preactiveOnceReaction [myAction] ==> [myEffect] --- preactiveOnceReaction.observer.preactiveBulkEffects [actionWrap_myAction] ==> [onceEffect_effectWrap_myEffect] --- MAX_REACTION_DEPTH!! (100)',
 			);
 		},
 	});
@@ -595,7 +595,7 @@ test('preactiveReaction(action, effect, {immediate: true}) triggers effect immed
 			expect(reactiveValue).toBe(1);
 			testPlan++;
 		},
-		{ callEffectImmediately: true },
+		{ immediateEffect: true },
 	);
 	expect(testPlan).toBe(1);
 });
@@ -612,7 +612,7 @@ test('preactiveReaction(action, effect, {onError}) catches and triggers onError 
 		{
 			onErrorWithDisposer: (exception, _dispose) => {
 				expect((exception as Error).message).toBe(
-					'preactiveReaction.createOnceLoop.preactiveOnce [MyReaction] ==> [MyEffect] --- preactiveOnce [actionWrap_MyReaction] ==> [onceEffect_effectWrap_MyEffect] --- hello',
+					'preactiveReaction.createOnceLoop.preactiveOnceReaction [MyReaction] ==> [MyEffect] --- preactiveOnceReaction [actionWrap_MyReaction] ==> [onceEffect_effectWrap_MyEffect] --- hello',
 				);
 				testPlan++;
 			},
@@ -653,7 +653,7 @@ test('preactiveReaction(action, effect, {immediate, onError}) catches and trigge
 			throw new Error('bah');
 		},
 		{
-			callEffectImmediately: true,
+			immediateEffect: true,
 			onErrorWithDisposer: (exception, _dispose) => {
 				expect((exception as Error).message).toBe('preactiveReaction.effectWrap [MyReaction] ==> [MyEffect] --- bah');
 				testPlan++;
@@ -698,7 +698,7 @@ test('preactiveComputedSignal() propagates changed signals of its dependencies',
 		return `${a()}Parent`;
 	});
 
-	preactiveOnce(
+	preactiveOnceReaction(
 		(_dispose) => {
 			a();
 		},
@@ -708,7 +708,7 @@ test('preactiveComputedSignal() propagates changed signals of its dependencies',
 		},
 	);
 	foo('fam');
-	preactiveOnce(
+	preactiveOnceReaction(
 		(_dispose) => {
 			b();
 		},
@@ -838,12 +838,12 @@ test('preactiveAction() inside preactiveAction() doesnt resume dependency tracki
 	expect(testPlan).toBe(0);
 });
 
-test('preactiveOnce() inside preactiveAction() still tracks its dependencies', () => {
+test('preactiveOnceReaction() inside preactiveAction() still tracks its dependencies', () => {
 	let testPlan = 0;
 	const s = preactiveSignal('foo');
 
 	preactiveReaction(() => {
-		preactiveOnce(
+		preactiveOnceReaction(
 			() => s(),
 			() => {
 				expect(true).toBe(true);
@@ -874,13 +874,13 @@ test('preactiveReaction() inside preactiveAction() still tracks its dependencies
 	expect(testPlan).toBe(1);
 });
 
-test('preactiveOnce() inside preactiveOnce() doesnt cancel tracking', () => {
+test('preactiveOnceReaction() inside preactiveOnceReaction() doesnt cancel tracking', () => {
 	let testPlan = 0;
 	const s = preactiveSignal('f');
 
-	preactiveOnce(
+	preactiveOnceReaction(
 		() => {
-			preactiveOnce(
+			preactiveOnceReaction(
 				() => {
 					// nope
 				},
@@ -1031,7 +1031,7 @@ test('preactiveReaction(action) recovers from errors', () => {
 		{
 			onErrorWithDisposer: (exception, _dispose) => {
 				expect((exception as Error).message).toBe(
-					'preactiveReaction.createOnceLoop.preactiveOnce [MyReaction] ==> [preactiveReaction(effect.displayName)] --- preactiveOnce [actionWrap_MyReaction] ==> [onceEffect_effectWrap_$] --- foo',
+					'preactiveReaction.createOnceLoop.preactiveOnceReaction [MyReaction] ==> [preactiveReaction(effect.displayName)] --- preactiveOnceReaction [actionWrap_MyReaction] ==> [onceEffect_effectWrap_$] --- foo',
 				);
 				testPlan++;
 			},
@@ -1060,7 +1060,7 @@ test('preactiveReaction(action, effect) recovers from error in action', () => {
 		{
 			onErrorWithDisposer: (exception, _dispose) => {
 				expect((exception as Error).message).toBe(
-					'preactiveReaction.createOnceLoop.preactiveOnce [MyReaction] ==> [MyEffect] --- preactiveOnce [actionWrap_MyReaction] ==> [onceEffect_effectWrap_MyEffect] --- foo',
+					'preactiveReaction.createOnceLoop.preactiveOnceReaction [MyReaction] ==> [MyEffect] --- preactiveOnceReaction [actionWrap_MyReaction] ==> [onceEffect_effectWrap_MyEffect] --- foo',
 				);
 				testPlan++;
 			},

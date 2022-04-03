@@ -6,6 +6,8 @@ import { type FunctionalComponent, type RenderableProps, Component, h } from 'pr
 const S = {};
 
 export class NoHydrate extends Component {
+	__d: boolean | undefined;
+
 	shouldComponentUpdate() {
 		return false;
 	}
@@ -13,8 +15,9 @@ export class NoHydrate extends Component {
 		// mark the component as dirty to trigger suspend,
 		// but do not re-render (shouldComponentUpdate false)
 
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-		if (e === S) (this as unknown as any).__d = true;
+		if (e === S) {
+			this.__d = true;
+		}
 	}
 	render() {
 		return h(Suspender, null, null);
@@ -30,11 +33,11 @@ const Suspender: FunctionalComponent<unknown> = (_props: RenderableProps<unknown
 
 // https://github.com/JoviDeCroock/realworld/blob/19c925a47f9438939fdb7feddea51ab8ec7be4af/src/lib/progressive-hydration.js#L24-L31
 // export class Suspense extends Component {
+//  __d: boolean | undefined;
+//
 // 	componentDidCatch(e: unknown) {
 // 		// mark the component as dirty to trigger suspend
-
-// 		// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-// 		if (e && (e as any).then) (this as unknown as any).__d = true;
+// 		if ((e as Promise<void>)?.then) this.__d = true;
 // 	}
 // 	render(props: { children: ComponentChildren }) {
 // 		return props.children;
@@ -79,8 +82,7 @@ const Suspender: FunctionalComponent<unknown> = (_props: RenderableProps<unknown
 // 			throw promise;
 // 		}
 
-// 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-// 		(Lazy as unknown as any).displayName = 'Lazy';
+// 		Lazy.displayName = 'Lazy';
 // 		return h(component, props);
 // 	};
 // }

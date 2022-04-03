@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { preactiveBulkEffects } from './core.js';
 import { pauseTracking } from './tracking.js';
 import type { PreactiveFunction } from './types.js';
@@ -12,7 +10,7 @@ export const preactiveAction = <T>(actionFunction: PreactiveFunction<T>): T => {
 	});
 };
 
-export const createPreactiveAction = <T, Args extends any[]>(func: (...args: Args) => T) => {
+export const createPreactiveAction = <T, Args extends unknown[]>(func: (...args: Args) => T) => {
 	return (...args: Args) => {
 		return preactiveAction(() => {
 			return func(...args);

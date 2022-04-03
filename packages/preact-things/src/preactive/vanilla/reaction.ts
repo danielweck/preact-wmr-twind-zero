@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import {
 	clearDependenciesForObserver,
 	popObserver,
@@ -21,10 +19,10 @@ export const preactiveReaction = <T>(
 	effect?: PreactiveReactionEffect<T>,
 	options?: PreactiveReactionOptions,
 ): PreactiveFunction<void> => {
-	let actionReturnValue: any;
+	let actionReturnValue: T;
 	let onceDisposer: PreactiveFunction<void> | undefined;
 
-	const { callEffectImmediately, onErrorWithDisposer } = options || {};
+	const { immediateEffect, onErrorWithDisposer } = options || {};
 
 	const disposer = () => {
 		if (onceDisposer) {
@@ -80,10 +78,10 @@ export const preactiveReaction = <T>(
 	onceEffect.displayName = onceEffectDisplayName;
 
 	const createOnceLoop = () => {
-		onceDisposer = preactiveOnce(actionWrap, onceEffect, (exception, errorDisposer) => {
+		onceDisposer = preactiveOnceReaction(actionWrap, onceEffect, (exception, errorDisposer) => {
 			onceDisposer = errorDisposer;
 			const error = exception instanceof Error ? exception : new Error('');
-			error.message = `preactiveReaction.createOnceLoop.preactiveOnce [${actionDisplayName}] ==> [${effectDisplayName}] --- ${error.message}`;
+			error.message = `preactiveReaction.createOnceLoop.preactiveOnceReaction [${actionDisplayName}] ==> [${effectDisplayName}] --- ${error.message}`;
 
 			if (onErrorWithDisposer) {
 				try {
@@ -100,14 +98,14 @@ export const preactiveReaction = <T>(
 
 	createOnceLoop();
 
-	if (callEffectImmediately && effectWrap) {
+	if (immediateEffect && effectWrap) {
 		effectWrap();
 	}
 
 	return disposer;
 };
 
-export const preactiveOnce = (
+export const preactiveOnceReaction = (
 	action: PreactiveReactionAction<void>,
 	effect: PreactiveFunction<void>,
 	onErrorWithDisposer?: OnErrorWithDisposer['onErrorWithDisposer'],
@@ -116,15 +114,15 @@ export const preactiveOnce = (
 		clearDependenciesForObserver(observer);
 	};
 
-	const actionDisplayName = `${action.displayName || action.name || 'preactiveOnce(action.displayName)'}`;
-	const effectDisplayName = `${effect.displayName || effect.name || 'preactiveOnce(effect.displayName)'}`;
+	const actionDisplayName = `${action.displayName || action.name || 'preactiveOnceReaction(action.displayName)'}`;
+	const effectDisplayName = `${effect.displayName || effect.name || 'preactiveOnceReaction(effect.displayName)'}`;
 
 	// const effectDisplayName = effect.displayName || effect.name || '$';
 	const observer: PreactiveFunction<void> = () => {
 		disposer();
 		preactiveBulkEffects(effect, (exception) => {
 			const error = exception instanceof Error ? exception : new Error('');
-			error.message = `preactiveOnce.observer.preactiveBulkEffects [${actionDisplayName}] ==> [${effectDisplayName}] --- ${error.message}`;
+			error.message = `preactiveOnceReaction.observer.preactiveBulkEffects [${actionDisplayName}] ==> [${effectDisplayName}] --- ${error.message}`;
 
 			if (onErrorWithDisposer) {
 				try {
@@ -155,7 +153,7 @@ export const preactiveOnce = (
 		}
 	} catch (exception) {
 		const error = exception instanceof Error ? exception : new Error('');
-		error.message = `preactiveOnce [${actionDisplayName}] ==> [${effectDisplayName}] --- ${error.message}`;
+		error.message = `preactiveOnceReaction [${actionDisplayName}] ==> [${effectDisplayName}] --- ${error.message}`;
 
 		if (onErrorWithDisposer) {
 			try {

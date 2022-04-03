@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 export interface ForbidLength {
 	length: never;
 }
@@ -44,5 +42,5 @@ export interface OnError {
 }
 
 export interface PreactiveReactionOptions extends OnErrorWithDisposer {
-	callEffectImmediately?: boolean;
+	immediateEffect?: boolean;
 }

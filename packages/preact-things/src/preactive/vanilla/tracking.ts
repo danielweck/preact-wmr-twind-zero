@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 let _doNotTrack = false;
 
 export const isTrackingPaused = () => {

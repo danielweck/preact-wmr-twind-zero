@@ -1,9 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+// This code was shamelessly adapted from Statin, for educational / learning purposes (lots of renaming, type re-organisation, etc. ... but otherwise same logic):
+// https://github.com/tomasklaen/statin-preact/blob/ea430a280f1577a7ae80aec5a030765ee3542e78/src/index.tsx
 
 import type { FunctionComponent } from 'preact';
 import { type MutableRef, useEffect, useRef, useState } from 'preact/hooks';
 
-import { preactiveOnce } from '../vanilla/reaction.js';
+import { preactiveOnceReaction } from '../vanilla/reaction.js';
 import type { OnError, PreactiveFunction } from '../vanilla/types.js';
 
 export interface ReactionTracking {
@@ -89,24 +90,22 @@ export const preactiveComponent = <T extends object>(
 		let renderedComponent: ReturnType<typeof Component> | undefined;
 		let renderedComponentException: unknown | undefined;
 
-		const render = () => {
-			try {
-				renderedComponent = Component(...args);
-			} catch (exception) {
-				renderedComponentException = exception;
-			}
-		};
-		// render.displayName = `render_${componentDisplayName}`;
-
-		const preactStatinObserverEffect = () => {
-			if (reactionTrackingRef.current?.mounted) {
-				forceReRender(NaN);
-			} else {
-				effectShouldUpdate = true;
-			}
-		};
-
-		const dispose = preactiveOnce(render, preactStatinObserverEffect);
+		const dispose = preactiveOnceReaction(
+			(_dispose) => {
+				try {
+					renderedComponent = Component(...args);
+				} catch (exception) {
+					renderedComponentException = exception;
+				}
+			},
+			() => {
+				if (reactionTrackingRef.current?.mounted) {
+					forceReRender(NaN);
+				} else {
+					effectShouldUpdate = true;
+				}
+			},
+		);
 
 		if (reactionTrackingRef.current) {
 			reactionTrackingRef.current.dispose = dispose;

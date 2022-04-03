@@ -89,15 +89,13 @@ const SuspendedCache1: FunctionalComponent<unknown> = (_props: RenderableProps<u
 
 const asyncFunc2 = async (
 	num: number,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	arr: any[],
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	obj: any,
+	arr: (string | number)[],
+	obj: object,
 ): Promise<
-	Array<{
+	{
 		str: string;
 		n?: number;
-	}>
+	}[]
 > => {
 	return new Promise((resolve) => {
 		setTimeout(

@@ -12,7 +12,7 @@ export type TTuple = [name: string, fn: TFunc];
 function createSlotContext() {
 	const slots: Record<string, ComponentChildren> = {};
 	const owners: Record<string, number> = {};
-	const subs: Array<TTuple> = [];
+	const subs: TTuple[] = [];
 
 	const sub = (name: string, fn: TFunc) => {
 		const e: TTuple = [name, fn];

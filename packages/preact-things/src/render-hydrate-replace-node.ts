@@ -22,7 +22,7 @@ export const createRootFragment = (parent: Element, replaceNode: Node | Node[]) 
 	// https://github.com/preactjs/preact/blob/10.6.6/src/render.js#L30
 	// eslint-disable-next-line no-constant-condition
 	if (true || !parent_.__k) {
-		// const replaceNodes = ([] as Array<Node>).concat(replaceNode);
+		// const replaceNodes = ([] as Node[]).concat(replaceNode);
 		const replaceNodes = Array.isArray(replaceNode) ? replaceNode : [replaceNode];
 
 		const nextSibling = replaceNodes[replaceNodes.length - 1].nextSibling;
