@@ -21,12 +21,14 @@ export const preactiveSignal = <T>(reactiveValue: T): PreactiveSignal<T> => {
 	preactiveSignalFunction.reactiveValue = reactiveValue;
 	preactiveSignalFunction.onReactiveValueChanged = () => {
 		if (_strictSignalMustChangeInsideAction && !hasPendingObservers()) {
-			console.log('signal changed outside action');
+			console.log('Preactive signal changed outside action! (strict)');
 		}
 		triggerObserversForDependency(preactiveSignalFunction);
 	};
 	preactiveSignalFunction.editReactiveValue = (editor: (value: T) => T) => {
-		const written = write(editor(read()));
+		const written = write(editor(preactiveSignalFunction.reactiveValue));
+		// const written = write(editor(read()));
+
 		// assume value changed even if referrentially equal (e.g. array.push())
 		if (!written) {
 			preactiveSignalFunction.onReactiveValueChanged();

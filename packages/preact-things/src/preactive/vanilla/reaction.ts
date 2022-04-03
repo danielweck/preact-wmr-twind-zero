@@ -8,6 +8,7 @@ import {
 import { resumeTracking } from './tracking.js';
 import type {
 	OnErrorWithDisposer,
+	PreactiveDisposerFunction,
 	PreactiveFunction,
 	PreactiveReactionAction,
 	PreactiveReactionEffect,
@@ -18,9 +19,9 @@ export const preactiveReaction = <T>(
 	action: PreactiveReactionAction<T>,
 	effect?: PreactiveReactionEffect<T>,
 	options?: PreactiveReactionOptions,
-): PreactiveFunction<void> => {
+): PreactiveDisposerFunction => {
 	let actionReturnValue: T;
-	let onceDisposer: PreactiveFunction<void> | undefined;
+	let onceDisposer: PreactiveDisposerFunction | undefined;
 
 	const { immediateEffect, onErrorWithDisposer } = options || {};
 
@@ -109,7 +110,7 @@ export const preactiveOnceReaction = (
 	action: PreactiveReactionAction<void>,
 	effect: PreactiveFunction<void>,
 	onErrorWithDisposer?: OnErrorWithDisposer['onErrorWithDisposer'],
-): PreactiveFunction<void> => {
+): PreactiveDisposerFunction => {
 	const disposer = () => {
 		clearDependenciesForObserver(observer);
 	};

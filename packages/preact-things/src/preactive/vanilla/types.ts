@@ -9,6 +9,8 @@ export interface DisplayNamed {
 
 export type PreactiveFunction<T> = (() => T) & DisplayNamed;
 
+export type PreactiveDisposerFunction = PreactiveFunction<void>;
+
 export interface IsComputed {
 	isComputed: true;
 }
@@ -30,12 +32,13 @@ export interface PreactiveSignal<T> extends PreactiveFunction<T>, ForbidLength {
 // extends ToJson<T>
 export interface PreactiveComputedSignal<T> extends PreactiveFunction<T>, ForbidLength {}
 
-export type PreactiveReactionAction<T> = ((dispose: PreactiveFunction<void>) => T) & DisplayNamed;
+export type PreactiveReactionAction<T> = ((dispose: PreactiveDisposerFunction) => T) & DisplayNamed;
 
-export type PreactiveReactionEffect<T> = ((reactiveValue: T, dispose: PreactiveFunction<void>) => void) & DisplayNamed;
+export type PreactiveReactionEffect<T> = ((reactiveValue: T, dispose: PreactiveDisposerFunction) => void) &
+	DisplayNamed;
 
 export interface OnErrorWithDisposer {
-	onErrorWithDisposer?: (exception: unknown, dispose: PreactiveFunction<void>) => void;
+	onErrorWithDisposer?: (exception: unknown, dispose: PreactiveDisposerFunction) => void;
 }
 export interface OnError {
 	onError?: (exception: unknown) => void;

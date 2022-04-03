@@ -5,10 +5,10 @@ import type { FunctionComponent } from 'preact';
 import { type MutableRef, useEffect, useRef, useState } from 'preact/hooks';
 
 import { preactiveOnceReaction } from '../vanilla/reaction.js';
-import type { OnError, PreactiveFunction } from '../vanilla/types.js';
+import type { OnError, PreactiveDisposerFunction } from '../vanilla/types.js';
 
 export interface ReactionTracking {
-	dispose: PreactiveFunction<void>;
+	dispose: PreactiveDisposerFunction;
 	cleanAt: number;
 	mounted?: boolean;
 }

@@ -45,10 +45,14 @@ export const updatePreactiveObserverDepth = (observer: PreactiveFunction<void>) 
 };
 
 export const registerDependencyForCurrentObserver = <T>(dependency: PreactiveDependency<T>) => {
-	if (isTrackingPaused()) return;
+	if (isTrackingPaused()) {
+		return;
+	}
 
 	const observer = peekObserver();
-	if (!observer) return;
+	if (!observer) {
+		return;
+	}
 
 	let observers = _weakMapDependencyToObservers.get(dependency);
 	if (!observers) {
@@ -67,7 +71,9 @@ export const registerDependencyForCurrentObserver = <T>(dependency: PreactiveDep
 
 export const clearDependenciesForObserver = (observer: PreactiveFunction<void>) => {
 	const dependencies = _weakMapObserverToDependencies.get(observer);
-	if (!dependencies) return;
+	if (!dependencies) {
+		return;
+	}
 	_weakMapObserverToDependencies.delete(observer);
 
 	for (const dependency of dependencies) {
