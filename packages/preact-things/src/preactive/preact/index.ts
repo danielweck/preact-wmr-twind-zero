@@ -21,6 +21,10 @@ const CLEANUP_TIME = 10_000;
 let _cleanupTimeout: ReturnType<typeof setTimeout> | undefined;
 
 const checkCleanupTimeout = () => {
+	// skip this timeout as it blocks SSR/SSG NodeJS process (no state changes anyway)
+	if (typeof window === 'undefined') {
+		return;
+	}
 	if (_cleanupTimeout) {
 		return;
 	}

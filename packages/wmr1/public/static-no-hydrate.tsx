@@ -11,10 +11,9 @@ export const StaticNoHydrate: FunctionalComponent<T> = (props: RenderableProps<T
 		hasRenderedAtLeastOnce.current = true;
 	}, []);
 
-	const hydrated = window.PREACTWMR_HYDRATED;
 	// note: IS_PRE_RENDER includes IS_SERVER_SIDE,
 	// so here we must ensure IS_CLIENT_SIDE
-	if (IS_CLIENT_SIDE && IS_PRE_RENDER && (!hydrated || hasRenderedAtLeastOnce.current)) {
+	if (IS_CLIENT_SIDE && IS_PRE_RENDER && (!window.PREACTWMR_HYDRATED || hasRenderedAtLeastOnce.current)) {
 		// return (
 		// 	<div>
 		// 		{(Array.isArray(props.children) ? props.children : [props.children])
@@ -23,7 +22,7 @@ export const StaticNoHydrate: FunctionalComponent<T> = (props: RenderableProps<T
 		// 	</div>
 		// );
 		console.log(
-			`NO_HYDRATE: ${props.label} (hydrated: ${String(hydrated)}, hasRenderedAtLeastOnce: ${String(
+			`NO_HYDRATE: ${props.label} (hydrated: ${String(window.PREACTWMR_HYDRATED)}, hasRenderedAtLeastOnce: ${String(
 				hasRenderedAtLeastOnce.current,
 			)})`,
 		);

@@ -52,7 +52,7 @@ export const preactiveComputedSignal = <T>(computeFunction: PreactiveFunction<T>
 		}
 
 		return reactiveComputedValue;
-	}) as unknown as PreactiveComputedSignal<T>; // because Function.length must be 'never' (to prevent misuse of Array.length etc.)
+	}) as PreactiveComputedSignal<T>; // because Function.length must be 'never' (to prevent misuse of Array.length etc.)
 
 	// preactiveComputedSignalFunction.toJSON = () => {
 	// 	const res = getFunction() as T | ToJson<T>;

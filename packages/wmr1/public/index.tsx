@@ -1,3 +1,10 @@
+import {
+	preactiveAction,
+	preactiveComponent,
+	preactiveComputedSignal,
+	// preactiveDevTools,
+	preactiveSignal,
+} from '@preact-wmr-twind-zero/preact-things/preactive/index.js';
 import { ContextSlotsProvider, Slot } from '@preact-wmr-twind-zero/preact-things/slots.js';
 import { func } from '@preact-wmr-twind-zero/shared';
 import { func as func2 } from '@preact-wmr-twind-zero/shared/func.js';
@@ -43,7 +50,7 @@ declare global {
 }
 // const _window = (IS_CLIENT_SIDE ? window : {}) as typeof window & PreactWmrHydrated;
 
-if (process.env.NODE_ENV === 'development') {
+if (IS_CLIENT_SIDE && process.env.NODE_ENV === 'development') {
 	// eslint-disable-next-line @typescript-eslint/no-floating-promises
 	(async () => {
 		// @ts-expect-error TS7016
@@ -106,6 +113,59 @@ const RoutedLazy = lazy(
 		}),
 );
 
+// const _preactiveRootState = preactiveSignal('1');
+
+const _preactiveNum = preactiveSignal(0);
+const _preactiveComputedNum = preactiveComputedSignal(() => {
+	return _preactiveNum() + 1;
+});
+const _preactiveRootState = preactiveSignal({
+	str: 'str',
+	bool: true,
+	arr: ['chars', _preactiveComputedNum],
+	obj: {
+		word: 'blah',
+		num: _preactiveNum,
+	},
+});
+
+// if (IS_CLIENT_SIDE && process.env.NODE_ENV === 'development') {
+// 	preactiveDevTools(_preactiveRootState, 'Preactive Root State');
+// }
+
+let _clickCount = 0;
+const PreactiveComp = preactiveComponent(() => {
+	return (
+		<>
+			<hr />
+			<button
+				onClick={() => {
+					_clickCount++;
+					preactiveAction(() => {
+						return _preactiveRootState.editReactiveValue((_val) => {
+							_preactiveNum(_clickCount);
+							return {
+								count: _clickCount,
+								str: `str${_clickCount}`,
+								bool: true,
+								arr: [`chars${_clickCount}`, _preactiveComputedNum],
+								obj: {
+									word: `blah${_clickCount}`,
+									num: _preactiveNum,
+								},
+							};
+						});
+					});
+				}}
+			>
+				UPDATE PREACTIVE STATE
+			</button>
+			<pre>{JSON.stringify(_preactiveRootState.stringifiable(), null, 4)}</pre>
+			<hr />
+		</>
+	);
+});
+
 // "prerenderIndex": 0,
 // "ssr": true,
 // "url": "/route-path/",
@@ -136,7 +196,7 @@ export const App = ({ prerenderIndex }: { prerenderIndex?: number }) => {
 					</p>
 					<p>prerenderIndex: {prerenderIndex}</p>
 				</StaticNoHydrate>
-
+				<PreactiveComp />
 				<h1>Router status:</h1>
 				<p
 					class={`

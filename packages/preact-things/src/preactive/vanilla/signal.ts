@@ -6,6 +6,35 @@ export const setStrictSignalMustChangeInsideAction = (strict: boolean) => {
 	_strictSignalMustChangeInsideAction = strict;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const stringifiable = (v: any): any => {
+	if (typeof v === 'function' && typeof v.reactiveValue !== 'undefined') {
+		if (typeof v.reactiveValue !== 'undefined') {
+			return v.reactiveValue;
+		}
+		if (v.observer?.isComputed) {
+			return v();
+		}
+		return v;
+	}
+	if (typeof v === 'string' || typeof v === 'number' || v === undefined || v === null) {
+		return v;
+	}
+	if (Array.isArray(v)) {
+		for (let i = 0; i < v.length; i++) {
+			v[i] = stringifiable(v[i]);
+		}
+		return v;
+	}
+	if (typeof v === 'object') {
+		Object.keys(v).forEach((k) => {
+			v[k] = stringifiable(v[k]);
+		});
+		return v;
+	}
+	return v;
+};
+
 export const preactiveSignal = <T>(reactiveValue: T): PreactiveSignal<T> => {
 	function preactiveSignalFunction_(value?: T) {
 		// typeof value !=== 'undefined' wouldn't work as can be valid value to write()
@@ -34,6 +63,10 @@ export const preactiveSignal = <T>(reactiveValue: T): PreactiveSignal<T> => {
 			preactiveSignalFunction.onReactiveValueChanged();
 		}
 		return preactiveSignalFunction.reactiveValue;
+	};
+
+	preactiveSignalFunction.stringifiable = () => {
+		return stringifiable(preactiveSignalFunction());
 	};
 
 	// preactiveSignalFunction.toJSON = () => {

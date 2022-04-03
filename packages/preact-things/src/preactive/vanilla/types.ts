@@ -27,6 +27,7 @@ export interface PreactiveSignal<T> extends PreactiveFunction<T>, ForbidLength {
 	reactiveValue: T;
 	onReactiveValueChanged: () => void;
 	editReactiveValue: (editor: (reactiveValue: T) => T) => T;
+	stringifiable: () => T;
 }
 
 // extends ToJson<T>

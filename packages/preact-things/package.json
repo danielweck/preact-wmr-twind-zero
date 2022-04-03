@@ -36,6 +36,14 @@
 			"import": "./dist/esm/preactive/*",
 			"require": "./dist/cjs/preactive/*"
 		},
+		"./preactive/vanilla": {
+			"import": "./dist/esm/preactive/vanilla/index.js",
+			"require": "./dist/cjs/preactive/vanilla/index.js"
+		},
+		"./preactive/vanilla/*": {
+			"import": "./dist/esm/preactive/vanilla/*",
+			"require": "./dist/cjs/preactive/vanilla/*"
+		},
 		"./preactive/preact": {
 			"import": "./dist/esm/preactive/preact/index.js",
 			"require": "./dist/cjs/preactive/preact/index.js"
