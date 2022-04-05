@@ -20,12 +20,12 @@ import type { PreactiveSignal } from './vanilla/types.js';
 //   }
 
 export type Message = {
-	type: string;
+	type: 'DISPATCH' | 'ACTION';
 	state: string;
 	payload:
 		| string
 		| {
-				type: string;
+				type: 'JUMP_TO_ACTION' | 'JUMP_TO_STATE' | 'IMPORT_STATE' | 'COMMIT' | 'PAUSE_RECORDING' | 'RESET';
 				nextLiftedState?: {
 					actionsById: string[];
 					computedStates: {
@@ -69,6 +69,7 @@ export const preactiveDevTools = <
 	}
 
 	let isTimeTraveling = false;
+	let isRecording = true;
 
 	const preactiveDispose = preactiveReaction(
 		(_dispose) => {
@@ -79,7 +80,7 @@ export const preactiveDevTools = <
 		(_preactiveValue, _dispose) => {
 			if (isTimeTraveling) {
 				isTimeTraveling = false;
-			} else {
+			} else if (isRecording) {
 				const s = preactiveRootState.reactiveValue;
 				// delete s.REDUXDEVTOOLSEXTENSION_DISPATCH_MESSAGE;
 				devtools.send(
@@ -120,54 +121,70 @@ export const preactiveDevTools = <
 				break;
 			}
 			case 'DISPATCH': {
-				const payloadType = (message.payload as { type: string })?.type;
-				if (message.state) {
-					if (payloadType === 'JUMP_TO_ACTION' || payloadType === 'JUMP_TO_STATE') {
-						isTimeTraveling = true;
+				if (typeof message.payload !== 'string') {
+					switch (message.payload.type) {
+						case 'JUMP_TO_STATE':
+						case 'JUMP_TO_ACTION': {
+							isTimeTraveling = true;
 
-						let stateObj: object | undefined;
-						try {
-							stateObj = JSON.parse(message.state);
-						} catch (e) {
-							console.log('devtools.subscribe > DISPATCH JSON.parse() ', payloadType, message.state, e);
-						}
-						if (typeof stateObj === 'object') {
-							preactiveAction(() => {
-								return preactiveRootState.editReactiveValue((_val) => {
-									// Object.assign(val, stateObj);
-									// (stateObj as T).REDUXDEVTOOLSEXTENSION_DISPATCH_MESSAGE = message;
-									return stateObj as T;
+							let stateObj: object | undefined;
+							try {
+								stateObj = JSON.parse(message.state);
+							} catch (e) {
+								console.log('devtools.subscribe > DISPATCH JSON.parse() ', message.payload.type, message.state, e);
+							}
+							if (typeof stateObj === 'object') {
+								preactiveAction(() => {
+									return preactiveRootState.editReactiveValue((_val) => {
+										// Object.assign(val, stateObj);
+										// (stateObj as T).REDUXDEVTOOLSEXTENSION_DISPATCH_MESSAGE = message;
+										return stateObj as T;
+									});
 								});
+							}
+							break;
+						}
+						case 'COMMIT': {
+							devtools.init(preactiveRootState.reactiveValue);
+							break;
+						}
+						case 'IMPORT_STATE': {
+							const actions = message.payload.nextLiftedState?.actionsById || [];
+							const computedStates = message.payload.nextLiftedState?.computedStates || [];
+
+							isTimeTraveling = true;
+
+							computedStates.forEach(({ state }, index) => {
+								const action = actions[index] || 'NO ACTION?!';
+
+								if (typeof state === 'object') {
+									preactiveAction(() => {
+										preactiveRootState.editReactiveValue((_val) => {
+											// Object.assign(val, stateObj);
+											// (state as T).REDUXDEVTOOLSEXTENSION_DISPATCH_MESSAGE = message;
+											return state as T;
+										});
+									});
+								}
+
+								if (index === 0) {
+									devtools.init(preactiveRootState.reactiveValue);
+								} else {
+									devtools.send(action, preactiveRootState.reactiveValue);
+								}
 							});
+							break;
+						}
+						case 'RESET': {
+							break;
+						}
+						case 'PAUSE_RECORDING': {
+							isRecording = !isRecording;
+							break;
 						}
 					}
-				} else if (payloadType === 'COMMIT') {
-					devtools.init(preactiveRootState.reactiveValue);
-				} else if (payloadType === 'IMPORT_STATE' && typeof message.payload !== 'string') {
-					const actions = message.payload.nextLiftedState?.actionsById || [];
-					const computedStates = message.payload.nextLiftedState?.computedStates || [];
-
-					isTimeTraveling = true;
-
-					computedStates.forEach(({ state }, index) => {
-						const action = actions[index] || 'NO ACTION?!';
-
-						if (typeof state === 'object') {
-							preactiveAction(() => {
-								preactiveRootState.editReactiveValue((_val) => {
-									// Object.assign(val, stateObj);
-									// (state as T).REDUXDEVTOOLSEXTENSION_DISPATCH_MESSAGE = message;
-									return state as T;
-								});
-							});
-						}
-
-						if (index === 0) {
-							devtools.init(preactiveRootState.reactiveValue);
-						} else {
-							devtools.send(action, preactiveRootState.reactiveValue);
-						}
-					});
+				} else {
+					console.log('devtools.subscribe > DISPATCH message.payload is string? ', typeof message.payload, message.payload);
 				}
 				break;
 			}
