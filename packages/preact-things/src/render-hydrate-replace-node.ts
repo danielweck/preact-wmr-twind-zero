@@ -17,7 +17,7 @@ export interface Element_ extends Element {
 export const createRootFragment = (parent: Element, replaceNode: Node | Node[]) => {
 	const parent_ = parent as Element_;
 
-	// ._children == .__k
+	// ._children === .__k
 	// https://github.com/preactjs/preact/blob/10.6.6/mangle.json#L45
 	// https://github.com/preactjs/preact/blob/10.6.6/src/render.js#L30
 	// eslint-disable-next-line no-constant-condition
@@ -36,7 +36,7 @@ export const createRootFragment = (parent: Element, replaceNode: Node | Node[]) 
 		// 	(replaceNode as Element).id,
 		// );
 
-		// ._dom == .__e
+		// ._dom === .__e
 		// https://github.com/preactjs/preact/blob/10.6.6/mangle.json#L50
 		// https://github.com/preactjs/preact/blob/10.6.6/src/render.js#L58
 		parent_.__k = {

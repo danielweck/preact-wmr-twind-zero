@@ -396,7 +396,7 @@ if (IS_CLIENT_SIDE) {
 	// 	] as Element[]);
 
 	// 	// Note that with hydrate() instead of render(),
-	// 	// <noscript id="replaceMe1"> remains ID == 'replaceMe1'
+	// 	// <noscript id="replaceMe1"> remains ID === 'replaceMe1'
 	// 	// and data-id does not become 'did-replace1'
 	// 	// ... but id="replacedID1" replaces id="originalID1" (children)
 	// 	preactHydrate(
@@ -419,7 +419,7 @@ if (IS_CLIENT_SIDE) {
 	// 	] as Element[]);
 
 	// 	// Note that with render() instead of hydrate(),
-	// 	// <noscript id="replaceMeA"> becomes ID == '' if unspecified
+	// 	// <noscript id="replaceMeA"> becomes ID === '' if unspecified
 	// 	// ... and id="replacedIDA" replaces id="originalIDA"
 	// 	preactRender(
 	// 		<>
@@ -442,7 +442,7 @@ if (IS_CLIENT_SIDE) {
 	// 		] as Element[]);
 
 	// 		// Note that with hydrate() instead of render(),
-	// 		// <noscript id="did-replaceA"> remains ID == 'did-replaceA'
+	// 		// <noscript id="did-replaceA"> remains ID === 'did-replaceA'
 	// 		// ... but the data-id and title attributes remain stuck in the previous render
 	// 		preactHydrate(
 	// 			<>
