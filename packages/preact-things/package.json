@@ -78,7 +78,7 @@
 		"typescript-types": "tsc --project tsconfig.build.json --emitDeclarationOnly --outFile \"dist/types/index.d.ts\" --isolatedModules false"
 	},
 	"dependencies": {
-		"preact": "^10.7.0"
+		"preact": "^10.7.1"
 	},
 	"devDependencies": {
 		"@testing-library/dom": "^8.12.0",
