@@ -37,9 +37,14 @@ export default defineConfig(async (config) => {
 	// same as / which is a built-in WMR feature)
 	config.alias = {
 		'~/*': './public',
-		'@preact-wmr-twind-zero/preact-things/*': path.join(process.cwd(), '..', 'preact-things', 'src'),
-		// '@preact-wmr-twind-zero/shared/*': path.join(process.cwd(), '..', 'shared', 'src'),
 	};
+	if (config.mode === 'start') {
+		config.alias = {
+			...config.alias,
+			'@preact-wmr-twind-zero/preact-things/*': path.join(process.cwd(), '..', 'preact-things', 'src'),
+			// '@preact-wmr-twind-zero/shared/*': path.join(process.cwd(), '..', 'shared', 'src'),
+		};
+	}
 
 	// ask WMR to prerender route not explicitly linked to in source code
 	config.customRoutes = [
