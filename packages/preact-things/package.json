@@ -28,6 +28,18 @@
 			"import": "./dist/esm/xpatched/*",
 			"require": "./dist/cjs/xpatched/*"
 		},
+		"./observant": {
+			"import": "./dist/esm/observant/index.js",
+			"require": "./dist/cjs/observant/index.js"
+		},
+		"./observant/*": {
+			"import": "./dist/esm/observant/*",
+			"require": "./dist/cjs/observant/*"
+		},
+		"./observant/preact": {
+			"import": "./dist/esm/observant/preact/index.js",
+			"require": "./dist/cjs/observant/preact/index.js"
+		},
 		"./preactive": {
 			"import": "./dist/esm/preactive/index.js",
 			"require": "./dist/cjs/preactive/index.js"

@@ -1,10 +1,5 @@
-import {
-	preactiveAction,
-	preactiveComponent,
-	preactiveComputedSignal,
-	// preactiveDevTools,
-	preactiveSignal,
-} from '@preact-wmr-twind-zero/preact-things/preactive/index.js';
+import { obs } from '@preact-wmr-twind-zero/preact-things/observant/index.js';
+import { preactObservant } from '@preact-wmr-twind-zero/preact-things/observant/preact/index.js';
 import { ContextSlotsProvider, Slot } from '@preact-wmr-twind-zero/preact-things/slots.js';
 import { func } from '@preact-wmr-twind-zero/shared';
 import { func as func2 } from '@preact-wmr-twind-zero/shared/func.js';
@@ -33,6 +28,14 @@ import {
 } from './suspend-cache/suspend-cache-hydration.js';
 import { RoutedSuspendedSubRouter } from './suspended/index.js';
 import { IS_CLIENT_SIDE, IS_PRE_RENDER, KEYBOARD_INTERACT, LAZY_TIMEOUT, PUBLIC_PATH_ROOT } from './utils.js';
+
+// import {
+// 	preactiveAction,
+// 	preactiveComponent,
+// 	preactiveComputedSignal,
+// 	// preactiveDevTools,
+// 	preactiveSignal,
+// } from '@preact-wmr-twind-zero/preact-things/preactive/index.js';
 
 console.log(func());
 console.log(func2());
@@ -113,54 +116,80 @@ const RoutedLazy = lazy(
 		}),
 );
 
-// const _preactiveRootState = preactiveSignal('1');
+// // const _preactiveRootState = preactiveSignal('1');
 
-const _preactiveNum = preactiveSignal(0);
-const _preactiveComputedNum = preactiveComputedSignal(() => {
-	return _preactiveNum() + 1;
-});
-const _preactiveRootState = preactiveSignal({
-	str: 'str',
-	bool: true,
-	arr: ['chars', _preactiveComputedNum],
-	obj: {
-		word: 'blah',
-		num: _preactiveNum,
-	},
-});
+// const _preactiveNum = preactiveSignal(0);
+// const _preactiveComputedNum = preactiveComputedSignal(() => {
+// 	return _preactiveNum() + 1;
+// });
+// const _preactiveRootState = preactiveSignal({
+// 	str: 'str',
+// 	bool: true,
+// 	arr: ['chars', _preactiveComputedNum],
+// 	obj: {
+// 		word: 'blah',
+// 		num: _preactiveNum,
+// 	},
+// });
 
-// if (IS_CLIENT_SIDE && process.env.NODE_ENV === 'development') {
-// 	preactiveDevTools(_preactiveRootState, 'Preactive Root State');
-// }
+// // if (IS_CLIENT_SIDE && process.env.NODE_ENV === 'development') {
+// // 	preactiveDevTools(_preactiveRootState, 'Preactive Root State');
+// // }
+
+// let _clickCount = 0;
+// const PreactiveComp = preactiveComponent(() => {
+// 	return (
+// 		<>
+// 			<hr />
+// 			<button
+// 				onClick={() => {
+// 					_clickCount++;
+// 					preactiveAction(() => {
+// 						return _preactiveRootState.editReactiveValue((_val) => {
+// 							_preactiveNum(_clickCount);
+// 							return {
+// 								count: _clickCount,
+// 								str: `str${_clickCount}`,
+// 								bool: true,
+// 								arr: [`chars${_clickCount}`, _preactiveComputedNum],
+// 								obj: {
+// 									word: `blah${_clickCount}`,
+// 									num: _preactiveNum,
+// 								},
+// 							};
+// 						});
+// 					});
+// 				}}
+// 			>
+// 				UPDATE PREACTIVE STATE
+// 			</button>
+// 			<pre>{JSON.stringify(_preactiveRootState.stringifiable(), null, 4)}</pre>
+// 			<hr />
+// 		</>
+// 	);
+// });
 
 let _clickCount = 0;
-const PreactiveComp = preactiveComponent(() => {
+const _rootObservant = obs(_clickCount, {
+	name: 'WMR OBS',
+});
+// _rootObservant.on('change', (_evt) => {
+// 	console.log('TRACE OBS CHANGE');
+// });
+const PreactiveComp = preactObservant(() => {
 	return (
 		<>
 			<hr />
 			<button
 				onClick={() => {
 					_clickCount++;
-					preactiveAction(() => {
-						return _preactiveRootState.editReactiveValue((_val) => {
-							_preactiveNum(_clickCount);
-							return {
-								count: _clickCount,
-								str: `str${_clickCount}`,
-								bool: true,
-								arr: [`chars${_clickCount}`, _preactiveComputedNum],
-								obj: {
-									word: `blah${_clickCount}`,
-									num: _preactiveNum,
-								},
-							};
-						});
-					});
+					console.log(_clickCount);
+					_rootObservant.set(_clickCount);
 				}}
 			>
-				UPDATE PREACTIVE STATE
+				PREACT OBSERVANT STATE++
 			</button>
-			<pre>{JSON.stringify(_preactiveRootState.stringifiable(), null, 4)}</pre>
+			<pre>{JSON.stringify(_rootObservant.get(), null, 4)}</pre>
 			<hr />
 		</>
 	);

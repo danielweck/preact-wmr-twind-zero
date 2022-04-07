@@ -271,3 +271,120 @@ test('test8b', () => {
 	order += '7';
 	expect(order).toBe('01234567');
 });
+
+test('test9', () => {
+	// forwards the expect() assertions to Vitest
+	setErrorHandler((err) => {
+		throw err;
+	});
+	const a = obs('A', {
+		name: '_A_',
+	});
+	const b = obs(
+		() => {
+			return `B+${a.get()}`;
+		},
+		{
+			name: '_B_',
+		},
+	);
+	const c = obs(
+		() => {
+			return `C+${b.get()}`;
+		},
+		{
+			name: '_C_',
+		},
+	);
+	const d = obs(
+		() => {
+			return `D+${b.get()}`;
+		},
+		{
+			name: '_D_',
+		},
+	);
+
+	let stage = 0;
+	a.on('change', (evt) => {
+		expect(evt.target._name).toBe('_A_');
+		expect(evt.data.previous).toBe('A');
+		expect(evt.data.current).toBe('a');
+	});
+	b.on('change', (evt) => {
+		expect(evt.target._name).toBe('_B_');
+		expect(evt.data.previous).toBe(stage ? 'B+A' : undefined);
+		expect(evt.data.current).toBe(stage ? 'B+a' : 'B+A');
+	});
+	c.on('change', (evt) => {
+		expect(evt.target._name).toBe('_C_');
+		expect(evt.data.previous).toBe(stage ? 'C+B+A' : undefined);
+		expect(evt.data.current).toBe(stage ? 'C+B+a' : 'C+B+A');
+	});
+	d.on('change', (_evt) => {
+		expect(true).toBe(false);
+		// expect(evt.target._name).toBe('_D_');
+		// expect(evt.data.previous).toBe(stage ? 'D+B+A' : undefined);
+		// expect(evt.data.current).toBe(stage ? 'D+B+a' : 'D+B+A');
+	});
+	expect(b.get()).toBe('B+A');
+	expect(c.get()).toBe('C+B+A');
+	// expect(d.get()).toBe('D+B+A');
+	stage++;
+	a.set('a');
+	expect(b.get()).toBe('B+a');
+	expect(c.get()).toBe('C+B+a');
+	// expect(d.get()).toBe('D+B+a');
+});
+
+test('test10', () => {
+	// forwards the expect() assertions to Vitest
+	setErrorHandler((err) => {
+		throw err;
+	});
+	const a = obs('A', {
+		name: '_A_',
+	});
+	const b = obs(
+		() => ({
+			b: a.get(),
+		}),
+		{
+			name: '_B_',
+		},
+	);
+
+	let stage = 0;
+	a.on('change', (evt) => {
+		expect(evt.target._name).toBe('_A_');
+		expect(evt.data.previous).toBe('A');
+		expect(evt.data.current).toBe('a');
+	});
+	b.on('change', (evt) => {
+		expect(evt.target._name).toBe('_B_');
+		expect(evt.data.previous).toEqual(
+			stage === 0
+				? undefined
+				: {
+						b: 'A',
+				  },
+		);
+		expect(evt.data.current).toEqual(
+			stage === 0
+				? {
+						b: 'A',
+				  }
+				: {
+						b: 'a',
+				  },
+		);
+	});
+	expect(b.get()).toEqual({
+		b: 'A',
+	});
+	stage++;
+	a.set('a');
+	expect(b.get()).toEqual({
+		b: 'a',
+	});
+});

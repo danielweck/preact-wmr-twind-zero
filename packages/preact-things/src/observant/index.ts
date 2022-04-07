@@ -106,7 +106,7 @@ const __state: TState = {
 	updateCount: 0,
 };
 
-export type TObservable = null | number | string | Record<string, unknown>;
+export type TObservable = null | number | string | boolean | Record<string, unknown>;
 export type TCalc<T> = () => T;
 
 export type TThiz<T> = Obs<T> | object;
@@ -514,7 +514,7 @@ export class Obs<T = TObservable> {
 			this._state = this._$$dependencies ? 'pending' : 'resolved';
 		}
 
-		if (calculated) {
+		if (typeof calculated !== 'undefined') {
 			this._set(calculated);
 			return;
 		}
