@@ -14,7 +14,7 @@ const defaultSettings = {
 		typescript: {
 			alwaysTryTypes: false,
 			// project: ['./tsconfig.json', 'packages/*/tsconfig.json', 'packages/*/tsconfig.*.json'],
-			project: ['./packages/wmr1/tsconfig.build.json'],
+			project: [path.join(__dirname, './packages/wmr1/tsconfig.build.json')],
 		},
 		// https://github.com/import-js/eslint-plugin-import/tree/main/resolvers/node
 		// node: {
@@ -22,7 +22,7 @@ const defaultSettings = {
 		// 	// paths:
 		// 	// moduleDirectory:
 		// },
-		[path.resolve('./eslint-plugin-import-resolver.cjs')]: { someConfig: 1 },
+		[path.join(__dirname, './eslint-plugin-import-resolver.cjs')]: { someConfig: 1 },
 	},
 };
 // https://github.com/sweepline/eslint-plugin-unused-imports

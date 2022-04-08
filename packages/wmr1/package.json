@@ -29,7 +29,11 @@
 		"serve": "cross-env DEBUG=* wmr serve",
 		"serve-http2": "cross-env DEBUG=* wmr serve --http2",
 		"typescript": "tsc --version && tsc --project tsconfig.build.json",
-		"typescript_": "tsc --version && tsc --traceresolution --project tsconfig.build.json"
+		"typescript_": "tsc --version && tsc --traceresolution --project tsconfig.build.json",
+		"lint:eslint": "eslint --config \"../../.eslintrc.cjs\" --resolve-plugins-relative-to \"../..\" --ignore-path \"../../.eslintignore\" \"./**/*.{ts,tsx,js,jsx,mjs,cjs}\"",
+		"lint:prettier": "prettier --config \"../../.prettierrc.cjs\" --ignore-path \"../../.prettierignore\" --check --no-write --loglevel log \"./\"",
+		"lint:stylelint": "stylelint --config \"../../.stylelintrc.json\" --config-basedir \"../..\" ----ignore-path \".stylelintignore\" \"./public/**/*.{html,htm,css,ts,tsx,js,jsx,mjs,cjs}\"",
+		"lint": "pnpm lint:eslint && pnpm lint:stylelint && pnpm lint:prettier"
 	},
 	"dependencies": {
 		"@preact-wmr-twind-zero/preact-things": "^0.0.0",
@@ -43,7 +47,7 @@
 		"@babel/plugin-syntax-jsx": "^7.16.7",
 		"@babel/plugin-syntax-typescript": "^7.16.7",
 		"@babel/types": "^7.17.0",
-		"@parcel/css": "^1.7.4",
+		"@parcel/css": "^1.8.0",
 		"@twind/preset-autoprefix": "^1.0.0-next.37",
 		"@twind/preset-ext": "^1.0.0-next.37",
 		"@twind/preset-tailwind": "^1.0.0-next.37",
@@ -52,9 +56,12 @@
 		"@types/babel__core": "^7.1.19",
 		"@types/babel__traverse": "^7.14.2",
 		"browserslist": "^4.20.2",
+		"eslint": "^8.12.0",
 		"kolorist": "^1.5.1",
 		"preact-render-to-string": "^5.1.20",
+		"prettier": "^2.6.2",
 		"rollup": "^2.70.1",
+		"stylelint": "^14.6.1",
 		"twind": "^1.0.0-next.37",
 		"wmr": "^3.7.2"
 	}

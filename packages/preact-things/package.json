@@ -87,7 +87,10 @@
 		"typescript-esm": "tsc --project tsconfig.build.json",
 		"typescript-esm-copy": "cpy \"src/xpatched/*\" \"dist/esm/xpatched\"",
 		"typescript-cjs": "tsc --project tsconfig.build-cjs.json",
-		"typescript-types": "tsc --project tsconfig.build.json --emitDeclarationOnly --outFile \"dist/types/index.d.ts\" --isolatedModules false"
+		"typescript-types": "tsc --project tsconfig.build.json --emitDeclarationOnly --outFile \"dist/types/index.d.ts\" --isolatedModules false",
+		"lint:eslint": "eslint --config \"../../.eslintrc.cjs\" --resolve-plugins-relative-to \"../..\" --ignore-path \"../../.eslintignore\" \"./**/*.{ts,tsx,js,jsx,mjs,cjs}\"",
+		"lint:prettier": "prettier --config \"../../.prettierrc.cjs\" --ignore-path \"../../.prettierignore\" --check --no-write --loglevel log \"./\"",
+		"lint": "pnpm lint:eslint && pnpm lint:prettier"
 	},
 	"dependencies": {
 		"preact": "^10.7.1"
@@ -95,8 +98,10 @@
 	"devDependencies": {
 		"@testing-library/dom": "^8.13.0",
 		"@testing-library/preact": "^2.0.1",
+		"eslint": "^8.12.0",
 		"preact-iso": "^2.3.0",
-		"preact-render-to-string": "^5.1.20"
+		"preact-render-to-string": "^5.1.20",
+		"prettier": "^2.6.2"
 	},
 	"files": [
 		"dist"

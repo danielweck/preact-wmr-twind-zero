@@ -18,6 +18,10 @@
 			"dependsOn": ["^esbuild"],
 			"outputs": ["dist/**"]
 		},
+		"lint": {
+			"dependsOn": ["typescript", "^lint"],
+			"outputs": ["dist/**"]
+		},
 		"dev": {
 			"cache": false
 		}
