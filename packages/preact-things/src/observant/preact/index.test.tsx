@@ -7,8 +7,8 @@
 // import { cleanup, render, waitFor } from '@testing-library/preact';
 // ... so we use our local preact-testing-library.js file instead (copy-paste, including .d.ts typings)
 
-import { Fragment, h, render as preactRender } from 'preact';
-import { useState } from 'preact/hooks';
+import { type ComponentChildren, Fragment, h, render as preactRender } from 'preact';
+import { useEffect, useState } from 'preact/hooks';
 import { ErrorBoundary } from 'preact-iso/lazy';
 import { afterEach, beforeEach, expect, test } from 'vitest';
 
@@ -130,6 +130,217 @@ test('preactObservant() makes component reactive', async () => {
 	expect(testPlan).toBe(3);
 });
 
+test('preactObservant() makes component reactive 2', async () => {
+	let testPlan = 0;
+	const container = document.createElement('div');
+	const a = obs('foo');
+
+	const RenderSignal = preactObservant(function RenderSignal({ signal }: { signal: Obs<string> }) {
+		return <Fragment>{signal.get()}</Fragment>;
+	});
+
+	render(
+		<Fragment>
+			<RenderSignal signal={a} />
+			<RenderSignal signal={a} />
+		</Fragment>,
+		{ container },
+	);
+
+	await waitFor(() => {
+		expect(container.innerHTML).toBe('foofoo');
+		testPlan++;
+	});
+
+	a.set('bar');
+
+	await waitFor(() => {
+		expect(container.innerHTML).toBe('barbar');
+		testPlan++;
+	});
+
+	expect(true).toBe(true);
+	testPlan++;
+
+	expect(testPlan).toBe(3);
+});
+
+test('preactObservant() makes component reactive 2 diff', async () => {
+	let testPlan = 0;
+	const container = document.createElement('div');
+	const a = obs('foo');
+	const b = obs('one');
+
+	const RenderSignal = preactObservant(function RenderSignal({ signal }: { signal: Obs<string> }) {
+		return <Fragment>{signal.get()}</Fragment>;
+	});
+
+	render(
+		<Fragment>
+			<RenderSignal signal={a} />
+			<RenderSignal signal={b} />
+		</Fragment>,
+		{ container },
+	);
+
+	await waitFor(() => {
+		expect(container.innerHTML).toBe('fooone');
+		testPlan++;
+	});
+
+	a.set('bar');
+	b.set('two');
+
+	await waitFor(() => {
+		expect(container.innerHTML).toBe('bartwo');
+		testPlan++;
+	});
+
+	expect(true).toBe(true);
+	testPlan++;
+
+	expect(testPlan).toBe(3);
+});
+
+test('preactObservant() makes component reactive 2 diff nested', async () => {
+	let testPlan = 0;
+	const container = document.createElement('div');
+	const a = obs('foo');
+	const b = obs('one');
+
+	const RenderSignal = preactObservant(function RenderSignal({
+		signal,
+		children,
+	}: {
+		signal: Obs<string>;
+		children?: ComponentChildren;
+	}) {
+		return (
+			<Fragment>
+				<Fragment>{signal.get()}</Fragment>
+				{children ? <Fragment>{children}</Fragment> : null}
+			</Fragment>
+		);
+	});
+
+	render(
+		<Fragment>
+			<RenderSignal signal={a}>
+				<RenderSignal signal={b} />
+			</RenderSignal>
+		</Fragment>,
+		{ container },
+	);
+
+	await waitFor(() => {
+		expect(container.innerHTML).toBe('fooone');
+		testPlan++;
+	});
+
+	a.set('bar');
+	b.set('two');
+
+	await waitFor(() => {
+		expect(container.innerHTML).toBe('bartwo');
+		testPlan++;
+	});
+
+	expect(true).toBe(true);
+	testPlan++;
+
+	expect(testPlan).toBe(3);
+});
+
+test('preactObservant() makes component reactive 2 diff calc', async () => {
+	let testPlan = 0;
+	const container = document.createElement('div');
+	const a = obs('foo');
+	const b = obs(() => {
+		return `${a.get()}one`;
+	});
+
+	const RenderSignal = preactObservant(function RenderSignal({ signal }: { signal: Obs<string> }) {
+		return <Fragment>{signal.get()}</Fragment>;
+	});
+
+	render(
+		<Fragment>
+			<RenderSignal signal={a} />
+			<RenderSignal signal={b} />
+		</Fragment>,
+		{ container },
+	);
+
+	await waitFor(() => {
+		expect(container.innerHTML).toBe('foofooone');
+		testPlan++;
+	});
+
+	a.set('bar');
+	// b.set('two');
+
+	await waitFor(() => {
+		expect(container.innerHTML).toBe('barbarone');
+		testPlan++;
+	});
+
+	expect(true).toBe(true);
+	testPlan++;
+
+	expect(testPlan).toBe(3);
+});
+
+test('preactObservant() makes component reactive 2 diff nested calc', async () => {
+	let testPlan = 0;
+	const container = document.createElement('div');
+	const a = obs('foo');
+	const b = obs(() => {
+		return `${a.get()}one`;
+	});
+
+	const RenderSignal = preactObservant(function RenderSignal({
+		signal,
+		children,
+	}: {
+		signal: Obs<string>;
+		children?: ComponentChildren;
+	}) {
+		return (
+			<Fragment>
+				<Fragment>{signal.get()}</Fragment>
+				{children ? <Fragment>{children}</Fragment> : null}
+			</Fragment>
+		);
+	});
+
+	render(
+		<Fragment>
+			<RenderSignal signal={a}>
+				<RenderSignal signal={b} />
+			</RenderSignal>
+		</Fragment>,
+		{ container },
+	);
+
+	await waitFor(() => {
+		expect(container.innerHTML).toBe('foofooone');
+		testPlan++;
+	});
+
+	a.set('bar');
+	// b.set('two');
+
+	await waitFor(() => {
+		expect(container.innerHTML).toBe('barbarone');
+		testPlan++;
+	});
+
+	expect(true).toBe(true);
+	testPlan++;
+
+	expect(testPlan).toBe(3);
+});
+
 test('preactObservant() isolates re-renders to current component', async () => {
 	let testPlan = 0;
 	const container = document.createElement('div');
@@ -234,6 +445,83 @@ test('preactObservant() isolates re-renders to current nested component', async 
 	testPlan++;
 
 	expect(testPlan).toBe(7);
+});
+
+test('preactObservant() isolates re-renders to current nested component 2', async () => {
+	let testPlan = 0;
+	const container = document.createElement('div');
+	const a = obs('foo');
+	const b = obs('one');
+
+	const rerenders: Record<string, number> = {};
+
+	const NameSignal = preactObservant(function NameSignal({
+		name,
+		signal,
+		children,
+	}: {
+		name: string;
+		signal: Obs<string>;
+		children?: ComponentChildren;
+	}) {
+		rerenders[name] = (rerenders[name] || 0) + 1;
+		useEffect(() => {
+			rerenders[`${name}_`] = (rerenders[`${name}_`] || 0) + 1;
+			return () => {
+				rerenders[`${name}__`] = (rerenders[`${name}__`] || 0) + 1;
+			};
+		});
+		return (
+			<Fragment>
+				{`[${name}--${signal.get()}]`}
+				{children ? children : null}
+			</Fragment>
+		);
+	});
+
+	render(
+		<Fragment>
+			<NameSignal name={'n1'} signal={a}>
+				<NameSignal name={'n2'} signal={b} />
+			</NameSignal>
+		</Fragment>,
+		{ container },
+	);
+
+	await waitFor(() => {
+		expect(container.innerHTML).toBe('[n1--foo][n2--one]');
+		testPlan++;
+	});
+
+	// a.set('bar');
+	b.set('two');
+
+	await waitFor(() => {
+		expect(container.innerHTML).toBe('[n1--foo][n2--two]');
+		testPlan++;
+	});
+
+	b.set('three');
+
+	await waitFor(() => {
+		expect(container.innerHTML).toBe('[n1--foo][n2--three]');
+		testPlan++;
+	});
+
+	expect(rerenders.n1).toBe(1);
+	testPlan++;
+	expect(rerenders.n1_).toBe(1);
+	testPlan++;
+	expect(rerenders.n1__).toBe(undefined);
+	testPlan++;
+	expect(rerenders.n2).toBe(3);
+	testPlan++;
+	expect(rerenders.n2_).toBe(3);
+	testPlan++;
+	expect(rerenders.n2__).toBe(2);
+	testPlan++;
+
+	expect(testPlan).toBe(9);
 });
 
 test('preactObservant() caches, logs, and renders the error in place of a component', async () => {

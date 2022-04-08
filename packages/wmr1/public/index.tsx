@@ -1,4 +1,4 @@
-import { obs } from '@preact-wmr-twind-zero/preact-things/observant/index.js';
+import { type Obs, obs } from '@preact-wmr-twind-zero/preact-things/observant/index.js';
 import { preactObservant } from '@preact-wmr-twind-zero/preact-things/observant/preact/index.js';
 import { ContextSlotsProvider, Slot } from '@preact-wmr-twind-zero/preact-things/slots.js';
 import { func } from '@preact-wmr-twind-zero/shared';
@@ -8,7 +8,8 @@ import { other } from '@preact-wmr-twind-zero/shared/sub';
 import { foo } from '@preact-wmr-twind-zero/shared/sub/foo.js';
 // eslint-disable-next-line import/no-duplicates
 import { other as other2 } from '@preact-wmr-twind-zero/shared/sub/other.js';
-import { useState } from 'preact/hooks';
+import type { ComponentChildren } from 'preact';
+import { useEffect, useState } from 'preact/hooks';
 import hydrate from 'preact-iso/hydrate';
 import lazy, { ErrorBoundary } from 'preact-iso/lazy';
 import type { PrerenderResult } from 'preact-iso/prerender';
@@ -169,28 +170,48 @@ const RoutedLazy = lazy(
 // 	);
 // });
 
-let _clickCount = 0;
-const _rootObservant = obs(_clickCount, {
-	name: 'WMR OBS',
+const _rootObservant = obs(0, {
+	name: 'ROOT',
+});
+const _subObservant = obs(0, {
+	name: 'SUB',
 });
 // _rootObservant.on('change', (_evt) => {
 // 	console.log('TRACE OBS CHANGE');
 // });
-const PreactiveComp = preactObservant(() => {
+const _renders1: Record<string, number> = {};
+const _renders2: Record<string, number> = {};
+const _renders3: Record<string, number> = {};
+const PreactiveComp = preactObservant(({ signal, children }: { signal: Obs<number>; children?: ComponentChildren }) => {
+	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+	_renders1[signal._name!] = (_renders1[signal._name!] || 0) + 1;
+	useEffect(() => {
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		_renders2[signal._name!] = (_renders2[signal._name!] || 0) + 1;
+		return () => {
+			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+			_renders3[signal._name!] = (_renders3[signal._name!] || 0) + 1;
+		};
+	});
 	return (
 		<>
 			<hr />
 			<button
 				onClick={() => {
-					_clickCount++;
-					console.log(_clickCount);
-					_rootObservant.set(_clickCount);
+					signal.set(signal.get() + 1);
 				}}
 			>
-				PREACT OBSERVANT STATE++
+				{`${signal._name}++`}
 			</button>
-			<pre>{JSON.stringify(_rootObservant.get(), null, 4)}</pre>
+			<pre>{JSON.stringify(signal.get(), null, 4)}</pre>
+			<p>render 1:</p>
+			<pre>{JSON.stringify(_renders1, null, 4)}</pre>
+			<p>render 2:</p>
+			<pre>{JSON.stringify(_renders2, null, 4)}</pre>
+			<p>render 3:</p>
+			<pre>{JSON.stringify(_renders3, null, 4)}</pre>
 			<hr />
+			{children ? children : null}
 		</>
 	);
 });
@@ -225,7 +246,9 @@ export const App = ({ prerenderIndex }: { prerenderIndex?: number }) => {
 					</p>
 					<p>prerenderIndex: {prerenderIndex}</p>
 				</StaticNoHydrate>
-				<PreactiveComp />
+				<PreactiveComp signal={_rootObservant}>
+					<PreactiveComp signal={_subObservant} />
+				</PreactiveComp>
 				<h1>Router status:</h1>
 				<p
 					class={`
