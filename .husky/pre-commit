@@ -1,4 +1,4 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-pnpm typescript && pnpx lint-staged
+pnpm typescript && pnpx lint-staged --verbose

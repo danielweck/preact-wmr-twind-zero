@@ -7,23 +7,43 @@
 			"outputs": ["dist/**"]
 		},
 		"build": {
-			"dependsOn": ["^build", "typescript"],
+			"dependsOn": ["^typescript"],
 			"outputs": ["dist/**"]
 		},
 		"build-github": {
-			"dependsOn": ["^build-github", "typescript"],
+			"dependsOn": ["^typescript"],
 			"outputs": ["dist/**"]
 		},
 		"esbuild": {
 			"dependsOn": ["^esbuild"],
 			"outputs": ["dist/**"]
 		},
-		"lint": {
-			"dependsOn": ["typescript", "^lint"],
-			"outputs": ["dist/**"]
+		"lint:eslint": {
+			"dependsOn": ["typescript"],
+			"outputs": []
 		},
-		"dev": {
+		"lint:prettier": {
+			"dependsOn": [],
+			"outputs": []
+		},
+		"lint:stylelint": {
+			"dependsOn": [],
+			"outputs": []
+		},
+		"test": {
+			"dependsOn": ["___ROOT___#test-esm"],
+			"outputs": []
+		},
+		"no-cache-task  --no-cache": {
 			"cache": false
 		}
-	}
+	},
+	"globalDependencies": [
+		"tsconfig.json",
+		"vitest.config.js",
+		"./eslint-plugin-import-resolver.cjs",
+		"./.eslintrc.cjs",
+		"./.prettierrc.cjs",
+		"./.stylelintrc.json"
+	]
 }

@@ -30,10 +30,10 @@
 		"serve-http2": "cross-env DEBUG=* wmr serve --http2",
 		"typescript": "tsc --version && tsc --project tsconfig.build.json",
 		"typescript_": "tsc --version && tsc --traceresolution --project tsconfig.build.json",
-		"lint:eslint": "eslint --config \"../../.eslintrc.cjs\" --resolve-plugins-relative-to \"../..\" --ignore-path \"../../.eslintignore\" \"./**/*.{ts,tsx,js,jsx,mjs,cjs}\"",
+		"lint:eslint": "cross-env TIMING=1 eslint --config \"../../.eslintrc.cjs\" --resolve-plugins-relative-to \"../..\" --ignore-path \"../../.eslintignore\" \"./**/*.{ts,tsx,js,jsx,mjs,cjs}\"",
 		"lint:prettier": "prettier --config \"../../.prettierrc.cjs\" --ignore-path \"../../.prettierignore\" --check --no-write --loglevel log \"./\"",
 		"lint:stylelint": "stylelint --config \"../../.stylelintrc.json\" --config-basedir \"../..\" ----ignore-path \".stylelintignore\" \"./public/**/*.{html,htm,css,ts,tsx,js,jsx,mjs,cjs}\"",
-		"lint": "pnpm lint:eslint && pnpm lint:stylelint && pnpm lint:prettier"
+		"lint:all": "pnpm lint:eslint && pnpm lint:stylelint && pnpm lint:prettier"
 	},
 	"dependencies": {
 		"@preact-wmr-twind-zero/preact-things": "^0.0.0",
@@ -58,7 +58,7 @@
 		"browserslist": "^4.20.2",
 		"eslint": "^8.12.0",
 		"kolorist": "^1.5.1",
-		"preact-render-to-string": "^5.1.20",
+		"preact-render-to-string": "^5.1.21",
 		"prettier": "^2.6.2",
 		"rollup": "^2.70.1",
 		"stylelint": "^14.6.1",

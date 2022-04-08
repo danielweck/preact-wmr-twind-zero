@@ -45,9 +45,9 @@
 		"typescript-esm": "tsc --project tsconfig.build.json",
 		"typescript-cjs": "tsc --project tsconfig.build-cjs.json",
 		"typescript-types": "tsc --project tsconfig.build.json --emitDeclarationOnly --outFile \"dist/types/index.d.ts\" --isolatedModules false",
-		"lint:eslint": "eslint --config \"../../.eslintrc.cjs\" --resolve-plugins-relative-to \"../..\" --ignore-path \"../../.eslintignore\" \"./**/*.{ts,tsx,js,jsx,mjs,cjs}\"",
+		"lint:eslint": "cross-env TIMING=1 eslint --config \"../../.eslintrc.cjs\" --resolve-plugins-relative-to \"../..\" --ignore-path \"../../.eslintignore\" \"./**/*.{ts,tsx,js,jsx,mjs,cjs}\"",
 		"lint:prettier": "prettier --config \"../../.prettierrc.cjs\" --ignore-path \"../../.prettierignore\" --check --no-write --loglevel log \"./\"",
-		"lint": "pnpm lint:eslint && pnpm lint:prettier"
+		"lint:all": "pnpm lint:eslint && pnpm lint:prettier"
 	},
 	"devDependencies": {
 		"eslint": "^8.12.0",

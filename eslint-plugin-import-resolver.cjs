@@ -6,14 +6,27 @@
 // https://github.com/import-js/eslint-plugin-import/blob/main/resolvers/README.md
 // https://github.com/import-js/eslint-plugin-import#resolvers
 
+const fs = require('fs');
+
 // @ts-expect-error TS7016
 const { cyan, green, red } = require('kolorist');
 
 // @ts-expect-error TS7016
 const { resolve: resolveExports } = require('resolve.exports');
 
+const { CachedInputFileSystem, ResolverFactory } = require('enhanced-resolve');
+
 const { builtinModules } = require('module'); // createRequire
 const path = require('path');
+
+// create.sync
+const enhancedResolver = ResolverFactory.createResolver({
+	fileSystem: new CachedInputFileSystem(fs, 4000),
+	extensions: ['.mjs', '.cjs', '.json', '.node', '.ts', '.tsx', '.js', '.jsx'],
+	useSyncFileSystemCalls: true,
+	// preferRelative: true,
+	// conditionNames: ['node'],
+});
 
 // https://github.com/browserify/resolve
 // const { isCore } = require('resolve');
@@ -90,7 +103,9 @@ const resolve = (source, file, _config) => {
 	// 	return { found: true, path: null };
 	// }
 	if (builtins.has(source)) {
-		console.log(`${red('ESLINT PLUGIN IMPORT RESOLVER 1')} >> [${green(source)}] in [${cyan(file)}] (builtins 1)`);
+		console.log(
+			`${red('OK - ESLINT PLUGIN IMPORT RESOLVER (builtins)')} >> [${green(source)}] in [${cyan(file)}] (builtins 1)`,
+		);
 		// return { found: false };
 		return { found: true, path: null };
 	}
@@ -112,53 +127,74 @@ const resolve = (source, file, _config) => {
 		// }
 
 		console.log(
-			`${red('ESLINT PLUGIN IMPORT RESOLVER 3')} >> [${green(source)}] in [${cyan(file)}] => [${green(moduleId)}] (CJS)`,
+			`${red('OK - ESLINT PLUGIN IMPORT RESOLVER (require.resolve)')} >> [${green(source)}] in [${cyan(file)}] => [${green(
+				moduleId,
+			)}]`,
 		);
 		return { found: true, path: moduleId };
-	} catch (/** @type {any} */ err1) {
-		// try {
-		// 	const req = createRequire(file); // import.meta.url
-		// 	const moduleId = req.resolve(source, { paths: [path.dirname(file)] });
-		// 	console.log(`${red('ESLINT PLUGIN IMPORT RESOLVER')} >> [${green(source)}] in [${cyan(file)}] => [${green(moduleId)}] (ESM)`);
-		// 	return { found: true, path: moduleId };
-		// } catch (err2) {
-		// 	console.log(`ESLINT PLUGIN IMPORT RESOLVER?!! [${green(source)}] in [${cyan(file)}]`, err1, err2);
-		// 	return { found: false };
-		// }
-		// err1.code => 'MODULE_NOT_FOUND'
-		// err1.path => '/path/to/node_modules/@preact-wmr-twind-zero/xxx/package.json'
-		// err1.message => Cannot find module '/path/to/node_modules/@preact-wmr-twind-zero/preact-things/dist/cjs/xx.js'
-		if (err1.code === 'MODULE_NOT_FOUND' && err1.path?.endsWith('/package.json')) {
-			// const str = 'node_modules/';
-			// const i = err1.path.lastIndexOf(str) + str.length;
-			// const prefix = err1.path.replace(/\/package\.json$/, '').substr(i);
-			// const relativeSource = source.replace(prefix, '.');
-			// const { exports } = require(err1.path);
-			// const resolved = resolveExportMap(exports, relativeSource, ['import']);
-			const { name, module, main, exports } = require(err1.path);
-			const resolved = resolveExports({ name, module, main, exports }, source);
-			const ok = resolved?.startsWith('.');
-			const moduleId = ok
-				? path.join(path.dirname(err1.path), resolved)
-				: err1.message?.replace(/Cannot find module '(.*)'/, (/** @type {string} */ _match, /** @type {string} */ $1) => {
-						// assumes: err1.message.includes('/dist/cjs/')
-						return $1.replace(/\/dist\/cjs\//, '/dist/esm/');
-				  });
+	} catch (/** @type {any} */ errRequireResolve) {
+		try {
+			const result = enhancedResolver.resolveSync({}, path.dirname(file), source);
+
 			console.log(
-				`${red('ESLINT PLUGIN IMPORT RESOLVER 4')} >> [${green(source)}] in [${cyan(file)}] => [${green(moduleId)}] (ESM${
-					ok ? '' : ' (fallback)'
-				})`,
+				`${red('OK - ESLINT PLUGIN IMPORT RESOLVER (enhanced-resolve)')} >> [${green(source)}] in [${cyan(file)}]]`,
 			);
-			// [${red(resolved)}] [${prefix}] [${relativeSource}]
-			return { found: true, path: moduleId };
+			return { found: true, path: result };
+		} catch (/** @type {any} */ _errEnhancedResolver) {
+			// console.log(
+			// 	`FAIL? - ESLINT PLUGIN IMPORT RESOLVER (enhanced-resolve) [${green(source)}] in [${cyan(file)}]`,
+			// 	errEnhancedResolver.code,
+			// 	errEnhancedResolver.path,
+			// 	errEnhancedResolver.message,
+			// );
+
+			// try {
+			// 	const req = createRequire(file); // import.meta.url
+			// 	const moduleId = req.resolve(source, { paths: [path.dirname(file)] });
+			// 	console.log(`${red('ESLINT PLUGIN IMPORT RESOLVER')} >> [${green(source)}] in [${cyan(file)}] => [${green(moduleId)}] (ESM)`);
+			// 	return { found: true, path: moduleId };
+			// } catch (err2) {
+			// 	console.log(`ESLINT PLUGIN IMPORT RESOLVER?!! [${green(source)}] in [${cyan(file)}]`, err1, err2);
+			// 	return { found: false };
+			// }
+			// err1.code => 'MODULE_NOT_FOUND'
+			// err1.path => '/path/to/node_modules/@preact-wmr-twind-zero/xxx/package.json'
+			// err1.message => Cannot find module '/path/to/node_modules/@preact-wmr-twind-zero/preact-things/dist/cjs/xx.js'
+			if (errRequireResolve.code === 'MODULE_NOT_FOUND' && errRequireResolve.path?.endsWith('/package.json')) {
+				// const str = 'node_modules/';
+				// const i = err1.path.lastIndexOf(str) + str.length;
+				// const prefix = err1.path.replace(/\/package\.json$/, '').substr(i);
+				// const relativeSource = source.replace(prefix, '.');
+				// const { exports } = require(err1.path);
+				// const resolved = resolveExportMap(exports, relativeSource, ['import']);
+				const { name, module, main, exports } = require(errRequireResolve.path);
+				const resolved = resolveExports({ name, module, main, exports }, source);
+				const ok = resolved?.startsWith('.');
+				const moduleId = ok
+					? path.join(path.dirname(errRequireResolve.path), resolved)
+					: errRequireResolve.message?.replace(
+							/Cannot find module '(.*)'/,
+							(/** @type {string} */ _match, /** @type {string} */ $1) => {
+								// assumes: err1.message.includes('/dist/cjs/')
+								return $1.replace(/\/dist\/cjs\//, '/dist/esm/');
+							},
+					  );
+				console.log(
+					`${red('OK - ESLINT PLUGIN IMPORT RESOLVER (resolve.exports)')} >> [${green(source)}] in [${cyan(
+						file,
+					)}] => [${green(moduleId)}] (ESM${ok ? '' : ' (fallback)'})`,
+				);
+				// [${red(resolved)}] [${prefix}] [${relativeSource}]
+				return { found: true, path: moduleId };
+			}
+			console.log(
+				`FAIL! - ESLINT PLUGIN IMPORT RESOLVER [${green(source)}] in [${cyan(file)}]`,
+				errRequireResolve.code,
+				errRequireResolve.path,
+				errRequireResolve.message,
+			);
+			return { found: false };
 		}
-		console.log(
-			`ESLINT PLUGIN IMPORT RESOLVER?!! [${green(source)}] in [${cyan(file)}]`,
-			err1.code,
-			err1.path,
-			err1.message,
-		);
-		return { found: false };
 	}
 };
 
