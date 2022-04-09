@@ -64,6 +64,10 @@ export const preactObservant = <T extends object>(
 
 		let effectShouldUpdate = false;
 
+		// const debugComponentDisplayName = `${componentDisplayName}_${
+		// 	JSON.stringify((args[0] as Record<string, string>)['debug'])
+		// }`;
+
 		useEffect(
 			() => {
 				if (reactionTrackingRef) {
@@ -96,23 +100,36 @@ export const preactObservant = <T extends object>(
 		const o = obs<boolean>(
 			() => {
 				if (renderedComponent || renderedComponentException) {
-					return !o._current;
+					const ret = !o._current;
+					// console.log('CALC (already rendered) ', o._name, ret, debugComponentDisplayName);
+					return ret;
 				}
 				try {
 					renderedComponent = Component(...args);
 				} catch (exception) {
 					renderedComponentException = exception;
 				}
-				return o._current === undefined ? true : !o._current;
+				const ret = o._current === undefined ? true : !o._current;
+				// console.log('CALC (just rendered) ', o._name, ret, debugComponentDisplayName);
+				return ret;
 			},
 			{
-				name: 'PREACT OBS',
+				name: 'PREACT_OBS',
 			},
 		) as Obs<boolean>;
-		o.on('change', (_evt) => {
-			if (_evt.data.previous === undefined) {
+		o.on('change', (evt) => {
+			if (evt.data.previous === undefined) {
+				// console.log('CHANGE (first) => ignore', o._name, debugComponentDisplayName, evt.data.current);
 				return;
 			}
+			// console.log(
+			// 	'CHANGE (again) => dispose ',
+			// 	o._name,
+			// 	debugComponentDisplayName,
+			// 	evt.data.previous,
+			// 	' => ',
+			// 	evt.data.current,
+			// );
 
 			// o.off('change');
 			o.dispose();
@@ -123,8 +140,8 @@ export const preactObservant = <T extends object>(
 				effectShouldUpdate = true;
 			}
 		});
-		o.on('error', (_evt) => {
-			console.log('TRACE ERROR');
+		o.on('error', (evt) => {
+			console.log('preactObservant.onError! ', o._name, componentDisplayName, evt.data.error);
 		});
 		o.get(); // triggers the first 'change' event from undefined to true
 

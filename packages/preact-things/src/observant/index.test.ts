@@ -388,3 +388,39 @@ test('test10', () => {
 		b: 'a',
 	});
 });
+
+test('test11', () => {
+	let check = '';
+	let toggle = 0;
+	const root = obs(() => {
+		sub.get();
+		toggle++;
+		return toggle !== 1;
+	});
+	root.on('change', (evt) => {
+		check += `||ROOT_${evt.data.previous}->${evt.data.current}`;
+	});
+	const sub = obs(() => {
+		return `${leaf.get()}-bar`;
+	});
+	sub.on('change', (evt) => {
+		check += `||SUB_${evt.data.previous}->${evt.data.current}`;
+	});
+	const leaf = obs('foo');
+	leaf.on('change', (evt) => {
+		check += `||LEAF_${evt.data.previous}->${evt.data.current}`;
+	});
+	expect(root.get()).toBe(false);
+	expect(sub.get()).toBe('foo-bar');
+	expect(check).toBe('||SUB_undefined->foo-bar||ROOT_undefined->false');
+	check = '';
+	leaf.set('one');
+	expect(root.get()).toBe(true);
+	expect(sub.get()).toBe('one-bar');
+	expect(check).toBe('||LEAF_foo->one||SUB_foo-bar->one-bar||ROOT_false->true');
+	check = '';
+	leaf.set('two');
+	expect(root.get()).toBe(true);
+	expect(sub.get()).toBe('two-bar');
+	expect(check).toBe('||LEAF_one->two||SUB_one-bar->two-bar');
+});

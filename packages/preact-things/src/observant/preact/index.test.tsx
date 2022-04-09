@@ -348,15 +348,22 @@ test('preactObservant() isolates re-renders to current component', async () => {
 	const b = obs('foo');
 	const rerenders: Record<string, number> = {};
 
-	const RenderSignal = preactObservant(function RenderSignal({ name, signal }: { name: string; signal: Obs<string> }) {
+	const RenderSignal = preactObservant(function CompTop({
+		name,
+		signal,
+	}: {
+		debug: string;
+		name: string;
+		signal: Obs<string>;
+	}) {
 		rerenders[name] = (rerenders[name] || 0) + 1;
 		return <Fragment>{signal.get()}</Fragment>;
 	});
 
 	render(
 		<Fragment>
-			<RenderSignal name="a" signal={a} />
-			<RenderSignal name="b" signal={b} />
+			<RenderSignal debug="compA" name="a" signal={a} />
+			<RenderSignal debug="compB" name="b" signal={b} />
 		</Fragment>,
 		{ container },
 	);
@@ -391,15 +398,24 @@ test('preactObservant() isolates re-renders to current nested component', async 
 	const bName = obs('b');
 	const rerenders: Record<string, number> = {};
 
-	const RenderSignal = preactObservant(function RenderSignal({ name, signal }: { name: string; signal: Obs<string> }) {
+	const RenderSignal = preactObservant(function CompChild({
+		name,
+		signal,
+	}: {
+		debug: string;
+		name: string;
+		signal: Obs<string>;
+	}) {
 		rerenders[name] = (rerenders[name] || 0) + 1;
 		return <Fragment>{signal.get()}</Fragment>;
 	});
 
-	const NameSignal = preactObservant(function NameSignal({
+	const NameSignal = preactObservant(function CompParent({
+		debug,
 		name: nameSignal,
 		signal,
 	}: {
+		debug: string;
 		name: Obs<string>;
 		signal: Obs<string>;
 	}) {
@@ -407,15 +423,15 @@ test('preactObservant() isolates re-renders to current nested component', async 
 		rerenders[name] = (rerenders[name] || 0) + 1;
 		return (
 			<Fragment>
-				{name}:<RenderSignal name={`${name}Signal`} signal={signal} />,
+				{name}:<RenderSignal debug={`${debug};;`} name={`${name}Signal`} signal={signal} />,
 			</Fragment>
 		);
 	});
 
 	render(
 		<Fragment>
-			<NameSignal name={aName} signal={a} />
-			<NameSignal name={bName} signal={b} />
+			<NameSignal debug="compA" name={aName} signal={a} />
+			<NameSignal debug="compB" name={bName} signal={b} />
 		</Fragment>,
 		{ container },
 	);
@@ -455,11 +471,12 @@ test('preactObservant() isolates re-renders to current nested component 2', asyn
 
 	const rerenders: Record<string, number> = {};
 
-	const NameSignal = preactObservant(function NameSignal({
+	const NameSignal = preactObservant(function CompNest({
 		name,
 		signal,
 		children,
 	}: {
+		debug: string;
 		name: string;
 		signal: Obs<string>;
 		children?: ComponentChildren;
@@ -481,8 +498,8 @@ test('preactObservant() isolates re-renders to current nested component 2', asyn
 
 	render(
 		<Fragment>
-			<NameSignal name={'n1'} signal={a}>
-				<NameSignal name={'n2'} signal={b} />
+			<NameSignal debug="compA" name={'n1'} signal={a}>
+				<NameSignal debug="compB" name={'n2'} signal={b} />
 			</NameSignal>
 		</Fragment>,
 		{ container },
@@ -493,7 +510,6 @@ test('preactObservant() isolates re-renders to current nested component 2', asyn
 		testPlan++;
 	});
 
-	// a.set('bar');
 	b.set('two');
 
 	await waitFor(() => {
@@ -508,11 +524,18 @@ test('preactObservant() isolates re-renders to current nested component 2', asyn
 		testPlan++;
 	});
 
-	expect(rerenders.n1).toBe(1);
+	a.set('bar');
+
+	await waitFor(() => {
+		expect(container.innerHTML).toBe('[n1--bar][n2--three]');
+		testPlan++;
+	});
+
+	expect(rerenders.n1).toBe(2);
 	testPlan++;
-	expect(rerenders.n1_).toBe(1);
+	expect(rerenders.n1_).toBe(2);
 	testPlan++;
-	expect(rerenders.n1__).toBe(undefined);
+	expect(rerenders.n1__).toBe(1);
 	testPlan++;
 	expect(rerenders.n2).toBe(3);
 	testPlan++;
@@ -521,7 +544,7 @@ test('preactObservant() isolates re-renders to current nested component 2', asyn
 	expect(rerenders.n2__).toBe(2);
 	testPlan++;
 
-	expect(testPlan).toBe(9);
+	expect(testPlan).toBe(10);
 });
 
 test('preactObservant() caches, logs, and renders the error in place of a component', async () => {
