@@ -1,4 +1,4 @@
-// This code was shamelessly adapted from Statin, for educational / learning purposes (lots of renaming, type re-organisation, etc. ... but otherwise same logic):
+// Parts of this code are adapted from Statin:
 // https://github.com/tomasklaen/statin-preact/blob/ea430a280f1577a7ae80aec5a030765ee3542e78/src/index.tsx
 
 import type { FunctionComponent } from 'preact';

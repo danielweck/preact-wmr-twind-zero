@@ -1,6 +1,4 @@
-import { preactiveAction } from './vanilla/action.js';
-import { preactiveReaction } from './vanilla/reaction.js';
-import type { PreactiveSignal } from './vanilla/types.js';
+import type { Obs } from './vanilla/index.js';
 
 // https://github.com/reduxjs/redux-devtools/blob/14e4178d598b09d1c6936a470056bc04b35a88d8/extension/src/app/api/index.ts#L522-L536
 // export interface ConnectResponse {
@@ -52,16 +50,16 @@ declare global {
 
 let _stateCount = 0;
 
-export const preactiveDevTools = <
-	T extends object,
+export const obsDevTools = <
+	T extends object = object,
 	// & {
 	// 	REDUXDEVTOOLSEXTENSION_DISPATCH_MESSAGE?: Message;
 	// },
 >(
-	preactiveRootState: PreactiveSignal<T>,
+	observantRootState: Obs<T>,
 	name: string,
 ) => {
-	const devtools = window.__REDUX_DEVTOOLS_EXTENSION__?.connect({ name: name || `Preactive State ${_stateCount++}` });
+	const devtools = window.__REDUX_DEVTOOLS_EXTENSION__?.connect({ name: name || `Observant State ${_stateCount++}` });
 	if (!devtools) {
 		return () => {
 			// nope
@@ -71,31 +69,26 @@ export const preactiveDevTools = <
 	let isTimeTraveling = false;
 	let isRecording = true;
 
-	const preactiveDispose = preactiveReaction(
-		(_dispose) => {
-			// TODO: walk down object to access signals + trigger reaction effects on mutations?
-			// const s =
-			preactiveRootState();
-		},
-		(_preactiveValue, _dispose) => {
-			if (isTimeTraveling) {
-				isTimeTraveling = false;
-			} else if (isRecording) {
-				const s = preactiveRootState.reactiveValue;
-				// delete s.REDUXDEVTOOLSEXTENSION_DISPATCH_MESSAGE;
-				devtools.send(
-					{
-						type: 'PREACTIVE:$',
-						updatedAt: new Date().toLocaleString(),
-					},
-					s,
-				);
-			}
-		},
-		{
-			immediateEffect: false,
-		},
-	);
+	observantRootState.on('change', (evt) => {
+		if (evt.data.error) {
+			console.log('obsDevTools onChange ERROR: ', evt.data.error);
+			return;
+		}
+
+		if (isTimeTraveling) {
+			isTimeTraveling = false;
+		} else if (isRecording) {
+			const s = observantRootState.get();
+			// delete s.REDUXDEVTOOLSEXTENSION_DISPATCH_MESSAGE;
+			devtools.send(
+				{
+					type: 'OBS:$',
+					updatedAt: new Date().toLocaleString(),
+				},
+				s,
+			);
+		}
+	});
 
 	const devToolsUnsubscribe = devtools.subscribe((message) => {
 		switch (message.type) {
@@ -108,12 +101,7 @@ export const preactiveDevTools = <
 						console.log('devtools.subscribe > ACTION JSON.parse() ', message.payload, e);
 					}
 					if (typeof payloadObj === 'object') {
-						preactiveAction(() => {
-							return preactiveRootState.editReactiveValue((_val) => {
-								// Object.assign(val, payloadObj);
-								return payloadObj as T;
-							});
-						});
+						observantRootState.set(payloadObj as T);
 					}
 				} else {
 					console.log('devtools.subscribe > ACTION message.payload not string? ', typeof message.payload, message.payload);
@@ -134,18 +122,12 @@ export const preactiveDevTools = <
 								console.log('devtools.subscribe > DISPATCH JSON.parse() ', message.payload.type, message.state, e);
 							}
 							if (typeof stateObj === 'object') {
-								preactiveAction(() => {
-									return preactiveRootState.editReactiveValue((_val) => {
-										// Object.assign(val, stateObj);
-										// (stateObj as T).REDUXDEVTOOLSEXTENSION_DISPATCH_MESSAGE = message;
-										return stateObj as T;
-									});
-								});
+								observantRootState.set(stateObj as T);
 							}
 							break;
 						}
 						case 'COMMIT': {
-							devtools.init(preactiveRootState.reactiveValue);
+							devtools.init(observantRootState.get());
 							break;
 						}
 						case 'IMPORT_STATE': {
@@ -158,19 +140,13 @@ export const preactiveDevTools = <
 								const action = actions[index] || 'NO ACTION?!';
 
 								if (typeof state === 'object') {
-									preactiveAction(() => {
-										preactiveRootState.editReactiveValue((_val) => {
-											// Object.assign(val, stateObj);
-											// (state as T).REDUXDEVTOOLSEXTENSION_DISPATCH_MESSAGE = message;
-											return state as T;
-										});
-									});
+									observantRootState.set(state as T);
 								}
 
 								if (index === 0) {
-									devtools.init(preactiveRootState.reactiveValue);
+									devtools.init(observantRootState.get());
 								} else {
-									devtools.send(action, preactiveRootState.reactiveValue);
+									devtools.send(action, observantRootState.get());
 								}
 							});
 							break;
@@ -191,10 +167,10 @@ export const preactiveDevTools = <
 		}
 	});
 
-	devtools.init(preactiveRootState.reactiveValue);
+	devtools.init(observantRootState.get());
 
 	return () => {
 		devToolsUnsubscribe?.();
-		preactiveDispose();
+		observantRootState.dispose();
 	};
 };

@@ -1,5 +1,5 @@
-import { type Obs, obs } from '@preact-wmr-twind-zero/preact-things/observant/index.js';
 import { preactObservant } from '@preact-wmr-twind-zero/preact-things/observant/preact/index.js';
+import { type Obs, obs } from '@preact-wmr-twind-zero/preact-things/observant/vanilla/index.js';
 import { ContextSlotsProvider, Slot } from '@preact-wmr-twind-zero/preact-things/slots.js';
 import { func } from '@preact-wmr-twind-zero/shared';
 import { func as func2 } from '@preact-wmr-twind-zero/shared/func.js';

@@ -40,6 +40,18 @@
 			"import": "./dist/esm/observant/preact/index.js",
 			"require": "./dist/cjs/observant/preact/index.js"
 		},
+		"./observant/preact/*": {
+			"import": "./dist/esm/observant/preact/*",
+			"require": "./dist/cjs/observant/preact/*"
+		},
+		"./observant/vanilla": {
+			"import": "./dist/esm/observant/vanilla/index.js",
+			"require": "./dist/cjs/observant/vanilla/index.js"
+		},
+		"./observant/vanilla/*": {
+			"import": "./dist/esm/observant/vanilla/*",
+			"require": "./dist/cjs/observant/vanilla/*"
+		},
 		"./preactive": {
 			"import": "./dist/esm/preactive/index.js",
 			"require": "./dist/cjs/preactive/index.js"
