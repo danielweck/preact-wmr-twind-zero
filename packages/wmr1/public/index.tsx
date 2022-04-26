@@ -259,6 +259,24 @@ const obsPerf = () => {
 	// expect(duration).toBeLessThanOrEqual(40);
 
 	console.log(`PERF duration (DOM): ${duration}`);
+
+	return duration;
+};
+const ObservantPerf = () => {
+	const [perf, setPerf] = useState(0);
+	return (
+		<>
+			<hr />
+			<button
+				onClick={() => {
+					setPerf(obsPerf());
+				}}
+			>
+				{`OBS PERF (${perf})`}
+			</button>
+			<hr />
+		</>
+	);
 };
 
 const _rootObservant = obs(0, {
@@ -337,16 +355,7 @@ export const App = ({ prerenderIndex }: { prerenderIndex?: number }) => {
 					</p>
 					<p>prerenderIndex: {prerenderIndex}</p>
 				</StaticNoHydrate>
-
-				<hr />
-				<button
-					onClick={() => {
-						obsPerf();
-					}}
-				>
-					OBS PERF
-				</button>
-				<hr />
+				<ObservantPerf />
 				<PreactiveComp signal={_rootObservant}>
 					<PreactiveComp signal={_subObservant} />
 				</PreactiveComp>

@@ -76,20 +76,18 @@ export const tickDOMQueueMicrotask: TickFunc | undefined =
 		: undefined;
 // console.log('DEBUG tickDOMQueueMicrotask: ', typeof tickDOMQueueMicrotask);
 
-export const tickPromise: TickFunc | undefined =
-	typeof Promise !== 'undefined'
-		? (func, ...args) => {
-				// eslint-disable-next-line promise/catch-or-return,promise/always-return
-				Promise.resolve().then(() => {
-					func(...args);
-				});
-		  }
-		: undefined;
+const __promise = Promise.resolve();
+export const tickPromise: TickFunc = (func, ...args) => {
+	// eslint-disable-next-line promise/catch-or-return,promise/always-return
+	__promise.then(() => {
+		func(...args);
+	});
+};
 // console.log('DEBUG tickPromise: ', typeof tickPromise);
 
 export const tickDefault = tickDOMQueueMicrotask ?? tickNodeJSProcessNextTick ?? tickPromise;
 
-let __tick = tickDefault;
+let __tick: TickFunc | undefined = tickDefault;
 export const setTick = (func: TickFunc | undefined) => {
 	// console.log('setTick', typeof func, func !== __tick);
 	__tick = func;
@@ -177,39 +175,40 @@ export type TCalc<T> = () => T;
 export type TThiz<T> = Obs<T> | object;
 
 export class Obs<T = TObservable> {
-	readonly _this: Obs<T>;
-	readonly _thiz: TThiz<T>;
+	declare readonly _this: Obs<T>;
+	declare readonly _thiz: TThiz<T>;
 
-	readonly _name?: string;
+	declare readonly _name?: string;
 
-	readonly _eq: (value1: T | undefined, value2: T | undefined) => boolean;
+	declare readonly _eq: (value1: T | undefined, value2: T | undefined) => boolean;
 
-	readonly _eventListeners = new Map<TObsEvent, TObsListenerAndThiz<T> | TObsListenerAndThiz<T>[]>();
+	declare readonly _eventListeners: Map<TObsEvent, TObsListenerAndThiz<T> | TObsListenerAndThiz<T>[]>;
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	readonly _reactions: Obs<any>[] = [];
+	declare readonly _reactions: Obs<any>[];
 
-	// can be modified externally from other Observers (__state.calculating)
+	// can be modified externally from other Observers
+	// (see __state.calculating._$$dependencies in get())
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	_$$dependencies?: Obs<any>[];
+	declare _$$dependencies?: Obs<any>[];
 
-	_state: 'resolved' | 'pending' | 'deps';
-	_initialized = false;
+	declare _state: 'resolved' | 'pending' | 'deps';
+	declare _initialized: boolean;
 
-	_current?: T;
-	_calc?: TCalc<T>;
+	declare _current?: T;
+	declare _calc?: TCalc<T>;
 
-	_hasReactionsOrEventListeners = false;
+	declare _hasReactionsOrEventListeners: boolean;
 
-	_active = false;
+	declare _active: boolean;
 
-	_calculating = false;
+	declare _calculating: boolean;
 
-	_updateCount = -1;
+	declare _updateCount: number;
 
-	_error: Error | undefined;
+	declare _error: Error | undefined;
 
-	_lastErrorEvent: IObsEvent<T> | undefined;
+	declare _lastErrorEvent: IObsEvent<T> | undefined;
 
 	constructor(v: T | TCalc<T>, options?: TObsOptions<T>) {
 		this._this = this;
@@ -218,6 +217,20 @@ export class Obs<T = TObservable> {
 		this._name = options?.name ?? undefined;
 
 		this._eq = options?.eq ?? Object.is; // referencial equality
+
+		this._eventListeners = new Map<TObsEvent, TObsListenerAndThiz<T> | TObsListenerAndThiz<T>[]>();
+
+		this._reactions = [];
+
+		this._initialized = false;
+
+		this._hasReactionsOrEventListeners = false;
+
+		this._active = false;
+
+		this._calculating = false;
+
+		this._updateCount = -1;
 
 		if (typeof v === 'function') {
 			this._state = 'pending';
@@ -330,9 +343,13 @@ export class Obs<T = TObservable> {
 	dispose() {
 		this.off();
 
-		for (const reaction of this._reactions) {
-			reaction.dispose();
+		const reactions = this._reactions;
+		for (let i = 0; i < reactions.length; i++) {
+			reactions[i].dispose();
 		}
+		// for (const reaction of this._reactions) {
+		// 	reaction.dispose();
+		// }
 
 		return this;
 	}
@@ -401,6 +418,7 @@ export class Obs<T = TObservable> {
 
 		if (this._$$dependencies) {
 			// _$$dependencies pointer copy, because can be modified externally
+			// (see __state.calculating._$$dependencies in get())
 			const thisDependencies = this._$$dependencies;
 			let i = thisDependencies.length;
 			do {
@@ -433,6 +451,7 @@ export class Obs<T = TObservable> {
 
 		if (this._$$dependencies) {
 			// _$$dependencies pointer copy, because can be modified externally
+			// (see __state.calculating._$$dependencies in get())
 			const thisDependencies = this._$$dependencies;
 			let i = thisDependencies.length;
 			do {
@@ -449,9 +468,13 @@ export class Obs<T = TObservable> {
 
 		this._updateCount = ++__state.updateCount;
 
-		for (const reaction of this._reactions) {
-			reaction._addToPending(true);
+		const reactions = this._reactions;
+		for (let i = 0; i < reactions.length; i++) {
+			reactions[i]._addToPending(true);
 		}
+		// for (const reaction of this._reactions) {
+		// 	reaction._addToPending(true);
+		// }
 
 		this._handleEvent(evt);
 	}
@@ -483,6 +506,7 @@ export class Obs<T = TObservable> {
 		}
 		if (this._state === 'deps' && this._$$dependencies) {
 			// _$$dependencies pointer copy, because can be modified externally
+			// (see __state.calculating._$$dependencies in get())
 			const thisDependencies = this._$$dependencies;
 			for (let i = 0; ; ) {
 				thisDependencies[i]._resolve();
@@ -536,8 +560,11 @@ export class Obs<T = TObservable> {
 			let newDependenciesCount = 0;
 
 			// _$$dependencies pointer copy, because can be modified externally
+			// (see __state.calculating._$$dependencies in get())
+
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const thisDependencies = this._$$dependencies as Obs<any>[] | undefined;
+			// the above type coersion is necessary because of preceeding this._$$dependencies = undefined
 			if (thisDependencies) {
 				let i = thisDependencies.length;
 				do {
@@ -550,18 +577,15 @@ export class Obs<T = TObservable> {
 				} while (i);
 			}
 
-			// _$$dependencies pointer copy, because can be modified externally
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const thisDependencies_ = this._$$dependencies as Obs<any>[] | undefined;
 			if (
 				previousDependencies &&
-				(!thisDependencies_ || thisDependencies_.length - newDependenciesCount < previousDependencies.length)
+				(!thisDependencies || thisDependencies.length - newDependenciesCount < previousDependencies.length)
 			) {
 				let i = previousDependencies.length;
 				do {
 					const previousDependency = previousDependencies[--i];
 
-					if (!thisDependencies_?.includes(previousDependency)) {
+					if (!thisDependencies?.includes(previousDependency)) {
 						previousDependency._deleteReaction(this);
 					}
 				} while (i);
@@ -574,7 +598,8 @@ export class Obs<T = TObservable> {
 				// }
 			}
 
-			if (this._$$dependencies) {
+			// this._$$dependencies
+			if (thisDependencies) {
 				this._active = true;
 			} else {
 				this._active = false;
@@ -641,9 +666,13 @@ export class Obs<T = TObservable> {
 		this._updateCount = ++__state.updateCount;
 
 		if (changed) {
-			for (const reaction of this._reactions) {
-				reaction._addToPending(true);
+			const reactions = this._reactions;
+			for (let i = 0; i < reactions.length; i++) {
+				reactions[i]._addToPending(true);
 			}
+			// for (const reaction of this._reactions) {
+			// 	reaction._addToPending(true);
+			// }
 
 			this._emit('change', {
 				previous,
@@ -669,9 +698,13 @@ export class Obs<T = TObservable> {
 			this._handleEvent(evt);
 		}
 
-		for (const reaction of this._reactions) {
-			reaction._setError(evt);
+		const reactions = this._reactions;
+		for (let i = 0; i < reactions.length; i++) {
+			reactions[i]._setError(evt);
 		}
+		// for (const reaction of this._reactions) {
+		// 	reaction._setError(evt);
+		// }
 	}
 }
 

@@ -10,7 +10,7 @@
 import { afterEach, beforeEach, expect, test } from 'vitest';
 
 import { cleanup } from '../../../preact-testing-library.js';
-import { obs, setErrorHandler, setTick } from '../index.js';
+import { obs, setErrorHandler, setTick } from '../vanilla/index.js';
 
 const defaultErrorHandler = (err: Error, msg?: string) => {
 	console.log(`VITEST: (${msg})`, err);

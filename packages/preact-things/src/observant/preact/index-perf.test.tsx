@@ -10,7 +10,7 @@
 import { afterEach, beforeEach, expect, test } from 'vitest';
 
 import { cleanup } from '../../../preact-testing-library.js';
-import { obs, setErrorHandler } from '../index.js';
+import { obs, setErrorHandler } from '../vanilla/index.js';
 
 const defaultErrorHandler = (err: Error, msg?: string) => {
 	console.log(`VITEST: (${msg})`, err);
@@ -141,7 +141,7 @@ test('perf DOM', () => {
 	const duration = performance.now() - timeStart;
 
 	expect(duration).toBeGreaterThanOrEqual(10);
-	expect(duration).toBeLessThanOrEqual(60);
+	expect(duration).toBeLessThanOrEqual(100);
 
 	console.log(`PERF duration (DOM): ${duration}`);
 });
