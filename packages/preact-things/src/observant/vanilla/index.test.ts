@@ -2,17 +2,10 @@
 
 import { afterEach, beforeEach, expect, test } from 'vitest';
 
-import { type TObsListener, fallbackTick, Obs, obs, setErrorHandler, setTick, tick } from './index.js';
+import { type TObsListener, Obs, obs, setErrorHandler } from './index.js';
 
 const defaultErrorHandler = (err: Error, msg?: string) => {
 	console.log(`VITEST: (${msg})`, err);
-};
-
-const syncTick = () => {
-	// sync! (no process tick / microtask)
-	setTick((func, ...args) => {
-		func(...args);
-	});
 };
 
 // let _unhandledEvents: PromiseRejectionEvent[] = [];
@@ -27,14 +20,6 @@ beforeEach(() => {
 	// 	window.addEventListener('unhandledrejection', onUnhandledRejection);
 	// }
 
-	// the default NodeJS process tick works fine when tests are executed in isolation,
-	// but causes failure when sequenced within the same Vitest launch
-	// ... so we use the Promise -based tick
-	if (fallbackTick) {
-		setTick(fallbackTick);
-	} else {
-		setTick(tick);
-	}
 	setErrorHandler(defaultErrorHandler);
 });
 afterEach(() => {
@@ -45,14 +30,6 @@ afterEach(() => {
 	// 	}
 	// }
 
-	// the default NodeJS process tick works fine when tests are executed in isolation,
-	// but causes failure when sequenced within the same Vitest launch
-	// ... so we use the Promise -based tick
-	if (fallbackTick) {
-		setTick(fallbackTick);
-	} else {
-		setTick(tick);
-	}
 	setErrorHandler(defaultErrorHandler);
 });
 
@@ -74,26 +51,6 @@ test('test2', () => {
 	expect(b.get()).toBe(3);
 });
 
-test('test3a', () => {
-	syncTick();
-	let order = '0';
-	// forwards the expect() assertions to Vitest
-	setErrorHandler((err) => {
-		throw err;
-	});
-	const a = obs(1);
-	a.on('change', (evt) => {
-		order += '2';
-		expect(a.get()).toBe(2);
-		expect(evt.data.current).toBe(2);
-		expect(evt.data.previous).toBe(1);
-	});
-	order += '1';
-	expect(a.get()).toBe(1);
-	a.set(2);
-	order += '3';
-	expect(order).toBe('0123');
-});
 test('test3b', () => {
 	let order = '0';
 	// forwards the expect() assertions to Vitest
@@ -207,57 +164,6 @@ test('test8a', () => {
 	order += '2';
 	a.set(2);
 	order += '3';
-	let err: Error | undefined;
-	try {
-		b.get();
-		expect(false).toBe(true);
-	} catch (e) {
-		err = e as Error;
-		order += '6';
-	}
-	expect(err).instanceOf(TypeError);
-	expect(err?.message).toBe('!!');
-	order += '7';
-	expect(order).toBe('01234567');
-});
-
-test('test8b', () => {
-	syncTick();
-
-	let order = '0';
-
-	// forwards the expect() assertions to Vitest
-	setErrorHandler((err) => {
-		if (!(err instanceof TypeError)) {
-			throw err;
-		}
-	});
-	const a = obs(1, {
-		name: '_A_',
-	});
-	const b = obs(
-		() => {
-			if (a.get() === 2) {
-				order += '3';
-				throw new TypeError('!!');
-			}
-			order += '1';
-			return a.get() + 1;
-		},
-		{
-			name: '_B_',
-		},
-	);
-
-	b.on('error', (evt) => {
-		order += '4';
-		expect(evt.data.error).instanceOf(TypeError);
-		expect(evt.data.error?.message).toBe('!!');
-	});
-	expect(b.get()).toBe(2);
-	order += '2';
-	a.set(2);
-	order += '5';
 	let err: Error | undefined;
 	try {
 		b.get();

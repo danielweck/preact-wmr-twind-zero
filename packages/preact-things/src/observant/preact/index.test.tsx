@@ -15,19 +15,12 @@ import { afterEach, beforeEach, expect, test } from 'vitest';
 import { cleanup, render, waitFor } from '../../../preact-testing-library.js';
 import { clearCache, suspendCache } from '../../suspend-cache.js';
 import { Suspense } from '../../xpatched/suspense.js';
-import { type Obs, fallbackTick, obs, setErrorHandler, setTick, tick } from '../index.js';
+import { type Obs, obs, setErrorHandler } from '../index.js';
 import { preactObservant } from './index.js';
 
 const defaultErrorHandler = (err: Error, msg?: string) => {
 	console.log(`VITEST: (${msg})`, err);
 };
-
-// const syncTick = () => {
-// 	// sync! (no process tick / microtask)
-// 	setTick((func, ...args) => {
-// 		func(...args);
-// 	});
-// };
 
 let _unhandledEvents: PromiseRejectionEvent[] = [];
 function onUnhandledRejection(event: PromiseRejectionEvent) {
@@ -46,14 +39,6 @@ beforeEach(() => {
 		window.addEventListener('unhandledrejection', onUnhandledRejection);
 	}
 
-	// the default NodeJS process tick works fine when tests are executed in isolation,
-	// but causes failure when sequenced within the same Vitest launch
-	// ... so we use the Promise -based tick
-	if (fallbackTick) {
-		setTick(fallbackTick);
-	} else {
-		setTick(tick);
-	}
 	setErrorHandler(defaultErrorHandler);
 });
 afterEach(() => {
@@ -69,14 +54,6 @@ afterEach(() => {
 		}
 	}
 
-	// the default NodeJS process tick works fine when tests are executed in isolation,
-	// but causes failure when sequenced within the same Vitest launch
-	// ... so we use the Promise -based tick
-	if (fallbackTick) {
-		setTick(fallbackTick);
-	} else {
-		setTick(tick);
-	}
 	setErrorHandler(defaultErrorHandler);
 });
 
@@ -100,6 +77,55 @@ afterEach(() => {
 
 // 	throw lastError;
 // }
+
+test('test8a DOM', () => {
+	let order = '0';
+
+	// forwards the expect() assertions to Vitest
+	setErrorHandler((err) => {
+		if (!(err instanceof TypeError)) {
+			throw err;
+		}
+	});
+	const a = obs(1, {
+		name: '_A_',
+	});
+	const b = obs(
+		() => {
+			if (a.get() === 2) {
+				order += '4';
+				throw new TypeError('!!');
+			}
+			order += '1';
+			return a.get() + 1;
+		},
+		{
+			name: '_B_',
+		},
+	);
+
+	b.on('error', (evt) => {
+		order += '5';
+		expect(evt.data.error).instanceOf(TypeError);
+		expect(evt.data.error?.message).toBe('!!');
+	});
+	expect(b.get()).toBe(2);
+	order += '2';
+	a.set(2);
+	order += '3';
+	let err: Error | undefined;
+	try {
+		b.get();
+		expect(false).toBe(true);
+	} catch (e) {
+		err = e as Error;
+		order += '6';
+	}
+	expect(err).instanceOf(TypeError);
+	expect(err?.message).toBe('!!');
+	order += '7';
+	expect(order).toBe('01234567');
+});
 
 test('preactObservant() makes component reactive', async () => {
 	let testPlan = 0;

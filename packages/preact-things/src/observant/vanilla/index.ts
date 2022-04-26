@@ -10,27 +10,86 @@ export type NotUndefined<T> = Exclude<T, undefined>;
 // export type NeverNullOrUndefined<T> = T extends null | undefined ? never : T;
 // export type NeverUndefined<T> = T extends undefined ? never : T;
 
+// https://developer.mozilla.org/en-US/docs/Web/API/HTML_DOM_API/Microtask_guide
+// https://developer.mozilla.org/en-US/docs/Web/API/queueMicrotask
+// https://nodejs.org/api/globals.html#queuemicrotaskcallback
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type TickFunc = <T extends NotUndefined<any>[]>(func: (...args: T) => unknown, ...args: T) => void;
 
-export const fallbackTick: TickFunc = (func, ...args) => {
-	// eslint-disable-next-line promise/catch-or-return
-	Promise.resolve().then(() => {
-		// eslint-disable-next-line promise/no-callback-in-promise
-		return func(...args);
-	});
-};
-export const tick: TickFunc =
-	typeof globalThis !== 'undefined'
-		? globalThis.process?.nextTick
-			? globalThis.process.nextTick
-			: globalThis.setImmediate
-			? globalThis.setImmediate
-			: fallbackTick
-		: fallbackTick;
+export const tickNodeJSSetTimeout: TickFunc | undefined =
+	typeof globalThis !== 'undefined' && typeof globalThis.setTimeout
+		? (func, ...args) => {
+				globalThis.setTimeout(
+					(argz) => {
+						func(...argz);
+					},
+					0,
+					args,
+				);
+		  }
+		: undefined;
+// console.log('DEBUG tickNodeJSSetTimeout: ', typeof tickNodeJSSetTimeout);
 
-let __tick = tick;
-export const setTick = (func: TickFunc) => {
+export const tickNodeJSQueueMicrotask: TickFunc | undefined =
+	typeof globalThis !== 'undefined' && typeof globalThis.queueMicrotask
+		? (func, ...args) => {
+				globalThis.queueMicrotask(() => {
+					func(...args);
+				});
+		  }
+		: undefined;
+// console.log('DEBUG tickNodeJSQueueMicrotask: ', typeof tickNodeJSQueueMicrotask);
+
+export const tickNodeJSSetImmediate: TickFunc | undefined =
+	typeof globalThis !== 'undefined' && typeof globalThis.setImmediate ? globalThis.setImmediate : undefined;
+// console.log('DEBUG tickNodeJSSetImmediate: ', typeof tickNodeJSSetImmediate);
+
+export const tickNodeJSProcessNextTick: TickFunc | undefined =
+	typeof globalThis !== 'undefined' && typeof globalThis.process?.nextTick ? globalThis.process.nextTick : undefined;
+// console.log('DEBUG tickNodeJSProcessNextTick: ', typeof tickNodeJSProcessNextTick);
+
+export const tickDOMSetTimeout: TickFunc | undefined =
+	typeof self !== 'undefined' && typeof self.setTimeout
+		? (func, ...args) => {
+				(self as WindowOrWorkerGlobalScope).setTimeout(
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
+					(argz: any) => {
+						func(...argz);
+					},
+					0,
+					args,
+				);
+		  }
+		: undefined;
+// console.log('DEBUG tickDOMSetTimeout: ', typeof tickDOMSetTimeout);
+
+export const tickDOMQueueMicrotask: TickFunc | undefined =
+	typeof self !== 'undefined' && typeof self.queueMicrotask
+		? (func, ...args) => {
+				(self as WindowOrWorkerGlobalScope).queueMicrotask(() => {
+					func(...args);
+				});
+		  }
+		: undefined;
+// console.log('DEBUG tickDOMQueueMicrotask: ', typeof tickDOMQueueMicrotask);
+
+export const tickPromise: TickFunc | undefined =
+	typeof Promise !== 'undefined'
+		? (func, ...args) => {
+				// eslint-disable-next-line promise/catch-or-return,promise/always-return
+				Promise.resolve().then(() => {
+					func(...args);
+				});
+		  }
+		: undefined;
+// console.log('DEBUG tickPromise: ', typeof tickPromise);
+
+export const tickDefault = tickDOMQueueMicrotask ?? tickNodeJSProcessNextTick ?? tickPromise;
+
+let __tick = tickDefault;
+export const setTick = (func: TickFunc | undefined) => {
+	// console.log('setTick', typeof func, func !== __tick);
 	__tick = func;
 };
 
@@ -406,7 +465,12 @@ export class Obs<T = TObservable> {
 				}
 			} while (i);
 		} else if (__state.pending.push(this) === 1) {
-			__tick(__state.resolvePending);
+			if (__tick) {
+				__tick(__state.resolvePending);
+			} else {
+				console.log('OBSERVANT NO TICK?!!');
+				__state.resolvePending();
+			}
 		}
 	}
 
