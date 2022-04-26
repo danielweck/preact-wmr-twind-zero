@@ -18,7 +18,7 @@ export type NotUndefined<T> = Exclude<T, undefined>;
 export type TickFunc = <T extends NotUndefined<any>[]>(func: (...args: T) => unknown, ...args: T) => void;
 
 export const tickNodeJSSetTimeout: TickFunc | undefined =
-	typeof globalThis !== 'undefined' && typeof globalThis.setTimeout
+	typeof globalThis !== 'undefined' && globalThis.setTimeout
 		? (func, ...args) => {
 				globalThis.setTimeout(
 					(argz) => {
@@ -32,7 +32,7 @@ export const tickNodeJSSetTimeout: TickFunc | undefined =
 // console.log('DEBUG tickNodeJSSetTimeout: ', typeof tickNodeJSSetTimeout);
 
 export const tickNodeJSQueueMicrotask: TickFunc | undefined =
-	typeof globalThis !== 'undefined' && typeof globalThis.queueMicrotask
+	typeof globalThis !== 'undefined' && globalThis.queueMicrotask
 		? (func, ...args) => {
 				globalThis.queueMicrotask(() => {
 					func(...args);
@@ -42,15 +42,16 @@ export const tickNodeJSQueueMicrotask: TickFunc | undefined =
 // console.log('DEBUG tickNodeJSQueueMicrotask: ', typeof tickNodeJSQueueMicrotask);
 
 export const tickNodeJSSetImmediate: TickFunc | undefined =
-	typeof globalThis !== 'undefined' && typeof globalThis.setImmediate ? globalThis.setImmediate : undefined;
+	typeof globalThis !== 'undefined' && globalThis.setImmediate ? globalThis.setImmediate : undefined;
 // console.log('DEBUG tickNodeJSSetImmediate: ', typeof tickNodeJSSetImmediate);
 
 export const tickNodeJSProcessNextTick: TickFunc | undefined =
-	typeof globalThis !== 'undefined' && typeof globalThis.process?.nextTick ? globalThis.process.nextTick : undefined;
+	typeof globalThis !== 'undefined' && globalThis.process?.nextTick ? globalThis.process.nextTick : undefined;
 // console.log('DEBUG tickNodeJSProcessNextTick: ', typeof tickNodeJSProcessNextTick);
 
 export const tickDOMSetTimeout: TickFunc | undefined =
-	typeof self !== 'undefined' && typeof self.setTimeout
+	// @ts-expect-error TS2774
+	typeof self !== 'undefined' && self.setTimeout
 		? (func, ...args) => {
 				(self as WindowOrWorkerGlobalScope).setTimeout(
 					// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -65,7 +66,8 @@ export const tickDOMSetTimeout: TickFunc | undefined =
 // console.log('DEBUG tickDOMSetTimeout: ', typeof tickDOMSetTimeout);
 
 export const tickDOMQueueMicrotask: TickFunc | undefined =
-	typeof self !== 'undefined' && typeof self.queueMicrotask
+	// @ts-expect-error TS2774
+	typeof self !== 'undefined' && self.queueMicrotask
 		? (func, ...args) => {
 				(self as WindowOrWorkerGlobalScope).queueMicrotask(() => {
 					func(...args);
