@@ -54,14 +54,14 @@
 		"@twind/preset-tailwind-forms": "^1.0.0-next.37",
 		"@twind/preset-typography": "^1.0.0-next.37",
 		"@types/babel__core": "^7.1.19",
-		"@types/babel__traverse": "^7.17.0",
+		"@types/babel__traverse": "^7.17.1",
 		"browserslist": "^4.20.3",
 		"eslint": "^8.14.0",
 		"kolorist": "^1.5.1",
 		"preact-render-to-string": "^5.1.21",
 		"prettier": "^2.6.2",
 		"rollup": "^2.70.2",
-		"stylelint": "^14.7.1",
+		"stylelint": "^14.8.0",
 		"twind": "^1.0.0-next.37",
 		"wmr": "^3.7.2"
 	}
