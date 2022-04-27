@@ -262,14 +262,26 @@ const obsPerf = () => {
 
 	return duration;
 };
+
+// Safari 11-12
+// Chrome 8-9
+// Firefox 22-25
 const ObservantPerf = () => {
 	const [perf, setPerf] = useState(0);
 	return (
 		<>
 			<hr />
 			<button
-				onClick={() => {
-					setPerf(obsPerf());
+				onClick={async () => {
+					const COUNT = 10;
+					let count = COUNT;
+					let total = 0;
+					while (count--) {
+						await new Promise((resolve) => setTimeout(resolve, 200));
+						const p = obsPerf();
+						total += p;
+					}
+					setPerf(total / COUNT);
 				}}
 			>
 				{`OBS PERF (${perf})`}
