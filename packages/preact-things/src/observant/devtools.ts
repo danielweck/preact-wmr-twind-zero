@@ -1,4 +1,4 @@
-import type { Obs } from './vanilla/index.js';
+import type { IObs } from './vanilla/index.js';
 
 // https://github.com/reduxjs/redux-devtools/blob/14e4178d598b09d1c6936a470056bc04b35a88d8/extension/src/app/api/index.ts#L522-L536
 // export interface ConnectResponse {
@@ -56,7 +56,7 @@ export const obsDevTools = <
 	// 	REDUXDEVTOOLSEXTENSION_DISPATCH_MESSAGE?: Message;
 	// },
 >(
-	observantRootState: Obs<T>,
+	observantRootState: IObs<T>,
 	name: string,
 ) => {
 	const devtools = window.__REDUX_DEVTOOLS_EXTENSION__?.connect({ name: name || `Observant State ${_stateCount++}` });

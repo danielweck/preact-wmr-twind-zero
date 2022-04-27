@@ -15,7 +15,7 @@ import { afterEach, beforeEach, expect, test } from 'vitest';
 import { cleanup, render, waitFor } from '../../../preact-testing-library.js';
 import { clearCache, suspendCache } from '../../suspend-cache.js';
 import { Suspense } from '../../xpatched/suspense.js';
-import { type Obs, obs, setErrorHandler } from '../vanilla/index.js';
+import { type IObs, obs, setErrorHandler } from '../vanilla/index.js';
 import { preactObservant } from './index.js';
 
 const defaultErrorHandler = (err: Error, msg?: string) => {
@@ -132,7 +132,7 @@ test('preactObservant() makes component reactive', async () => {
 	const container = document.createElement('div');
 	const a = obs('foo');
 
-	const RenderSignal = preactObservant(function RenderSignal({ signal }: { signal: Obs<string> }) {
+	const RenderSignal = preactObservant(function RenderSignal({ signal }: { signal: IObs<string> }) {
 		return <Fragment>{signal.get()}</Fragment>;
 	});
 
@@ -161,7 +161,7 @@ test('preactObservant() makes component reactive 2', async () => {
 	const container = document.createElement('div');
 	const a = obs('foo');
 
-	const RenderSignal = preactObservant(function RenderSignal({ signal }: { signal: Obs<string> }) {
+	const RenderSignal = preactObservant(function RenderSignal({ signal }: { signal: IObs<string> }) {
 		return <Fragment>{signal.get()}</Fragment>;
 	});
 
@@ -197,7 +197,7 @@ test('preactObservant() makes component reactive 2 diff', async () => {
 	const a = obs('foo');
 	const b = obs('one');
 
-	const RenderSignal = preactObservant(function RenderSignal({ signal }: { signal: Obs<string> }) {
+	const RenderSignal = preactObservant(function RenderSignal({ signal }: { signal: IObs<string> }) {
 		return <Fragment>{signal.get()}</Fragment>;
 	});
 
@@ -238,7 +238,7 @@ test('preactObservant() makes component reactive 2 diff nested', async () => {
 		signal,
 		children,
 	}: {
-		signal: Obs<string>;
+		signal: IObs<string>;
 		children?: ComponentChildren;
 	}) {
 		return (
@@ -285,7 +285,7 @@ test('preactObservant() makes component reactive 2 diff calc', async () => {
 		return `${a.get()}one`;
 	});
 
-	const RenderSignal = preactObservant(function RenderSignal({ signal }: { signal: Obs<string> }) {
+	const RenderSignal = preactObservant(function RenderSignal({ signal }: { signal: IObs<string> }) {
 		return <Fragment>{signal.get()}</Fragment>;
 	});
 
@@ -328,7 +328,7 @@ test('preactObservant() makes component reactive 2 diff nested calc', async () =
 		signal,
 		children,
 	}: {
-		signal: Obs<string>;
+		signal: IObs<string>;
 		children?: ComponentChildren;
 	}) {
 		return (
@@ -380,7 +380,7 @@ test('preactObservant() isolates re-renders to current component', async () => {
 	}: {
 		debug: string;
 		name: string;
-		signal: Obs<string>;
+		signal: IObs<string>;
 	}) {
 		rerenders[name] = (rerenders[name] || 0) + 1;
 		return <Fragment>{signal.get()}</Fragment>;
@@ -430,7 +430,7 @@ test('preactObservant() isolates re-renders to current nested component', async 
 	}: {
 		debug: string;
 		name: string;
-		signal: Obs<string>;
+		signal: IObs<string>;
 	}) {
 		rerenders[name] = (rerenders[name] || 0) + 1;
 		return <Fragment>{signal.get()}</Fragment>;
@@ -442,8 +442,8 @@ test('preactObservant() isolates re-renders to current nested component', async 
 		signal,
 	}: {
 		debug: string;
-		name: Obs<string>;
-		signal: Obs<string>;
+		name: IObs<string>;
+		signal: IObs<string>;
 	}) {
 		const name = nameSignal.get();
 		rerenders[name] = (rerenders[name] || 0) + 1;
@@ -504,7 +504,7 @@ test('preactObservant() isolates re-renders to current nested component 2', asyn
 	}: {
 		debug: string;
 		name: string;
-		signal: Obs<string>;
+		signal: IObs<string>;
 		children?: ComponentChildren;
 	}) {
 		rerenders[name] = (rerenders[name] || 0) + 1;
@@ -609,7 +609,7 @@ test('preactObservant() recovers from errors', async () => {
 	const doThrow = obs(true);
 
 	const Thrower = preactObservant(
-		function Thrower({ throwSignal }: { throwSignal: Obs<boolean> }) {
+		function Thrower({ throwSignal }: { throwSignal: IObs<boolean> }) {
 			if (throwSignal.get()) {
 				throw new Error('MyFooError');
 			}
@@ -805,7 +805,7 @@ test('preactObservant handles Suspense / Lazy - thrown Promise that resolves', a
 	};
 
 	const Thrower = preactObservant(
-		function Thrower({ throwSignal }: { throwSignal: Obs<boolean> }) {
+		function Thrower({ throwSignal }: { throwSignal: IObs<boolean> }) {
 			if (throwSignal.get()) {
 				const [success, failure] = suspendCache(asyncFunc, [], 'my cache key');
 				const str = typeof success !== 'undefined' ? success : typeof failure !== 'undefined' ? `${failure}` : '?!';
@@ -890,7 +890,7 @@ test('preactObservant handles Suspense / Lazy - thrown Promise that rejects', as
 	};
 
 	const Thrower = preactObservant(
-		function Thrower({ throwSignal }: { throwSignal: Obs<boolean> }) {
+		function Thrower({ throwSignal }: { throwSignal: IObs<boolean> }) {
 			if (throwSignal.get()) {
 				const [success, failure] = suspendCache(asyncFunc, [], 'my cache key');
 				const str = typeof success !== 'undefined' ? success : typeof failure !== 'undefined' ? `${failure}` : '?!';

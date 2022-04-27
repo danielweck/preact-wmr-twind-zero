@@ -4,10 +4,10 @@
 import type { FunctionComponent } from 'preact';
 import { type MutableRef, useEffect, useRef, useState } from 'preact/hooks';
 
-import { type Obs, obs } from '../vanilla/index.js';
+import { type IObs, obs } from '../vanilla/index.js';
 
 export interface ReactionTracking {
-	obs: Obs<boolean>;
+	obs: IObs<boolean>;
 	cleanAt: number;
 	mounted?: boolean;
 }
@@ -116,7 +116,7 @@ export const preactObservant = <T extends object>(
 			{
 				name: 'PREACT_OBS',
 			},
-		) as Obs<boolean>;
+		) as IObs<boolean>;
 		o.on('change', (evt) => {
 			if (evt.data.previous === undefined) {
 				// console.log('CHANGE (first) => ignore', o._name, debugComponentDisplayName, evt.data.current);

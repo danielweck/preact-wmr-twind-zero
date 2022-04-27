@@ -1,5 +1,5 @@
 import { preactObservant } from '@preact-wmr-twind-zero/preact-things/observant/preact/index.js';
-import { type Obs, obs } from '@preact-wmr-twind-zero/preact-things/observant/vanilla/index.js';
+import { type IObs, obs } from '@preact-wmr-twind-zero/preact-things/observant/vanilla/index.js';
 import { ContextSlotsProvider, Slot } from '@preact-wmr-twind-zero/preact-things/slots.js';
 import { func } from '@preact-wmr-twind-zero/shared';
 import { func as func2 } from '@preact-wmr-twind-zero/shared/func.js';
@@ -291,39 +291,41 @@ const _subObservant = obs(0, {
 const _renders1: Record<string, number> = {};
 const _renders2: Record<string, number> = {};
 const _renders3: Record<string, number> = {};
-const PreactiveComp = preactObservant(({ signal, children }: { signal: Obs<number>; children?: ComponentChildren }) => {
-	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-	_renders1[signal._name!] = (_renders1[signal._name!] || 0) + 1;
-	useEffect(() => {
+const PreactiveComp = preactObservant(
+	({ signal, children }: { signal: IObs<number>; children?: ComponentChildren }) => {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		_renders2[signal._name!] = (_renders2[signal._name!] || 0) + 1;
-		return () => {
+		_renders1[signal._name!] = (_renders1[signal._name!] || 0) + 1;
+		useEffect(() => {
 			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-			_renders3[signal._name!] = (_renders3[signal._name!] || 0) + 1;
-		};
-	});
-	return (
-		<>
-			<hr />
-			<button
-				onClick={() => {
-					signal.set(signal.get() + 1);
-				}}
-			>
-				{`${signal._name}++`}
-			</button>
-			<pre>{JSON.stringify(signal.get(), null, 4)}</pre>
-			<p>render 1:</p>
-			<pre>{JSON.stringify(_renders1, null, 4)}</pre>
-			<p>render 2:</p>
-			<pre>{JSON.stringify(_renders2, null, 4)}</pre>
-			<p>render 3:</p>
-			<pre>{JSON.stringify(_renders3, null, 4)}</pre>
-			<hr />
-			{children ? children : null}
-		</>
-	);
-});
+			_renders2[signal._name!] = (_renders2[signal._name!] || 0) + 1;
+			return () => {
+				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+				_renders3[signal._name!] = (_renders3[signal._name!] || 0) + 1;
+			};
+		});
+		return (
+			<>
+				<hr />
+				<button
+					onClick={() => {
+						signal.set(signal.get() + 1);
+					}}
+				>
+					{`${signal._name}++`}
+				</button>
+				<pre>{JSON.stringify(signal.get(), null, 4)}</pre>
+				<p>render 1:</p>
+				<pre>{JSON.stringify(_renders1, null, 4)}</pre>
+				<p>render 2:</p>
+				<pre>{JSON.stringify(_renders2, null, 4)}</pre>
+				<p>render 3:</p>
+				<pre>{JSON.stringify(_renders3, null, 4)}</pre>
+				<hr />
+				{children ? children : null}
+			</>
+		);
+	},
+);
 
 // "prerenderIndex": 0,
 // "ssr": true,
