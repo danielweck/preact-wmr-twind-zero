@@ -1,5 +1,5 @@
 import { preactObservant } from '@preact-wmr-twind-zero/preact-things/observant/preact/index.js';
-import { type IObs, obs } from '@preact-wmr-twind-zero/preact-things/observant/vanilla/index.js';
+import { type IObs, Obs, obs } from '@preact-wmr-twind-zero/preact-things/observant/vanilla/index.js';
 import { ContextSlotsProvider, Slot } from '@preact-wmr-twind-zero/preact-things/slots.js';
 import { func } from '@preact-wmr-twind-zero/shared';
 import { func as func2 } from '@preact-wmr-twind-zero/shared/func.js';
@@ -8,6 +8,8 @@ import { other } from '@preact-wmr-twind-zero/shared/sub';
 import { foo } from '@preact-wmr-twind-zero/shared/sub/foo.js';
 // eslint-disable-next-line import/no-duplicates
 import { other as other2 } from '@preact-wmr-twind-zero/shared/sub/other.js';
+// eslint-disable-next-line import/default
+import cellx from 'cellx';
 import type { ComponentChildren } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import hydrate from 'preact-iso/hydrate';
@@ -173,8 +175,8 @@ const RoutedLazy = lazy(
 const obsPerf = () => {
 	const start = {
 		prop1: obs(1),
-		prop2: obs(2),
-		prop3: obs(3),
+		prop2: Obs(2),
+		prop3: new Obs(3),
 		prop4: obs(4),
 	};
 
@@ -291,6 +293,127 @@ const ObservantPerf = () => {
 	);
 };
 
+const obsPerfCellX = () => {
+	const start = {
+		prop1: cellx.cellx(1),
+		prop2: cellx.cellx(2),
+		prop3: cellx.cellx(3),
+		prop4: cellx.cellx(4),
+	};
+
+	let layer = start;
+	for (let i = 5000; i > 0; i--) {
+		layer = (function (m) {
+			const s = {
+				prop1: cellx.cellx(function () {
+					return m.prop2();
+				}),
+				prop2: cellx.cellx(function () {
+					return m.prop1() - m.prop3();
+				}),
+				prop3: cellx.cellx(function () {
+					return m.prop2() + m.prop4();
+				}),
+				prop4: cellx.cellx(function () {
+					return m.prop3();
+				}),
+			};
+
+			s.prop1.on('change', () => {
+				// noop
+			});
+			s.prop2.on('change', () => {
+				// noop
+			});
+			s.prop3.on('change', () => {
+				// noop
+			});
+			s.prop4.on('change', () => {
+				// noop
+			});
+
+			s.prop1();
+			s.prop2();
+			s.prop3();
+			s.prop4();
+
+			return s;
+		})(layer);
+	}
+
+	const end = layer;
+
+	if (end.prop1() !== 2) {
+		console.log(`PERF end.prop1() !== 2: ${end.prop1()}`);
+	}
+	if (end.prop2() !== 4) {
+		console.log(`PERF end.prop2() !== 4: ${end.prop2()}`);
+	}
+	if (end.prop3() !== -1) {
+		console.log(`PERF end.prop3() !== -1: ${end.prop3()}`);
+	}
+	if (end.prop4() !== -6) {
+		console.log(`PERF end.prop4() !== -6: ${end.prop4()}`);
+	}
+
+	const timeStart = performance.now();
+
+	start.prop1(4);
+	start.prop2(3);
+	start.prop3(2);
+	start.prop4(1);
+
+	if (end.prop1() !== -2) {
+		console.log(`PERF end.prop1() !== -2: ${end.prop1()}`);
+	}
+	if (end.prop2() !== 1) {
+		console.log(`PERF end.prop2() !== 1: ${end.prop2()}`);
+	}
+	if (end.prop3() !== -4) {
+		console.log(`PERF end.prop3() !== -4: ${end.prop3()}`);
+	}
+	if (end.prop4() !== -4) {
+		console.log(`PERF end.prop4() !== -4: ${end.prop4()}`);
+	}
+
+	const duration = performance.now() - timeStart;
+
+	// expect(duration).toBeGreaterThanOrEqual(10);
+	// expect(duration).toBeLessThanOrEqual(40);
+
+	console.log(`PERF duration cellx (DOM): ${duration}`);
+
+	return duration;
+};
+
+// Safari 11-12 => 10-12
+// Chrome 8-9 => 8-8.5
+// Firefox 22-25 => 14-17
+const ObservantPerfCellX = () => {
+	const [perf, setPerf] = useState(0);
+	return (
+		<>
+			<hr />
+			<button
+				onClick={async () => {
+					const COUNT = 10;
+					let count = COUNT;
+					let total = 0;
+					while (count--) {
+						await new Promise((resolve) => setTimeout(resolve, 200));
+						const p = obsPerfCellX();
+						total += p;
+					}
+					setPerf(total / COUNT);
+				}}
+			>
+				{`OBS PERF CellX (${perf})`}
+			</button>
+			<hr />
+		</>
+	);
+};
+
 const _rootObservant = obs(0, {
 	name: 'ROOT',
 });
@@ -370,6 +493,7 @@ export const App = ({ prerenderIndex }: { prerenderIndex?: number }) => {
 					<p>prerenderIndex: {prerenderIndex}</p>
 				</StaticNoHydrate>
 				<ObservantPerf />
+				<ObservantPerfCellX />
 				<PreactiveComp signal={_rootObservant}>
 					<PreactiveComp signal={_subObservant} />
 				</PreactiveComp>

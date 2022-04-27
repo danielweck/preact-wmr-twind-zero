@@ -39,6 +39,9 @@ test('test1', () => {
 
 	const b = new Obs(2);
 	expect(b.get()).toBe(2);
+
+	const c = Obs(3);
+	expect(c.get()).toBe(3);
 });
 
 test('test2', () => {
@@ -49,6 +52,10 @@ test('test2', () => {
 	const b = new Obs(2);
 	b.set(3);
 	expect(b.get()).toBe(3);
+
+	const c = Obs(3);
+	c.set(4);
+	expect(c.get()).toBe(4);
 });
 
 test('test3b', () => {

@@ -336,9 +336,14 @@ export interface ObsConstructor<T> {
 	// (): void;
 }
 export const Obs = function <T>(this: IObs<T>, v: T | TCalc<T>, options?: TObsOptions<T>) {
-	if (this === undefined || (typeof Window !== 'undefined' && this.constructor === Window)) {
+	if (
+		typeof this === 'undefined' ||
+		typeof this.constructor === 'undefined' ||
+		(typeof Window !== 'undefined' && this.constructor === Window)
+	) {
 		return new Obs(v, options);
 	}
+
 	// this._this = this;
 	// this._thiz = options?.thiz ?? this;
 

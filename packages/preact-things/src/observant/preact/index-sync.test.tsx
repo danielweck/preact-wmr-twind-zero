@@ -10,7 +10,7 @@
 import { afterEach, beforeEach, expect, test } from 'vitest';
 
 import { cleanup } from '../../../preact-testing-library.js';
-import { obs, setErrorHandler, setTick } from '../vanilla/index.js';
+import { Obs, obs, setErrorHandler, setTick } from '../vanilla/index.js';
 
 const defaultErrorHandler = (err: Error, msg?: string) => {
 	console.log(`VITEST: (${msg})`, err);
@@ -76,6 +76,31 @@ afterEach(() => {
 
 // 	throw lastError;
 // }
+
+test('test1', () => {
+	const a = obs(1);
+	expect(a.get()).toBe(1);
+
+	const b = new Obs(2);
+	expect(b.get()).toBe(2);
+
+	const c = Obs(3);
+	expect(c.get()).toBe(3);
+});
+
+test('test2', () => {
+	const a = obs(1);
+	a.set(2);
+	expect(a.get()).toBe(2);
+
+	const b = new Obs(2);
+	b.set(3);
+	expect(b.get()).toBe(3);
+
+	const c = Obs(3);
+	c.set(4);
+	expect(c.get()).toBe(4);
+});
 
 test('test8b DOM', () => {
 	let order = '0';
