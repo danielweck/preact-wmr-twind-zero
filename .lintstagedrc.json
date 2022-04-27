@@ -1,7 +1,9 @@
 {
 	"*.{ts,tsx,js,jsx,mjs,cjs}": [
-		"pnpm lint-fix:staged-if-needed:eslint",
-		"vitest related --run --config vitest.config.js"
+		"pnpm lint-fix:staged-if-needed:eslint"
+	],
+	"!(**/observant/**/*).{ts,tsx,js,jsx,mjs,cjs}": [
+		"pnpm test:related"
 	],
 	"*.{html,htm,css,json,md,yml,yaml,svg,xml,ts,tsx,js,jsx,mjs,cjs}": ["pnpm lint-fix:staged-if-needed:prettier"],
 	"packages/wmr1/**/*.{html,htm,css,ts,tsx,js,jsx,mjs,cjs}": ["pnpm lint-fix:staged-if-needed:stylelint"]
