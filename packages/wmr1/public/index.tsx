@@ -295,9 +295,13 @@ const ObservantPerf = () => {
 
 const obsPerfCellX = () => {
 	const start = {
+		// eslint-disable-next-line import/no-named-as-default-member
 		prop1: cellx.cellx(1),
+		// eslint-disable-next-line import/no-named-as-default-member
 		prop2: cellx.cellx(2),
+		// eslint-disable-next-line import/no-named-as-default-member
 		prop3: cellx.cellx(3),
+		// eslint-disable-next-line import/no-named-as-default-member
 		prop4: cellx.cellx(4),
 	};
 
@@ -305,15 +309,19 @@ const obsPerfCellX = () => {
 	for (let i = 5000; i > 0; i--) {
 		layer = (function (m) {
 			const s = {
+				// eslint-disable-next-line import/no-named-as-default-member
 				prop1: cellx.cellx(function () {
 					return m.prop2();
 				}),
+				// eslint-disable-next-line import/no-named-as-default-member
 				prop2: cellx.cellx(function () {
 					return m.prop1() - m.prop3();
 				}),
+				// eslint-disable-next-line import/no-named-as-default-member
 				prop3: cellx.cellx(function () {
 					return m.prop2() + m.prop4();
 				}),
+				// eslint-disable-next-line import/no-named-as-default-member
 				prop4: cellx.cellx(function () {
 					return m.prop3();
 				}),
