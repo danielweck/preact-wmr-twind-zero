@@ -19,30 +19,35 @@ export type NotUndefined<T> = Exclude<T, undefined>;
 // https://nodejs.org/api/globals.html#queuemicrotaskcallback
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type TickFunc = <T extends NotUndefined<any>[]>(func: (...args: T) => unknown, ...args: T) => void;
+// export type TickFunc = <T extends NotUndefined<any>[]>(func: (...args: T) => unknown, ...args: T) => void;
+export type TickFunc = (func: () => void) => void;
 
+// export const tickNodeJSSetTimeout: TickFunc | undefined =
+// 	typeof globalThis !== 'undefined' && globalThis.setTimeout
+// 		? (func, ...args) => {
+// 				globalThis.setTimeout(
+// 					(argz) => {
+// 						func(...argz);
+// 					},
+// 					0,
+// 					args,
+// 				);
+// 		  }
+// 		: undefined;
 export const tickNodeJSSetTimeout: TickFunc | undefined =
-	typeof globalThis !== 'undefined' && globalThis.setTimeout
-		? (func, ...args) => {
-				globalThis.setTimeout(
-					(argz) => {
-						func(...argz);
-					},
-					0,
-					args,
-				);
-		  }
-		: undefined;
+	typeof globalThis !== 'undefined' && globalThis.setTimeout ? globalThis.setTimeout : undefined;
 // console.log('DEBUG tickNodeJSSetTimeout: ', typeof tickNodeJSSetTimeout);
 
+// export const tickNodeJSQueueMicrotask: TickFunc | undefined =
+// 	typeof globalThis !== 'undefined' && globalThis.queueMicrotask
+// 		? (func, ...args) => {
+// 				globalThis.queueMicrotask(() => {
+// 					func(...args);
+// 				});
+// 		  }
+// 		: undefined;
 export const tickNodeJSQueueMicrotask: TickFunc | undefined =
-	typeof globalThis !== 'undefined' && globalThis.queueMicrotask
-		? (func, ...args) => {
-				globalThis.queueMicrotask(() => {
-					func(...args);
-				});
-		  }
-		: undefined;
+	typeof globalThis !== 'undefined' && globalThis.queueMicrotask ? globalThis.queueMicrotask : undefined;
 // console.log('DEBUG tickNodeJSQueueMicrotask: ', typeof tickNodeJSQueueMicrotask);
 
 export const tickNodeJSSetImmediate: TickFunc | undefined =
@@ -53,38 +58,49 @@ export const tickNodeJSProcessNextTick: TickFunc | undefined =
 	typeof globalThis !== 'undefined' && globalThis.process?.nextTick ? globalThis.process.nextTick : undefined;
 // console.log('DEBUG tickNodeJSProcessNextTick: ', typeof tickNodeJSProcessNextTick);
 
+// export const tickDOMSetTimeout: TickFunc | undefined =
+// 	// @ts-expect-error TS2774
+// 	typeof self !== 'undefined' && self.setTimeout
+// 		? (func, ...args) => {
+// 				(self as WindowOrWorkerGlobalScope).setTimeout(
+// 					// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// 					(argz: any) => {
+// 						func(...argz);
+// 					},
+// 					0,
+// 					args,
+// 				);
+// 		  }
+// 		: undefined;
 export const tickDOMSetTimeout: TickFunc | undefined =
-	// @ts-expect-error TS2774
-	typeof self !== 'undefined' && self.setTimeout
-		? (func, ...args) => {
-				(self as WindowOrWorkerGlobalScope).setTimeout(
-					// eslint-disable-next-line @typescript-eslint/no-explicit-any
-					(argz: any) => {
-						func(...argz);
-					},
-					0,
-					args,
-				);
-		  }
-		: undefined;
+	typeof self !== 'undefined' && self.setTimeout ? self.setTimeout : undefined;
 // console.log('DEBUG tickDOMSetTimeout: ', typeof tickDOMSetTimeout);
 
+// export const tickDOMQueueMicrotask: TickFunc | undefined =
+// 	// @ts-expect-error TS2774
+// 	typeof self !== 'undefined' && self.queueMicrotask
+// 		? (func, ...args) => {
+// 				(self as WindowOrWorkerGlobalScope).queueMicrotask(() => {
+// 					func(...args);
+// 				});
+// 		  }
+// 		: undefined;
+
 export const tickDOMQueueMicrotask: TickFunc | undefined =
-	// @ts-expect-error TS2774
-	typeof self !== 'undefined' && self.queueMicrotask
-		? (func, ...args) => {
-				(self as WindowOrWorkerGlobalScope).queueMicrotask(() => {
-					func(...args);
-				});
-		  }
-		: undefined;
+	typeof self !== 'undefined' && self.queueMicrotask ? self.queueMicrotask : undefined;
 // console.log('DEBUG tickDOMQueueMicrotask: ', typeof tickDOMQueueMicrotask);
 
 const __promise = Promise.resolve();
-export const tickPromise: TickFunc = (func, ...args) => {
+// export const tickPromise: TickFunc = (func, ...args) => {
+// 	// eslint-disable-next-line promise/catch-or-return,promise/always-return
+// 	__promise.then(() => {
+// 		func(...args);
+// 	});
+// };
+export const tickPromise: TickFunc = (func) => {
 	// eslint-disable-next-line promise/catch-or-return,promise/always-return
 	__promise.then(() => {
-		func(...args);
+		func();
 	});
 };
 // console.log('DEBUG tickPromise: ', typeof tickPromise);
@@ -558,28 +574,6 @@ Obs.prototype.dispose = function <T>(this: IObs<T>) {
 };
 
 Obs.prototype._emitEventChange = function <T>(this: IObs<T>, evt: IObsEvent<T>) {
-	this._initialized = true;
-
-	this._updateID = ++__updateID;
-
-	const calcReactions = this._calcReactions;
-	const l = calcReactions.length;
-	for (let i = 0; i < l; i++) {
-		calcReactions[i]._addToPending(true);
-	}
-	// // this._calcReactions.forEach((calcReaction) => {
-	// // 	calcReaction._addToPending(true);
-	// // });
-	// // const it = this._calcReactions.values();
-	// // // eslint-disable-next-line @typescript-eslint/no-explicit-any
-	// // let calcReaction: IObs<any> | undefined;
-	// // while ((calcReaction = it.next().value)) {
-	// // 	calcReaction._addToPending(true);
-	// // }
-	// for (const calcReaction of this._calcReactions.values()) {
-	// 	calcReaction._addToPending(true);
-	// }
-
 	const listeners = this._eventListenersChange;
 	if (!listeners) {
 		return;
@@ -761,12 +755,17 @@ Obs.prototype._addToPending = function <T>(this: IObs<T>, dirty: boolean) {
 		// 		calcReaction._addToPending(false);
 		// 	}
 		// }
-	} else if (!arrayIncludes(__pendingObs, this) && __pendingObs.push(this) === 1) {
-		if (__tick) {
+	} else if (__tick) {
+		if (!arrayIncludes(__pendingObs, this) && __pendingObs.push(this) === 1) {
 			__tick(__resolvePending);
-		} else {
-			console.log('OBSERVANT NO TICK?!!');
-			__resolvePending();
+		}
+	} else {
+		// This code path is very problematic
+		// (breaks reactivity perf unit tests due to circular detection)
+		// => we NEED to yield the resolution of observer dependencies after the main processing loop.
+		console.log('OBSERVANT NO TICK?!!');
+		if (this._active) {
+			this._resolve();
 		}
 	}
 	// else {
@@ -980,6 +979,26 @@ Obs.prototype._setCurrent = function <T>(this: IObs<T>, value: T) {
 
 	if (changed) {
 		this._current = value;
+
+		this._updateID = ++__updateID;
+
+		const calcReactions = this._calcReactions;
+		const l = calcReactions.length;
+		for (let i = 0; i < l; i++) {
+			calcReactions[i]._addToPending(true);
+		}
+		// // this._calcReactions.forEach((calcReaction) => {
+		// // 	calcReaction._addToPending(true);
+		// // });
+		// // const it = this._calcReactions.values();
+		// // // eslint-disable-next-line @typescript-eslint/no-explicit-any
+		// // let calcReaction: IObs<any> | undefined;
+		// // while ((calcReaction = it.next().value)) {
+		// // 	calcReaction._addToPending(true);
+		// // }
+		// for (const calcReaction of this._calcReactions.values()) {
+		// 	calcReaction._addToPending(true);
+		// }
 
 		const evt: IObsEvent<T> = {
 			target: this,
