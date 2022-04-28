@@ -97,6 +97,33 @@ export const setTick = (func: TickFunc | undefined) => {
 	__tick = func;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const arrayIndexOf = <T>(arr: T[] | undefined, v: T): number => {
+	if (!arr) {
+		return -1;
+	}
+	const l = arr.length;
+	for (let i = 0; i < l; i++) {
+		if (arr[i] === v) {
+			return i;
+		}
+	}
+	return -1;
+};
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const arrayIncludes = <T>(arr: T[] | undefined, v: T): boolean => {
+	if (!arr) {
+		return false;
+	}
+	const l = arr.length;
+	for (let i = 0; i < l; i++) {
+		if (arr[i] === v) {
+			return true;
+		}
+	}
+	return false;
+};
+
 const defaultErrorHandler = (err: Error, msg?: string) => {
 	console.log(msg, err);
 };
@@ -139,17 +166,39 @@ const EnumState_deps = 3;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const __pendingObs: IObs<any>[] = [];
+// const __pendingObs: Set<IObs<any>> = new Set();
 let __pendingObsIndex = 0;
 const __resolvePending = () => {
+	// do not cache array.length here! (re-evaluated in loop)
 	while (__pendingObsIndex < __pendingObs.length) {
 		const obs = __pendingObs[__pendingObsIndex++];
 		if (obs._active) {
 			obs._resolve();
 		}
 	}
-
 	__pendingObs.length = 0;
 	__pendingObsIndex = 0;
+
+	// // __pendingObs.forEach((obs) => {
+	// // 	if (obs._active) {
+	// // 		obs._resolve();
+	// // 	}
+	// // });
+	// // const it = __pendingObs.values();
+	// // // eslint-disable-next-line @typescript-eslint/no-explicit-any
+	// // let obs: IObs<any> | undefined;
+	// // while ((obs = it.next().value)) {
+	// // 	if (obs._active) {
+	// // 		obs._resolve();
+	// // 	}
+	// // }
+	// for (const obs of __pendingObs.values()) {
+	// 	if (obs._active) {
+	// 		obs._resolve();
+	// 	}
+	// }
+
+	// __pendingObs.clear();
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -158,6 +207,44 @@ let __calcObs: IObs<any> | undefined;
 let __calcError: Error | undefined;
 
 let __updateID = 0;
+
+// interface IMySet<T> {
+// 	data: Set<T>;
+// 	has: (v: T) => boolean;
+// 	add: (v: T) => void;
+// 	delete: (v: T) => void;
+// 	clear: () => void;
+// }
+// interface MySetConstructor<T> {
+// 	new (): IMySet<T>;
+// 	(): IMySet<T>;
+// }
+// const MySet = Object.seal(function <T extends IObs<TObservable>>(this: IMySet<T>) {
+// 	if (
+// 		typeof this === 'undefined' ||
+// 		typeof this.constructor === 'undefined' ||
+// 		(typeof Window !== 'undefined' && this.constructor === Window)
+// 	) {
+// 		return new MySet();
+// 	}
+
+// 	this.data = new Set();
+
+// 	return this;
+// 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// }) as MySetConstructor<any>;
+// MySet.prototype.has = function <T>(this: IMySet<T>, v: T): boolean {
+// 	return this.data.has(v);
+// };
+// MySet.prototype.add = function <T>(this: IMySet<T>, v: T): void {
+// 	this.data.add(v);
+// };
+// MySet.prototype.delete = function <T>(this: IMySet<T>, v: T): void {
+// 	this.data.delete(v);
+// };
+// MySet.prototype.clear = function <T>(this: IMySet<T>): void {
+// 	this.data.clear();
+// };
 
 export interface IObs<T> {
 	set: (value: T) => void;
@@ -203,9 +290,10 @@ export interface IObs<T> {
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	_calcReactions: IObs<any>[];
+	// _calcReactions: Set<IObs<any>>;
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	_addCalcReaction: (calcReaction: IObs<any>, resolved: boolean) => void;
+	_addCalcReaction: (calcReaction: IObs<any>, resolved: boolean) => boolean;
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	_deleteCalcReaction: (calcReaction: IObs<any>) => void;
@@ -214,6 +302,7 @@ export interface IObs<T> {
 	// (see __calculating._$$calcDependencies in get())
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	_$$calcDependencies?: IObs<any>[];
+	// _$$calcDependencies?: Set<IObs<any>>;
 
 	_state: typeof EnumState_resolved | typeof EnumState_pending | typeof EnumState_deps;
 	_initialized: boolean;
@@ -248,6 +337,7 @@ export const Obs = Object.seal(function <T extends TObservable>(
 	this._eventListenersChange = undefined;
 	this._eventListenersError = undefined;
 
+	// this._calcReactions = new Set();
 	this._calcReactions = [];
 
 	this._activated = false;
@@ -283,9 +373,13 @@ Obs.prototype.get = function <T>(this: IObs<T>): T {
 	if (__calcObs) {
 		if (!__calcObs._$$calcDependencies) {
 			__calcObs._$$calcDependencies = [this];
-		} else if (!__calcObs._$$calcDependencies.includes(this)) {
+		} else if (!arrayIncludes(__calcObs._$$calcDependencies, this)) {
 			__calcObs._$$calcDependencies.push(this);
 		}
+		// if (!__calcObs._$$calcDependencies) {
+		// 	__calcObs._$$calcDependencies = new Set();
+		// }
+		// __calcObs._$$calcDependencies.add(this);
 	}
 
 	if (this._error) {
@@ -316,8 +410,10 @@ Obs.prototype.onChange = function <T>(this: IObs<T>, listener: TObsListener<T>):
 	if (!listeners) {
 		this._eventListenersChange = listener;
 	} else if (Array.isArray(listeners)) {
-		listeners.push(listener);
-	} else {
+		if (!arrayIncludes(listeners, listener)) {
+			listeners.push(listener);
+		}
+	} else if (listeners !== listener) {
 		this._eventListenersChange = [listeners, listener];
 	}
 
@@ -345,13 +441,19 @@ Obs.prototype.offChange = function <T>(this: IObs<T>, listener?: TObsListener<T>
 					this._eventListenersChange = undefined;
 				}
 			} else {
-				let i = l - 1;
-				while (i >= 0) {
+				// let i = l - 1;
+				// while (i >= 0) {
+				// 	if (listeners[i] === listener) {
+				// 		listeners.splice(i, 1);
+				// 		// break; possible multiple listeners!
+				// 	}
+				// 	i--;
+				// }
+				for (let i = 0; i < l; i++) {
 					if (listeners[i] === listener) {
 						listeners.splice(i, 1);
-						// break; possible multiple listeners!
+						break;
 					}
-					i--;
 				}
 			}
 		}
@@ -374,8 +476,10 @@ Obs.prototype.onError = function <T>(this: IObs<T>, listener: TObsListener<T>): 
 	if (!listeners) {
 		this._eventListenersError = listener;
 	} else if (Array.isArray(listeners)) {
-		listeners.push(listener);
-	} else {
+		if (!arrayIncludes(listeners, listener)) {
+			listeners.push(listener);
+		}
+	} else if (listeners !== listener) {
 		this._eventListenersError = [listeners, listener];
 	}
 
@@ -403,13 +507,19 @@ Obs.prototype.offError = function <T>(this: IObs<T>, listener?: TObsListener<T>)
 					this._eventListenersError = undefined;
 				}
 			} else {
-				let i = l - 1;
-				while (i >= 0) {
+				// let i = l - 1;
+				// while (i >= 0) {
+				// 	if (listeners[i] === listener) {
+				// 		listeners.splice(i, 1);
+				// 		// break; possible multiple listeners!
+				// 	}
+				// 	i--;
+				// }
+				for (let i = 0; i < l; i++) {
 					if (listeners[i] === listener) {
 						listeners.splice(i, 1);
-						// break; possible multiple listeners!
+						break;
 					}
-					i--;
 				}
 			}
 		}
@@ -431,6 +541,18 @@ Obs.prototype.dispose = function <T>(this: IObs<T>) {
 	for (let i = 0; i < l; i++) {
 		calcReactions[i].dispose();
 	}
+	// // this._calcReactions.forEach((calcReaction) => {
+	// // 	calcReaction.dispose();
+	// // });
+	// // const it = this._calcReactions.values();
+	// // // eslint-disable-next-line @typescript-eslint/no-explicit-any
+	// // let calcReaction: IObs<any> | undefined;
+	// // while ((calcReaction = it.next().value)) {
+	// // 	calcReaction.dispose();
+	// // }
+	// for (const calcReaction of this._calcReactions.values()) {
+	// 	calcReaction.dispose();
+	// }
 
 	return this;
 };
@@ -445,6 +567,18 @@ Obs.prototype._emitEventChange = function <T>(this: IObs<T>, evt: IObsEvent<T>) 
 	for (let i = 0; i < l; i++) {
 		calcReactions[i]._addToPending(true);
 	}
+	// // this._calcReactions.forEach((calcReaction) => {
+	// // 	calcReaction._addToPending(true);
+	// // });
+	// // const it = this._calcReactions.values();
+	// // // eslint-disable-next-line @typescript-eslint/no-explicit-any
+	// // let calcReaction: IObs<any> | undefined;
+	// // while ((calcReaction = it.next().value)) {
+	// // 	calcReaction._addToPending(true);
+	// // }
+	// for (const calcReaction of this._calcReactions.values()) {
+	// 	calcReaction._addToPending(true);
+	// }
 
 	const listeners = this._eventListenersChange;
 	if (!listeners) {
@@ -501,15 +635,26 @@ Obs.prototype._addCalcReaction = function <T>(
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	calcReaction: IObs<any>,
 	resolved: boolean,
-) {
+): boolean {
+	if (this === calcReaction) {
+		return false;
+	}
+
 	this._calcReactions.push(calcReaction);
+	// this._calcReactions.add(calcReaction);
 
 	this._activate(resolved);
+
+	return true;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 Obs.prototype._deleteCalcReaction = function <T>(this: IObs<T>, calcReaction: IObs<any>) {
-	this._calcReactions.splice(this._calcReactions.indexOf(calcReaction), 1);
+	const i = arrayIndexOf(this._calcReactions, calcReaction);
+	if (i >= 0) {
+		this._calcReactions.splice(i, 1);
+	}
+	// this._calcReactions.delete(calcReaction);
 
 	this._deactivate();
 };
@@ -525,11 +670,18 @@ Obs.prototype._activate = function <T>(this: IObs<T>, resolved: boolean) {
 		return;
 	}
 
-	let i = thisCalcDependencies.length - 1;
-	while (i >= 0) {
+	// let i = thisCalcDependencies.length - 1;
+	// while (i >= 0) {
+	// 	thisCalcDependencies[i]._addCalcReaction(this, resolved);
+	// 	i--;
+	// }
+	const l = thisCalcDependencies.length;
+	for (let i = 0; i < l; i++) {
 		thisCalcDependencies[i]._addCalcReaction(this, resolved);
-		i--;
 	}
+	// for (const calcDependency of thisCalcDependencies.values()) {
+	// 	calcDependency._addCalcReaction(this, resolved);
+	// }
 
 	if (resolved) {
 		this._state = EnumState_resolved;
@@ -551,13 +703,20 @@ Obs.prototype._deactivate = function <T>(this: IObs<T>) {
 
 	// _$$calcDependencies pointer copy, because can be modified externally
 	// (see __calculating._$$calcDependencies in get())
-	const thisDependencies = this._$$calcDependencies;
-	if (thisDependencies) {
-		let i = thisDependencies.length - 1;
-		while (i >= 0) {
-			thisDependencies[i]._deleteCalcReaction(this);
-			i--;
+	const thisCalcDependencies = this._$$calcDependencies;
+	if (thisCalcDependencies) {
+		// let i = thisCalcDependencies.length - 1;
+		// while (i >= 0) {
+		// 	thisCalcDependencies[i]._deleteCalcReaction(this);
+		// 	i--;
+		// }
+		const l = thisCalcDependencies.length;
+		for (let i = 0; i < l; i++) {
+			thisCalcDependencies[i]._deleteCalcReaction(this);
 		}
+		// for (const calcDependency of thisCalcDependencies.values()) {
+		// 	calcDependency._deleteCalcReaction(this);
+		// }
 	}
 
 	this._state = EnumState_pending;
@@ -568,16 +727,41 @@ Obs.prototype._addToPending = function <T>(this: IObs<T>, dirty: boolean) {
 	this._state = dirty ? EnumState_pending : EnumState_deps;
 
 	const calcReactions = this._calcReactions;
-	if (calcReactions.length) {
-		let i = calcReactions.length - 1;
-		while (i >= 0) {
+	const l = calcReactions.length;
+	if (l) {
+		// let i = l - 1;
+		// while (i >= 0) {
+		// 	const calcReaction = calcReactions[i];
+		// 	if (calcReaction._state === EnumState_resolved) {
+		// 		calcReaction._addToPending(false);
+		// 	}
+		// 	i--;
+		// }
+		for (let i = 0; i < l; i++) {
 			const calcReaction = calcReactions[i];
 			if (calcReaction._state === EnumState_resolved) {
 				calcReaction._addToPending(false);
 			}
-			i--;
 		}
-	} else if (__pendingObs.push(this) === 1) {
+		// // calcReactions.forEach((calcReaction) => {
+		// // 	if (calcReaction._state === EnumState_resolved) {
+		// // 		calcReaction._addToPending(false);
+		// // 	}
+		// // });
+		// // const it = calcReactions.values();
+		// // // eslint-disable-next-line @typescript-eslint/no-explicit-any
+		// // let calcReaction: IObs<any> | undefined;
+		// // while ((calcReaction = it.next().value)) {
+		// // 	if (calcReaction._state === EnumState_resolved) {
+		// // 		calcReaction._addToPending(false);
+		// // 	}
+		// // }
+		// for (const calcReaction of calcReactions.values()) {
+		// 	if (calcReaction._state === EnumState_resolved) {
+		// 		calcReaction._addToPending(false);
+		// 	}
+		// }
+	} else if (!arrayIncludes(__pendingObs, this) && __pendingObs.push(this) === 1) {
 		if (__tick) {
 			__tick(__resolvePending);
 		} else {
@@ -585,6 +769,17 @@ Obs.prototype._addToPending = function <T>(this: IObs<T>, dirty: boolean) {
 			__resolvePending();
 		}
 	}
+	// else {
+	// 	__pendingObs.add(this);
+	// 	if (__pendingObs.size === 1) {
+	// 		if (__tick) {
+	// 			__tick(__resolvePending);
+	// 		} else {
+	// 			console.log('OBSERVANT NO TICK?!!');
+	// 			__resolvePending();
+	// 		}
+	// 	}
+	// }
 };
 
 Obs.prototype._resolve = function <T>(this: IObs<T>) {
@@ -597,22 +792,40 @@ Obs.prototype._resolve = function <T>(this: IObs<T>) {
 	// (see __calculating._$$calcDependencies in get())
 	const thisCalcDependencies = this._$$calcDependencies;
 	if (this._state === EnumState_deps && thisCalcDependencies) {
-		let i = 0;
-		while (i < thisCalcDependencies.length) {
+		const l = thisCalcDependencies.length;
+		// let i = 0;
+		// while (i < l) {
+		// 	thisCalcDependencies[i]._resolve();
+
+		// 	// @ts-expect-error TS2367
+		// 	if (this._state === EnumState_pending) {
+		// 		this._doCalc();
+		// 		return;
+		// 	}
+
+		// 	i++;
+		// }
+		for (let i = 0; i < l; i++) {
 			thisCalcDependencies[i]._resolve();
 
 			// @ts-expect-error TS2367
 			if (this._state === EnumState_pending) {
 				this._doCalc();
-				break;
-			}
-
-			i++;
-			if (i === thisCalcDependencies.length) {
-				this._state = EnumState_resolved;
-				break;
+				return;
 			}
 		}
+		this._state = EnumState_resolved;
+
+		// for (const calcDependency of thisCalcDependencies.values()) {
+		// 	calcDependency._resolve();
+
+		// 	// @ts-expect-error TS2367
+		// 	if (this._state === EnumState_pending) {
+		// 		this._doCalc();
+		// 		return;
+		// 	}
+		// }
+		// this._state = EnumState_resolved;
 	}
 };
 
@@ -654,35 +867,65 @@ Obs.prototype._doCalc = function <T>(this: IObs<T>) {
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const thisCalcDependencies = this._$$calcDependencies as IObs<any>[] | undefined;
-		// the above type coersion is necessary because of preceeding this._$$calcDependencies = undefined
 		if (thisCalcDependencies) {
-			let i = thisCalcDependencies.length - 1;
-			while (i >= 0) {
+			const l = thisCalcDependencies.length;
+			// let i = l - 1;
+			// while (i >= 0) {
+			// 	const calcDependency = thisCalcDependencies[i];
+
+			// 	if (!arrayIncludes(previousCalcDependencies, calcDependency)) {
+			// 		if (calcDependency._addCalcReaction(this, false)) {
+			// 			newCalcDependenciesCount++;
+			// 		}
+			// 	}
+
+			// 	i--;
+			// }
+			for (let i = 0; i < l; i++) {
 				const calcDependency = thisCalcDependencies[i];
 
-				if (!previousCalcDependencies?.includes(calcDependency)) {
-					calcDependency._addCalcReaction(this, false);
-					newCalcDependenciesCount++;
+				if (!arrayIncludes(previousCalcDependencies, calcDependency)) {
+					if (calcDependency._addCalcReaction(this, false)) {
+						newCalcDependenciesCount++;
+					}
 				}
-
-				i--;
 			}
+			// for (const calcDependency of thisCalcDependencies.values()) {
+			// 	if (!previousCalcDependencies?.has(calcDependency)) {
+			// 		if (calcDependency._addCalcReaction(this, false)) {
+			// 			newCalcDependenciesCount++;
+			// 		}
+			// 	}
+			// }
 		}
 
 		if (
 			previousCalcDependencies &&
 			(!thisCalcDependencies || thisCalcDependencies.length - newCalcDependenciesCount < previousCalcDependencies.length)
 		) {
-			let i = previousCalcDependencies.length - 1;
-			while (i >= 0) {
+			const l = previousCalcDependencies.length;
+			// let i = l - 1;
+			// while (i >= 0) {
+			// 	const previousCalcDependency = previousCalcDependencies[i];
+
+			// 	if (!arrayIncludes(thisCalcDependencies, previousCalcDependency)) {
+			// 		previousCalcDependency._deleteCalcReaction(this);
+			// 	}
+
+			// 	i--;
+			// }
+			for (let i = 0; i < l; i++) {
 				const previousCalcDependency = previousCalcDependencies[i];
 
-				if (!thisCalcDependencies?.includes(previousCalcDependency)) {
+				if (!arrayIncludes(thisCalcDependencies, previousCalcDependency)) {
 					previousCalcDependency._deleteCalcReaction(this);
 				}
-
-				i--;
 			}
+			// for (const previousCalcDependency of previousCalcDependencies.values()) {
+			// 	if (!thisCalcDependencies?.has(previousCalcDependency)) {
+			// 		previousCalcDependency._deleteCalcReaction(this);
+			// 	}
+			// }
 		}
 
 		if (thisCalcDependencies) {
@@ -770,6 +1013,18 @@ Obs.prototype._setError = function <T>(this: IObs<T>, evt: IObsEvent<T> | undefi
 	for (let i = 0; i < l; i++) {
 		calcReactions[i]._setError(evt);
 	}
+	// // this._calcReactions.forEach((calcReaction) => {
+	// // 	calcReaction._setError(evt);
+	// // });
+	// // const it = this._calcReactions.values();
+	// // // eslint-disable-next-line @typescript-eslint/no-explicit-any
+	// // let calcReaction: IObs<any> | undefined;
+	// // while ((calcReaction = it.next().value)) {
+	// // 	calcReaction._setError(evt);
+	// // }
+	// for (const calcReaction of this._calcReactions.values()) {
+	// 	calcReaction._setError(evt);
+	// }
 };
 
 // export const test1 = obs(' ');

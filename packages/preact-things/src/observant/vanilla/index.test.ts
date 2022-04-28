@@ -127,10 +127,10 @@ test('test7', () => {
 	a.onChange(listener);
 	expect(count).toBe(0);
 	a.set(2);
-	expect(count).toBe(2);
+	expect(count).toBe(1);
 	a.offChange(listener);
 	a.set(3);
-	expect(count).toBe(2);
+	expect(count).toBe(1);
 });
 
 test('test8a', () => {

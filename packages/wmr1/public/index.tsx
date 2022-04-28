@@ -265,9 +265,9 @@ const obsPerf = () => {
 	return duration;
 };
 
-// Safari 8-9
+// Safari 7-8
 // Chrome 9-10
-// Firefox 12-14
+// Firefox 11-14
 const ObservantPerf = () => {
 	const [perf, setPerf] = useState(0);
 	return (
