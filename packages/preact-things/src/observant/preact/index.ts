@@ -117,18 +117,19 @@ export const preactObservant = <T extends object>(
 				name: 'PREACT_OBS',
 			},
 		) as IObs<boolean>;
-		o.on('change', (evt) => {
-			if (evt.data.previous === undefined) {
-				// console.log('CHANGE (first) => ignore', o._name, debugComponentDisplayName, evt.data.current);
+
+		o.onChange((evt) => {
+			if (evt.previous === undefined) {
+				// console.log('CHANGE (first) => ignore', o._name, debugComponentDisplayName, evt.current);
 				return;
 			}
 			// console.log(
 			// 	'CHANGE (again) => dispose ',
 			// 	o._name,
 			// 	debugComponentDisplayName,
-			// 	evt.data.previous,
+			// 	evt.previous,
 			// 	' => ',
-			// 	evt.data.current,
+			// 	evt.current,
 			// );
 
 			// o.off('change');
@@ -140,8 +141,8 @@ export const preactObservant = <T extends object>(
 				effectShouldUpdate = true;
 			}
 		});
-		o.on('error', (evt) => {
-			console.log('preactObservant.onError! ', o._name, componentDisplayName, evt.data.error);
+		o.onError((evt) => {
+			console.log('preactObservant.onError! ', o._name, componentDisplayName, evt.error);
 		});
 		o.get(); // triggers the first 'change' event from undefined to true
 

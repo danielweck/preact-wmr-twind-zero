@@ -46,11 +46,11 @@ test('test3a', () => {
 		throw err;
 	});
 	const a = obs(1);
-	a.on('change', (evt) => {
+	a.onChange((evt) => {
 		order += '2';
 		expect(a.get()).toBe(2);
-		expect(evt.data.current).toBe(2);
-		expect(evt.data.previous).toBe(1);
+		expect(evt.current).toBe(2);
+		expect(evt.previous).toBe(1);
 	});
 	order += '1';
 	expect(a.get()).toBe(1);
@@ -85,10 +85,10 @@ test('test8b', () => {
 		},
 	);
 
-	b.on('error', (evt) => {
+	b.onError((evt) => {
 		order += '4';
-		expect(evt.data.error).instanceOf(TypeError);
-		expect(evt.data.error?.message).toBe('!!');
+		expect(evt.error).instanceOf(TypeError);
+		expect(evt.error?.message).toBe('!!');
 	});
 	expect(b.get()).toBe(2);
 	order += '2';

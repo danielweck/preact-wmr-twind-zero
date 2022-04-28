@@ -198,16 +198,16 @@ const obsPerf = () => {
 				}),
 			};
 
-			s.prop1.on('change', () => {
+			s.prop1.onChange(() => {
 				// noop
 			});
-			s.prop2.on('change', () => {
+			s.prop2.onChange(() => {
 				// noop
 			});
-			s.prop3.on('change', () => {
+			s.prop3.onChange(() => {
 				// noop
 			});
-			s.prop4.on('change', () => {
+			s.prop4.onChange(() => {
 				// noop
 			});
 
@@ -265,9 +265,9 @@ const obsPerf = () => {
 	return duration;
 };
 
-// Safari 11-12 => 10-12
-// Chrome 8-9 => 8-8.5
-// Firefox 22-25 => 14-17
+// Safari 8-9
+// Chrome 9-10
+// Firefox 12-14
 const ObservantPerf = () => {
 	const [perf, setPerf] = useState(0);
 	return (
@@ -327,16 +327,16 @@ const obsPerfCellX = () => {
 				}),
 			};
 
-			s.prop1.on('change', () => {
+			s.prop1.onChange(() => {
 				// noop
 			});
-			s.prop2.on('change', () => {
+			s.prop2.onChange(() => {
 				// noop
 			});
-			s.prop3.on('change', () => {
+			s.prop3.onChange(() => {
 				// noop
 			});
-			s.prop4.on('change', () => {
+			s.prop4.onChange(() => {
 				// noop
 			});
 
@@ -428,7 +428,7 @@ const _rootObservant = obs(0, {
 const _subObservant = obs(0, {
 	name: 'SUB',
 });
-// _rootObservant.on('change', (_evt) => {
+// _rootObservant.onChange((_evt) => {
 // 	console.log('TRACE OBS CHANGE');
 // });
 const _renders1: Record<string, number> = {};

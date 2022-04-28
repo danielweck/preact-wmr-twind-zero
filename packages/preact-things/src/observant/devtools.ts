@@ -69,9 +69,9 @@ export const obsDevTools = <
 	let isTimeTraveling = false;
 	let isRecording = true;
 
-	observantRootState.on('change', (evt) => {
-		if (evt.data.error) {
-			console.log('obsDevTools onChange ERROR: ', evt.data.error);
+	observantRootState.onChange((evt) => {
+		if (evt.error) {
+			console.log('obsDevTools onChange ERROR: ', evt.error);
 			return;
 		}
 

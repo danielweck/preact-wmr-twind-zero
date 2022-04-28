@@ -1,8 +1,12 @@
-// The core observable logic copied from Cellx,
-// many thanks to the original developer for design a fast and memory-efficient reactive runtime:
+// The core observable logic in this single-file lib was copied from Cellx:
 // https://github.com/Riim/cellx
-// ... but this is otherwise a significant refactoring:
-// much smaller API surface (get/set, on-changed/on-error), improved typings, tweaked event emmitter, renamed things, etc.
+// Many thanks to the original developer for designing
+// a fast and memory-efficient reactive runtime!
+// This lib however is a significant refactoring:
+// much smaller API surface (get/set, on-changed/on-error),
+// improved typings,
+// simplified and inlined event emmitter,
+// many renamed things, etc. :)
 
 export type NotUndefined<T> = Exclude<T, undefined>;
 
@@ -93,238 +97,128 @@ export const setTick = (func: TickFunc | undefined) => {
 	__tick = func;
 };
 
-let __errorHandler = (err: Error, msg?: string) => {
+const defaultErrorHandler = (err: Error, msg?: string) => {
 	console.log(msg, err);
 };
-export const setErrorHandler = (errorHandler: typeof __errorHandler) => {
+let __errorHandler = defaultErrorHandler;
+export const setErrorHandler = (errorHandler: typeof defaultErrorHandler) => {
 	__errorHandler = errorHandler;
 };
 
 export interface IObsEvent<T> {
 	target: IObs<T>;
-	name: TObsEvent;
-	data: {
-		// [key: string]: any;
-		previous?: T;
-		current?: T;
-		error?: Error;
-	};
+	previous?: T;
+	current?: T;
+	error?: Error;
 }
 
 export type TObsListener<T> = {
 	(evt: IObsEvent<T>): unknown;
 };
 
-export type TObsListenerAndThiz<T> = {
-	listener: TObsListener<T>;
-	// thiz: TThiz<T>;
-};
-
 export type TObsOptions<T> = {
 	name?: string;
-	// thiz?: TThiz<T>;
 	eq?: (value1: T | undefined, value2: T | undefined) => boolean;
-};
-
-export type TObsEvent = 'change' | 'error';
-
-type TState = {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	pending: IObs<any>[];
-	pendingIndex: number;
-	resolvePending: () => void;
-
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	calculating?: IObs<any>;
-
-	calcError?: Error;
-
-	updateCount: number;
-};
-const __state: TState = {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	pending: [],
-
-	pendingIndex: 0,
-
-	resolvePending: () => {
-		while (__state.pendingIndex < __state.pending.length) {
-			const pendingObs = __state.pending[__state.pendingIndex++];
-
-			if (pendingObs._active) {
-				pendingObs._resolve();
-			}
-		}
-
-		__state.pending.length = 0;
-		__state.pendingIndex = 0;
-	},
-
-	calculating: undefined,
-
-	calcError: undefined,
-
-	updateCount: 0,
 };
 
 export type TObservablePrimitive = null | number | string | boolean;
 export type TObservable = TObservablePrimitive | Array<TObservablePrimitive> | Record<string, unknown>;
 export type TCalc<T> = () => T;
 
-// export type TThiz<T> = Obs<T> | object;
-
-// export type TObs<T = TObservable> = Obs<T> & IObs<T>;
-// export interface IObs<T = TObservable> {
-// 	_setError: (evt: IObsEvent<T> | undefined) => void;
+// :(
+// preserveConstEnums = false
+// isolatedModules = false
+// const enum EnumState {
+// 	resolved = 1,
+// 	pending,
+// 	deps,
 // }
-// implements IObs<T>
-// export class Obs<T = TObservable> {
-// 	declare set: (value: T) => void;
-// 	declare get: () => T;
-// 	declare on: (name: TObsEvent, listener: TObsListener<T>) => this;
-// 	declare off: (name?: TObsEvent, listener?: TObsListener<T>) => this;
-// 	declare dispose: () => void;
-// 	declare _emit: (name: TObsEvent, data: IObsEvent<T>['data']) => void;
-// 	declare _handleEvent: (evt: IObsEvent<T>) => void;
-// 	declare _tryEventListener: (evtListener: TObsListenerAndThiz<T>, evt: IObsEvent<T>) => void;
-// 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-// 	declare _addReaction: (reaction: Obs<any>, resolved: boolean) => void;
-// 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-// 	declare _deleteReaction: (reaction: Obs<any>) => void;
-// 	declare _activate: (resolved: boolean) => void;
-// 	declare _deactivate: () => void;
-// 	declare _onChange: (evt: IObsEvent<T>) => void;
-// 	declare _addToPending: (dirty: boolean) => void;
-// 	declare _resolve: () => void;
-// 	declare _doCalc: () => void;
-// 	declare _set: (value: T) => void;
-// 	declare _setError: (evt: IObsEvent<T> | undefined) => void;
+const EnumState_resolved = 1;
+const EnumState_pending = 2;
+const EnumState_deps = 3;
 
-// 	// declare readonly _this: IObs<T>;
-// 	// declare readonly _thiz: TThiz<T>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const __pendingObs: IObs<any>[] = [];
+let __pendingObsIndex = 0;
+const __resolvePending = () => {
+	while (__pendingObsIndex < __pendingObs.length) {
+		const obs = __pendingObs[__pendingObsIndex++];
+		if (obs._active) {
+			obs._resolve();
+		}
+	}
 
-// 	declare readonly _name?: string;
+	__pendingObs.length = 0;
+	__pendingObsIndex = 0;
+};
 
-// 	declare readonly _eq: (value1: T | undefined, value2: T | undefined) => boolean;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let __calcObs: IObs<any> | undefined;
 
-// 	declare readonly _eventListeners: Map<TObsEvent, TObsListenerAndThiz<T> | TObsListenerAndThiz<T>[]>;
+let __calcError: Error | undefined;
 
-// 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-// 	declare readonly _reactions: Obs<any>[];
-
-// 	// can be modified externally from other Observers
-// 	// (see __state.calculating._$$dependencies in get())
-// 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-// 	declare _$$dependencies?: Obs<any>[];
-
-// 	declare _state: 'resolved' | 'pending' | 'deps';
-// 	declare _initialized: boolean;
-
-// 	declare _current?: T;
-// 	declare _calc?: TCalc<T>;
-
-// 	declare _hasReactionsOrEventListeners: boolean;
-
-// 	declare _active: boolean;
-
-// 	declare _calculating: boolean;
-
-// 	declare _updateCount: number;
-
-// 	declare _error: Error | undefined;
-
-// 	declare _lastErrorEvent: IObsEvent<T> | undefined;
-
-// 	constructor(v: T | TCalc<T>, options?: TObsOptions<T>) {
-// 		// this._this = this;
-// 		// this._thiz = options?.thiz ?? this;
-
-// 		this._name = options?.name ?? undefined;
-
-// 		this._eq = options?.eq ?? Object.is; // referencial equality
-
-// 		this._eventListeners = new Map<TObsEvent, TObsListenerAndThiz<T> | TObsListenerAndThiz<T>[]>();
-
-// 		this._reactions = [];
-
-// 		this._initialized = false;
-
-// 		this._hasReactionsOrEventListeners = false;
-
-// 		this._active = false;
-
-// 		this._calculating = false;
-
-// 		this._updateCount = -1;
-
-// 		if (typeof v === 'function') {
-// 			this._state = 'pending';
-// 			this._calc = v as TCalc<T>;
-// 		} else {
-// 			this._state = 'resolved';
-// 			this._current = v as T;
-
-// 			this._initialized = true;
-
-// 			if (v instanceof Obs) {
-// 				v.on('change', this._onChange); // , this -- not this._thiz!
-// 			}
-// 		}
-// 	}
-// }
+let __updateID = 0;
 
 export interface IObs<T> {
 	set: (value: T) => void;
 	get: () => T;
-	on: (name: TObsEvent, listener: TObsListener<T>) => this;
-	off: (name?: TObsEvent, listener?: TObsListener<T>) => this;
+
+	onChange: (listener: TObsListener<T>) => this;
+	offChange: (listener?: TObsListener<T>) => this;
+
+	onError: (listener: TObsListener<T>) => this;
+	offError: (listener?: TObsListener<T>) => this;
+
 	dispose: () => void;
-	_emit: (name: TObsEvent, data: IObsEvent<T>['data']) => void;
-	_handleEvent: (evt: IObsEvent<T>) => void;
-	_tryEventListener: (evtListener: TObsListenerAndThiz<T>, evt: IObsEvent<T>) => void;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	_addReaction: (reaction: IObs<any>, resolved: boolean) => void;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	_deleteReaction: (reaction: IObs<any>) => void;
+
+	_emitEventChange: (evt: IObsEvent<T>) => void;
+	_emitEventError: (evt: IObsEvent<T>) => void;
+
+	_tryEventListener: (evtListener: TObsListener<T>, evt: IObsEvent<T>) => void;
+
+	_activated: boolean;
+	_active: boolean;
 	_activate: (resolved: boolean) => void;
 	_deactivate: () => void;
-	_onChange: (evt: IObsEvent<T>) => void;
+
 	_addToPending: (dirty: boolean) => void;
 	_resolve: () => void;
-	_doCalc: () => void;
-	_set: (value: T) => void;
-	_setError: (evt: IObsEvent<T> | undefined) => void;
 
-	// _this: IObs<T>;
-	// _thiz: TThiz<T>;
+	_calc?: TCalc<T>;
+	_doCalc: () => void;
+
+	_current?: T;
+	_setCurrent: (value: T) => void;
+
+	_setError: (evt: IObsEvent<T> | undefined) => void;
 
 	_name?: string;
 
 	_eq: (value1: T | undefined, value2: T | undefined) => boolean;
 
-	_eventListeners: Map<TObsEvent, TObsListenerAndThiz<T> | TObsListenerAndThiz<T>[]>;
-
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	_reactions: IObs<any>[];
-
-	// can be modified externally from other Observers
-	// (see __state.calculating._$$dependencies in get())
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	_$$dependencies?: IObs<any>[];
-
-	_state: 'resolved' | 'pending' | 'deps';
-	_initialized: boolean;
-
-	_current?: T;
-	_calc?: TCalc<T>;
-
-	_hasReactionsOrEventListeners: boolean;
-
-	_active: boolean;
+	_eventListenersChange: TObsListener<T> | TObsListener<T>[] | undefined;
+	_eventListenersError: TObsListener<T> | TObsListener<T>[] | undefined;
 
 	_calculating: boolean;
 
-	_updateCount: number;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	_calcReactions: IObs<any>[];
+
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	_addCalcReaction: (calcReaction: IObs<any>, resolved: boolean) => void;
+
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	_deleteCalcReaction: (calcReaction: IObs<any>) => void;
+
+	// can be modified externally from other Observers
+	// (see __calculating._$$calcDependencies in get())
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	_$$calcDependencies?: IObs<any>[];
+
+	_state: typeof EnumState_resolved | typeof EnumState_pending | typeof EnumState_deps;
+	_initialized: boolean;
+
+	_updateID: number;
 
 	_error: Error | undefined;
 
@@ -333,9 +227,12 @@ export interface IObs<T> {
 export interface ObsConstructor<T> {
 	new (v: T | TCalc<T>, options?: TObsOptions<T>): IObs<T>;
 	(v: T | TCalc<T>, options?: TObsOptions<T>): IObs<T>;
-	// (): void;
 }
-export const Obs = function <T>(this: IObs<T>, v: T | TCalc<T>, options?: TObsOptions<T>) {
+export const Obs = Object.seal(function <T extends TObservable>(
+	this: IObs<T>,
+	v: T | TCalc<T>,
+	options?: TObsOptions<T>,
+) {
 	if (
 		typeof this === 'undefined' ||
 		typeof this.constructor === 'undefined' ||
@@ -344,54 +241,50 @@ export const Obs = function <T>(this: IObs<T>, v: T | TCalc<T>, options?: TObsOp
 		return new Obs(v, options);
 	}
 
-	// this._this = this;
-	// this._thiz = options?.thiz ?? this;
-
 	this._name = options?.name ?? undefined;
 
 	this._eq = options?.eq ?? Object.is; // referencial equality
 
-	this._eventListeners = new Map<TObsEvent, TObsListenerAndThiz<T> | TObsListenerAndThiz<T>[]>();
+	this._eventListenersChange = undefined;
+	this._eventListenersError = undefined;
 
-	this._reactions = [];
+	this._calcReactions = [];
 
-	this._initialized = false;
-
-	this._hasReactionsOrEventListeners = false;
-
+	this._activated = false;
 	this._active = false;
 
 	this._calculating = false;
 
-	this._updateCount = -1;
+	this._updateID = -1;
 
 	if (typeof v === 'function') {
-		this._state = 'pending';
+		this._state = EnumState_pending;
 		this._calc = v as TCalc<T>;
+
+		this._initialized = false;
 	} else {
-		this._state = 'resolved';
+		this._state = EnumState_resolved;
 		this._current = v as T;
 
 		this._initialized = true;
-
-		if (v instanceof Obs) {
-			v.on('change', this._onChange); // , this -- not this._thiz!
-		}
 	}
+
 	return this;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-} as ObsConstructor<any>;
+}) as ObsConstructor<any>;
+
+export const obs = <T extends TObservable>(v: T | TCalc<T>, options?: TObsOptions<T>) => new Obs(v, options);
 
 Obs.prototype.get = function <T>(this: IObs<T>): T {
-	if (this._state !== 'resolved' && this._updateCount !== __state.updateCount) {
+	if (this._state !== EnumState_resolved && this._updateID !== __updateID) {
 		this._resolve();
 	}
 
-	if (__state.calculating) {
-		if (!__state.calculating._$$dependencies) {
-			__state.calculating._$$dependencies = [this];
-		} else if (!__state.calculating._$$dependencies.includes(this)) {
-			__state.calculating._$$dependencies.push(this);
+	if (__calcObs) {
+		if (!__calcObs._$$calcDependencies) {
+			__calcObs._$$calcDependencies = [this];
+		} else if (!__calcObs._$$calcDependencies.includes(this)) {
+			__calcObs._$$calcDependencies.push(this);
 		}
 	}
 
@@ -408,29 +301,24 @@ Obs.prototype.set = function <T>(this: IObs<T>, value: T) {
 		this._doCalc();
 	}
 
-	this._set(value);
+	this._setCurrent(value);
 
 	return this;
 };
 
-// , thiz?: TThiz<T>
-Obs.prototype.on = function <T>(this: IObs<T>, name: TObsEvent, listener: TObsListener<T>): IObs<T> {
-	if (this._$$dependencies) {
+Obs.prototype.onChange = function <T>(this: IObs<T>, listener: TObsListener<T>): IObs<T> {
+	// if (this._state === EnumState_pending || (this._state === EnumState_deps && this._$$calcDependencies)) {
+	if (this._$$calcDependencies) {
 		this._resolve();
 	}
 
-	const eventListeners = this._eventListeners.get(name);
-
-	// const that = thiz ? thiz : this._thiz;
-	// , thiz: that
-	const evt: TObsListenerAndThiz<T> = { listener };
-
-	if (!eventListeners) {
-		this._eventListeners.set(name, evt);
-	} else if (Array.isArray(eventListeners)) {
-		eventListeners.push(evt);
+	const listeners = this._eventListenersChange;
+	if (!listeners) {
+		this._eventListenersChange = listener;
+	} else if (Array.isArray(listeners)) {
+		listeners.push(listener);
 	} else {
-		this._eventListeners.set(name, [eventListeners, evt]);
+		this._eventListenersChange = [listeners, listener];
 	}
 
 	this._activate(true);
@@ -438,42 +326,95 @@ Obs.prototype.on = function <T>(this: IObs<T>, name: TObsEvent, listener: TObsLi
 	return this;
 };
 
-// , thiz?: TThiz<T>
-Obs.prototype.off = function <T>(this: IObs<T>, name?: TObsEvent, listener?: TObsListener<T>): IObs<T> {
-	if (this._$$dependencies) {
+Obs.prototype.offChange = function <T>(this: IObs<T>, listener?: TObsListener<T>): IObs<T> {
+	// if (this._state === EnumState_pending || (this._state === EnumState_deps && this._$$calcDependencies)) {
+	if (this._$$calcDependencies) {
 		this._resolve();
 	}
 
-	if (name && listener) {
-		// const that = thiz ? thiz : this._thiz;
-		const eventListeners = this._eventListeners.get(name);
-		if (eventListeners) {
-			let evt: TObsListenerAndThiz<T> | undefined;
-			let skipDelete = false;
-			if (!Array.isArray(eventListeners)) {
-				evt = eventListeners;
-			} else if (eventListeners.length === 1) {
-				evt = eventListeners[0];
+	if (listener) {
+		const listeners = this._eventListenersChange;
+		if (listeners) {
+			const l = listeners.length;
+			if (!Array.isArray(listeners)) {
+				if (listeners === listener) {
+					this._eventListenersChange = undefined;
+				}
+			} else if (l === 1) {
+				if (listeners[0] === listener) {
+					this._eventListenersChange = undefined;
+				}
 			} else {
-				for (let i = eventListeners.length; i; ) {
-					evt = eventListeners[--i];
-
-					//  && evt.thiz === that
-					if (evt.listener === listener) {
-						eventListeners.splice(i, 1);
+				let i = l - 1;
+				while (i >= 0) {
+					if (listeners[i] === listener) {
+						listeners.splice(i, 1);
 						// break; possible multiple listeners!
 					}
+					i--;
 				}
-				skipDelete = true;
-			}
-
-			//  && evt.thiz === that
-			if (!skipDelete && evt && evt.listener === listener) {
-				this._eventListeners.delete(name);
 			}
 		}
 	} else {
-		this._eventListeners.clear();
+		this._eventListenersChange = undefined;
+	}
+
+	this._deactivate();
+
+	return this;
+};
+
+Obs.prototype.onError = function <T>(this: IObs<T>, listener: TObsListener<T>): IObs<T> {
+	// if (this._state === EnumState_pending || (this._state === EnumState_deps && this._$$calcDependencies)) {
+	if (this._$$calcDependencies) {
+		this._resolve();
+	}
+
+	const listeners = this._eventListenersError;
+	if (!listeners) {
+		this._eventListenersError = listener;
+	} else if (Array.isArray(listeners)) {
+		listeners.push(listener);
+	} else {
+		this._eventListenersError = [listeners, listener];
+	}
+
+	this._activate(true);
+
+	return this;
+};
+
+Obs.prototype.offError = function <T>(this: IObs<T>, listener?: TObsListener<T>): IObs<T> {
+	// if (this._state === EnumState_pending || (this._state === EnumState_deps && this._$$calcDependencies)) {
+	if (this._$$calcDependencies) {
+		this._resolve();
+	}
+
+	if (listener) {
+		const listeners = this._eventListenersError;
+		if (listeners) {
+			const l = listeners.length;
+			if (!Array.isArray(listeners)) {
+				if (listeners === listener) {
+					this._eventListenersError = undefined;
+				}
+			} else if (l === 1) {
+				if (listeners[0] === listener) {
+					this._eventListenersError = undefined;
+				}
+			} else {
+				let i = l - 1;
+				while (i >= 0) {
+					if (listeners[i] === listener) {
+						listeners.splice(i, 1);
+						// break; possible multiple listeners!
+					}
+					i--;
+				}
+			}
+		}
+	} else {
+		this._eventListenersError = undefined;
 	}
 
 	this._deactivate();
@@ -482,189 +423,193 @@ Obs.prototype.off = function <T>(this: IObs<T>, name?: TObsEvent, listener?: TOb
 };
 
 Obs.prototype.dispose = function <T>(this: IObs<T>) {
-	this.off();
+	this.offChange();
+	this.offError();
 
-	const reactions = this._reactions;
-	for (let i = 0; i < reactions.length; i++) {
-		reactions[i].dispose();
+	const calcReactions = this._calcReactions;
+	const l = calcReactions.length;
+	for (let i = 0; i < l; i++) {
+		calcReactions[i].dispose();
 	}
-	// for (const reaction of this._reactions) {
-	// 	reaction.dispose();
-	// }
 
 	return this;
 };
 
-Obs.prototype._emit = function <T>(this: IObs<T>, name: TObsEvent, data: IObsEvent<T>['data']) {
-	const evt: IObsEvent<T> = {
-		target: this,
-		name,
-		data,
-	};
+Obs.prototype._emitEventChange = function <T>(this: IObs<T>, evt: IObsEvent<T>) {
+	this._initialized = true;
 
-	this._handleEvent(evt);
+	this._updateID = ++__updateID;
 
-	return evt;
-};
+	const calcReactions = this._calcReactions;
+	const l = calcReactions.length;
+	for (let i = 0; i < l; i++) {
+		calcReactions[i]._addToPending(true);
+	}
 
-Obs.prototype._handleEvent = function <T>(this: IObs<T>, evt: IObsEvent<T>) {
-	let eventListeners = this._eventListeners.get(evt.name);
-	if (!eventListeners) {
+	const listeners = this._eventListenersChange;
+	if (!listeners) {
 		return;
 	}
 
-	if (Array.isArray(eventListeners)) {
-		if (eventListeners.length === 1) {
-			this._tryEventListener(eventListeners[0], evt);
+	const tryEventListener = this._tryEventListener;
+	if (Array.isArray(listeners)) {
+		const l = listeners.length;
+		if (l === 1) {
+			tryEventListener(listeners[0], evt);
 		} else {
-			eventListeners = eventListeners.slice();
-			for (let i = 0; i < eventListeners.length; i++) {
-				this._tryEventListener(eventListeners[i], evt);
+			for (let i = 0; i < l; i++) {
+				tryEventListener(listeners[i], evt);
 			}
 		}
 	} else {
-		this._tryEventListener(eventListeners, evt);
+		tryEventListener(listeners, evt);
 	}
 };
 
-Obs.prototype._tryEventListener = function <T>(this: IObs<T>, evtListener: TObsListenerAndThiz<T>, evt: IObsEvent<T>) {
+Obs.prototype._emitEventError = function <T>(this: IObs<T>, evt: IObsEvent<T>) {
+	const listeners = this._eventListenersError;
+	if (!listeners) {
+		return;
+	}
+
+	const tryEventListener = this._tryEventListener;
+	if (Array.isArray(listeners)) {
+		const l = listeners.length;
+		if (l === 1) {
+			tryEventListener(listeners[0], evt);
+		} else {
+			for (let i = 0; i < l; i++) {
+				tryEventListener(listeners[i], evt);
+			}
+		}
+	} else {
+		tryEventListener(listeners, evt);
+	}
+};
+
+Obs.prototype._tryEventListener = function <T>(this: IObs<T>, listener: TObsListener<T>, evt: IObsEvent<T>) {
 	try {
-		// evtListener.listener.call(evtListener.thiz, evt);
-		evtListener.listener(evt);
+		listener(evt);
 	} catch (err) {
 		const exception = err instanceof Error ? err : new Error(String(err));
-		__errorHandler(exception, `Obs event listener error: [${evt.name}]`);
+		__errorHandler(exception, 'Obs event listener error');
 	}
 };
 
-Obs.prototype._addReaction = function <T>(
+Obs.prototype._addCalcReaction = function <T>(
 	this: IObs<T>,
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	reaction: IObs<any>,
+	calcReaction: IObs<any>,
 	resolved: boolean,
 ) {
-	this._reactions.push(reaction);
+	this._calcReactions.push(calcReaction);
 
 	this._activate(resolved);
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-Obs.prototype._deleteReaction = function <T>(this: IObs<T>, reaction: IObs<any>) {
-	this._reactions.splice(this._reactions.indexOf(reaction), 1);
+Obs.prototype._deleteCalcReaction = function <T>(this: IObs<T>, calcReaction: IObs<any>) {
+	this._calcReactions.splice(this._calcReactions.indexOf(calcReaction), 1);
 
 	this._deactivate();
 };
 
 Obs.prototype._activate = function <T>(this: IObs<T>, resolved: boolean) {
-	this._hasReactionsOrEventListeners = true;
+	this._activated = true;
 
-	if (this._active || !this._calc) {
+	// _$$calcDependencies pointer copy, because can be modified externally
+	// (see __calculating._$$calcDependencies in get())
+	const thisCalcDependencies = this._$$calcDependencies;
+
+	if (this._active || !this._calc || !thisCalcDependencies) {
 		return;
 	}
 
-	if (this._$$dependencies) {
-		// _$$dependencies pointer copy, because can be modified externally
-		// (see __state.calculating._$$dependencies in get())
-		const thisDependencies = this._$$dependencies;
-		let i = thisDependencies.length;
-		do {
-			thisDependencies[--i]._addReaction(this, resolved);
-		} while (i);
-
-		if (resolved) {
-			this._state = 'resolved';
-		}
-
-		this._active = true;
+	let i = thisCalcDependencies.length - 1;
+	while (i >= 0) {
+		thisCalcDependencies[i]._addCalcReaction(this, resolved);
+		i--;
 	}
+
+	if (resolved) {
+		this._state = EnumState_resolved;
+	}
+
+	this._active = true;
 };
 
 Obs.prototype._deactivate = function <T>(this: IObs<T>) {
-	if (
-		!this._hasReactionsOrEventListeners ||
-		this._reactions.length ||
-		this._eventListeners.has('change') ||
-		this._eventListeners.has('error')
-	) {
+	if (!this._activated || this._calcReactions.length || this._eventListenersChange || this._eventListenersError) {
 		return;
 	}
 
-	this._hasReactionsOrEventListeners = false;
+	this._activated = false;
 
 	if (!this._active) {
 		return;
 	}
 
-	if (this._$$dependencies) {
-		// _$$dependencies pointer copy, because can be modified externally
-		// (see __state.calculating._$$dependencies in get())
-		const thisDependencies = this._$$dependencies;
-		let i = thisDependencies.length;
-		do {
-			thisDependencies[--i]._deleteReaction(this);
-		} while (i);
+	// _$$calcDependencies pointer copy, because can be modified externally
+	// (see __calculating._$$calcDependencies in get())
+	const thisDependencies = this._$$calcDependencies;
+	if (thisDependencies) {
+		let i = thisDependencies.length - 1;
+		while (i >= 0) {
+			thisDependencies[i]._deleteCalcReaction(this);
+			i--;
+		}
 	}
 
-	this._state = 'pending';
+	this._state = EnumState_pending;
 	this._active = false;
 };
 
-Obs.prototype._onChange = function <T>(this: IObs<T>, evt: IObsEvent<T>) {
-	this._initialized = true;
-
-	this._updateCount = ++__state.updateCount;
-
-	const reactions = this._reactions;
-	for (let i = 0; i < reactions.length; i++) {
-		reactions[i]._addToPending(true);
-	}
-	// for (const reaction of this._reactions) {
-	// 	reaction._addToPending(true);
-	// }
-
-	this._handleEvent(evt);
-};
-
 Obs.prototype._addToPending = function <T>(this: IObs<T>, dirty: boolean) {
-	this._state = dirty ? 'pending' : 'deps';
+	this._state = dirty ? EnumState_pending : EnumState_deps;
 
-	let i = this._reactions.length;
-	if (i) {
-		do {
-			if (this._reactions[--i]._state === 'resolved') {
-				this._reactions[i]._addToPending(false);
+	const calcReactions = this._calcReactions;
+	if (calcReactions.length) {
+		let i = calcReactions.length - 1;
+		while (i >= 0) {
+			const calcReaction = calcReactions[i];
+			if (calcReaction._state === EnumState_resolved) {
+				calcReaction._addToPending(false);
 			}
-		} while (i);
-	} else if (__state.pending.push(this) === 1) {
+			i--;
+		}
+	} else if (__pendingObs.push(this) === 1) {
 		if (__tick) {
-			__tick(__state.resolvePending);
+			__tick(__resolvePending);
 		} else {
 			console.log('OBSERVANT NO TICK?!!');
-			__state.resolvePending();
+			__resolvePending();
 		}
 	}
 };
 
 Obs.prototype._resolve = function <T>(this: IObs<T>) {
-	if (this._state === 'pending') {
+	if (this._state === EnumState_pending) {
 		this._doCalc();
 		return;
 	}
-	if (this._state === 'deps' && this._$$dependencies) {
-		// _$$dependencies pointer copy, because can be modified externally
-		// (see __state.calculating._$$dependencies in get())
-		const thisDependencies = this._$$dependencies;
-		for (let i = 0; ; ) {
-			thisDependencies[i]._resolve();
+
+	// _$$calcDependencies pointer copy, because can be modified externally
+	// (see __calculating._$$calcDependencies in get())
+	const thisCalcDependencies = this._$$calcDependencies;
+	if (this._state === EnumState_deps && thisCalcDependencies) {
+		let i = 0;
+		while (i < thisCalcDependencies.length) {
+			thisCalcDependencies[i]._resolve();
 
 			// @ts-expect-error TS2367
-			if (this._state === 'pending') {
+			if (this._state === EnumState_pending) {
 				this._doCalc();
 				break;
 			}
 
-			if (++i === thisDependencies.length) {
-				this._state = 'resolved';
+			i++;
+			if (i === thisCalcDependencies.length) {
+				this._state = EnumState_resolved;
 				break;
 			}
 		}
@@ -681,150 +626,124 @@ Obs.prototype._doCalc = function <T>(this: IObs<T>) {
 	}
 	this._calculating = true;
 
-	const previousDependencies = this._$$dependencies;
-	this._$$dependencies = undefined;
+	const previousCalcDependencies = this._$$calcDependencies;
+	this._$$calcDependencies = undefined;
 
-	const previousCalculating = __state.calculating;
+	const previousCalcObs = __calcObs;
 	// eslint-disable-next-line @typescript-eslint/no-this-alias
-	__state.calculating = this;
+	__calcObs = this;
 
 	let calculated: T | undefined;
 	let errored: Error | undefined;
 	try {
-		// calculated = this._calc.call(this._thiz);
 		calculated = this._calc();
 	} catch (err) {
 		const exception = err instanceof Error ? err : new Error(String(err));
-		__state.calcError = exception;
-		errored = __state.calcError;
+		errored = __calcError = exception;
 	}
 
-	__state.calculating = previousCalculating;
+	__calcObs = previousCalcObs;
 
 	this._calculating = false;
 
-	if (this._hasReactionsOrEventListeners) {
-		let newDependenciesCount = 0;
+	if (this._activated) {
+		let newCalcDependenciesCount = 0;
 
-		// _$$dependencies pointer copy, because can be modified externally
-		// (see __state.calculating._$$dependencies in get())
+		// _$$calcDependencies pointer copy, because can be modified externally
+		// (see __calculating._$$calcDependencies in get())
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const thisDependencies = this._$$dependencies as IObs<any>[] | undefined;
-		// the above type coersion is necessary because of preceeding this._$$dependencies = undefined
-		if (thisDependencies) {
-			let i = thisDependencies.length;
-			do {
-				const dependency = thisDependencies[--i];
+		const thisCalcDependencies = this._$$calcDependencies as IObs<any>[] | undefined;
+		// the above type coersion is necessary because of preceeding this._$$calcDependencies = undefined
+		if (thisCalcDependencies) {
+			let i = thisCalcDependencies.length - 1;
+			while (i >= 0) {
+				const calcDependency = thisCalcDependencies[i];
 
-				if (!previousDependencies?.includes(dependency)) {
-					dependency._addReaction(this, false);
-					newDependenciesCount++;
+				if (!previousCalcDependencies?.includes(calcDependency)) {
+					calcDependency._addCalcReaction(this, false);
+					newCalcDependenciesCount++;
 				}
-			} while (i);
+
+				i--;
+			}
 		}
 
 		if (
-			previousDependencies &&
-			(!thisDependencies || thisDependencies.length - newDependenciesCount < previousDependencies.length)
+			previousCalcDependencies &&
+			(!thisCalcDependencies || thisCalcDependencies.length - newCalcDependenciesCount < previousCalcDependencies.length)
 		) {
-			let i = previousDependencies.length;
-			do {
-				const previousDependency = previousDependencies[--i];
+			let i = previousCalcDependencies.length - 1;
+			while (i >= 0) {
+				const previousCalcDependency = previousCalcDependencies[i];
 
-				if (!thisDependencies?.includes(previousDependency)) {
-					previousDependency._deleteReaction(this);
+				if (!thisCalcDependencies?.includes(previousCalcDependency)) {
+					previousCalcDependency._deleteCalcReaction(this);
 				}
-			} while (i);
-			// for (let i = previousDependencies.length; i; ) {
-			// 	i--;
 
-			// 	if (!thisDependencies_?.includes(previousDependencies[i])) {
-			// 		previousDependencies[i]._deleteReaction(this);
-			// 	}
-			// }
+				i--;
+			}
 		}
 
-		// this._$$dependencies
-		if (thisDependencies) {
+		if (thisCalcDependencies) {
 			this._active = true;
 		} else {
 			this._active = false;
-			this._state = 'resolved';
+			this._state = EnumState_resolved;
 		}
 	} else {
-		this._state = this._$$dependencies ? 'pending' : 'resolved';
+		this._state = this._$$calcDependencies ? EnumState_pending : EnumState_resolved;
 	}
 
 	if (typeof calculated !== 'undefined') {
-		this._set(calculated);
+		this._setCurrent(calculated);
 		return;
 	}
 
 	if (errored) {
 		this._initialized = true;
 
-		if (__state.calcError) {
+		if (__calcError) {
 			this._setError({
 				target: this,
-				name: 'error',
-				data: {
-					error: __state.calcError,
-				},
+				error: __calcError,
 			});
 
-			__errorHandler(__state.calcError, this._name);
+			__errorHandler(__calcError, this._name);
 		} else {
 			this._setError(undefined);
 		}
 
 		if (this._active) {
-			this._state = 'resolved';
+			this._state = EnumState_resolved;
 		}
 	}
 };
 
-Obs.prototype._set = function <T>(this: IObs<T>, value: T) {
+Obs.prototype._setCurrent = function <T>(this: IObs<T>, value: T) {
 	this._initialized = true;
 
-	const error = this._error;
-	if (error) {
+	if (this._error) {
 		this._setError(undefined);
 	}
 
+	if (this._active) {
+		this._state = EnumState_resolved;
+	}
+
 	const previous = this._current;
+
 	const changed = !this._eq(value, previous);
 
 	if (changed) {
 		this._current = value;
 
-		if (previous instanceof Obs) {
-			previous.off('change', this._onChange); // , this
-		}
-		if (value instanceof Obs) {
-			value.on('change', this._onChange); // , this
-		}
-	}
-
-	if (this._active) {
-		this._state = 'resolved';
-	}
-
-	this._updateCount = ++__state.updateCount;
-
-	if (changed) {
-		const reactions = this._reactions;
-		for (let i = 0; i < reactions.length; i++) {
-			reactions[i]._addToPending(true);
-		}
-		// for (const reaction of this._reactions) {
-		// 	reaction._addToPending(true);
-		// }
-
-		this._emit('change', {
+		const evt: IObsEvent<T> = {
+			target: this,
 			previous,
 			current: value,
-		});
+		};
+		this._emitEventChange(evt);
 	}
 
 	return changed;
@@ -836,25 +755,22 @@ Obs.prototype._setError = function <T>(this: IObs<T>, evt: IObsEvent<T> | undefi
 	}
 	this._lastErrorEvent = evt;
 
-	const error = evt?.data.error;
+	const error = evt?.error;
 
 	this._error = error;
 
-	this._updateCount = ++__state.updateCount;
+	this._updateID = ++__updateID;
+
 	if (evt) {
-		this._handleEvent(evt);
+		this._emitEventError(evt);
 	}
 
-	const reactions = this._reactions;
-	for (let i = 0; i < reactions.length; i++) {
-		reactions[i]._setError(evt);
+	const calcReactions = this._calcReactions;
+	const l = calcReactions.length;
+	for (let i = 0; i < l; i++) {
+		calcReactions[i]._setError(evt);
 	}
-	// for (const reaction of this._reactions) {
-	// 	reaction._setError(evt);
-	// }
 };
-
-export const obs = <T>(v: T | TCalc<T>, options?: TObsOptions<T>) => new Obs(v, options);
 
 // export const test1 = obs(' ');
 // export const test11 = obs(() => {

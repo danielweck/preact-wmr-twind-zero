@@ -59,16 +59,16 @@ test('perf NodeJS', () => {
 				}),
 			};
 
-			s.prop1.on('change', () => {
+			s.prop1.onChange(() => {
 				// noop
 			});
-			s.prop2.on('change', () => {
+			s.prop2.onChange(() => {
 				// noop
 			});
-			s.prop3.on('change', () => {
+			s.prop3.onChange(() => {
 				// noop
 			});
-			s.prop4.on('change', () => {
+			s.prop4.onChange(() => {
 				// noop
 			});
 

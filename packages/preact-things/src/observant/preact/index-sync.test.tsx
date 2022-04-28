@@ -128,10 +128,10 @@ test('test8b DOM', () => {
 		},
 	);
 
-	b.on('error', (evt) => {
+	b.onError((evt) => {
 		order += '4';
-		expect(evt.data.error).instanceOf(TypeError);
-		expect(evt.data.error?.message).toBe('!!');
+		expect(evt.error).instanceOf(TypeError);
+		expect(evt.error?.message).toBe('!!');
 	});
 	expect(b.get()).toBe(2);
 	order += '2';

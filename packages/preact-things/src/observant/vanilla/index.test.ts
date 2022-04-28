@@ -65,11 +65,11 @@ test('test3b', () => {
 		throw err;
 	});
 	const a = obs(1);
-	a.on('change', (evt) => {
+	a.onChange((evt) => {
 		order += '2';
 		expect(a.get()).toBe(2);
-		expect(evt.data.current).toBe(2);
-		expect(evt.data.previous).toBe(1);
+		expect(evt.current).toBe(2);
+		expect(evt.previous).toBe(1);
 	});
 	order += '1';
 	expect(a.get()).toBe(1);
@@ -91,14 +91,11 @@ test('test5', () => {
 
 	const a = obs(1);
 
-	a.on('change', (evt) => {
+	a.onChange((evt) => {
 		expect(evt).toEqual({
 			target: a,
-			name: 'change',
-			data: {
-				previous: 1,
-				current: 2,
-			},
+			previous: 1,
+			current: 2,
 		});
 	});
 
@@ -112,9 +109,9 @@ test('test6', () => {
 	const listener: TObsListener<number> = (_evt) => {
 		count++;
 	};
-	a.on('change', listener);
+	a.onChange(listener);
 	expect(count).toBe(0);
-	a.off('change', listener);
+	a.offChange(listener);
 	a.set(2);
 	expect(count).toBe(0);
 });
@@ -126,12 +123,12 @@ test('test7', () => {
 	const listener: TObsListener<number> = (_evt) => {
 		count++;
 	};
-	a.on('change', listener);
-	a.on('change', listener);
+	a.onChange(listener);
+	a.onChange(listener);
 	expect(count).toBe(0);
 	a.set(2);
 	expect(count).toBe(2);
-	a.off('change', listener);
+	a.offChange(listener);
 	a.set(3);
 	expect(count).toBe(2);
 });
@@ -162,10 +159,10 @@ test('test8a', () => {
 		},
 	);
 
-	b.on('error', (evt) => {
+	b.onError((evt) => {
 		order += '5';
-		expect(evt.data.error).instanceOf(TypeError);
-		expect(evt.data.error?.message).toBe('!!');
+		expect(evt.error).instanceOf(TypeError);
+		expect(evt.error?.message).toBe('!!');
 	});
 	expect(b.get()).toBe(2);
 	order += '2';
@@ -219,26 +216,26 @@ test('test9', () => {
 	);
 
 	let stage = 0;
-	a.on('change', (evt) => {
+	a.onChange((evt) => {
 		expect(evt.target._name).toBe('_A_');
-		expect(evt.data.previous).toBe('A');
-		expect(evt.data.current).toBe('a');
+		expect(evt.previous).toBe('A');
+		expect(evt.current).toBe('a');
 	});
-	b.on('change', (evt) => {
+	b.onChange((evt) => {
 		expect(evt.target._name).toBe('_B_');
-		expect(evt.data.previous).toBe(stage ? 'B+A' : undefined);
-		expect(evt.data.current).toBe(stage ? 'B+a' : 'B+A');
+		expect(evt.previous).toBe(stage ? 'B+A' : undefined);
+		expect(evt.current).toBe(stage ? 'B+a' : 'B+A');
 	});
-	c.on('change', (evt) => {
+	c.onChange((evt) => {
 		expect(evt.target._name).toBe('_C_');
-		expect(evt.data.previous).toBe(stage ? 'C+B+A' : undefined);
-		expect(evt.data.current).toBe(stage ? 'C+B+a' : 'C+B+A');
+		expect(evt.previous).toBe(stage ? 'C+B+A' : undefined);
+		expect(evt.current).toBe(stage ? 'C+B+a' : 'C+B+A');
 	});
-	d.on('change', (_evt) => {
+	d.onChange((_evt) => {
 		expect(true).toBe(false);
 		// expect(evt.target._name).toBe('_D_');
-		// expect(evt.data.previous).toBe(stage ? 'D+B+A' : undefined);
-		// expect(evt.data.current).toBe(stage ? 'D+B+a' : 'D+B+A');
+		// expect(evt.previous).toBe(stage ? 'D+B+A' : undefined);
+		// expect(evt.current).toBe(stage ? 'D+B+a' : 'D+B+A');
 	});
 	expect(b.get()).toBe('B+A');
 	expect(c.get()).toBe('C+B+A');
@@ -268,21 +265,21 @@ test('test10', () => {
 	);
 
 	let stage = 0;
-	a.on('change', (evt) => {
+	a.onChange((evt) => {
 		expect(evt.target._name).toBe('_A_');
-		expect(evt.data.previous).toBe('A');
-		expect(evt.data.current).toBe('a');
+		expect(evt.previous).toBe('A');
+		expect(evt.current).toBe('a');
 	});
-	b.on('change', (evt) => {
+	b.onChange((evt) => {
 		expect(evt.target._name).toBe('_B_');
-		expect(evt.data.previous).toEqual(
+		expect(evt.previous).toEqual(
 			stage === 0
 				? undefined
 				: {
 						b: 'A',
 				  },
 		);
-		expect(evt.data.current).toEqual(
+		expect(evt.current).toEqual(
 			stage === 0
 				? {
 						b: 'A',
@@ -305,23 +302,23 @@ test('test10', () => {
 test('test11', () => {
 	let check = '';
 	let toggle = 0;
+	const leaf = obs('foo');
+	leaf.onChange((evt) => {
+		check += `||LEAF_${evt.previous}->${evt.current}`;
+	});
+	const sub = obs(() => {
+		return `${leaf.get()}-bar`;
+	});
+	sub.onChange((evt) => {
+		check += `||SUB_${evt.previous}->${evt.current}`;
+	});
 	const root = obs(() => {
 		sub.get();
 		toggle++;
 		return toggle !== 1;
 	});
-	root.on('change', (evt) => {
-		check += `||ROOT_${evt.data.previous}->${evt.data.current}`;
-	});
-	const sub = obs(() => {
-		return `${leaf.get()}-bar`;
-	});
-	sub.on('change', (evt) => {
-		check += `||SUB_${evt.data.previous}->${evt.data.current}`;
-	});
-	const leaf = obs('foo');
-	leaf.on('change', (evt) => {
-		check += `||LEAF_${evt.data.previous}->${evt.data.current}`;
+	root.onChange((evt) => {
+		check += `||ROOT_${evt.previous}->${evt.current}`;
 	});
 	expect(root.get()).toBe(false);
 	expect(sub.get()).toBe('foo-bar');
