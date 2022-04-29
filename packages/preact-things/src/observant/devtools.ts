@@ -69,12 +69,7 @@ export const obsDevTools = <
 	let isTimeTraveling = false;
 	let isRecording = true;
 
-	observantRootState.onChange((evt) => {
-		if (evt.error) {
-			console.log('obsDevTools onChange ERROR: ', evt.error);
-			return;
-		}
-
+	observantRootState.onChange(() => {
 		if (isTimeTraveling) {
 			isTimeTraveling = false;
 		} else if (isRecording) {

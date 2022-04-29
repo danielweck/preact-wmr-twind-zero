@@ -2,7 +2,7 @@
 
 import { afterEach, beforeEach, expect, test } from 'vitest';
 
-import { obs, setErrorHandler } from './index.js';
+import { obs, onError } from './index.js';
 
 const defaultErrorHandler = (err: Error, msg?: string) => {
 	console.log(`VITEST: (${msg})`, err);
@@ -20,7 +20,7 @@ beforeEach(() => {
 	// 	window.addEventListener('unhandledrejection', onUnhandledRejection);
 	// }
 
-	setErrorHandler(defaultErrorHandler);
+	onError(defaultErrorHandler);
 });
 afterEach(() => {
 	// if ('onunhandledrejection' in window) {
@@ -30,7 +30,7 @@ afterEach(() => {
 	// 	}
 	// }
 
-	setErrorHandler(defaultErrorHandler);
+	onError(defaultErrorHandler);
 });
 
 test('perf NodeJS 5000', () => {

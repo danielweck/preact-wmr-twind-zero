@@ -1,5 +1,5 @@
 import { preactObservant } from '@preact-wmr-twind-zero/preact-things/observant/preact/index.js';
-import { type IObs, Obs, obs } from '@preact-wmr-twind-zero/preact-things/observant/vanilla/index.js';
+import { type IObs, obs } from '@preact-wmr-twind-zero/preact-things/observant/vanilla/index.js';
 import { ContextSlotsProvider, Slot } from '@preact-wmr-twind-zero/preact-things/slots.js';
 import { func } from '@preact-wmr-twind-zero/shared';
 import { func as func2 } from '@preact-wmr-twind-zero/shared/func.js';
@@ -175,8 +175,10 @@ const RoutedLazy = lazy(
 const obsPerf = () => {
 	const start = {
 		prop1: obs(1),
-		prop2: Obs(2),
-		prop3: new Obs(3),
+		// prop2: Obs(2),
+		// prop3: new Obs(3),
+		prop2: obs(2),
+		prop3: obs(3),
 		prop4: obs(4),
 	};
 
@@ -394,9 +396,9 @@ const obsPerfCellX = () => {
 	return duration;
 };
 
-// Safari 11-12 => 10-12
-// Chrome 8-9 => 8-8.5
-// Firefox 22-25 => 14-17
+// Safari 7-10
+// Chrome 11
+// Firefox 12-15
 const ObservantPerfCellX = () => {
 	const [perf, setPerf] = useState(0);
 	return (
@@ -422,12 +424,22 @@ const ObservantPerfCellX = () => {
 	);
 };
 
-const _rootObservant = obs(0, {
-	name: 'ROOT',
-});
-const _subObservant = obs(0, {
-	name: 'SUB',
-});
+const _rootObservant = obs(
+	0,
+	// {
+	// 	name: ,
+	// }
+);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// (_rootObservant as any)._name = 'ROOT'; // Object.seal()!
+const _subObservant = obs(
+	0,
+	// {
+	// 	name: 'SUB',
+	// }
+);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// (_subObservant as any)._name = 'SUB'; // Object.seal()!
 // _rootObservant.onChange((_evt) => {
 // 	console.log('TRACE OBS CHANGE');
 // });
@@ -435,15 +447,15 @@ const _renders1: Record<string, number> = {};
 const _renders2: Record<string, number> = {};
 const _renders3: Record<string, number> = {};
 const PreactiveComp = preactObservant(
-	({ signal, children }: { signal: IObs<number>; children?: ComponentChildren }) => {
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		_renders1[signal._name!] = (_renders1[signal._name!] || 0) + 1;
+	({ signal, signalName, children }: { signal: IObs<number>; signalName: string; children?: ComponentChildren }) => {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		_renders1[signalName] = (_renders1[signalName] || 0) + 1;
 		useEffect(() => {
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-			_renders2[signal._name!] = (_renders2[signal._name!] || 0) + 1;
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			_renders2[signalName] = (_renders2[signalName] || 0) + 1;
 			return () => {
-				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-				_renders3[signal._name!] = (_renders3[signal._name!] || 0) + 1;
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				_renders3[signalName] = (_renders3[signalName] || 0) + 1;
 			};
 		});
 		return (
@@ -454,7 +466,10 @@ const PreactiveComp = preactObservant(
 						signal.set(signal.get() + 1);
 					}}
 				>
-					{`${signal._name}++`}
+					{
+						// eslint-disable-next-line @typescript-eslint/no-explicit-any
+						`${signalName}++`
+					}
 				</button>
 				<pre>{JSON.stringify(signal.get(), null, 4)}</pre>
 				<p>render 1:</p>
@@ -502,9 +517,6 @@ export const App = ({ prerenderIndex }: { prerenderIndex?: number }) => {
 				</StaticNoHydrate>
 				<ObservantPerf />
 				<ObservantPerfCellX />
-				<PreactiveComp signal={_rootObservant}>
-					<PreactiveComp signal={_subObservant} />
-				</PreactiveComp>
 				<h1>Router status:</h1>
 				<p
 					class={`
@@ -658,6 +670,9 @@ export const App = ({ prerenderIndex }: { prerenderIndex?: number }) => {
 						</a>
 					</li>
 				</ul>
+				<PreactiveComp signal={_rootObservant} signalName="ROOT">
+					<PreactiveComp signal={_subObservant} signalName="SUB" />
+				</PreactiveComp>
 			</ContextSlotsProvider>
 		</LocationProvider>
 	);

@@ -15,7 +15,7 @@ import { afterEach, beforeEach, expect, test } from 'vitest';
 import { cleanup, render, waitFor } from '../../../preact-testing-library.js';
 import { clearCache, suspendCache } from '../../suspend-cache.js';
 import { Suspense } from '../../xpatched/suspense.js';
-import { type IObs, obs, setErrorHandler } from '../vanilla/index.js';
+import { type IObs, obs, onError } from '../vanilla/index.js';
 import { preactObservant } from './index.js';
 
 const defaultErrorHandler = (err: Error, msg?: string) => {
@@ -39,7 +39,7 @@ beforeEach(() => {
 		window.addEventListener('unhandledrejection', onUnhandledRejection);
 	}
 
-	setErrorHandler(defaultErrorHandler);
+	onError(defaultErrorHandler);
 });
 afterEach(() => {
 	clearCache();
@@ -54,7 +54,7 @@ afterEach(() => {
 		}
 	}
 
-	setErrorHandler(defaultErrorHandler);
+	onError(defaultErrorHandler);
 });
 
 // async function waitFor<T extends () => any>(
@@ -82,14 +82,17 @@ test('test8a DOM', () => {
 	let order = '0';
 
 	// forwards the expect() assertions to Vitest
-	setErrorHandler((err) => {
+	onError((err) => {
 		if (!(err instanceof TypeError)) {
 			throw err;
 		}
 	});
-	const a = obs(1, {
-		name: '_A_',
-	});
+	const a = obs(
+		1,
+		// 	{
+		// 	name: '_A_',
+		// }
+	);
 	const b = obs(
 		() => {
 			if (a.get() === 2) {
@@ -99,15 +102,15 @@ test('test8a DOM', () => {
 			order += '1';
 			return a.get() + 1;
 		},
-		{
-			name: '_B_',
-		},
+		// {
+		// 	name: '_B_',
+		// },
 	);
 
-	b.onError((evt) => {
+	b.onError((error) => {
 		order += '5';
-		expect(evt.error).instanceOf(TypeError);
-		expect(evt.error?.message).toBe('!!');
+		expect(error).instanceOf(TypeError);
+		expect(error?.message).toBe('!!');
 	});
 	expect(b.get()).toBe(2);
 	order += '2';
@@ -575,7 +578,7 @@ test('preactObservant() isolates re-renders to current nested component 2', asyn
 
 test('preactObservant() caches, logs, and renders the error in place of a component', async () => {
 	// forwards the expect() assertions to Vitest
-	setErrorHandler((err) => {
+	onError((err) => {
 		throw err;
 	});
 

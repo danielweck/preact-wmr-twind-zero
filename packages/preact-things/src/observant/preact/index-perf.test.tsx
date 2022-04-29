@@ -10,7 +10,7 @@
 import { afterEach, beforeEach, expect, test } from 'vitest';
 
 import { cleanup } from '../../../preact-testing-library.js';
-import { obs, setErrorHandler } from '../vanilla/index.js';
+import { obs, onError } from '../vanilla/index.js';
 
 const defaultErrorHandler = (err: Error, msg?: string) => {
 	console.log(`VITEST: (${msg})`, err);
@@ -33,7 +33,7 @@ beforeEach(() => {
 		window.addEventListener('unhandledrejection', onUnhandledRejection);
 	}
 
-	setErrorHandler(defaultErrorHandler);
+	onError(defaultErrorHandler);
 });
 afterEach(() => {
 	cleanup();
@@ -47,7 +47,7 @@ afterEach(() => {
 		}
 	}
 
-	setErrorHandler(defaultErrorHandler);
+	onError(defaultErrorHandler);
 });
 
 // async function waitFor<T extends () => any>(

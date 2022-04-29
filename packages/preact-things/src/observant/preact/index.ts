@@ -97,29 +97,24 @@ export const preactObservant = <T extends object>(
 		let renderedComponent: ReturnType<typeof Component> | undefined;
 		let renderedComponentException: unknown | undefined;
 
-		const o = obs<boolean>(
-			() => {
-				if (renderedComponent || renderedComponentException) {
-					const ret = !o._current;
-					// console.log('CALC (already rendered) ', o._name, ret, debugComponentDisplayName);
-					return ret;
-				}
-				try {
-					renderedComponent = Component(...args);
-				} catch (exception) {
-					renderedComponentException = exception;
-				}
-				const ret = o._current === undefined ? true : !o._current;
-				// console.log('CALC (just rendered) ', o._name, ret, debugComponentDisplayName);
+		const o = obs<boolean>(() => {
+			if (renderedComponent || renderedComponentException) {
+				const ret = !o._currentValue;
+				// console.log('CALC (already rendered) ', o._name, ret, debugComponentDisplayName);
 				return ret;
-			},
-			{
-				name: 'PREACT_OBS',
-			},
-		) as IObs<boolean>;
+			}
+			try {
+				renderedComponent = Component(...args);
+			} catch (exception) {
+				renderedComponentException = exception;
+			}
+			const ret = o._currentValue === undefined ? true : !o._currentValue;
+			// console.log('CALC (just rendered) ', o._name, ret, debugComponentDisplayName);
+			return ret;
+		}) as IObs<boolean>;
 
-		o.onChange((evt) => {
-			if (evt.previous === undefined) {
+		o.onChange((_current, previous) => {
+			if (previous === undefined) {
 				// console.log('CHANGE (first) => ignore', o._name, debugComponentDisplayName, evt.current);
 				return;
 			}
@@ -132,7 +127,6 @@ export const preactObservant = <T extends object>(
 			// 	evt.current,
 			// );
 
-			// o.off('change');
 			o.dispose();
 
 			if (reactionTrackingRef.current?.mounted) {
@@ -141,13 +135,14 @@ export const preactObservant = <T extends object>(
 				effectShouldUpdate = true;
 			}
 		});
-		o.onError((evt) => {
-			console.log('preactObservant.onError! ', o._name, componentDisplayName, evt.error);
+		o.onError((error) => {
+			console.log('preactObservant.onError! ', componentDisplayName, error);
 		});
 		o.get(); // triggers the first 'change' event from undefined to true
 
 		if (reactionTrackingRef.current) {
 			reactionTrackingRef.current.obs = o;
+			reactionTrackingRef.current.cleanAt = Date.now() + CLEANUP_TIME;
 		} else {
 			const trackingData: ReactionTracking = {
 				cleanAt: Date.now() + CLEANUP_TIME,

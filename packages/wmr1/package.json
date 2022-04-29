@@ -39,15 +39,15 @@
 		"@preact-wmr-twind-zero/preact-things": "^0.0.0",
 		"@preact-wmr-twind-zero/shared": "^0.0.0",
 		"cellx": "^1.10.26",
-		"fast-equals": "^3.0.1",
+		"fast-equals": "^3.0.2",
 		"preact": "^10.7.1",
 		"preact-iso": "^2.3.0"
 	},
 	"devDependencies": {
-		"@babel/core": "^7.17.9",
+		"@babel/core": "^7.17.10",
 		"@babel/plugin-syntax-jsx": "^7.16.7",
-		"@babel/plugin-syntax-typescript": "^7.16.7",
-		"@babel/types": "^7.17.0",
+		"@babel/plugin-syntax-typescript": "^7.17.10",
+		"@babel/types": "^7.17.10",
 		"@parcel/css": "^1.8.1",
 		"@twind/preset-autoprefix": "^1.0.0-next.37",
 		"@twind/preset-ext": "^1.0.0-next.37",
@@ -59,10 +59,10 @@
 		"browserslist": "^4.20.3",
 		"eslint": "^8.14.0",
 		"kolorist": "^1.5.1",
-		"preact-render-to-string": "^5.1.21",
+		"preact-render-to-string": "^5.2.0",
 		"prettier": "^2.6.2",
 		"rollup": "^2.70.2",
-		"stylelint": "^14.8.0",
+		"stylelint": "^14.8.1",
 		"twind": "^1.0.0-next.37",
 		"wmr": "^3.7.2"
 	}
