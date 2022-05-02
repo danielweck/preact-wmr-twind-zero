@@ -67,10 +67,15 @@ jobs:
       env:
         cache-name: cache-pnpm-modules
       with:
-        path: ~/.pnpm-store
+        path: ~/.local/share/pnpm/store #~/.pnpm-store
         key: ${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
         restore-keys: |
           ${{ runner.os }}-
+    - name: ENV NodeJS
+      run: |
+        echo node `node --version`;
+        echo npm `npm --version`;
+        echo pnpm `pnpm --version`
     - name: PNPM install
       run: pnpm install --frozen-lockfile
       #uses: pnpm/action-setup@v2
@@ -91,11 +96,11 @@ jobs:
     - name: PR action (just lint)
       if: ${{ github.event_name == 'pull_request' }}
       # Note that 'lint:eslint' invokes 'typescript' (necessary precondition for import resolver), so strictly-speaking there is no need for `pnpm typescript` here, but Turbo will skip/not repeat, so no time wasted :)
-      run: pnpm typescript -- --no-cache && pnpm lint && pnpm test
+      run: pnpm typescript --no-cache && pnpm lint && pnpm test
     - name: non-PR action (lint and build)
       if: ${{ github.event_name != 'pull_request' }}
       # Note that 'lint:eslint' invokes 'typescript' (necessary precondition for import resolver), as well as 'build-github', so strictly-speaking there is no need for `pnpm typescript` here, but Turbo will skip/not repeat, so no time wasted :)
-      run: pnpm typescript -- --no-cache && pnpm lint && pnpm test && pnpm build-github && ls -R packages/wmr1/dist
+      run: pnpm typescript --no-cache && pnpm lint && pnpm test && pnpm build-github && ls -R packages/wmr1/dist
     - name: Checkout GH-PAGES
       if: ${{ github.event_name != 'pull_request' }}
       uses: actions/checkout@v2

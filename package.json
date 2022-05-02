@@ -72,7 +72,7 @@
 		"test:ui": "pnpm vitest --ui --run --config vitest.config.js",
 		"test:coverage": "pnpm vitest --coverage --run --config vitest.config.js",
 		"test:related": "pnpm vitest related --run --config vitest.config.js",
-		"build_": "pnpm --recursive --if-present --filter=./packages build",
+		"build_": "pnpm --recursive --if-present --filter=./packages/** build",
 		"build": "turbo run build",
 		"build-github": "turbo run build-github",
 		"typescript:pnpm": "pnpm --recursive typescript",
@@ -100,7 +100,9 @@
 		"lint-fix:all:eslint": "pnpm typescript && cross-env TIMING=1 eslint --cache --fix \"./**/*.{ts,tsx,js,jsx,mjs,cjs}\"",
 		"lint-fix:all:prettier": "prettier --ignore-unknown --write \"./**/*.{html,htm,css,json,md,yml,yaml,svg,xml,ts,tsx,js,jsx,mjs,cjs}\"",
 		"lint-fix:all:stylelint": "stylelint --fix \"./packages/**/public/**/*.{html,htm,css,ts,tsx,js,jsx,mjs,cjs}\"",
-		"lint-fix:all": "pnpm lint-fix:all:eslint && pnpm lint-fix:all:prettier && pnpm lint-fix:all:stylelint"
+		"lint-fix:all": "pnpm lint-fix:all:eslint && pnpm lint-fix:all:prettier && pnpm lint-fix:all:stylelint",
+		"lintstaged": "pnpm lint-staged --verbose",
+		"commit-lint": "pnpm commitlint"
 	},
 	"devDependencies": {
 		"@commitlint/cli": "^16.2.4",
@@ -129,7 +131,7 @@
 		"husky": "^7.0.4",
 		"kolorist": "^1.5.1",
 		"lint-staged": "^12.4.1",
-		"postcss": "^8.4.12",
+		"postcss": "^8.4.13",
 		"postcss-html": "^1.4.1",
 		"postcss-jsx": "^0.36.4",
 		"postcss-syntax": "^0.36.2",
