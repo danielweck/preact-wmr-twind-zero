@@ -99,7 +99,7 @@ export const preactObservant = <T extends object>(
 
 		const o = obs<boolean>(() => {
 			if (renderedComponent || renderedComponentException) {
-				const ret = !o.get(true);
+				const ret = !o.peek();
 				// console.log('CALC (already rendered) ', o._name, ret, debugComponentDisplayName);
 				return ret;
 			}
@@ -108,7 +108,8 @@ export const preactObservant = <T extends object>(
 			} catch (exception) {
 				renderedComponentException = exception;
 			}
-			const ret = o.get(true) === undefined ? true : !o.get(true);
+			const v = o.peek();
+			const ret = v === undefined ? true : !v;
 			// console.log('CALC (just rendered) ', o._name, ret, debugComponentDisplayName);
 			return ret;
 		}) as IObs<boolean>;

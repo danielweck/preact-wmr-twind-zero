@@ -32,11 +32,12 @@ export type TObsEventTypes = typeof ObsEventChange | typeof ObsEventError;
 
 export type TObsPrimitive = null | number | string | boolean;
 export type TObserved = TObsPrimitive | Array<TObsPrimitive> | Record<string, unknown>;
-export type TObsDeriveFunc<T> = () => T;
+export type TObsDeriveFunc<T> = (currentValue: T | undefined) => T;
 
 export interface IObs<T> {
-	set: (value: T) => this;
-	get: (sampleOnly?: boolean) => T;
+	get: () => T;
+	peek: () => T | undefined;
+	set: (value: T | ((currentValue: T | undefined) => T)) => this;
 
 	dispose: () => this;
 
@@ -54,7 +55,7 @@ interface IObsInternal<T> extends IObs<T> {
 
 	_eq: undefined | ((value1: T | undefined, value2: T | undefined) => boolean);
 
-	_resolvedValue?: T;
+	_currentValue?: T;
 	_setCurrentValue: (value: T) => void;
 
 	_state: typeof STATE_RESOLVED | typeof STATE_DIRTY | typeof STATE_DIRTY_CHILDREN;
@@ -269,14 +270,14 @@ const Obs = function <T extends TObserved>(
 	if (typeof v === 'function') {
 		this._state = STATE_DIRTY;
 
-		this._resolvedValue = undefined;
+		this._currentValue = undefined;
 		this._deriveFunc = v as TObsDeriveFunc<T>;
 
 		this._initializedWithValueOrError = false;
 	} else {
 		this._state = STATE_RESOLVED;
 
-		this._resolvedValue = v as T;
+		this._currentValue = v as T;
 		this._deriveFunc = undefined;
 
 		this._initializedWithValueOrError = true;
@@ -298,19 +299,17 @@ const Obs = function <T extends TObserved>(
 // <OBSERVANT PUBLICS>
 // ----------------
 
-Obs.prototype.get = function <T>(this: IObsInternal<T>, sampleOnly?: boolean): T {
-	if (!sampleOnly) {
-		if (this._state !== STATE_RESOLVED && this._idOfUpdateWithValueOrError !== lastIdOfUpdateWithValueOrError) {
-			// STATE_DIRTY || STATE_DIRTY_CHILDREN
-			this._resolve();
-		}
+Obs.prototype.get = function <T>(this: IObsInternal<T>): T {
+	if (this._state !== STATE_RESOLVED && this._idOfUpdateWithValueOrError !== lastIdOfUpdateWithValueOrError) {
+		// STATE_DIRTY || STATE_DIRTY_CHILDREN
+		this._resolve();
+	}
 
-		if (currentDeriveObs && currentDeriveObs !== this) {
-			if (!currentDeriveObs._childDependencies) {
-				currentDeriveObs._childDependencies = [this];
-			} else if (!arrayIncludes(currentDeriveObs._childDependencies, this)) {
-				currentDeriveObs._childDependencies.push(this);
-			}
+	if (currentDeriveObs && currentDeriveObs !== this) {
+		if (!currentDeriveObs._childDependencies) {
+			currentDeriveObs._childDependencies = [this];
+		} else if (!arrayIncludes(currentDeriveObs._childDependencies, this)) {
+			currentDeriveObs._childDependencies.push(this);
 		}
 	}
 
@@ -318,16 +317,28 @@ Obs.prototype.get = function <T>(this: IObsInternal<T>, sampleOnly?: boolean): T
 		throw this._resolvedError;
 	}
 
-	// guaranteed defined, because this._resolve() sets this._resolvedValue or sets this._resolvedError (which bails out in the conditional above)
-	return this._resolvedValue as T;
+	// guaranteed defined, because this._resolve() sets this._currentValue or sets this._resolvedError (which bails out in the conditional above)
+	return this._currentValue as T;
 };
 
-Obs.prototype.set = function <T>(this: IObsInternal<T>, value: T): IObs<T> {
+Obs.prototype.peek = function <T>(this: IObsInternal<T>): T | undefined {
+	if (this._resolvedError) {
+		throw this._resolvedError;
+	}
+	return this._currentValue;
+};
+
+Obs.prototype.set = function <T>(this: IObsInternal<T>, value: T | ((currentValue: T | undefined) => T)): IObs<T> {
 	if (!this._initializedWithValueOrError && this._deriveFunc) {
 		this._callDeriveFunc();
 	}
 
-	this._setCurrentValue(value);
+	if (typeof value === 'function') {
+		// eslint-disable-next-line @typescript-eslint/ban-types
+		this._setCurrentValue((value as Function)(this._currentValue));
+	} else {
+		this._setCurrentValue(value);
+	}
 
 	return this;
 };
@@ -359,6 +370,8 @@ Obs.prototype.autoRun = function <T>(this: IObsInternal<T>): void {
 	}
 
 	this._doActivate(true);
+
+	this.get();
 };
 
 // ----------------
@@ -641,7 +654,7 @@ Obs.prototype._callDeriveFunc = function <T>(this: IObsInternal<T>) {
 	let derivedValue: T | undefined;
 	let deriveError: Error | undefined;
 	try {
-		derivedValue = this._deriveFunc();
+		derivedValue = this._deriveFunc(this._currentValue); // this.peek() without the possible previous error
 	} catch (err) {
 		deriveError = currentDeriveError = ensureErrorType(err);
 	}
@@ -720,10 +733,10 @@ Obs.prototype._setCurrentValue = function <T>(this: IObsInternal<T>, newValue: T
 
 	this._idOfUpdateWithValueOrError = ++lastIdOfUpdateWithValueOrError;
 
-	const previousValue = this._resolvedValue;
+	const previousValue = this._currentValue;
 	const changed = this._eq ? !this._eq(newValue, previousValue) : newValue !== previousValue;
 	if (changed) {
-		this._resolvedValue = newValue;
+		this._currentValue = newValue;
 
 		let i = this._parentDependents ? this._parentDependents.length : 0;
 		while (i !== 0) {
