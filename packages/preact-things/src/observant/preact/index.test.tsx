@@ -15,7 +15,7 @@ import { afterEach, beforeEach, expect, test } from 'vitest';
 import { cleanup, render, waitFor } from '../../../preact-testing-library.js';
 import { clearCache, suspendCache } from '../../suspend-cache.js';
 import { Suspense } from '../../xpatched/suspense.js';
-import { type IObs, obs, onError } from '../vanilla/index.js';
+import { type TObs, get, logError, obs, onError, set } from '../vanilla/index.js';
 import { preactObservant } from './index.js';
 
 const defaultErrorHandler = (err: Error, msg?: string) => {
@@ -39,7 +39,7 @@ beforeEach(() => {
 		window.addEventListener('unhandledrejection', onUnhandledRejection);
 	}
 
-	onError(defaultErrorHandler);
+	logError(defaultErrorHandler);
 });
 afterEach(() => {
 	clearCache();
@@ -54,7 +54,7 @@ afterEach(() => {
 		}
 	}
 
-	onError(defaultErrorHandler);
+	logError(defaultErrorHandler);
 });
 
 // async function waitFor<T extends () => any>(
@@ -82,7 +82,7 @@ test('test8a DOM', () => {
 	let order = '0';
 
 	// forwards the expect() assertions to Vitest
-	onError((err) => {
+	logError((err) => {
 		if (!(err instanceof TypeError)) {
 			throw err;
 		}
@@ -95,30 +95,30 @@ test('test8a DOM', () => {
 	);
 	const b = obs(
 		() => {
-			if (a.get() === 2) {
+			if (get(a) === 2) {
 				order += '4';
 				throw new TypeError('!!');
 			}
 			order += '1';
-			return a.get() + 1;
+			return get(a) + 1;
 		},
 		// {
 		// 	name: '_B_',
 		// },
 	);
 
-	b.onError((error) => {
+	onError(b, (error) => {
 		order += '5';
 		expect(error).instanceOf(TypeError);
 		expect(error?.message).toBe('!!');
 	});
-	expect(b.get()).toBe(2);
+	expect(get(b)).toBe(2);
 	order += '2';
-	a.set(2);
+	set(a, 2);
 	order += '3';
 	let err: Error | undefined;
 	try {
-		b.get();
+		get(b);
 		expect(false).toBe(true);
 	} catch (e) {
 		err = e as Error;
@@ -135,8 +135,8 @@ test('preactObservant() makes component reactive', async () => {
 	const container = document.createElement('div');
 	const a = obs('foo');
 
-	const RenderSignal = preactObservant(function RenderSignal({ signal }: { signal: IObs<string> }) {
-		return <Fragment>{signal.get()}</Fragment>;
+	const RenderSignal = preactObservant(function RenderSignal({ signal }: { signal: TObs<string> }) {
+		return <Fragment>{get(signal)}</Fragment>;
 	});
 
 	render(<RenderSignal signal={a} />, { container });
@@ -146,7 +146,7 @@ test('preactObservant() makes component reactive', async () => {
 		testPlan++;
 	});
 
-	a.set('bar');
+	set(a, 'bar');
 
 	await waitFor(() => {
 		expect(container.innerHTML).toBe('bar');
@@ -164,8 +164,8 @@ test('preactObservant() makes component reactive 2', async () => {
 	const container = document.createElement('div');
 	const a = obs('foo');
 
-	const RenderSignal = preactObservant(function RenderSignal({ signal }: { signal: IObs<string> }) {
-		return <Fragment>{signal.get()}</Fragment>;
+	const RenderSignal = preactObservant(function RenderSignal({ signal }: { signal: TObs<string> }) {
+		return <Fragment>{get(signal)}</Fragment>;
 	});
 
 	render(
@@ -181,7 +181,7 @@ test('preactObservant() makes component reactive 2', async () => {
 		testPlan++;
 	});
 
-	a.set('bar');
+	set(a, 'bar');
 
 	await waitFor(() => {
 		expect(container.innerHTML).toBe('barbar');
@@ -200,8 +200,8 @@ test('preactObservant() makes component reactive 2 diff', async () => {
 	const a = obs('foo');
 	const b = obs('one');
 
-	const RenderSignal = preactObservant(function RenderSignal({ signal }: { signal: IObs<string> }) {
-		return <Fragment>{signal.get()}</Fragment>;
+	const RenderSignal = preactObservant(function RenderSignal({ signal }: { signal: TObs<string> }) {
+		return <Fragment>{get(signal)}</Fragment>;
 	});
 
 	render(
@@ -217,8 +217,8 @@ test('preactObservant() makes component reactive 2 diff', async () => {
 		testPlan++;
 	});
 
-	a.set('bar');
-	b.set('two');
+	set(a, 'bar');
+	set(b, 'two');
 
 	await waitFor(() => {
 		expect(container.innerHTML).toBe('bartwo');
@@ -241,12 +241,12 @@ test('preactObservant() makes component reactive 2 diff nested', async () => {
 		signal,
 		children,
 	}: {
-		signal: IObs<string>;
+		signal: TObs<string>;
 		children?: ComponentChildren;
 	}) {
 		return (
 			<Fragment>
-				<Fragment>{signal.get()}</Fragment>
+				<Fragment>{get(signal)}</Fragment>
 				{children ? <Fragment>{children}</Fragment> : null}
 			</Fragment>
 		);
@@ -266,8 +266,8 @@ test('preactObservant() makes component reactive 2 diff nested', async () => {
 		testPlan++;
 	});
 
-	a.set('bar');
-	b.set('two');
+	set(a, 'bar');
+	set(b, 'two');
 
 	await waitFor(() => {
 		expect(container.innerHTML).toBe('bartwo');
@@ -285,11 +285,11 @@ test('preactObservant() makes component reactive 2 diff calc', async () => {
 	const container = document.createElement('div');
 	const a = obs('foo');
 	const b = obs(() => {
-		return `${a.get()}one`;
+		return `${get(a)}one`;
 	});
 
-	const RenderSignal = preactObservant(function RenderSignal({ signal }: { signal: IObs<string> }) {
-		return <Fragment>{signal.get()}</Fragment>;
+	const RenderSignal = preactObservant(function RenderSignal({ signal }: { signal: TObs<string> }) {
+		return <Fragment>{get(signal)}</Fragment>;
 	});
 
 	render(
@@ -305,8 +305,8 @@ test('preactObservant() makes component reactive 2 diff calc', async () => {
 		testPlan++;
 	});
 
-	a.set('bar');
-	// b.set('two');
+	set(a, 'bar');
+	// set(b,'two');
 
 	await waitFor(() => {
 		expect(container.innerHTML).toBe('barbarone');
@@ -324,19 +324,19 @@ test('preactObservant() makes component reactive 2 diff nested calc', async () =
 	const container = document.createElement('div');
 	const a = obs('foo');
 	const b = obs(() => {
-		return `${a.get()}one`;
+		return `${get(a)}one`;
 	});
 
 	const RenderSignal = preactObservant(function RenderSignal({
 		signal,
 		children,
 	}: {
-		signal: IObs<string>;
+		signal: TObs<string>;
 		children?: ComponentChildren;
 	}) {
 		return (
 			<Fragment>
-				<Fragment>{signal.get()}</Fragment>
+				<Fragment>{get(signal)}</Fragment>
 				{children ? <Fragment>{children}</Fragment> : null}
 			</Fragment>
 		);
@@ -356,8 +356,8 @@ test('preactObservant() makes component reactive 2 diff nested calc', async () =
 		testPlan++;
 	});
 
-	a.set('bar');
-	// b.set('two');
+	set(a, 'bar');
+	// set(b,'two');
 
 	await waitFor(() => {
 		expect(container.innerHTML).toBe('barbarone');
@@ -383,10 +383,10 @@ test('preactObservant() isolates re-renders to current component', async () => {
 	}: {
 		debug: string;
 		name: string;
-		signal: IObs<string>;
+		signal: TObs<string>;
 	}) {
 		rerenders[name] = (rerenders[name] || 0) + 1;
-		return <Fragment>{signal.get()}</Fragment>;
+		return <Fragment>{get(signal)}</Fragment>;
 	});
 
 	render(
@@ -402,7 +402,7 @@ test('preactObservant() isolates re-renders to current component', async () => {
 		testPlan++;
 	});
 
-	a.set('bar');
+	set(a, 'bar');
 
 	await waitFor(() => {
 		expect(container.innerHTML).toBe('barfoo');
@@ -433,10 +433,10 @@ test('preactObservant() isolates re-renders to current nested component', async 
 	}: {
 		debug: string;
 		name: string;
-		signal: IObs<string>;
+		signal: TObs<string>;
 	}) {
 		rerenders[name] = (rerenders[name] || 0) + 1;
-		return <Fragment>{signal.get()}</Fragment>;
+		return <Fragment>{get(signal)}</Fragment>;
 	});
 
 	const NameSignal = preactObservant(function CompParent({
@@ -445,10 +445,10 @@ test('preactObservant() isolates re-renders to current nested component', async 
 		signal,
 	}: {
 		debug: string;
-		name: IObs<string>;
-		signal: IObs<string>;
+		name: TObs<string>;
+		signal: TObs<string>;
 	}) {
-		const name = nameSignal.get();
+		const name = get(nameSignal);
 		rerenders[name] = (rerenders[name] || 0) + 1;
 		return (
 			<Fragment>
@@ -470,8 +470,8 @@ test('preactObservant() isolates re-renders to current nested component', async 
 		testPlan++;
 	});
 
-	a.set('bar');
-	bName.set('bb');
+	set(a, 'bar');
+	set(bName, 'bb');
 
 	await waitFor(() => {
 		expect(container.innerHTML).toBe('a:bar,bb:foo,');
@@ -507,7 +507,7 @@ test('preactObservant() isolates re-renders to current nested component 2', asyn
 	}: {
 		debug: string;
 		name: string;
-		signal: IObs<string>;
+		signal: TObs<string>;
 		children?: ComponentChildren;
 	}) {
 		rerenders[name] = (rerenders[name] || 0) + 1;
@@ -519,7 +519,7 @@ test('preactObservant() isolates re-renders to current nested component 2', asyn
 		});
 		return (
 			<Fragment>
-				{`[${name}--${signal.get()}]`}
+				{`[${name}--${get(signal)}]`}
 				{children ? children : null}
 			</Fragment>
 		);
@@ -539,21 +539,21 @@ test('preactObservant() isolates re-renders to current nested component 2', asyn
 		testPlan++;
 	});
 
-	b.set('two');
+	set(b, 'two');
 
 	await waitFor(() => {
 		expect(container.innerHTML).toBe('[n1--foo][n2--two]');
 		testPlan++;
 	});
 
-	b.set('three');
+	set(b, 'three');
 
 	await waitFor(() => {
 		expect(container.innerHTML).toBe('[n1--foo][n2--three]');
 		testPlan++;
 	});
 
-	a.set('bar');
+	set(a, 'bar');
 
 	await waitFor(() => {
 		expect(container.innerHTML).toBe('[n1--bar][n2--three]');
@@ -578,7 +578,7 @@ test('preactObservant() isolates re-renders to current nested component 2', asyn
 
 test('preactObservant() caches, logs, and renders the error in place of a component', async () => {
 	// forwards the expect() assertions to Vitest
-	onError((err) => {
+	logError((err) => {
 		throw err;
 	});
 
@@ -612,8 +612,8 @@ test('preactObservant() recovers from errors', async () => {
 	const doThrow = obs(true);
 
 	const Thrower = preactObservant(
-		function Thrower({ throwSignal }: { throwSignal: IObs<boolean> }) {
-			if (throwSignal.get()) {
+		function Thrower({ throwSignal }: { throwSignal: TObs<boolean> }) {
+			if (get(throwSignal)) {
 				throw new Error('MyFooError');
 			}
 			return <Fragment>success</Fragment>;
@@ -631,7 +631,7 @@ test('preactObservant() recovers from errors', async () => {
 		testPlan++;
 	});
 
-	doThrow.set(false);
+	set(doThrow, false);
 
 	await waitFor(() => {
 		expect(container.innerHTML).toBe('success');
@@ -808,8 +808,8 @@ test('preactObservant handles Suspense / Lazy - thrown Promise that resolves', a
 	};
 
 	const Thrower = preactObservant(
-		function Thrower({ throwSignal }: { throwSignal: IObs<boolean> }) {
-			if (throwSignal.get()) {
+		function Thrower({ throwSignal }: { throwSignal: TObs<boolean> }) {
+			if (get(throwSignal)) {
 				const [success, failure] = suspendCache(asyncFunc, [], 'my cache key');
 				const str = typeof success !== 'undefined' ? success : typeof failure !== 'undefined' ? `${failure}` : '?!';
 				return <Fragment>{str}</Fragment>;
@@ -863,7 +863,7 @@ test('preactObservant handles Suspense / Lazy - thrown Promise that resolves', a
 		{ timeout: 500, interval: 30 },
 	);
 
-	doThrow.set(false);
+	set(doThrow, false);
 
 	await waitFor(
 		() => {
@@ -893,8 +893,8 @@ test('preactObservant handles Suspense / Lazy - thrown Promise that rejects', as
 	};
 
 	const Thrower = preactObservant(
-		function Thrower({ throwSignal }: { throwSignal: IObs<boolean> }) {
-			if (throwSignal.get()) {
+		function Thrower({ throwSignal }: { throwSignal: TObs<boolean> }) {
+			if (get(throwSignal)) {
 				const [success, failure] = suspendCache(asyncFunc, [], 'my cache key');
 				const str = typeof success !== 'undefined' ? success : typeof failure !== 'undefined' ? `${failure}` : '?!';
 				return <Fragment>{str}</Fragment>;
@@ -948,7 +948,7 @@ test('preactObservant handles Suspense / Lazy - thrown Promise that rejects', as
 		{ timeout: 500, interval: 30 },
 	);
 
-	doThrow.set(false);
+	set(doThrow, false);
 
 	await waitFor(
 		() => {

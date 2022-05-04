@@ -1,5 +1,12 @@
 import { preactObservant } from '@preact-wmr-twind-zero/preact-things/observant/preact/index.js';
-import { type IObs, obs } from '@preact-wmr-twind-zero/preact-things/observant/vanilla/index.js';
+import {
+	type TObs,
+	get,
+	obs,
+	onChange,
+	peek,
+	set,
+} from '@preact-wmr-twind-zero/preact-things/observant/vanilla/index.js';
 import { ContextSlotsProvider, Slot } from '@preact-wmr-twind-zero/preact-things/slots.js';
 import { func } from '@preact-wmr-twind-zero/shared';
 import { func as func2 } from '@preact-wmr-twind-zero/shared/func.js';
@@ -187,36 +194,36 @@ const obsPerf = () => {
 		layer = (function (m) {
 			const s = {
 				prop1: obs(function () {
-					return m.prop2.get();
+					return get(m.prop2);
 				}),
 				prop2: obs(function () {
-					return m.prop1.get() - m.prop3.get();
+					return get(m.prop1) - get(m.prop3);
 				}),
 				prop3: obs(function () {
-					return m.prop2.get() + m.prop4.get();
+					return get(m.prop2) + get(m.prop4);
 				}),
 				prop4: obs(function () {
-					return m.prop3.get();
+					return get(m.prop3);
 				}),
 			};
 
-			s.prop1.onChange(() => {
+			onChange(s.prop1, () => {
 				// noop
 			});
-			s.prop2.onChange(() => {
+			onChange(s.prop2, () => {
 				// noop
 			});
-			s.prop3.onChange(() => {
+			onChange(s.prop3, () => {
 				// noop
 			});
-			s.prop4.onChange(() => {
+			onChange(s.prop4, () => {
 				// noop
 			});
 
-			s.prop1.get();
-			s.prop2.get();
-			s.prop3.get();
-			s.prop4.get();
+			get(s.prop1);
+			get(s.prop2);
+			get(s.prop3);
+			get(s.prop4);
 
 			return s;
 		})(layer);
@@ -224,37 +231,37 @@ const obsPerf = () => {
 
 	const end = layer;
 
-	if (end.prop1.get() !== 2) {
-		console.log(`PERF end.prop1.get() !== 2: ${end.prop1.get()}`);
+	if (get(end.prop1) !== 2) {
+		console.log(`PERF get(end.prop1, ) !== 2: ${get(end.prop1)}`);
 	}
-	if (end.prop2.get() !== 4) {
-		console.log(`PERF end.prop2.get() !== 4: ${end.prop2.get()}`);
+	if (get(end.prop2) !== 4) {
+		console.log(`PERF get(end.prop2, ) !== 4: ${get(end.prop2)}`);
 	}
-	if (end.prop3.get() !== -1) {
-		console.log(`PERF end.prop3.get() !== -1: ${end.prop3.get()}`);
+	if (get(end.prop3) !== -1) {
+		console.log(`PERF get(end.prop3, ) !== -1: ${get(end.prop3)}`);
 	}
-	if (end.prop4.get() !== -6) {
-		console.log(`PERF end.prop4.get() !== -6: ${end.prop4.get()}`);
+	if (get(end.prop4) !== -6) {
+		console.log(`PERF get(end.prop4, ) !== -6: ${get(end.prop4)}`);
 	}
 
 	const timeStart = performance.now();
 
-	start.prop1.set(4);
-	start.prop2.set(3);
-	start.prop3.set(2);
-	start.prop4.set(1);
+	set(start.prop1, 4);
+	set(start.prop2, 3);
+	set(start.prop3, 2);
+	set(start.prop4, 1);
 
-	if (end.prop1.get() !== -2) {
-		console.log(`PERF end.prop1.get() !== -2: ${end.prop1.get()}`);
+	if (get(end.prop1) !== -2) {
+		console.log(`PERF get(end.prop1, ) !== -2: ${get(end.prop1)}`);
 	}
-	if (end.prop2.get() !== 1) {
-		console.log(`PERF end.prop2.get() !== 1: ${end.prop2.get()}`);
+	if (get(end.prop2) !== 1) {
+		console.log(`PERF get(end.prop2, ) !== 1: ${get(end.prop2)}`);
 	}
-	if (end.prop3.get() !== -4) {
-		console.log(`PERF end.prop3.get() !== -4: ${end.prop3.get()}`);
+	if (get(end.prop3) !== -4) {
+		console.log(`PERF get(end.prop3, ) !== -4: ${get(end.prop3)}`);
 	}
-	if (end.prop4.get() !== -4) {
-		console.log(`PERF end.prop4.get() !== -4: ${end.prop4.get()}`);
+	if (get(end.prop4) !== -4) {
+		console.log(`PERF get(end.prop4, ) !== -4: ${get(end.prop4)}`);
 	}
 
 	const duration = performance.now() - timeStart;
@@ -329,16 +336,16 @@ const obsPerfCellX = () => {
 				}),
 			};
 
-			s.prop1.onChange(() => {
+			onChange(s.prop1, () => {
 				// noop
 			});
-			s.prop2.onChange(() => {
+			onChange(s.prop2, () => {
 				// noop
 			});
-			s.prop3.onChange(() => {
+			onChange(s.prop3, () => {
 				// noop
 			});
-			s.prop4.onChange(() => {
+			onChange(s.prop4, () => {
 				// noop
 			});
 
@@ -440,14 +447,14 @@ const _subObservant = obs(
 );
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 // (_subObservant as any)._name = 'SUB'; // Object.seal()!
-// _rootObservant.onChange((_evt) => {
+// onChange(_rootObservant, (_evt) => {
 // 	console.log('TRACE OBS CHANGE');
 // });
 const _renders1: Record<string, number> = {};
 const _renders2: Record<string, number> = {};
 const _renders3: Record<string, number> = {};
 const PreactiveComp = preactObservant(
-	({ signal, signalName, children }: { signal: IObs<number>; signalName: string; children?: ComponentChildren }) => {
+	({ signal, signalName, children }: { signal: TObs<number>; signalName: string; children?: ComponentChildren }) => {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		_renders1[signalName] = (_renders1[signalName] || 0) + 1;
 		useEffect(() => {
@@ -463,7 +470,8 @@ const PreactiveComp = preactObservant(
 				<hr />
 				<button
 					onClick={() => {
-						signal.set(signal.get() + 1);
+						set(signal, (peek(signal) ?? 0) + 1);
+						// set(signal, (v) => (v ?? 0) + 1);
 					}}
 				>
 					{
@@ -471,7 +479,7 @@ const PreactiveComp = preactObservant(
 						`${signalName}++`
 					}
 				</button>
-				<pre>{JSON.stringify(signal.get(), null, 4)}</pre>
+				<pre>{JSON.stringify(get(signal), null, 4)}</pre>
 				<p>render 1:</p>
 				<pre>{JSON.stringify(_renders1, null, 4)}</pre>
 				<p>render 2:</p>

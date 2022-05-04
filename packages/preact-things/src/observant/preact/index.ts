@@ -4,10 +4,10 @@
 import type { FunctionComponent } from 'preact';
 import { type MutableRef, useEffect, useRef, useState } from 'preact/hooks';
 
-import { type IObs, obs } from '../vanilla/index.js';
+import { type TObs, dispose, get, obs, onChange, onError, peek } from '../vanilla/index.js';
 
 export interface ReactionTracking {
-	obs: IObs<boolean>;
+	obs: TObs<boolean>;
 	cleanAt: number;
 	mounted?: boolean;
 }
@@ -36,7 +36,7 @@ const checkCleanupTimeout = () => {
 			const tracking = ref.current;
 
 			if (tracking && now >= tracking.cleanAt) {
-				tracking.obs.dispose();
+				dispose(tracking.obs);
 				ref.current = null;
 				_uncommittedReactionRefs.delete(ref);
 			}
@@ -50,7 +50,7 @@ const checkCleanupTimeout = () => {
 
 export const preactObservant = <T extends object>(
 	Component: FunctionComponent<T>,
-	onError?: (err: Error) => void,
+	logError?: (err: Error) => void,
 ): FunctionComponent<T> => {
 	const componentDisplayName = Component.displayName || Component.name || '$';
 	const wrappedComponent: FunctionComponent<T> = function C(...args) {
@@ -59,7 +59,7 @@ export const preactObservant = <T extends object>(
 		const reactionTrackingRef = useRef<ReactionTracking | null>(null);
 
 		if (reactionTrackingRef.current) {
-			reactionTrackingRef.current.obs.dispose();
+			dispose(reactionTrackingRef.current.obs);
 		}
 
 		let effectShouldUpdate = false;
@@ -84,7 +84,7 @@ export const preactObservant = <T extends object>(
 
 				return () => {
 					if (reactionTrackingRef.current) {
-						reactionTrackingRef.current.obs.dispose();
+						dispose(reactionTrackingRef.current.obs);
 					}
 					reactionTrackingRef.current = null;
 				};
@@ -99,7 +99,7 @@ export const preactObservant = <T extends object>(
 
 		const o = obs<boolean>(() => {
 			if (renderedComponent || renderedComponentException) {
-				const ret = !o.peek();
+				const ret = !peek(o);
 				// console.log('CALC (already rendered) ', o._name, ret, debugComponentDisplayName);
 				return ret;
 			}
@@ -108,13 +108,13 @@ export const preactObservant = <T extends object>(
 			} catch (exception) {
 				renderedComponentException = exception;
 			}
-			const v = o.peek();
+			const v = peek(o);
 			const ret = v === undefined ? true : !v;
 			// console.log('CALC (just rendered) ', o._name, ret, debugComponentDisplayName);
 			return ret;
-		}) as IObs<boolean>;
+		}) as TObs<boolean>;
 
-		o.onChange((_current, previous) => {
+		onChange(o, (_current, previous) => {
 			if (previous === undefined) {
 				// console.log('CHANGE (first) => ignore', o._name, debugComponentDisplayName, evt.current);
 				return;
@@ -128,7 +128,7 @@ export const preactObservant = <T extends object>(
 			// 	evt.current,
 			// );
 
-			o.dispose();
+			dispose(o);
 
 			if (reactionTrackingRef.current?.mounted) {
 				forceReRender(NaN);
@@ -136,10 +136,10 @@ export const preactObservant = <T extends object>(
 				effectShouldUpdate = true;
 			}
 		});
-		o.onError((error) => {
+		onError(o, (error) => {
 			console.log('preactObservant.onError! ', componentDisplayName, error);
 		});
-		o.get(); // triggers the first 'change' event from undefined to true
+		get(o); // triggers the first 'change' event from undefined to true
 
 		if (reactionTrackingRef.current) {
 			reactionTrackingRef.current.obs = o;
@@ -166,12 +166,12 @@ export const preactObservant = <T extends object>(
 			const error = renderedComponentException instanceof Error ? renderedComponentException : new Error('');
 			error.message = `preactObservant.renderedComponentException [${componentDisplayName}] --- ${error.message}`;
 
-			if (onError) {
+			if (logError) {
 				try {
-					onError(error);
+					logError(error);
 				} catch (exception2) {
 					console.log(error);
-					console.log('onError => ', exception2);
+					console.log('logError => ', exception2);
 				}
 			} else {
 				console.log(error);

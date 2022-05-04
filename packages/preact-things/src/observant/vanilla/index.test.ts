@@ -2,7 +2,7 @@
 
 import { afterEach, beforeEach, expect, test } from 'vitest';
 
-import { type TObsEventListenerChange, obs, onError } from './index.js';
+import { type TObsEventListenerChange, get, logError, obs, onChange, onError, set } from './index.js';
 
 const defaultErrorHandler = (err: Error, msg?: string) => {
 	console.log(`VITEST: (${msg})`, err);
@@ -20,7 +20,7 @@ beforeEach(() => {
 	// 	window.addEventListener('unhandledrejection', onUnhandledRejection);
 	// }
 
-	onError(defaultErrorHandler);
+	logError(defaultErrorHandler);
 });
 afterEach(() => {
 	// if ('onunhandledrejection' in window) {
@@ -30,50 +30,50 @@ afterEach(() => {
 	// 	}
 	// }
 
-	onError(defaultErrorHandler);
+	logError(defaultErrorHandler);
 });
 
 test('test1', () => {
 	const a = obs(1);
-	expect(a.get()).toBe(1);
+	expect(get(a)).toBe(1);
 
 	// const b = new Obs(2);
-	// expect(b.get()).toBe(2);
+	// expect(get(b)).toBe(2);
 
 	// const c = Obs(3);
-	// expect(c.get()).toBe(3);
+	// expect(get(c)).toBe(3);
 });
 
 test('test2', () => {
 	const a = obs(1);
-	a.set(2);
-	expect(a.get()).toBe(2);
+	set(a, 2);
+	expect(get(a)).toBe(2);
 
 	// const b = new Obs(2);
-	// b.set(3);
-	// expect(b.get()).toBe(3);
+	// set(b,3);
+	// expect(get(b)).toBe(3);
 
 	// const c = Obs(3);
-	// c.set(4);
-	// expect(c.get()).toBe(4);
+	// set(c,4);
+	// expect(get(c)).toBe(4);
 });
 
 test('test3b', () => {
 	let order = '0';
 	// forwards the expect() assertions to Vitest
-	onError((err) => {
+	logError((err) => {
 		throw err;
 	});
 	const a = obs(1);
-	a.onChange((current, previous) => {
+	onChange(a, (current, previous) => {
 		order += '2';
-		expect(a.get()).toBe(2);
+		expect(get(a)).toBe(2);
 		expect(current).toBe(2);
 		expect(previous).toBe(1);
 	});
 	order += '1';
-	expect(a.get()).toBe(1);
-	a.set(2);
+	expect(get(a)).toBe(1);
+	set(a, 2);
 	order += '3';
 	expect(order).toBe('0123');
 });
@@ -85,18 +85,18 @@ test('test3b', () => {
 
 test('test5', () => {
 	// forwards the expect() assertions to Vitest
-	onError((err) => {
+	logError((err) => {
 		throw err;
 	});
 
 	const a = obs(1);
 
-	a.onChange((current, previous) => {
+	onChange(a, (current, previous) => {
 		expect(current).toEqual(2);
 		expect(previous).toEqual(1);
 	});
 
-	a.set(2);
+	set(a, 2);
 });
 
 test('test6', () => {
@@ -106,10 +106,10 @@ test('test6', () => {
 	const listener: TObsEventListenerChange<number> = () => {
 		count++;
 	};
-	const off = a.onChange(listener);
+	const off = onChange(a, listener);
 	expect(count).toBe(0);
 	off();
-	a.set(2);
+	set(a, 2);
 	expect(count).toBe(0);
 });
 
@@ -120,13 +120,13 @@ test('test7', () => {
 	const listener: TObsEventListenerChange<number> = () => {
 		count++;
 	};
-	a.onChange(listener);
-	const off = a.onChange(listener);
+	onChange(a, listener);
+	const off = onChange(a, listener);
 	expect(count).toBe(0);
-	a.set(2);
+	set(a, 2);
 	expect(count).toBe(1);
 	off();
-	a.set(3);
+	set(a, 3);
 	expect(count).toBe(1);
 });
 
@@ -134,7 +134,7 @@ test('test8a', () => {
 	let order = '0';
 
 	// forwards the expect() assertions to Vitest
-	onError((err) => {
+	logError((err) => {
 		if (!(err instanceof TypeError)) {
 			throw err;
 		}
@@ -147,30 +147,30 @@ test('test8a', () => {
 	);
 	const b = obs(
 		() => {
-			if (a.get() === 2) {
+			if (get(a) === 2) {
 				order += '4';
 				throw new TypeError('!!');
 			}
 			order += '1';
-			return a.get() + 1;
+			return get(a) + 1;
 		},
 		// {
 		// 	name: '_B_',
 		// },
 	);
 
-	b.onError((error) => {
+	onError(b, (error) => {
 		order += '5';
 		expect(error).instanceOf(TypeError);
 		expect(error?.message).toBe('!!');
 	});
-	expect(b.get()).toBe(2);
+	expect(get(b)).toBe(2);
 	order += '2';
-	a.set(2);
+	set(a, 2);
 	order += '3';
 	let err: Error | undefined;
 	try {
-		b.get();
+		get(b);
 		expect(false).toBe(true);
 	} catch (e) {
 		err = e as Error;
@@ -184,7 +184,7 @@ test('test8a', () => {
 
 test('test9', () => {
 	// forwards the expect() assertions to Vitest
-	onError((err) => {
+	logError((err) => {
 		throw err;
 	});
 	const a = obs(
@@ -195,7 +195,7 @@ test('test9', () => {
 	);
 	const b = obs(
 		() => {
-			return `B+${a.get()}`;
+			return `B+${get(a)}`;
 		},
 		// {
 		// 	name: '_B_',
@@ -203,7 +203,7 @@ test('test9', () => {
 	);
 	const c = obs(
 		() => {
-			return `C+${b.get()}`;
+			return `C+${get(b)}`;
 		},
 		// {
 		// 	name: '_C_',
@@ -211,7 +211,7 @@ test('test9', () => {
 	);
 	const d = obs(
 		() => {
-			return `D+${b.get()}`;
+			return `D+${get(b)}`;
 		},
 		// {
 		// 	name: '_D_',
@@ -219,40 +219,40 @@ test('test9', () => {
 	);
 
 	let stage = 0;
-	a.onChange((current, previous) => {
+	onChange(a, (current, previous) => {
 		// expect(evt.target._name).toBe('_A_');
 		expect(previous).toBe('A');
 		expect(current).toBe('a');
 	});
-	b.onChange((current, previous) => {
+	onChange(b, (current, previous) => {
 		// expect(evt.target._name).toBe('_B_');
 		expect(previous).toBe(stage ? 'B+A' : undefined);
 		expect(current).toBe(stage ? 'B+a' : 'B+A');
 	});
-	c.onChange((current, previous) => {
+	onChange(c, (current, previous) => {
 		// expect(evt.target._name).toBe('_C_');
 		expect(previous).toBe(stage ? 'C+B+A' : undefined);
 		expect(current).toBe(stage ? 'C+B+a' : 'C+B+A');
 	});
-	d.onChange((_evt) => {
-		expect(true).toBe(false);
+	onChange(d, (current, previous) => {
+		// expect(true).toBe(false);
 		// expect(evt.target._name).toBe('_D_');
-		// expect(previous).toBe(stage ? 'D+B+A' : undefined);
-		// expect(current).toBe(stage ? 'D+B+a' : 'D+B+A');
+		expect(previous).toBe(stage ? 'D+B+A' : undefined);
+		expect(current).toBe(stage ? 'D+B+a' : 'D+B+A');
 	});
-	expect(b.get()).toBe('B+A');
-	expect(c.get()).toBe('C+B+A');
-	// expect(d.get()).toBe('D+B+A');
+	expect(get(b)).toBe('B+A');
+	expect(get(c)).toBe('C+B+A');
+	expect(get(d)).toBe('D+B+A');
 	stage++;
-	a.set('a');
-	expect(b.get()).toBe('B+a');
-	expect(c.get()).toBe('C+B+a');
-	// expect(d.get()).toBe('D+B+a');
+	set(a, 'a');
+	expect(get(b)).toBe('B+a');
+	expect(get(c)).toBe('C+B+a');
+	expect(get(d)).toBe('D+B+a');
 });
 
 test('test10', () => {
 	// forwards the expect() assertions to Vitest
-	onError((err) => {
+	logError((err) => {
 		throw err;
 	});
 	const a = obs(
@@ -263,7 +263,7 @@ test('test10', () => {
 	);
 	const b = obs(
 		() => ({
-			b: a.get(),
+			b: get(a),
 		}),
 		// {
 		// 	name: '_B_',
@@ -271,12 +271,12 @@ test('test10', () => {
 	);
 
 	let stage = 0;
-	a.onChange((current, previous) => {
+	onChange(a, (current, previous) => {
 		// expect(evt.target._name).toBe('_A_');
 		expect(previous).toBe('A');
 		expect(current).toBe('a');
 	});
-	b.onChange((current, previous) => {
+	onChange(b, (current, previous) => {
 		// expect(evt.target._name).toBe('_B_');
 		expect(previous).toEqual(
 			stage === 0
@@ -295,12 +295,12 @@ test('test10', () => {
 				  },
 		);
 	});
-	expect(b.get()).toEqual({
+	expect(get(b)).toEqual({
 		b: 'A',
 	});
 	stage++;
-	a.set('a');
-	expect(b.get()).toEqual({
+	set(a, 'a');
+	expect(get(b)).toEqual({
 		b: 'a',
 	});
 });
@@ -309,34 +309,34 @@ test('test11', () => {
 	let check = '';
 	let toggle = 0;
 	const leaf = obs('foo');
-	leaf.onChange((current, previous) => {
+	onChange(leaf, (current, previous) => {
 		check += `||LEAF_${previous}->${current}`;
 	});
 	const sub = obs(() => {
-		return `${leaf.get()}-bar`;
+		return `${get(leaf)}-bar`;
 	});
-	sub.onChange((current, previous) => {
+	onChange(sub, (current, previous) => {
 		check += `||SUB_${previous}->${current}`;
 	});
 	const root = obs(() => {
-		sub.get();
+		get(sub);
 		toggle++;
 		return toggle !== 1;
 	});
-	root.onChange((current, previous) => {
+	onChange(root, (current, previous) => {
 		check += `||ROOT_${previous}->${current}`;
 	});
-	expect(root.get()).toBe(false);
-	expect(sub.get()).toBe('foo-bar');
+	expect(get(root)).toBe(false);
+	expect(get(sub)).toBe('foo-bar');
 	expect(check).toBe('||SUB_undefined->foo-bar||ROOT_undefined->false');
 	check = '';
-	leaf.set('one');
-	expect(root.get()).toBe(true);
-	expect(sub.get()).toBe('one-bar');
+	set(leaf, 'one');
+	expect(get(root)).toBe(true);
+	expect(get(sub)).toBe('one-bar');
 	expect(check).toBe('||LEAF_foo->one||SUB_foo-bar->one-bar||ROOT_false->true');
 	check = '';
-	leaf.set('two');
-	expect(root.get()).toBe(true);
-	expect(sub.get()).toBe('two-bar');
+	set(leaf, 'two');
+	expect(get(root)).toBe(true);
+	expect(get(sub)).toBe('two-bar');
 	expect(check).toBe('||LEAF_one->two||SUB_one-bar->two-bar');
 });

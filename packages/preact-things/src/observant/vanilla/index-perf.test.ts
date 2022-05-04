@@ -2,7 +2,7 @@
 
 import { afterEach, beforeEach, expect, test } from 'vitest';
 
-import { obs, onError } from './index.js';
+import { get, logError, obs, onChange, set } from './index.js';
 
 const defaultErrorHandler = (err: Error, msg?: string) => {
 	console.log(`VITEST: (${msg})`, err);
@@ -20,7 +20,7 @@ beforeEach(() => {
 	// 	window.addEventListener('unhandledrejection', onUnhandledRejection);
 	// }
 
-	onError(defaultErrorHandler);
+	logError(defaultErrorHandler);
 });
 afterEach(() => {
 	// if ('onunhandledrejection' in window) {
@@ -30,7 +30,7 @@ afterEach(() => {
 	// 	}
 	// }
 
-	onError(defaultErrorHandler);
+	logError(defaultErrorHandler);
 });
 
 test('perf NodeJS 5000', () => {
@@ -46,36 +46,36 @@ test('perf NodeJS 5000', () => {
 		layer = (function (m) {
 			const s = {
 				prop1: obs(function () {
-					return m.prop2.get();
+					return get(m.prop2);
 				}),
 				prop2: obs(function () {
-					return m.prop1.get() - m.prop3.get();
+					return get(m.prop1) - get(m.prop3);
 				}),
 				prop3: obs(function () {
-					return m.prop2.get() + m.prop4.get();
+					return get(m.prop2) + get(m.prop4);
 				}),
 				prop4: obs(function () {
-					return m.prop3.get();
+					return get(m.prop3);
 				}),
 			};
 
-			s.prop1.onChange(() => {
+			onChange(s.prop1, () => {
 				// noop
 			});
-			s.prop2.onChange(() => {
+			onChange(s.prop2, () => {
 				// noop
 			});
-			s.prop3.onChange(() => {
+			onChange(s.prop3, () => {
 				// noop
 			});
-			s.prop4.onChange(() => {
+			onChange(s.prop4, () => {
 				// noop
 			});
 
-			s.prop1.get();
-			s.prop2.get();
-			s.prop3.get();
-			s.prop4.get();
+			get(s.prop1);
+			get(s.prop2);
+			get(s.prop3);
+			get(s.prop4);
 
 			return s;
 		})(layer);
@@ -83,22 +83,22 @@ test('perf NodeJS 5000', () => {
 
 	const end = layer;
 
-	expect(end.prop1.get()).toBe(2);
-	expect(end.prop2.get()).toBe(4);
-	expect(end.prop3.get()).toBe(-1);
-	expect(end.prop4.get()).toBe(-6);
+	expect(get(end.prop1)).toBe(2);
+	expect(get(end.prop2)).toBe(4);
+	expect(get(end.prop3)).toBe(-1);
+	expect(get(end.prop4)).toBe(-6);
 
 	const timeStart = performance.now();
 
-	start.prop1.set(4);
-	start.prop2.set(3);
-	start.prop3.set(2);
-	start.prop4.set(1);
+	set(start.prop1, 4);
+	set(start.prop2, 3);
+	set(start.prop3, 2);
+	set(start.prop4, 1);
 
-	expect(end.prop1.get()).toBe(-2);
-	expect(end.prop2.get()).toBe(1);
-	expect(end.prop3.get()).toBe(-4);
-	expect(end.prop4.get()).toBe(-4);
+	expect(get(end.prop1)).toBe(-2);
+	expect(get(end.prop2)).toBe(1);
+	expect(get(end.prop3)).toBe(-4);
+	expect(get(end.prop4)).toBe(-4);
 
 	const duration = performance.now() - timeStart;
 
@@ -121,36 +121,36 @@ test('perf NodeJS 10', () => {
 		layer = (function (m) {
 			const s = {
 				prop1: obs(function () {
-					return m.prop2.get();
+					return get(m.prop2);
 				}),
 				prop2: obs(function () {
-					return m.prop1.get() - m.prop3.get();
+					return get(m.prop1) - get(m.prop3);
 				}),
 				prop3: obs(function () {
-					return m.prop2.get() + m.prop4.get();
+					return get(m.prop2) + get(m.prop4);
 				}),
 				prop4: obs(function () {
-					return m.prop3.get();
+					return get(m.prop3);
 				}),
 			};
 
-			s.prop1.onChange(() => {
+			onChange(s.prop1, () => {
 				// noop
 			});
-			s.prop2.onChange(() => {
+			onChange(s.prop2, () => {
 				// noop
 			});
-			s.prop3.onChange(() => {
+			onChange(s.prop3, () => {
 				// noop
 			});
-			s.prop4.onChange(() => {
+			onChange(s.prop4, () => {
 				// noop
 			});
 
-			s.prop1.get();
-			s.prop2.get();
-			s.prop3.get();
-			s.prop4.get();
+			get(s.prop1);
+			get(s.prop2);
+			get(s.prop3);
+			get(s.prop4);
 
 			return s;
 		})(layer);
@@ -158,22 +158,22 @@ test('perf NodeJS 10', () => {
 
 	const end = layer;
 
-	expect(end.prop1.get()).toBe(3);
-	expect(end.prop2.get()).toBe(6);
-	expect(end.prop3.get()).toBe(2);
-	expect(end.prop4.get()).toBe(-2);
+	expect(get(end.prop1)).toBe(3);
+	expect(get(end.prop2)).toBe(6);
+	expect(get(end.prop3)).toBe(2);
+	expect(get(end.prop4)).toBe(-2);
 
 	const timeStart = performance.now();
 
-	start.prop1.set(4);
-	start.prop2.set(3);
-	start.prop3.set(2);
-	start.prop4.set(1);
+	set(start.prop1, 4);
+	set(start.prop2, 3);
+	set(start.prop3, 2);
+	set(start.prop4, 1);
 
-	expect(end.prop1.get()).toBe(2);
-	expect(end.prop2.get()).toBe(4);
-	expect(end.prop3.get()).toBe(-2);
-	expect(end.prop4.get()).toBe(-3);
+	expect(get(end.prop1)).toBe(2);
+	expect(get(end.prop2)).toBe(4);
+	expect(get(end.prop3)).toBe(-2);
+	expect(get(end.prop4)).toBe(-3);
 
 	const duration = performance.now() - timeStart;
 
@@ -196,36 +196,36 @@ test('perf NodeJS 1000', () => {
 		layer = (function (m) {
 			const s = {
 				prop1: obs(function () {
-					return m.prop2.get();
+					return get(m.prop2);
 				}),
 				prop2: obs(function () {
-					return m.prop1.get() - m.prop3.get();
+					return get(m.prop1) - get(m.prop3);
 				}),
 				prop3: obs(function () {
-					return m.prop2.get() + m.prop4.get();
+					return get(m.prop2) + get(m.prop4);
 				}),
 				prop4: obs(function () {
-					return m.prop3.get();
+					return get(m.prop3);
 				}),
 			};
 
-			s.prop1.onChange(() => {
+			onChange(s.prop1, () => {
 				// noop
 			});
-			s.prop2.onChange(() => {
+			onChange(s.prop2, () => {
 				// noop
 			});
-			s.prop3.onChange(() => {
+			onChange(s.prop3, () => {
 				// noop
 			});
-			s.prop4.onChange(() => {
+			onChange(s.prop4, () => {
 				// noop
 			});
 
-			s.prop1.get();
-			s.prop2.get();
-			s.prop3.get();
-			s.prop4.get();
+			get(s.prop1);
+			get(s.prop2);
+			get(s.prop3);
+			get(s.prop4);
 
 			return s;
 		})(layer);
@@ -233,22 +233,22 @@ test('perf NodeJS 1000', () => {
 
 	const end = layer;
 
-	expect(end.prop1.get()).toBe(-3);
-	expect(end.prop2.get()).toBe(-6);
-	expect(end.prop3.get()).toBe(-2);
-	expect(end.prop4.get()).toBe(2);
+	expect(get(end.prop1)).toBe(-3);
+	expect(get(end.prop2)).toBe(-6);
+	expect(get(end.prop3)).toBe(-2);
+	expect(get(end.prop4)).toBe(2);
 
 	const timeStart = performance.now();
 
-	start.prop1.set(4);
-	start.prop2.set(3);
-	start.prop3.set(2);
-	start.prop4.set(1);
+	set(start.prop1, 4);
+	set(start.prop2, 3);
+	set(start.prop3, 2);
+	set(start.prop4, 1);
 
-	expect(end.prop1.get()).toBe(-2);
-	expect(end.prop2.get()).toBe(-4);
-	expect(end.prop3.get()).toBe(2);
-	expect(end.prop4.get()).toBe(3);
+	expect(get(end.prop1)).toBe(-2);
+	expect(get(end.prop2)).toBe(-4);
+	expect(get(end.prop3)).toBe(2);
+	expect(get(end.prop4)).toBe(3);
 
 	const duration = performance.now() - timeStart;
 

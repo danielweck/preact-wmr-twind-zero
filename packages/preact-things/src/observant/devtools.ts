@@ -1,4 +1,4 @@
-import type { IObs } from './vanilla/index.js';
+import { type TObs, dispose, get, onChange, set } from './vanilla/index.js';
 
 // https://github.com/reduxjs/redux-devtools/blob/14e4178d598b09d1c6936a470056bc04b35a88d8/extension/src/app/api/index.ts#L522-L536
 // export interface ConnectResponse {
@@ -56,7 +56,7 @@ export const obsDevTools = <
 	// 	REDUXDEVTOOLSEXTENSION_DISPATCH_MESSAGE?: Message;
 	// },
 >(
-	observantRootState: IObs<T>,
+	observantRootState: TObs<T>,
 	name: string,
 ) => {
 	const devtools = window.__REDUX_DEVTOOLS_EXTENSION__?.connect({ name: name || `Observant State ${_stateCount++}` });
@@ -69,11 +69,11 @@ export const obsDevTools = <
 	let isTimeTraveling = false;
 	let isRecording = true;
 
-	observantRootState.onChange(() => {
+	onChange(observantRootState, () => {
 		if (isTimeTraveling) {
 			isTimeTraveling = false;
 		} else if (isRecording) {
-			const s = observantRootState.get();
+			const s = get(observantRootState);
 			// delete s.REDUXDEVTOOLSEXTENSION_DISPATCH_MESSAGE;
 			devtools.send(
 				{
@@ -96,7 +96,7 @@ export const obsDevTools = <
 						console.log('devtools.subscribe > ACTION JSON.parse() ', message.payload, e);
 					}
 					if (typeof payloadObj === 'object') {
-						observantRootState.set(payloadObj as T);
+						set(observantRootState, payloadObj as T);
 					}
 				} else {
 					console.log('devtools.subscribe > ACTION message.payload not string? ', typeof message.payload, message.payload);
@@ -117,12 +117,12 @@ export const obsDevTools = <
 								console.log('devtools.subscribe > DISPATCH JSON.parse() ', message.payload.type, message.state, e);
 							}
 							if (typeof stateObj === 'object') {
-								observantRootState.set(stateObj as T);
+								set(observantRootState, stateObj as T);
 							}
 							break;
 						}
 						case 'COMMIT': {
-							devtools.init(observantRootState.get());
+							devtools.init(get(observantRootState));
 							break;
 						}
 						case 'IMPORT_STATE': {
@@ -135,13 +135,13 @@ export const obsDevTools = <
 								const action = actions[index] || 'NO ACTION?!';
 
 								if (typeof state === 'object') {
-									observantRootState.set(state as T);
+									set(observantRootState, state as T);
 								}
 
 								if (index === 0) {
-									devtools.init(observantRootState.get());
+									devtools.init(get(observantRootState));
 								} else {
-									devtools.send(action, observantRootState.get());
+									devtools.send(action, get(observantRootState));
 								}
 							});
 							break;
@@ -162,10 +162,10 @@ export const obsDevTools = <
 		}
 	});
 
-	devtools.init(observantRootState.get());
+	devtools.init(get(observantRootState));
 
 	return () => {
 		devToolsUnsubscribe?.();
-		observantRootState.dispose();
+		dispose(observantRootState);
 	};
 };

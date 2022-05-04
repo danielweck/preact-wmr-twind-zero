@@ -16,7 +16,7 @@
 // ----------------
 
 // export type TObsEventPayload<T> = {
-// 	// target: IObs<T>;
+// 	// target: TObs;
 // 	previous?: T;
 // 	current?: T;
 // 	error?: Error;
@@ -26,73 +26,85 @@ export type TObsEventListenerChange<T> = (current: T, previous: T | undefined) =
 export type TObsEventListenerError = (error: Error) => void;
 export type TObsEventListener<T> = TObsEventListenerChange<T> | TObsEventListenerError;
 export type TObsEventListeners<T> = TObsEventListener<T> | TObsEventListener<T>[] | undefined;
-const ObsEventChange = 0;
-const ObsEventError = 1;
+export type TObsEventListenersChange<T> = TObsEventListenerChange<T> | TObsEventListenerChange<T>[] | undefined;
+export type TObsEventListenersError = TObsEventListenerError | TObsEventListenerError[] | undefined;
+const ObsEventChange = '0';
+const ObsEventError = '1';
 export type TObsEventTypes = typeof ObsEventChange | typeof ObsEventError;
+export type TObsEventListenersMap<T> = {
+	[ObsEventChange]: TObsEventListenersChange<T>;
+	[ObsEventError]: TObsEventListenersError;
+};
 
 export type TObsPrimitive = null | number | string | boolean;
 export type TObserved = TObsPrimitive | Array<TObsPrimitive> | Record<string, unknown>;
 export type TObsDeriveFunc<T> = (currentValue: T | undefined) => T;
 
-export interface IObs<T> {
-	get: () => T;
-	peek: () => T | undefined;
-	set: (value: T | ((currentValue: T | undefined) => T)) => this;
+// export interface TObs {
+// 	get: () => T;
+// 	peek: () => T | undefined;
+// 	set: (value: T | ((currentValue: T | undefined) => T)) => this;
 
-	dispose: () => this;
+// 	dispose: () => this;
 
-	onChange: (listener: TObsEventListenerChange<T>) => () => this;
-	onError: (listener: TObsEventListenerError) => () => this;
+// 	onChange: (listener: TObsEventListenerChange<T>) => () => this;
+// 	onError: (listener: TObsEventListenerError) => () => this;
 
-	autoRun: () => void;
-}
+// 	autoRun: () => void;
+// }
 
-interface IObsInternal<T> extends IObs<T> {
-	_eventListeners: TObsEventListeners<T>[];
-	_onEvent: (key: TObsEventTypes, listener: TObsEventListener<T>) => () => this;
-	_offEvent: (key?: TObsEventTypes, listener?: TObsEventListener<T>) => this;
-	_emitEvent: (key: TObsEventTypes, current: T | undefined, previous: T | undefined, error: Error | undefined) => void;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export type TObs<_T> = {
+	// noop
+};
 
-	_eq: undefined | ((value1: T | undefined, value2: T | undefined) => boolean);
+// interface IObsInternal<T> extends TObs {
+interface IObsInternal<T> {
+	_eventListeners: TObsEventListenersMap<T>;
+	// _onEvent: (key: TObsEventTypes, listener: TObsEventListener<T>) => () => this;
+	// _offEvent: (key?: TObsEventTypes, listener?: TObsEventListener<T>) => this;
+	// _emitEvent: (key: TObsEventTypes, current: T | undefined, previous: T | undefined, error: Error | undefined) => void;
+
+	_eq?: (value1: T | undefined, value2: T | undefined) => boolean;
 
 	_currentValue?: T;
-	_setCurrentValue: (value: T) => void;
+	// _setCurrentValue: (value: T) => void;
 
 	_state: typeof STATE_RESOLVED | typeof STATE_DIRTY | typeof STATE_DIRTY_CHILDREN;
 	_initializedWithValueOrError: boolean;
 
 	_inQueueOfRoots: boolean;
-	_climbParentDependentsToFeedQueueOfRootObsToResolve: (dirty: boolean) => void;
-	_resolve: () => void;
+	// _climbParentDependentsToFeedQueueOfRootObsToResolve: (dirty: boolean) => void;
+	// _resolve: () => void;
 
 	_deriveFunc?: TObsDeriveFunc<T>;
-	_callDeriveFunc: () => void;
+	// _callDeriveFunc: () => void;
 	_isDeriving: boolean;
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	_parentDependents?: IObsInternal<any>[];
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	_registerParentDependentDeep: (parentDependent: IObsInternal<any>, resolved: boolean) => void;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	_unregisterParentDependentDeep: (parentDependent: IObsInternal<any>) => void;
+	_parentDependents?: Array<IObsInternal<any>>;
+	// // eslint-disable-next-line @typescript-eslint/no-explicit-any
+	// _registerParentDependentDeep: (parentDependent: IObsInternal<any>, resolved: boolean) => void;
+	// // eslint-disable-next-line @typescript-eslint/no-explicit-any
+	// _unregisterParentDependentDeep: (parentDependent: IObsInternal<any>) => void;
 
 	_hasParentDependentsOrEventListeners: boolean;
-	_doActivate: (resolved: boolean) => void;
-	_checkDeactivate: () => void;
+	// _doActivate: (resolved: boolean) => void;
+	// _checkDeactivate: () => void;
 
 	_activatedParentDependentsAfterDeep: boolean;
-	_registerParentDependentsOnChildrenDependencies: (resolved: boolean) => void;
-	_unregisterParentDependentsOnChildrenDependencies: () => void;
+	// _registerParentDependentsOnChildrenDependencies: (resolved: boolean) => void;
+	// _unregisterParentDependentsOnChildrenDependencies: () => void;
 
-	// can be modified locally from this._callDeriveFunc()
+	// can be modified locally from _callDeriveFunc(thiz, )
 	// and externally from currentDeriveObs._childDependencies in get()
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	_childDependencies?: IObsInternal<any>[];
+	_childDependencies?: Array<IObsInternal<any>>;
 
 	_idOfUpdateWithValueOrError: number;
 
-	_setErrorHereAndClimbParentDependents: (error: Error | undefined) => void;
-	_resolvedError: Error | undefined;
+	// _setErrorHereAndClimbParentDependents: (error: Error | undefined) => void;
+	_resolvedError?: Error;
 }
 
 export type TObsOptions<T> = {
@@ -100,10 +112,10 @@ export type TObsOptions<T> = {
 	eq?: (value1: T | undefined, value2: T | undefined) => boolean;
 };
 
-interface IObsConstructor<T> extends IObs<T> {
-	new (v: T | TObsDeriveFunc<T>, options?: TObsOptions<T>): IObs<T>;
-	(v: T | TObsDeriveFunc<T>, options?: TObsOptions<T>): IObs<T>;
-}
+// interface IObsConstructor<T> extends TObs {
+// 	new (v: T | TObsDeriveFunc<T>, options?: TObsOptions<T>): TObs;
+// 	(v: T | TObsDeriveFunc<T>, options?: TObsOptions<T>): TObs;
+// }
 
 export type TObsTick = (func: () => void) => void;
 
@@ -118,7 +130,7 @@ export type TObsTick = (func: () => void) => void;
 let currentErrorHandler = (err: Error, msg?: string) => {
 	console.log(msg, err);
 };
-export const onError = (errorHandler: typeof currentErrorHandler) => {
+export const logError = (errorHandler: typeof currentErrorHandler) => {
 	currentErrorHandler = errorHandler;
 };
 
@@ -199,7 +211,7 @@ const flushQueueOfRootObsToResolve = () => {
 		const obs = queueOfRootObsToResolve[indexInQueueOfRootObsToResolve++];
 		obs._inQueueOfRoots = false;
 		if (obs._activatedParentDependentsAfterDeep) {
-			obs._resolve();
+			_resolve(obs);
 		}
 	}
 	queueOfRootObsToResolve.length = 0;
@@ -233,62 +245,96 @@ const STATE_DIRTY_CHILDREN = 3;
 // <OBSERVANT WRAP CONSTRUCTOR>
 // ----------------
 
-export const obs = <T = TObserved>(v: T | TObsDeriveFunc<T>, options?: TObsOptions<T>) =>
-	new (Obs as IObsConstructor<T>)(v, options);
+// export const obs = <T = TObserved>(v: T | TObsDeriveFunc<T>, options?: TObsOptions<T>) =>
+// 	new (Obs as IObsConstructor<T>)(v, options);
 
-const Obs = function <T extends TObserved>(
-	this: IObsInternal<T>,
+const O = Object.freeze(
+	Object.assign(Object.create(null), {
+		_eq: undefined,
+		_eventListeners: undefined,
+		_parentDependents: undefined,
+		_childDependencies: undefined,
+		_hasParentDependentsOrEventListeners: false,
+		_activatedParentDependentsAfterDeep: false,
+		_inQueueOfRoots: false,
+		_isDeriving: false,
+		_idOfUpdateWithValueOrError: -1,
+		_resolvedError: undefined,
+		_state: STATE_DIRTY,
+		_currentValue: undefined,
+		_deriveFunc: undefined,
+		_initializedWithValueOrError: false,
+	}),
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+) as IObsInternal<any>;
+
+const E = Object.freeze(
+	Object.assign(Object.create(null), {
+		[ObsEventChange]: undefined,
+		[ObsEventError]: undefined,
+	}),
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+) as TObsEventListenersMap<any>;
+
+export const obs = function <T = TObserved>( // extends
+	// thiz: IObsInternal<T>,
 	v: T | TObsDeriveFunc<T>,
 	options?: TObsOptions<T>,
-): IObs<T> {
+): TObs<T> {
 	// if (
 	// 	typeof this === 'undefined' ||
-	// 	typeof this.constructor === 'undefined' ||
-	// 	(typeof Window !== 'undefined' && this.constructor === Window)
+	// 	typeof thiz.constructor === 'undefined' ||
+	// 	(typeof Window !== 'undefined' && thiz.constructor === Window)
 	// ) {
 	// 	return new Obs(v, options);
 	// }
 
-	this._eq = options?.eq; // ?? Object.is; // referencial === equality
+	// const thiz = {} as IObsInternal<T>;
+	// const thiz = Object.create(null) as IObsInternal<T>;
+	// const thiz = Object.create(Object.prototype) as IObsInternal<T>;
+	const thiz = Object.seal(Object.assign({}, O)) as IObsInternal<T>;
+	// const thiz = Object.seal({...O}) as IObsInternal<T>;
 
-	this._eventListeners = [undefined, undefined];
+	thiz._eq = options?.eq; // ?? Object.is; // referencial === equality
 
-	this._parentDependents = undefined;
-	this._childDependencies = undefined;
+	thiz._eventListeners = Object.seal(Object.assign({}, E)) as TObsEventListenersMap<T>;
 
-	this._hasParentDependentsOrEventListeners = false;
-	this._activatedParentDependentsAfterDeep = false;
+	// thiz._parentDependents = undefined;
+	// thiz._childDependencies = undefined;
 
-	this._inQueueOfRoots = false;
+	// thiz._hasParentDependentsOrEventListeners = false;
+	// thiz._activatedParentDependentsAfterDeep = false;
 
-	this._isDeriving = false;
+	// thiz._inQueueOfRoots = false;
 
-	this._idOfUpdateWithValueOrError = -1;
+	// thiz._isDeriving = false;
 
-	this._resolvedError = undefined;
+	// thiz._idOfUpdateWithValueOrError = -1;
+
+	// thiz._resolvedError = undefined;
 
 	if (typeof v === 'function') {
-		this._state = STATE_DIRTY;
+		thiz._state = STATE_DIRTY;
 
-		this._currentValue = undefined;
-		this._deriveFunc = v as TObsDeriveFunc<T>;
+		thiz._currentValue = undefined;
+		thiz._deriveFunc = v as TObsDeriveFunc<T>;
 
-		this._initializedWithValueOrError = false;
+		thiz._initializedWithValueOrError = false;
 	} else {
-		this._state = STATE_RESOLVED;
+		thiz._state = STATE_RESOLVED;
 
-		this._currentValue = v as T;
-		this._deriveFunc = undefined;
+		thiz._currentValue = v as T;
+		thiz._deriveFunc = undefined;
 
-		this._initializedWithValueOrError = true;
+		thiz._initializedWithValueOrError = true;
 	}
 
 	if (options?.autoRun) {
-		this.autoRun();
+		autoRun(thiz);
 	}
 
-	// return Object.seal(this);
-	return this;
+	// return Object.seal(thiz);
+	return thiz;
 };
 
 // ----------------
@@ -299,79 +345,89 @@ const Obs = function <T extends TObserved>(
 // <OBSERVANT PUBLICS>
 // ----------------
 
-Obs.prototype.get = function <T>(this: IObsInternal<T>): T {
-	if (this._state !== STATE_RESOLVED && this._idOfUpdateWithValueOrError !== lastIdOfUpdateWithValueOrError) {
+export const get = function <T>(thiz: TObs<T>): T {
+	const that = thiz as IObsInternal<T>;
+
+	if (that._state !== STATE_RESOLVED && that._idOfUpdateWithValueOrError !== lastIdOfUpdateWithValueOrError) {
 		// STATE_DIRTY || STATE_DIRTY_CHILDREN
-		this._resolve();
+		_resolve(that);
 	}
 
-	if (currentDeriveObs && currentDeriveObs !== this) {
+	if (currentDeriveObs && currentDeriveObs !== that) {
 		if (!currentDeriveObs._childDependencies) {
-			currentDeriveObs._childDependencies = [this];
-		} else if (!arrayIncludes(currentDeriveObs._childDependencies, this)) {
-			currentDeriveObs._childDependencies.push(this);
+			currentDeriveObs._childDependencies = [that];
+		} else if (!arrayIncludes(currentDeriveObs._childDependencies, thiz)) {
+			currentDeriveObs._childDependencies.push(that);
 		}
 	}
 
-	if (this._resolvedError) {
-		throw this._resolvedError;
+	if (that._resolvedError) {
+		throw that._resolvedError;
 	}
 
-	// guaranteed defined, because this._resolve() sets this._currentValue or sets this._resolvedError (which bails out in the conditional above)
-	return this._currentValue as T;
+	// guaranteed defined, because _resolve(that) sets thiz._currentValue or sets thiz._resolvedError (which bails out in the conditional above)
+	return that._currentValue as T;
 };
 
-Obs.prototype.peek = function <T>(this: IObsInternal<T>): T | undefined {
-	if (this._resolvedError) {
-		throw this._resolvedError;
+export const peek = function <T>(thiz: TObs<T>): T | undefined {
+	const that = thiz as IObsInternal<T>;
+
+	if (that._resolvedError) {
+		throw that._resolvedError;
 	}
-	return this._currentValue;
+	return that._currentValue;
 };
 
-Obs.prototype.set = function <T>(this: IObsInternal<T>, value: T | ((currentValue: T | undefined) => T)): IObs<T> {
-	if (!this._initializedWithValueOrError && this._deriveFunc) {
-		this._callDeriveFunc();
+export const set = function <T>(thiz: TObs<T>, value: T | ((currentValue: T | undefined) => T)): TObs<T> {
+	const that = thiz as IObsInternal<T>;
+
+	if (!that._initializedWithValueOrError && that._deriveFunc) {
+		_callDeriveFunc(that);
 	}
 
 	if (typeof value === 'function') {
 		// eslint-disable-next-line @typescript-eslint/ban-types
-		this._setCurrentValue((value as Function)(this._currentValue));
+		_setCurrentValue(that, (value as Function)(that._currentValue));
 	} else {
-		this._setCurrentValue(value);
+		_setCurrentValue(that, value);
 	}
 
-	return this;
+	return that;
 };
 
-Obs.prototype.dispose = function <T>(this: IObsInternal<T>): IObs<T> {
-	this._offEvent();
+export const dispose = function <T>(thiz: TObs<T>) {
+	const that = thiz as IObsInternal<T>;
 
-	if (this._parentDependents) {
-		let i = this._parentDependents.length;
+	_offEvent(that);
+
+	if (that._parentDependents) {
+		let i = that._parentDependents.length;
 		while (i !== 0) {
-			this._parentDependents[--i].dispose();
+			dispose(that._parentDependents[--i]);
 		}
 	}
-
-	return this;
 };
 
-Obs.prototype.onChange = function <T>(this: IObsInternal<T>, listener: TObsEventListener<T>): () => IObs<T> {
-	return this._onEvent(ObsEventChange, listener);
+export const onChange = function <T>(thiz: TObs<T>, listener: TObsEventListenerChange<T>): () => TObs<T> {
+	const that = thiz as IObsInternal<T>;
+	return _onEvent(that, ObsEventChange, listener);
 };
 
-Obs.prototype.onError = function <T>(this: IObsInternal<T>, listener: TObsEventListener<T>): () => IObs<T> {
-	return this._onEvent(ObsEventError, listener);
+export const onError = function <T>(thiz: TObs<T>, listener: TObsEventListenerError): () => TObs<T> {
+	const that = thiz as IObsInternal<T>;
+	return _onEvent(that, ObsEventError, listener);
 };
 
-Obs.prototype.autoRun = function <T>(this: IObsInternal<T>): void {
-	if (this._childDependencies) {
-		this._resolve();
+export const autoRun = function <T>(thiz: TObs<T>): void {
+	const that = thiz as IObsInternal<T>;
+
+	if (that._childDependencies) {
+		_resolve(that);
 	}
 
-	this._doActivate(true);
+	_doActivate(that, true);
 
-	this.get();
+	get(that);
 };
 
 // ----------------
@@ -382,72 +438,71 @@ Obs.prototype.autoRun = function <T>(this: IObsInternal<T>): void {
 // <OBSERVANT INTERNALS>
 // ----------------
 
-Obs.prototype._doActivate = function <T>(this: IObsInternal<T>, resolved: boolean) {
-	this._hasParentDependentsOrEventListeners = true;
-	this._registerParentDependentsOnChildrenDependencies(resolved);
+const _doActivate = function <T>(thiz: IObsInternal<T>, resolved: boolean) {
+	thiz._hasParentDependentsOrEventListeners = true;
+	_registerParentDependentsOnChildrenDependencies(thiz, resolved);
 };
 
-Obs.prototype._checkDeactivate = function <T>(this: IObsInternal<T>) {
+const _checkDeactivate = function <T>(thiz: IObsInternal<T>) {
 	if (
-		this._hasParentDependentsOrEventListeners &&
-		!this._parentDependents?.length &&
-		(!this._eventListeners[ObsEventChange] ||
-			(Array.isArray(this._eventListeners[ObsEventChange]) &&
-				(this._eventListeners[ObsEventChange] as []).length === 0)) &&
-		(!this._eventListeners[ObsEventError] ||
-			(Array.isArray(this._eventListeners[ObsEventError]) && (this._eventListeners[ObsEventError] as []).length === 0))
+		thiz._hasParentDependentsOrEventListeners &&
+		!thiz._parentDependents?.length &&
+		(!thiz._eventListeners[ObsEventChange] ||
+			(Array.isArray(thiz._eventListeners[ObsEventChange]) &&
+				(thiz._eventListeners[ObsEventChange] as []).length === 0)) &&
+		(!thiz._eventListeners[ObsEventError] ||
+			(Array.isArray(thiz._eventListeners[ObsEventError]) && (thiz._eventListeners[ObsEventError] as []).length === 0))
 	) {
-		this._hasParentDependentsOrEventListeners = false;
-		this._unregisterParentDependentsOnChildrenDependencies();
+		thiz._hasParentDependentsOrEventListeners = false;
+		_unregisterParentDependentsOnChildrenDependencies(thiz);
 	}
 };
 
-Obs.prototype._onEvent = function <T>(
-	this: IObsInternal<T>,
+const _onEvent = function <T>(
+	thiz: IObsInternal<T>,
 	key: TObsEventTypes,
 	listener: TObsEventListener<T>,
-): () => IObs<T> {
-	if (this._childDependencies) {
-		this._resolve();
+): () => TObs<T> {
+	if (thiz._childDependencies) {
+		_resolve(thiz);
 	}
 
-	const listeners = this._eventListeners[key];
+	const listeners = thiz._eventListeners[key];
 	if (!listeners) {
-		this._eventListeners[key] = listener;
+		// @ts-expect-error TS2322
+		thiz._eventListeners[key] = listener;
 	} else if (Array.isArray(listeners)) {
 		if (!arrayIncludes(listeners, listener)) {
+			// @ts-expect-error TS2345
 			listeners.push(listener);
 		}
 	} else if (listeners !== listener) {
-		this._eventListeners[key] = [listeners, listener];
+		// @ts-expect-error TS2322
+		thiz._eventListeners[key] = [listeners, listener];
 	}
 
-	this._doActivate(true);
+	_doActivate(thiz, true);
 
-	return () => this._offEvent(key, listener);
+	return () => _offEvent(thiz, key, listener);
 };
 
-Obs.prototype._offEvent = function <T>(
-	this: IObsInternal<T>,
-	key?: TObsEventTypes,
-	listener?: TObsEventListener<T>,
-): IObs<T> {
-	if (this._childDependencies) {
-		this._resolve();
+const _offEvent = function <T>(thiz: IObsInternal<T>, key?: TObsEventTypes, listener?: TObsEventListener<T>): TObs<T> {
+	if (thiz._childDependencies) {
+		_resolve(thiz);
 	}
 
 	if (listener && key) {
-		const listeners = this._eventListeners[key];
+		const listeners = thiz._eventListeners[key];
 		if (listeners) {
 			if (!Array.isArray(listeners)) {
 				if (listeners === listener) {
-					this._eventListeners[key] = undefined;
+					thiz._eventListeners[key] = undefined;
 				}
 			} else {
 				let i = listeners.length;
 				if (i === 1) {
 					if (listeners[0] === listener) {
-						this._eventListeners[key] = undefined;
+						thiz._eventListeners[key] = undefined;
 					}
 				} else {
 					while (i !== 0) {
@@ -460,24 +515,24 @@ Obs.prototype._offEvent = function <T>(
 			}
 		}
 	} else if (key) {
-		this._eventListeners[key] = undefined;
+		thiz._eventListeners[key] = undefined;
 	} else {
-		this._eventListeners[ObsEventChange] = undefined;
-		this._eventListeners[ObsEventError] = undefined;
+		thiz._eventListeners[ObsEventChange] = undefined;
+		thiz._eventListeners[ObsEventError] = undefined;
 	}
 
-	this._checkDeactivate();
-	return this;
+	_checkDeactivate(thiz);
+	return thiz;
 };
 
-Obs.prototype._emitEvent = function <T>(
-	this: IObsInternal<T>,
+const _emitEvent = function <T>(
+	thiz: IObsInternal<T>,
 	key: TObsEventTypes,
 	current: T | undefined,
 	previous: T | undefined,
 	error: Error | undefined,
 ) {
-	const listeners = this._eventListeners[key];
+	const listeners = thiz._eventListeners[key];
 	if (!listeners) {
 		return;
 	}
@@ -511,263 +566,266 @@ Obs.prototype._emitEvent = function <T>(
 	}
 };
 
-Obs.prototype._registerParentDependentDeep = function <T>(
-	this: IObsInternal<T>,
+const _registerParentDependentDeep = function <T>(
+	thiz: IObsInternal<T>,
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	parentDependent: IObsInternal<any>,
 	resolved: boolean,
 ) {
-	if (this !== parentDependent) {
-		if (this._parentDependents) {
-			this._parentDependents.push(parentDependent);
+	if (thiz !== parentDependent) {
+		if (thiz._parentDependents) {
+			thiz._parentDependents.push(parentDependent);
 		} else {
-			this._parentDependents = [parentDependent];
+			thiz._parentDependents = [parentDependent];
 		}
 	}
 
-	this._doActivate(resolved);
+	_doActivate(thiz, resolved);
 };
 
-Obs.prototype._registerParentDependentsOnChildrenDependencies = function <T>(this: IObsInternal<T>, resolved: boolean) {
-	let i = this._childDependencies ? this._childDependencies.length : 0;
+const _registerParentDependentsOnChildrenDependencies = function <T>(thiz: IObsInternal<T>, resolved: boolean) {
+	let i = thiz._childDependencies ? thiz._childDependencies.length : 0;
 
-	if (this._activatedParentDependentsAfterDeep || !this._deriveFunc || i === 0) {
+	if (thiz._activatedParentDependentsAfterDeep || !thiz._deriveFunc || i === 0) {
 		return;
 	}
 
-	while (i !== 0) {
-		this._childDependencies?.[--i]?._registerParentDependentDeep(this, resolved);
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	let dep: IObsInternal<any> | undefined;
+	while (i !== 0 && (dep = thiz._childDependencies?.[--i])) {
+		_registerParentDependentDeep(dep, thiz, resolved);
 	}
 
 	if (resolved) {
-		this._state = STATE_RESOLVED;
+		thiz._state = STATE_RESOLVED;
 	}
 
-	this._activatedParentDependentsAfterDeep = true;
+	thiz._activatedParentDependentsAfterDeep = true;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-Obs.prototype._unregisterParentDependentDeep = function <T>(this: IObsInternal<T>, parentDependent: IObs<any>) {
-	let i = this._parentDependents ? this._parentDependents.length : 0;
+const _unregisterParentDependentDeep = function <T>(thiz: IObsInternal<T>, parentDependent: TObs<T>) {
+	let i = thiz._parentDependents ? thiz._parentDependents.length : 0;
 	if (i === 0) {
 		return;
 	}
 	if (i === 1) {
-		this._parentDependents = undefined;
+		thiz._parentDependents = undefined;
 	} else {
 		while (i !== 0) {
-			if (this._parentDependents?.[--i] === parentDependent) {
-				this._parentDependents.splice(i, 1);
+			if (thiz._parentDependents?.[--i] === parentDependent) {
+				thiz._parentDependents?.splice(i, 1);
 				break;
 			}
 		}
 	}
 
-	this._checkDeactivate();
+	_checkDeactivate(thiz);
 };
 
-Obs.prototype._unregisterParentDependentsOnChildrenDependencies = function <T>(this: IObsInternal<T>) {
-	if (!this._activatedParentDependentsAfterDeep) {
+const _unregisterParentDependentsOnChildrenDependencies = function <T>(thiz: IObsInternal<T>) {
+	if (!thiz._activatedParentDependentsAfterDeep) {
 		return;
 	}
 
-	let i = this._childDependencies ? this._childDependencies.length : 0;
-	while (i !== 0) {
-		this._childDependencies?.[--i]?._unregisterParentDependentDeep(this);
+	let i = thiz._childDependencies ? thiz._childDependencies.length : 0;
+	let dep: IObsInternal<T> | undefined;
+	while (i !== 0 && (dep = thiz._childDependencies?.[--i])) {
+		_unregisterParentDependentDeep(thiz, dep);
 	}
 
-	this._state = STATE_DIRTY;
+	thiz._state = STATE_DIRTY;
 
-	this._activatedParentDependentsAfterDeep = false;
+	thiz._activatedParentDependentsAfterDeep = false;
 };
 
-Obs.prototype._climbParentDependentsToFeedQueueOfRootObsToResolve = function <T>(
-	this: IObsInternal<T>,
-	dirty: boolean,
-) {
-	this._state = dirty ? STATE_DIRTY : STATE_DIRTY_CHILDREN;
-	let i = this._parentDependents ? this._parentDependents.length : 0;
+const _climbParentDependentsToFeedQueueOfRootObsToResolve = function <T>(thiz: IObsInternal<T>, dirty: boolean) {
+	thiz._state = dirty ? STATE_DIRTY : STATE_DIRTY_CHILDREN;
+	let i = thiz._parentDependents ? thiz._parentDependents.length : 0;
 	if (i !== 0) {
 		while (i !== 0) {
-			const parentDependent = this._parentDependents?.[--i];
+			const parentDependent = thiz._parentDependents?.[--i];
 			if (parentDependent?._state === STATE_RESOLVED) {
-				parentDependent._climbParentDependentsToFeedQueueOfRootObsToResolve(false);
+				_climbParentDependentsToFeedQueueOfRootObsToResolve(parentDependent, false);
 			}
 		}
-		// !arrayIncludes(queueOfRootObsToResolve, this)
-	} else if (!this._inQueueOfRoots) {
-		this._inQueueOfRoots = true;
-		i = queueOfRootObsToResolve.push(this);
+		// !arrayIncludes(queueOfRootObsToResolve, thiz)
+	} else if (!thiz._inQueueOfRoots) {
+		thiz._inQueueOfRoots = true;
+		i = queueOfRootObsToResolve.push(thiz);
 		if (i === 1) {
 			tickFunc(flushQueueOfRootObsToResolve);
 		}
 	}
 };
 
-Obs.prototype._resolve = function <T>(this: IObsInternal<T>) {
-	if (this._state === STATE_RESOLVED) {
+const _resolve = function <T>(thiz: IObsInternal<T>) {
+	if (thiz._state === STATE_RESOLVED) {
 		return;
 	}
 
-	if (this._state === STATE_DIRTY) {
-		if (this._deriveFunc) {
-			this._callDeriveFunc();
+	if (thiz._state === STATE_DIRTY) {
+		if (thiz._deriveFunc) {
+			_callDeriveFunc(thiz);
 		}
 		return;
 	}
 
 	// STATE_DIRTY_CHILDREN
 
-	let i = this._childDependencies ? this._childDependencies.length : 0;
-	while (i !== 0) {
-		this._childDependencies?.[--i]?._resolve();
+	let i = thiz._childDependencies ? thiz._childDependencies.length : 0;
+	let dep: IObsInternal<T> | undefined;
+	while (i !== 0 && (dep = thiz._childDependencies?.[--i])) {
+		_resolve(dep);
 
 		// @ts-expect-error TS2367
-		if (this._state === STATE_DIRTY) {
-			if (this._deriveFunc) {
-				this._callDeriveFunc();
+		if (thiz._state === STATE_DIRTY) {
+			if (thiz._deriveFunc) {
+				_callDeriveFunc(thiz);
 			}
 			return;
 		}
 	}
 
-	this._state = STATE_RESOLVED;
+	thiz._state = STATE_RESOLVED;
 };
 
-Obs.prototype._callDeriveFunc = function <T>(this: IObsInternal<T>) {
-	if (!this._deriveFunc) {
+const _callDeriveFunc = function <T>(thiz: IObsInternal<T>) {
+	if (!thiz._deriveFunc) {
 		return;
 	}
 
-	if (this._isDeriving) {
+	if (thiz._isDeriving) {
 		throw new Error('Circular!');
 	}
-	this._isDeriving = true;
+	thiz._isDeriving = true;
 
 	const previousDeriveObs = currentDeriveObs;
 	// eslint-disable-next-line @typescript-eslint/no-this-alias
-	currentDeriveObs = this;
+	currentDeriveObs = thiz;
 
-	const previousChildDependencies = this._childDependencies;
-	this._childDependencies = undefined as IObsInternal<T>['_childDependencies'];
+	const previousChildDependencies = thiz._childDependencies;
+	thiz._childDependencies = undefined as IObsInternal<T>['_childDependencies'];
 
 	let derivedValue: T | undefined;
 	let deriveError: Error | undefined;
 	try {
-		derivedValue = this._deriveFunc(this._currentValue); // this.peek() without the possible previous error
+		derivedValue = thiz._deriveFunc(thiz._currentValue); // peek(thiz, ) without the possible previous error
 	} catch (err) {
 		deriveError = currentDeriveError = ensureErrorType(err);
 	}
 
 	currentDeriveObs = previousDeriveObs;
 
-	this._isDeriving = false;
+	thiz._isDeriving = false;
 
-	if (this._hasParentDependentsOrEventListeners) {
+	if (thiz._hasParentDependentsOrEventListeners) {
 		let newChildDependenciesCount = 0;
 
-		let i = this._childDependencies ? this._childDependencies.length : 0;
+		let i = thiz._childDependencies ? thiz._childDependencies.length : 0;
 		while (i !== 0) {
-			const childDependency = this._childDependencies?.[--i];
+			const childDependency = thiz._childDependencies?.[--i];
 
 			if (childDependency && !arrayIncludes(previousChildDependencies, childDependency)) {
-				childDependency._registerParentDependentDeep(this, false);
+				_registerParentDependentDeep(childDependency, thiz, false);
 				newChildDependenciesCount++;
 			}
 		}
 
-		i = this._childDependencies ? this._childDependencies.length : 0;
+		i = thiz._childDependencies ? thiz._childDependencies.length : 0;
 		let iPrev = previousChildDependencies ? previousChildDependencies.length : 0;
 		if (iPrev !== 0 && (i === 0 || i - newChildDependenciesCount < iPrev)) {
 			while (iPrev !== 0) {
 				const previousChildDependency = previousChildDependencies?.[--iPrev];
 
-				if (i === 0 || (previousChildDependency && !arrayIncludes(this._childDependencies, previousChildDependency))) {
-					previousChildDependency?._unregisterParentDependentDeep(this);
+				if (previousChildDependency && (i === 0 || !arrayIncludes(thiz._childDependencies, previousChildDependency))) {
+					_unregisterParentDependentDeep(previousChildDependency, thiz);
 				}
 			}
 		}
 
 		if (i !== 0) {
-			this._activatedParentDependentsAfterDeep = true;
+			thiz._activatedParentDependentsAfterDeep = true;
 		} else {
-			this._activatedParentDependentsAfterDeep = false;
-			this._state = STATE_RESOLVED;
+			thiz._activatedParentDependentsAfterDeep = false;
+			thiz._state = STATE_RESOLVED;
 		}
 	} else {
-		this._state = this._childDependencies ? STATE_DIRTY : STATE_RESOLVED;
+		thiz._state = thiz._childDependencies ? STATE_DIRTY : STATE_RESOLVED;
 	}
 
 	if (typeof derivedValue !== 'undefined') {
-		this._setCurrentValue(derivedValue);
+		_setCurrentValue(thiz, derivedValue);
 		return;
 	}
 
 	if (deriveError) {
-		this._initializedWithValueOrError = true;
+		thiz._initializedWithValueOrError = true;
 
 		if (currentDeriveError) {
-			this._setErrorHereAndClimbParentDependents(currentDeriveError);
+			_setErrorHereAndClimbParentDependents(thiz, currentDeriveError);
 
 			currentErrorHandler(currentDeriveError);
 		} else {
-			this._setErrorHereAndClimbParentDependents(undefined);
+			_setErrorHereAndClimbParentDependents(thiz, undefined);
 		}
 
-		if (this._activatedParentDependentsAfterDeep) {
-			this._state = STATE_RESOLVED;
+		if (thiz._activatedParentDependentsAfterDeep) {
+			thiz._state = STATE_RESOLVED;
 		}
 	}
 };
 
-Obs.prototype._setCurrentValue = function <T>(this: IObsInternal<T>, newValue: T) {
-	this._initializedWithValueOrError = true;
+const _setCurrentValue = function <T>(thiz: IObsInternal<T>, newValue: T) {
+	thiz._initializedWithValueOrError = true;
 
-	if (this._resolvedError) {
-		this._setErrorHereAndClimbParentDependents(undefined);
+	if (thiz._resolvedError) {
+		_setErrorHereAndClimbParentDependents(thiz, undefined);
 	}
 
-	if (this._activatedParentDependentsAfterDeep) {
-		this._state = STATE_RESOLVED;
+	if (thiz._activatedParentDependentsAfterDeep) {
+		thiz._state = STATE_RESOLVED;
 	}
 
-	this._idOfUpdateWithValueOrError = ++lastIdOfUpdateWithValueOrError;
+	thiz._idOfUpdateWithValueOrError = ++lastIdOfUpdateWithValueOrError;
 
-	const previousValue = this._currentValue;
-	const changed = this._eq ? !this._eq(newValue, previousValue) : newValue !== previousValue;
+	const previousValue = thiz._currentValue;
+	const changed = thiz._eq ? !thiz._eq(newValue, previousValue) : newValue !== previousValue;
 	if (changed) {
-		this._currentValue = newValue;
+		thiz._currentValue = newValue;
 
-		let i = this._parentDependents ? this._parentDependents.length : 0;
-		while (i !== 0) {
-			this._parentDependents?.[--i]?._climbParentDependentsToFeedQueueOfRootObsToResolve(true);
+		let i = thiz._parentDependents ? thiz._parentDependents.length : 0;
+		let dep: IObsInternal<T> | undefined;
+		while (i !== 0 && (dep = thiz._parentDependents?.[--i])) {
+			_climbParentDependentsToFeedQueueOfRootObsToResolve(dep, true);
 		}
 
-		this._emitEvent(ObsEventChange, newValue, previousValue, undefined);
+		_emitEvent(thiz, ObsEventChange, newValue, previousValue, undefined);
 	}
 
 	return changed;
 };
 
-Obs.prototype._setErrorHereAndClimbParentDependents = function <T>(this: IObsInternal<T>, error: Error | undefined) {
-	if (this._resolvedError === error) {
+const _setErrorHereAndClimbParentDependents = function <T>(thiz: IObsInternal<T>, error: Error | undefined) {
+	if (thiz._resolvedError === error) {
 		return;
 	}
-	this._resolvedError = error;
+	thiz._resolvedError = error;
 
-	this._idOfUpdateWithValueOrError = ++lastIdOfUpdateWithValueOrError;
+	thiz._idOfUpdateWithValueOrError = ++lastIdOfUpdateWithValueOrError;
 
 	if (error) {
-		this._emitEvent(ObsEventError, undefined, undefined, error);
+		_emitEvent(thiz, ObsEventError, undefined, undefined, error);
 	}
 
-	let i = this._parentDependents ? this._parentDependents.length : 0;
-	while (i !== 0) {
-		this._parentDependents?.[--i]?._setErrorHereAndClimbParentDependents(error);
+	let i = thiz._parentDependents ? thiz._parentDependents.length : 0;
+	let dep: IObsInternal<T> | undefined;
+	while (i !== 0 && (dep = thiz._parentDependents?.[--i])) {
+		_setErrorHereAndClimbParentDependents(dep, error);
 	}
 };
 
-Object.freeze(Obs.prototype);
+// Object.freeze(Obs.prototype);
 
 // ----------------
 // </OBSERVANT INTERNALS>
@@ -929,31 +987,31 @@ Object.freeze(Obs.prototype);
 // 	new (): IMySet<T>;
 // 	(): IMySet<T>;
 // }
-// const MySet = Object.seal(function <T extends IObs<TObserved>>(this: IMySet<T>) {
+// const MySet = Object.seal(function <T extends TObs<TObserved>>(thiz: IMySet<T>) {
 // 	if (
 // 		typeof this === 'undefined' ||
-// 		typeof this.constructor === 'undefined' ||
-// 		(typeof Window !== 'undefined' && this.constructor === Window)
+// 		typeof thiz.constructor === 'undefined' ||
+// 		(typeof Window !== 'undefined' && thiz.constructor === Window)
 // 	) {
 // 		return new MySet();
 // 	}
 
-// 	this.data = new Set();
+// 	thiz.data = new Set();
 
-// 	return this;
+// 	return thiz;
 // 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 // }) as MySetConstructor<any>;
-// MySet.prototype.has = function <T>(this: IMySet<T>, v: T): boolean {
-// 	return this.data.has(v);
+// MySet.prototype.has = function <T>(thiz: IMySet<T>, v: T): boolean {
+// 	return thiz.data.has(v);
 // };
-// MySet.prototype.add = function <T>(this: IMySet<T>, v: T): void {
-// 	this.data.add(v);
+// MySet.prototype.add = function <T>(thiz: IMySet<T>, v: T): void {
+// 	thiz.data.add(v);
 // };
-// MySet.prototype.delete = function <T>(this: IMySet<T>, v: T): void {
-// 	this.data.delete(v);
+// MySet.prototype.delete = function <T>(thiz: IMySet<T>, v: T): void {
+// 	thiz.data.delete(v);
 // };
-// MySet.prototype.clear = function <T>(this: IMySet<T>): void {
-// 	this.data.clear();
+// MySet.prototype.clear = function <T>(thiz: IMySet<T>): void {
+// 	thiz.data.clear();
 // };
 // export const setTick = (func: TObsTick | undefined) => {
 // 	tickFunc = func;
@@ -963,11 +1021,11 @@ Object.freeze(Obs.prototype);
 // console.log(`isChrome: ${isChrome}`);
 
 // // eslint-disable-next-line @typescript-eslint/no-explicit-any
-// return (self as any).noseal ? this : Object.seal(this);
+// return (self as any).noseal ? this : Object.seal(thiz);
 
 // const obj = {
 // 	change: undefined,
 // 	error: undefined,
 // };
 // // eslint-disable-next-line @typescript-eslint/no-explicit-any
-// this._eventListeners = (self as any).noseal ? obj : Object.seal(obj);
+// thiz._eventListeners = (self as any).noseal ? obj : Object.seal(obj);
