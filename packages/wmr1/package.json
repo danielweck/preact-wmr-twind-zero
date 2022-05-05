@@ -61,8 +61,8 @@
 		"kolorist": "^1.5.1",
 		"preact-render-to-string": "^5.2.0",
 		"prettier": "^2.6.2",
-		"rollup": "^2.71.1",
-		"stylelint": "^14.8.1",
+		"rollup": "^2.72.0",
+		"stylelint": "^14.8.2",
 		"twind": "^1.0.0-next.37",
 		"wmr": "^3.7.2"
 	}

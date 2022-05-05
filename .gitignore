@@ -12,3 +12,5 @@
 vitest.config.ts.js
 **/xpatched/*
 **/.pnpm-debug.log
+**/.br
+**/.gz
