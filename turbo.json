@@ -14,8 +14,8 @@
 			"dependsOn": ["^typescript"],
 			"outputs": ["dist/**"]
 		},
-		"esbuild": {
-			"dependsOn": ["^esbuild"],
+		"bundle": {
+			"dependsOn": ["^typescript"],
 			"outputs": ["dist/**"]
 		},
 		"lint:eslint": {

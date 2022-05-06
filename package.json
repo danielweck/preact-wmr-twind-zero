@@ -127,7 +127,7 @@
 		"eslint-plugin-react": "^7.29.4",
 		"eslint-plugin-react-hooks": "^4.5.0",
 		"eslint-plugin-simple-import-sort": "^7.0.0",
-		"happy-dom": "^3.1.0",
+		"happy-dom": "^3.1.1",
 		"husky": "^7.0.4",
 		"kolorist": "^1.5.1",
 		"lint-staged": "^12.4.1",
@@ -143,8 +143,8 @@
 		"stylelint-config-prettier": "^9.0.3",
 		"stylelint-config-standard": "^25.0.0",
 		"tslib": "^2.4.0",
-		"turbo": "^1.2.6",
+		"turbo": "^1.2.8",
 		"typescript": "next",
-		"vitest": "^0.10.2"
+		"vitest": "^0.10.5"
 	}
 }

@@ -216,7 +216,7 @@ test('perf DOM 10', () => {
 	const duration = performance.now() - timeStart;
 
 	expect(duration).toBeGreaterThanOrEqual(0);
-	expect(duration).toBeLessThanOrEqual(10);
+	expect(duration).toBeLessThanOrEqual(20);
 
 	console.log(`PERF duration (DOM) 10: ${duration}`);
 });
@@ -291,7 +291,7 @@ test('perf DOM 1000', () => {
 	const duration = performance.now() - timeStart;
 
 	expect(duration).toBeGreaterThanOrEqual(0);
-	expect(duration).toBeLessThanOrEqual(10);
+	expect(duration).toBeLessThanOrEqual(20);
 
 	console.log(`PERF duration (DOM) 1000: ${duration}`);
 });

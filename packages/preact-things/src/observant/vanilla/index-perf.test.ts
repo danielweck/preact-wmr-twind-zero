@@ -178,7 +178,7 @@ test('perf NodeJS 10', () => {
 	const duration = performance.now() - timeStart;
 
 	expect(duration).toBeGreaterThanOrEqual(0);
-	expect(duration).toBeLessThanOrEqual(10);
+	expect(duration).toBeLessThanOrEqual(20);
 
 	console.log(`PERF duration (NodeJS) 10: ${duration}`);
 });
@@ -253,7 +253,7 @@ test('perf NodeJS 1000', () => {
 	const duration = performance.now() - timeStart;
 
 	expect(duration).toBeGreaterThanOrEqual(0);
-	expect(duration).toBeLessThanOrEqual(10);
+	expect(duration).toBeLessThanOrEqual(20);
 
 	console.log(`PERF duration (NodeJS) 1000: ${duration}`);
 });
