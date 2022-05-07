@@ -116,7 +116,7 @@
 		"csstype": "^3.0.11",
 		"enhanced-resolve": "^5.9.3",
 		"esbuild": "^0.14.38",
-		"eslint": "^8.14.0",
+		"eslint": "^8.15.0",
 		"eslint-config-preact": "^1.3.0",
 		"eslint-config-prettier": "^8.5.0",
 		"eslint-import-resolver-node": "^0.3.6",
@@ -145,6 +145,6 @@
 		"tslib": "^2.4.0",
 		"turbo": "^1.2.8",
 		"typescript": "next",
-		"vitest": "^0.10.5"
+		"vitest": "^0.11.0"
 	}
 }

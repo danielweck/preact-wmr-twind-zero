@@ -1,4 +1,6 @@
-// @vitest-environment happy-dom
+/**
+ * @vitest-environment happy-dom
+ */
 
 /* eslint-disable jest/no-commented-out-tests */
 
@@ -25,6 +27,9 @@ function onUnhandledRejection(event: PromiseRejectionEvent) {
 // let scratch;
 // let rerender: () => void;
 beforeEach(() => {
+	window.requestAnimationFrame = window.requestAnimationFrame.bind(window);
+	window.cancelAnimationFrame = window.cancelAnimationFrame.bind(window);
+
 	// scratch = setupScratch();
 	// rerender = setupRerender();
 

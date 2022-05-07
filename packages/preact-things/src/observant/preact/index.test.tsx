@@ -1,4 +1,6 @@
-// @vitest-environment happy-dom
+/**
+ * @vitest-environment happy-dom
+ */
 
 /* eslint-disable jest/no-commented-out-tests */
 
@@ -31,6 +33,9 @@ function onUnhandledRejection(event: PromiseRejectionEvent) {
 // let scratch;
 // let rerender: () => void;
 beforeEach(() => {
+	window.requestAnimationFrame = window.requestAnimationFrame.bind(window);
+	window.cancelAnimationFrame = window.cancelAnimationFrame.bind(window);
+
 	// scratch = setupScratch();
 	// rerender = setupRerender();
 
@@ -78,8 +83,22 @@ afterEach(() => {
 // 	throw lastError;
 // }
 
-test('test8a DOM', () => {
+test('test8a DOM', async () => {
+	expect(globalThis).toBeDefined();
+	expect(self).toBeDefined();
+	expect(window).toBeDefined();
+	// expect(window).toBe(self);
+	// expect(window).toBe(globalThis);
+	expect(window.queueMicrotask).toBeDefined();
+	expect(window.queueMicrotask).toBe(self.queueMicrotask);
+	expect(window.queueMicrotask).toBe(globalThis.queueMicrotask);
+	expect(window.requestAnimationFrame).toBeDefined();
+
 	let order = '0';
+
+	requestAnimationFrame(() => {
+		order += 'a';
+	});
 
 	// forwards the expect() assertions to Vitest
 	logError((err) => {
@@ -127,7 +146,10 @@ test('test8a DOM', () => {
 	expect(err).instanceOf(TypeError);
 	expect(err?.message).toBe('!!');
 	order += '7';
-	expect(order).toBe('01234567');
+
+	await waitFor(() => {
+		expect(order).toBe('01234567a');
+	});
 });
 
 test('preactObservant() makes component reactive', async () => {
