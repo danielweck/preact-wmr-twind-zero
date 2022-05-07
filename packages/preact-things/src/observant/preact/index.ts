@@ -4,7 +4,7 @@
 import type { FunctionComponent } from 'preact';
 import { type MutableRef, useEffect, useRef, useState } from 'preact/hooks';
 
-import { type TObs, dispose, get, obs, onChange, onError, peek } from '../vanilla/index.js';
+import { type TObs, get, obs, off, onChange, onError, peek } from '../vanilla/index.js';
 
 export interface ReactionTracking {
 	obs: TObs<boolean>;
@@ -36,7 +36,8 @@ const checkCleanupTimeout = () => {
 			const tracking = ref.current;
 
 			if (tracking && now >= tracking.cleanAt) {
-				dispose(tracking.obs);
+				// console.log('----- OBS tracking cleanup (off)');
+				off(tracking.obs);
 				ref.current = null;
 				_uncommittedReactionRefs.delete(ref);
 			}
@@ -59,32 +60,37 @@ export const preactObservant = <T extends object>(
 		const reactionTrackingRef = useRef<ReactionTracking | null>(null);
 
 		if (reactionTrackingRef.current) {
-			dispose(reactionTrackingRef.current.obs);
+			// console.log('----- OBS comp (off current)');
+			off(reactionTrackingRef.current.obs);
 		}
 
 		let effectShouldUpdate = false;
 
-		// const debugComponentDisplayName = `${componentDisplayName}_${
-		// 	JSON.stringify((args[0] as Record<string, string>)['debug'])
-		// }`;
-
 		useEffect(
 			() => {
+				// console.log('----- OBS (effect mount ...)');
+
 				if (reactionTrackingRef) {
+					// console.log('----- OBS (effect mount: delete react)');
 					_uncommittedReactionRefs.delete(reactionTrackingRef);
 				}
 
 				if (reactionTrackingRef.current) {
+					// console.log('----- OBS (effect mount: set mounted)');
 					reactionTrackingRef.current.mounted = true;
 				}
 
 				if (effectShouldUpdate) {
+					// console.log('----- OBS (effect mount: effectShouldUpdate => force re-render)');
 					forceReRender(NaN);
 				}
 
 				return () => {
+					// console.log('----- OBS (effect un-mount ...)');
+
 					if (reactionTrackingRef.current) {
-						dispose(reactionTrackingRef.current.obs);
+						// console.log('----- OBS (effect un-mount: off)');
+						off(reactionTrackingRef.current.obs);
 					}
 					reactionTrackingRef.current = null;
 				};
@@ -100,7 +106,7 @@ export const preactObservant = <T extends object>(
 		const o = obs<boolean>(() => {
 			if (renderedComponent || renderedComponentException) {
 				const ret = !peek(o);
-				// console.log('CALC (already rendered) ', o._name, ret, debugComponentDisplayName);
+				// console.log('----- OBS derive func (already rendered) ', ret);
 				return ret;
 			}
 			try {
@@ -110,41 +116,38 @@ export const preactObservant = <T extends object>(
 			}
 			const v = peek(o);
 			const ret = v === undefined ? true : !v;
-			// console.log('CALC (just rendered) ', o._name, ret, debugComponentDisplayName);
+			// console.log('----- OBS derive func (first rendered) ', v, ret);
 			return ret;
 		}) as TObs<boolean>;
 
 		onChange(o, (_current, previous) => {
 			if (previous === undefined) {
-				// console.log('CHANGE (first) => ignore', o._name, debugComponentDisplayName, evt.current);
+				// console.log('----- OBS onChange (first change) ', previous, _current);
 				return;
 			}
-			// console.log(
-			// 	'CHANGE (again) => dispose ',
-			// 	o._name,
-			// 	debugComponentDisplayName,
-			// 	evt.previous,
-			// 	' => ',
-			// 	evt.current,
-			// );
+			// console.log('----- OBS onChange (next change) => off ', previous, _current);
 
-			dispose(o);
+			off(o);
 
 			if (reactionTrackingRef.current?.mounted) {
+				// console.log('----- OBS onChange (mounted => force re-render)');
 				forceReRender(NaN);
 			} else {
+				// console.log('----- OBS onChange (not mounted => effectShouldUpdate)');
 				effectShouldUpdate = true;
 			}
 		});
 		onError(o, (error) => {
-			console.log('preactObservant.onError! ', componentDisplayName, error);
+			console.log('OBS onError! ', componentDisplayName, error);
 		});
 		get(o); // triggers the first 'change' event from undefined to true
 
 		if (reactionTrackingRef.current) {
+			// console.log('----- OBS comp (current => re-set)');
 			reactionTrackingRef.current.obs = o;
 			reactionTrackingRef.current.cleanAt = Date.now() + CLEANUP_TIME;
 		} else {
+			// console.log('----- OBS comp (not current => set)');
 			const trackingData: ReactionTracking = {
 				cleanAt: Date.now() + CLEANUP_TIME,
 				obs: o,
@@ -156,6 +159,7 @@ export const preactObservant = <T extends object>(
 		}
 
 		if (renderedComponentException) {
+			// console.log('----- OBS comp (ex)');
 			// "thenable" (Promise)
 			// thrown Promise must pass through (handled by Suspense / Error Boundary higher up in the component tree)
 			if (typeof (renderedComponentException as Promise<void>)?.then === 'function') {

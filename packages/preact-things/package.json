@@ -97,10 +97,11 @@
 		"esbuild-esm": "esbuild \"./src/index.ts\" --format=esm --outfile=dist/esm-bundle.js --tsconfig=tsconfig.build.json --platform=browser --target=es2020 --bundle --sourcemap=external",
 		"esbuild-cjs": "esbuild \"./src/index.ts\" --format=cjs --outfile=dist/cjs-bundle.js --tsconfig=tsconfig.build.json --platform=browser --target=es2020 --bundle --sourcemap=external",
 		"esbuild-iife": "esbuild \"./src/observant/vanilla/index.ts\" --outfile=\"./dist/observant.esbuild.js\" --global-name=observant --format=iife --platform=browser --target=esnext --bundle --analyze --minify && gzip --best --keep --force --verbose \"./dist/observant.esbuild.js\" && brotli --best --keep --force --verbose \"./dist/observant.esbuild.js\"",
-		"rollup-terser-iife": "rollup --input \"./dist/esm/observant/vanilla/index.js\" --file=\"./dist/observant.rollup-terser.js\" --name=observant --format=iife --no-interop --no-esModule --plugin=\"terser={ecma:2017,mangle:{properties:{regex:/^_.*/}}}\" && gzip --best --keep --force --verbose \"./dist/observant.rollup-terser.js\" && brotli --best --keep --force --verbose \"./dist/observant.rollup-terser.js\"",
+		"rollup-terser-iife": "rollup --input \"./dist/esm/observant/vanilla/index.js\" --file=\"./dist/observant.rollup-terser.js\" --name=observant --format=iife --no-interop --no-esModule --plugin=\"terser={ecma:2020,mangle:{properties:{regex:/^_.*/}}}\" && gzip --best --keep --force --verbose \"./dist/observant.rollup-terser.js\" && brotli --best --keep --force --verbose \"./dist/observant.rollup-terser.js\"",
 		"rollup-iife": "rollup --input \"./dist/esm/observant/vanilla/index.js\" --file=\"./dist/observant.rollup.js\" --name=observant --format=iife --no-interop --no-esModule && gzip --best --keep --force --verbose \"./dist/observant.rollup.js\" && brotli --best --keep --force --verbose \"./dist/observant.rollup.js\"",
-		"terser-iife": "terser \"./dist/esm/observant/vanilla/index.js\" --output \"./dist/observant.terser.js\" --compress --mangle --mangle-props regex=/^_.*/ --ecma 2017 --module --toplevel && gzip --best --keep --force --verbose \"./dist/observant.terser.js\" && brotli --best --keep --force --verbose \"./dist/observant.terser.js\"",
-		"terser-rollup-iife": "pnpm terser-iife && rollup --input \"./dist/observant.terser.js\" --file=\"./dist/observant.terser-rollup.js\" --name=observant --format=iife --no-interop --no-esModule --plugin=\"terser={ecma:2017}\" && gzip --best --keep --force --verbose \"./dist/observant.terser-rollup.js\" && brotli --best --keep --force --verbose \"./dist/observant.terser-rollup.js\"",
+		"terser": "terser \"./dist/esm/observant/vanilla/index.js\" --output \"./dist/observant.terser.js\" --compress --mangle --mangle-props regex=/^_.*/ --ecma 2020 --module --toplevel && gzip --best --keep --force --verbose \"./dist/observant.terser.js\" && brotli --best --keep --force --verbose \"./dist/observant.terser.js\"",
+		"terser-const-let": "sed -r -e \"s/([ {;])const /\\1let /g\" \"./dist/observant.terser.js\" > \"./dist/observant.terser-const-let.js\"",
+		"terser-rollup-iife": "pnpm terser && pnpm terser-const-let && rollup --input \"./dist/observant.terser-const-let.js\" --file=\"./dist/observant.terser-rollup.js\" --name=observant --format=iife --no-interop --no-esModule --plugin=\"terser={ecma:2020}\" && gzip --best --keep --force --verbose \"./dist/observant.terser-rollup.js\" && brotli --best --keep --force --verbose \"./dist/observant.terser-rollup.js\"",
 		"rollup": "pnpm rollup-iife && pnpm terser-rollup-iife",
 		"typescript": "tsc --version && pnpm typescript-esm && pnpm typescript-esm-copy",
 		"typescript-esm": "tsc --project tsconfig.build.json",
@@ -115,39 +116,27 @@
 	"size-limit": [
 		{
 			"path": "./dist/observant.terser-rollup.js",
-			"limit": "3912"
+			"limit": "3524"
 		},
 		{
 			"path": "./dist/observant.terser-rollup.js.gz",
-			"limit": "1647"
+			"limit": "1562"
 		},
 		{
 			"path": "./dist/observant.terser-rollup.js.br",
-			"limit": "1505"
-		},
-		{
-			"path": "./dist/observant.rollup.js",
-			"limit": "17678"
-		},
-		{
-			"path": "./dist/observant.rollup.js.gz",
-			"limit": "2921"
-		},
-		{
-			"path": "./dist/observant.rollup.js.br",
-			"limit": "2653"
+			"limit": "1414"
 		},
 		{
 			"path": "./dist/observant.esbuild.js",
-			"limit": "6654"
+			"limit": "6008"
 		},
 		{
 			"path": "./dist/observant.esbuild.js.gz",
-			"limit": "2109"
+			"limit": "2063"
 		},
 		{
 			"path": "./dist/observant.esbuild.js.br",
-			"limit": "1939"
+			"limit": "1867"
 		}
 	],
 	"dependencies": {

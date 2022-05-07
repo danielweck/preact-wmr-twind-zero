@@ -1,4 +1,4 @@
-import { type TObs, dispose, get, onChange, set } from './vanilla/index.js';
+import { type TObs, get, off, onChange, set } from './vanilla/index.js';
 
 // https://github.com/reduxjs/redux-devtools/blob/14e4178d598b09d1c6936a470056bc04b35a88d8/extension/src/app/api/index.ts#L522-L536
 // export interface ConnectResponse {
@@ -166,6 +166,6 @@ export const obsDevTools = <
 
 	return () => {
 		devToolsUnsubscribe?.();
-		dispose(observantRootState);
+		off(observantRootState);
 	};
 };

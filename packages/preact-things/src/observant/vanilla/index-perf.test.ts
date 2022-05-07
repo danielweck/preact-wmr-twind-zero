@@ -2,7 +2,7 @@
 
 import { afterEach, beforeEach, expect, test } from 'vitest';
 
-import { get, logError, obs, onChange, set } from './index.js';
+import { get, logError, obs, set } from './index.js';
 
 const defaultErrorHandler = (err: Error, msg?: string) => {
 	console.log(`VITEST: (${msg})`, err);
@@ -45,37 +45,49 @@ test('perf NodeJS 5000', () => {
 	for (let i = 5000; i > 0; i--) {
 		layer = (function (m) {
 			const s = {
-				prop1: obs(function () {
-					return get(m.prop2);
-				}),
-				prop2: obs(function () {
-					return get(m.prop1) - get(m.prop3);
-				}),
-				prop3: obs(function () {
-					return get(m.prop2) + get(m.prop4);
-				}),
-				prop4: obs(function () {
-					return get(m.prop3);
-				}),
+				prop1: obs(
+					function () {
+						return get(m.prop2);
+					},
+					{ run: true },
+				),
+				prop2: obs(
+					function () {
+						return get(m.prop1) - get(m.prop3);
+					},
+					{ run: true },
+				),
+				prop3: obs(
+					function () {
+						return get(m.prop2) + get(m.prop4);
+					},
+					{ run: true },
+				),
+				prop4: obs(
+					function () {
+						return get(m.prop3);
+					},
+					{ run: true },
+				),
 			};
 
-			onChange(s.prop1, () => {
-				// noop
-			});
-			onChange(s.prop2, () => {
-				// noop
-			});
-			onChange(s.prop3, () => {
-				// noop
-			});
-			onChange(s.prop4, () => {
-				// noop
-			});
+			// onChange(s.prop1, () => {
+			// 	// noop
+			// });
+			// onChange(s.prop2, () => {
+			// 	// noop
+			// });
+			// onChange(s.prop3, () => {
+			// 	// noop
+			// });
+			// onChange(s.prop4, () => {
+			// 	// noop
+			// });
 
-			get(s.prop1);
-			get(s.prop2);
-			get(s.prop3);
-			get(s.prop4);
+			// get(s.prop1);
+			// get(s.prop2);
+			// get(s.prop3);
+			// get(s.prop4);
 
 			return s;
 		})(layer);
@@ -120,37 +132,49 @@ test('perf NodeJS 10', () => {
 	for (let i = 10; i > 0; i--) {
 		layer = (function (m) {
 			const s = {
-				prop1: obs(function () {
-					return get(m.prop2);
-				}),
-				prop2: obs(function () {
-					return get(m.prop1) - get(m.prop3);
-				}),
-				prop3: obs(function () {
-					return get(m.prop2) + get(m.prop4);
-				}),
-				prop4: obs(function () {
-					return get(m.prop3);
-				}),
+				prop1: obs(
+					function () {
+						return get(m.prop2);
+					},
+					{ run: true },
+				),
+				prop2: obs(
+					function () {
+						return get(m.prop1) - get(m.prop3);
+					},
+					{ run: true },
+				),
+				prop3: obs(
+					function () {
+						return get(m.prop2) + get(m.prop4);
+					},
+					{ run: true },
+				),
+				prop4: obs(
+					function () {
+						return get(m.prop3);
+					},
+					{ run: true },
+				),
 			};
 
-			onChange(s.prop1, () => {
-				// noop
-			});
-			onChange(s.prop2, () => {
-				// noop
-			});
-			onChange(s.prop3, () => {
-				// noop
-			});
-			onChange(s.prop4, () => {
-				// noop
-			});
+			// onChange(s.prop1, () => {
+			// 	// noop
+			// });
+			// onChange(s.prop2, () => {
+			// 	// noop
+			// });
+			// onChange(s.prop3, () => {
+			// 	// noop
+			// });
+			// onChange(s.prop4, () => {
+			// 	// noop
+			// });
 
-			get(s.prop1);
-			get(s.prop2);
-			get(s.prop3);
-			get(s.prop4);
+			// get(s.prop1);
+			// get(s.prop2);
+			// get(s.prop3);
+			// get(s.prop4);
 
 			return s;
 		})(layer);
@@ -195,37 +219,49 @@ test('perf NodeJS 1000', () => {
 	for (let i = 1000; i > 0; i--) {
 		layer = (function (m) {
 			const s = {
-				prop1: obs(function () {
-					return get(m.prop2);
-				}),
-				prop2: obs(function () {
-					return get(m.prop1) - get(m.prop3);
-				}),
-				prop3: obs(function () {
-					return get(m.prop2) + get(m.prop4);
-				}),
-				prop4: obs(function () {
-					return get(m.prop3);
-				}),
+				prop1: obs(
+					function () {
+						return get(m.prop2);
+					},
+					{ run: true },
+				),
+				prop2: obs(
+					function () {
+						return get(m.prop1) - get(m.prop3);
+					},
+					{ run: true },
+				),
+				prop3: obs(
+					function () {
+						return get(m.prop2) + get(m.prop4);
+					},
+					{ run: true },
+				),
+				prop4: obs(
+					function () {
+						return get(m.prop3);
+					},
+					{ run: true },
+				),
 			};
 
-			onChange(s.prop1, () => {
-				// noop
-			});
-			onChange(s.prop2, () => {
-				// noop
-			});
-			onChange(s.prop3, () => {
-				// noop
-			});
-			onChange(s.prop4, () => {
-				// noop
-			});
+			// onChange(s.prop1, () => {
+			// 	// noop
+			// });
+			// onChange(s.prop2, () => {
+			// 	// noop
+			// });
+			// onChange(s.prop3, () => {
+			// 	// noop
+			// });
+			// onChange(s.prop4, () => {
+			// 	// noop
+			// });
 
-			get(s.prop1);
-			get(s.prop2);
-			get(s.prop3);
-			get(s.prop4);
+			// get(s.prop1);
+			// get(s.prop2);
+			// get(s.prop3);
+			// get(s.prop4);
 
 			return s;
 		})(layer);

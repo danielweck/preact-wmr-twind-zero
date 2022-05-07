@@ -193,37 +193,49 @@ const obsPerf = () => {
 	for (let i = 5000; i > 0; i--) {
 		layer = (function (m) {
 			const s = {
-				prop1: obs(function () {
-					return get(m.prop2);
-				}),
-				prop2: obs(function () {
-					return get(m.prop1) - get(m.prop3);
-				}),
-				prop3: obs(function () {
-					return get(m.prop2) + get(m.prop4);
-				}),
-				prop4: obs(function () {
-					return get(m.prop3);
-				}),
+				prop1: obs(
+					function () {
+						return get(m.prop2);
+					},
+					{ run: true },
+				),
+				prop2: obs(
+					function () {
+						return get(m.prop1) - get(m.prop3);
+					},
+					{ run: true },
+				),
+				prop3: obs(
+					function () {
+						return get(m.prop2) + get(m.prop4);
+					},
+					{ run: true },
+				),
+				prop4: obs(
+					function () {
+						return get(m.prop3);
+					},
+					{ run: true },
+				),
 			};
 
-			onChange(s.prop1, () => {
-				// noop
-			});
-			onChange(s.prop2, () => {
-				// noop
-			});
-			onChange(s.prop3, () => {
-				// noop
-			});
-			onChange(s.prop4, () => {
-				// noop
-			});
+			// onChange(s.prop1, () => {
+			// 	// noop
+			// });
+			// onChange(s.prop2, () => {
+			// 	// noop
+			// });
+			// onChange(s.prop3, () => {
+			// 	// noop
+			// });
+			// onChange(s.prop4, () => {
+			// 	// noop
+			// });
 
-			get(s.prop1);
-			get(s.prop2);
-			get(s.prop3);
-			get(s.prop4);
+			// get(s.prop1);
+			// get(s.prop2);
+			// get(s.prop3);
+			// get(s.prop4);
 
 			return s;
 		})(layer);
