@@ -2,11 +2,7 @@
 
 import { afterEach, beforeEach, expect, test } from 'vitest';
 
-import { get, logError, obs, set } from './index.js';
-
-const defaultErrorHandler = (err: Error, msg?: string) => {
-	console.log(`VITEST: (${msg})`, err);
-};
+import { get, obs, set } from './index.js';
 
 // let _unhandledEvents: PromiseRejectionEvent[] = [];
 // function onUnhandledRejection(event: PromiseRejectionEvent) {
@@ -19,8 +15,6 @@ beforeEach(() => {
 	// if ('onunhandledrejection' in window) {
 	// 	window.addEventListener('unhandledrejection', onUnhandledRejection);
 	// }
-
-	logError(defaultErrorHandler);
 });
 afterEach(() => {
 	// if ('onunhandledrejection' in window) {
@@ -29,8 +23,6 @@ afterEach(() => {
 	// 		throw _unhandledEvents[0].reason ?? _unhandledEvents[0];
 	// 	}
 	// }
-
-	logError(defaultErrorHandler);
 });
 
 test('perf NodeJS 5000', () => {

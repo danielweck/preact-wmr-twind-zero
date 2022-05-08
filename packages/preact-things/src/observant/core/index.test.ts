@@ -2,11 +2,7 @@
 
 import { afterEach, beforeEach, expect, test } from 'vitest';
 
-import { type TObsEventListenerChange, get, logError, obs, onChange, onError, set } from './index.js';
-
-const defaultErrorHandler = (err: Error, msg?: string) => {
-	console.log(`VITEST: (${msg})`, err);
-};
+import { type TObsEventListenerChange, get, obs, onChange, onError, set } from './index.js';
 
 // let _unhandledEvents: PromiseRejectionEvent[] = [];
 // function onUnhandledRejection(event: PromiseRejectionEvent) {
@@ -19,8 +15,6 @@ beforeEach(() => {
 	// if ('onunhandledrejection' in window) {
 	// 	window.addEventListener('unhandledrejection', onUnhandledRejection);
 	// }
-
-	logError(defaultErrorHandler);
 });
 afterEach(() => {
 	// if ('onunhandledrejection' in window) {
@@ -29,8 +23,6 @@ afterEach(() => {
 	// 		throw _unhandledEvents[0].reason ?? _unhandledEvents[0];
 	// 	}
 	// }
-
-	logError(defaultErrorHandler);
 });
 
 test('test1', () => {
@@ -60,10 +52,6 @@ test('test2', () => {
 
 test('test3b', () => {
 	let order = '0';
-	// forwards the expect() assertions to Vitest
-	logError((err) => {
-		throw err;
-	});
 	const a = obs(1);
 	onChange(a, (current, previous) => {
 		order += '2';
@@ -84,11 +72,6 @@ test('test3b', () => {
 // });
 
 test('test5', () => {
-	// forwards the expect() assertions to Vitest
-	logError((err) => {
-		throw err;
-	});
-
 	const a = obs(1);
 
 	onChange(a, (current, previous) => {
@@ -133,12 +116,6 @@ test('test7', () => {
 test('test8a', () => {
 	let order = '0';
 
-	// forwards the expect() assertions to Vitest
-	logError((err) => {
-		if (!(err instanceof TypeError)) {
-			throw err;
-		}
-	});
 	const a = obs(
 		1,
 		// 	{
@@ -183,10 +160,6 @@ test('test8a', () => {
 });
 
 test('test9', () => {
-	// forwards the expect() assertions to Vitest
-	logError((err) => {
-		throw err;
-	});
 	const a = obs(
 		'A',
 		// {
@@ -251,10 +224,6 @@ test('test9', () => {
 });
 
 test('test10', () => {
-	// forwards the expect() assertions to Vitest
-	logError((err) => {
-		throw err;
-	});
 	const a = obs(
 		'A',
 		// {

@@ -17,12 +17,8 @@ import { afterEach, beforeEach, expect, test } from 'vitest';
 import { cleanup, render, waitFor } from '../../../preact-testing-library.js';
 import { clearCache, suspendCache } from '../../suspend-cache.js';
 import { Suspense } from '../../xpatched/suspense.js';
-import { type TObs, get, logError, obs, onError, set } from '../core/index.js';
+import { type TObs, get, obs, onError, set } from '../core/index.js';
 import { preactObservant } from './index.js';
-
-const defaultErrorHandler = (err: Error, msg?: string) => {
-	console.log(`VITEST: (${msg})`, err);
-};
 
 let _unhandledEvents: PromiseRejectionEvent[] = [];
 function onUnhandledRejection(event: PromiseRejectionEvent) {
@@ -43,8 +39,6 @@ beforeEach(() => {
 	if ('onunhandledrejection' in window) {
 		window.addEventListener('unhandledrejection', onUnhandledRejection);
 	}
-
-	logError(defaultErrorHandler);
 });
 afterEach(() => {
 	clearCache();
@@ -58,8 +52,6 @@ afterEach(() => {
 			throw _unhandledEvents[0].reason ?? _unhandledEvents[0];
 		}
 	}
-
-	logError(defaultErrorHandler);
 });
 
 // async function waitFor<T extends () => any>(
@@ -100,12 +92,6 @@ test('test8a DOM', async () => {
 		order += 'a';
 	});
 
-	// forwards the expect() assertions to Vitest
-	logError((err) => {
-		if (!(err instanceof TypeError)) {
-			throw err;
-		}
-	});
 	const a = obs(
 		1,
 		// 	{
@@ -599,11 +585,6 @@ test('preactObservant() isolates re-renders to current nested component 2', asyn
 });
 
 test('preactObservant() caches, logs, and renders the error in place of a component', async () => {
-	// forwards the expect() assertions to Vitest
-	logError((err) => {
-		throw err;
-	});
-
 	let testPlan = 0;
 
 	const container = document.createElement('div');
@@ -613,7 +594,7 @@ test('preactObservant() caches, logs, and renders the error in place of a compon
 			throw new Error('MyFooError');
 		},
 		(exception) => {
-			expect((exception as Error).message).toBe('preactObservant.renderedComponentException [Thrower2] --- MyFooError');
+			expect(exception.message).toBe('preactObservant.renderedComponentException [Thrower2] --- MyFooError');
 			testPlan++;
 		},
 	);
@@ -641,7 +622,7 @@ test('preactObservant() recovers from errors', async () => {
 			return <Fragment>success</Fragment>;
 		},
 		(exception) => {
-			expect((exception as Error).message).toBe('preactObservant.renderedComponentException [Thrower2] --- MyFooError');
+			expect(exception.message).toBe('preactObservant.renderedComponentException [Thrower2] --- MyFooError');
 			testPlan++;
 		},
 	);
@@ -839,7 +820,7 @@ test('preactObservant handles Suspense / Lazy - thrown Promise that resolves', a
 			return <Fragment>no throw</Fragment>;
 		},
 		(exception) => {
-			expect((exception as Error).message).toBe('preactObservant.renderedComponentException [Thrower2] --- ');
+			expect(exception.message).toBe('preactObservant.renderedComponentException [Thrower2] --- ');
 			testPlan++;
 		},
 	);
@@ -924,7 +905,7 @@ test('preactObservant handles Suspense / Lazy - thrown Promise that rejects', as
 			return <Fragment>no throw</Fragment>;
 		},
 		(exception) => {
-			expect((exception as Error).message).toBe('preactObservant.renderedComponentException [Thrower2] --- ');
+			expect(exception.message).toBe('preactObservant.renderedComponentException [Thrower2] --- ');
 			testPlan++;
 		},
 	);

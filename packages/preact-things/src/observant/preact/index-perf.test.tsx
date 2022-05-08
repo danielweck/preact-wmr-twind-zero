@@ -12,11 +12,7 @@
 import { afterEach, beforeEach, expect, test } from 'vitest';
 
 import { cleanup } from '../../../preact-testing-library.js';
-import { get, logError, obs, set } from '../core/index.js';
-
-const defaultErrorHandler = (err: Error, msg?: string) => {
-	console.log(`VITEST: (${msg})`, err);
-};
+import { get, obs, set } from '../core/index.js';
 
 let _unhandledEvents: PromiseRejectionEvent[] = [];
 function onUnhandledRejection(event: PromiseRejectionEvent) {
@@ -37,8 +33,6 @@ beforeEach(() => {
 	if ('onunhandledrejection' in window) {
 		window.addEventListener('unhandledrejection', onUnhandledRejection);
 	}
-
-	logError(defaultErrorHandler);
 });
 afterEach(() => {
 	cleanup();
@@ -51,8 +45,6 @@ afterEach(() => {
 			throw _unhandledEvents[0].reason ?? _unhandledEvents[0];
 		}
 	}
-
-	logError(defaultErrorHandler);
 });
 
 // async function waitFor<T extends () => any>(

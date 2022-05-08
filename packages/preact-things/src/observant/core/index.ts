@@ -12,100 +12,32 @@
 // - Many renamed things!
 
 // https://mermaid-js.github.io/mermaid/#/flowchart
-// https://mermaid.live/view#pako:eNqdVV1v2jAU_StRpEqZ1E44EL6kVuqAatMeWBnaS5iQG98Qq4mNHIdpKv3vs_NpkpSH8QI5Pvf4fpwb3uyAE7DndhjzP0GEhbS2X3bMUp-bG0oGjh9kQgCTKyG4-IoZiUH8_lQwKEGOv_22-D63wjhLo-cMMliHG87l-iXd8g2kPD5BQ3cdf09A0BMsAY4NPnT8A0jr_sFK1VcQ0ZhYPLSOWN-cNryR4ytC8-wpvQDH8TLXfMpYoDUE1CoqvmGPFVudLIqCfuE4q1PTtU4cn4ehiUxVgIJWJ0U38ZliskWE2eFCAA00n3XoCGl-3sALWHUDZ5JvMiNHNNQt4o-BpCcsjdYhVftewIGmEsSPvDFLOAIjukNrlU1RbYUFFIy-obxREQSvS8Bdad2YjP2feF6Jat0eEiovSlf49OOctQGqgXfmjGbXMroa6uohBDFNXtp1bPkTAPnAo5WedrP1bBbnosI2xQKAgEdGFn36RvrWvZJTobW_LwEtOyohr_Z2CYwNR5bQ1ITuPt89nMuyz-pwYviy5KOBab4-0O0mVGNo2AMOG4NWtFHjrgoam8vQc8Wg54ppl1dByDM9VoKDxl0tNZ2Ths7V6p9zVmOqlqxOuMuf1U4qWm0eus1Za3relYu9K5d43alXkIu6mDHDcYtWIqY13B46mjSb0vGSGeCiVkQJdmKQKajO9ArlRdq3dgIiwZSo_5c3zdrZMoIEdvZc_SRYvO7sHXtXvOxI1CtpRajkwp5LkcGtrd-NP_-yoHouOEuKDwInBfj-D0VqCjA
+// https://mermaid.live/edit#pako:eNp9lF1r2zAUhv-KERRcaIflxPkwtBdrCx27Ciu7sUcQ1nEsastBsTtG0_--o0S2FNskN0me8x6dj1f2J8lqDiQmeVn_zQqmGu_teyo9_NzcCB74SdYqBbJ5UapWr0zyEtSf27NCcOonbz-efsZeXraHYmMDoZ9sOSjxAc8Ae8tnfrKDxnt49A74lRWi5F6de3umaxysbu4nKLD_o_48naugz8Y8q1qgCiO_WdkxPcTST-o8d8kKdQO0RpF8KpjcgYtpoKXyAlEtPe3jAuPIqnWaoTjrlmWN-GANOBhH25ZCvjvoPN2EVg_USld9KoUTbaESzn7oypyq192td7RVuu7Pu6oL9dQ5AN90Eu2yt3GbCKlp4mITWMN7wByM95ZfAp07Nyjq7TZg4bhm0MpF99_uH4-m3SMGl46BRk8D16opGI4b6hmdTcCZtbSTza13HVq4t2aiRDBRYjXWdYhGruEGBtbvwWm6J42O3VNxPKms84NjdcNj_bq_AedVu8HQxgbuRVcKR1eKRGPXOxTSMXM8XAxkhrhXI5yQ06W94aO75CaEdJBh4CiHugdiTD8npyHJHalAVUxwfLl-alVKmgIqSEmMPzlT7ylJ5Rfq2j3Hp_6Fi6ZWJM5ZeYA7wtqm_vVPZiRuVAud6FmwnWKVUX39B0Cvo00
+// https://mermaid.live/view#pako:eNp9lF1r2zAUhv-KERRcaIflxPmC9mJtoWNXYWU39gjCkmNRWw6K3TGa_vcdxbJ1YpvkJvFz3qPz8cr5JGnFBdmQrKj-pjnTtff2PVEefG5uJA_8OG20Fqp-0brSr0zxQug_t61CcurHbz-efm68rGiO-dYFQj_ecaHlh3gW4uD4zI_3ovYeHr0jfKW5LLhXZd6BmRpHp5v7MQjcc9SfZ3K16LMhz6kWoILIb1Z0zAyx9OMqyzBZgW6A1iBSTzlTe4ExDYxUXSBqpOd9XGAYWTeoGQqz7lhayw9WC4RhtF0h1TtC7XQTWjNQo7D6XAom2olSov3QlT3VrLtb72irdN2fd1UXmqkzIfi2kxiXvS1uIqS2iYtNQA3vAXIg3lt-CUzu3KKot9uCBXLNohVG99_uH0-23RMEl8hAq6cBtmoKhuOGekZnE3DmLO1kc-ddhxb41kyUCCZKrMa6DtEIG25h4PwenGZ6MujUvRWns8o5PzjWNDzWr_sb0K4aB0MXG7gXXSkcXSkSjV3vUEjHDHm4GMgswVcjnJDTpbvho7uEE0I6yLBwlEPxgRAz78l5SHJHSqFLJjn8uX4aVULqXJQiIRv4yZl-T0iivkDXHDi89S9c1pUmm1o34o6wpq5-_VNp99xqniXba1a28Os__g-itw
 
-// SIZE LIMIT :) [./dist/observant.terser-rollup.js] (3494 <= 3616)
-// SIZE LIMIT :) [./dist/observant.terser-rollup.js.gz] (1550 <= 1578)
-// SIZE LIMIT :) [./dist/observant.terser-rollup.js.br] (1400 <= 1428)
-// SIZE LIMIT :) [./dist/observant.rollup.js] (17617 <= 17739)
-// SIZE LIMIT :) [./dist/observant.rollup.js.gz] (2896 <= 2921)
-// SIZE LIMIT :) [./dist/observant.rollup.js.br] (2644 <= 2667)
-// SIZE LIMIT :) [./dist/observant.esbuild.js] (5978 <= 6100)
-// SIZE LIMIT :) [./dist/observant.esbuild.js.gz] (2055 <= 2083)
-// SIZE LIMIT :) [./dist/observant.esbuild.js.br] (1862 <= 1882)
-
-// ----------------
-// <TYPES>
-// ----------------
-
-export type TObsEventListenerChange<T> = (current: T, previous: T | undefined) => void;
-export type TObsEventListenerError = (error: Error) => void;
-export type TObsEventListener<T> = TObsEventListenerChange<T> | TObsEventListenerError;
-export type TObsEventListeners<T> = TObsEventListener<T> | TObsEventListener<T>[] | undefined;
-export type TObsEventListenersChange<T> = TObsEventListenerChange<T> | TObsEventListenerChange<T>[] | undefined;
-export type TObsEventListenersError = TObsEventListenerError | TObsEventListenerError[] | undefined;
-const ObsEventChange = '0';
-const ObsEventError = '1';
-export type TObsEventTypes = typeof ObsEventChange | typeof ObsEventError;
-export type TObsEventListenersMap<T> = {
-	[ObsEventChange]: TObsEventListenersChange<T>;
-	[ObsEventError]: TObsEventListenersError;
-};
-
-export type TObsPrimitive = null | number | string | boolean;
-export type TObserved = TObsPrimitive | Array<TObsPrimitive> | Record<string, unknown>;
-export type TObsDeriveFunc<T> = (currentValue: T | undefined) => T;
-
-export type TObs<_T> = {
-	// noop
-};
-
-interface IObsInternal<T> {
-	_eventListeners: TObsEventListenersMap<T>;
-
-	// _eq?: (val1: T | undefined, val2: T | undefined) => boolean;
-
-	_currentValue?: T;
-
-	_state: typeof STATE_RESOLVED | typeof STATE_DIRTY | typeof STATE_DIRTY_CHILDREN;
-	_initializedWithValueOrError: boolean;
-
-	_inQueueOfRoots: boolean;
-
-	_deriveFunc?: TObsDeriveFunc<T>;
-	_isDeriving: boolean;
-
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	_parentDependents?: Array<IObsInternal<any>>;
-
-	_hasParentDependentsOrEventListeners: boolean;
-
-	_activatedParentDependentsAfterDeep: boolean;
-
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	_childDependencies?: Array<IObsInternal<any>>;
-
-	_idOfUpdateWithValueOrError: number;
-
-	_resolvedError?: Error;
-}
-
-export type TObsOptions<_T> = {
-	run?: boolean;
-	// eq?: (val1: T | undefined, val2: T | undefined) => boolean;
-};
-
-export type TObsTick = (func: () => void) => void;
-
-// ----------------
-// </TYPES>
-// ----------------
+// SIZE LIMIT :) [./dist/observant.terser-rollup.js] (3391 <= 3524)
+// SIZE LIMIT :) [./dist/observant.terser-rollup.js.gz] (1533 <= 1562)
+// SIZE LIMIT :) [./dist/observant.terser-rollup.js.br] (1383 <= 1414)
+// SIZE LIMIT :) [./dist/observant.esbuild.js] (4574 <= 6008)
+// SIZE LIMIT :) [./dist/observant.esbuild.js.gz] (1887 <= 2063)
+// SIZE LIMIT :) [./dist/observant.esbuild.js.br] (1700 <= 1867)
 
 // ----------------
 // <ERROR HANDLING>
 // ----------------
 
-let currentErrorHandler = (err: Error, msg?: string) => {
-	console.log(msg, err);
-};
-export const logError = (errorHandler: typeof currentErrorHandler) => {
-	currentErrorHandler = errorHandler;
-};
+// const _errorHandler = (err: Error, msg?: string) => {
+// 	console.log(msg, err);
+// };
+// export const logError = (errorHandler: typeof _errorHandler) => {
+// 	_errorHandler = errorHandler;
+// };
 
-const ensureErrorType = (err: unknown) => (err instanceof Error ? err : Error(String(err)));
+const mkError = (err: unknown) => (err instanceof Error ? err : Error(String(err)));
 
 const ERROR_MSG_DERIVE_FUNC_CALLED_CIRCULAR = 'OERR_1';
 const ERROR_MSG_SET_CALLED_WITH_DERIVE_FUNC = 'OERR_2';
+// const ERROR_MSG_EVENT_LISTENER_THROW = 'OERR_3';
 
 // ----------------
 // </ERROR HANDLING>
@@ -115,7 +47,7 @@ const ERROR_MSG_SET_CALLED_WITH_DERIVE_FUNC = 'OERR_2';
 // <FAST ARRAY UTILS>
 // ----------------
 
-const arrayIncludes = <T>(arr: T[] | undefined, v: T): boolean => {
+const inArray = <T>(arr: T[] | undefined, v: T): boolean => {
 	for (let i = arr ? arr.length : 0; i !== 0; ) {
 		// let i = arr ? arr.length : 0;
 		// while (; i !== 0; i--) {
@@ -135,12 +67,12 @@ const arrayIncludes = <T>(arr: T[] | undefined, v: T): boolean => {
 // <TICK MICROTASK DEFER>
 // ----------------
 
-const tickNodeJSProcessNextTick: TObsTick | undefined =
+const tickNext: TObsTick | undefined =
 	typeof globalThis !== 'undefined' && globalThis.process && globalThis.process.nextTick
 		? globalThis.process.nextTick
 		: undefined;
 
-const tickDOMQueueMicrotask: TObsTick | undefined =
+const tickQMicrotask: TObsTick | undefined =
 	typeof self !== 'undefined' && self.queueMicrotask ? self.queueMicrotask : undefined;
 
 const tickPromise_ = Promise.resolve();
@@ -151,7 +83,7 @@ const tickPromise: TObsTick = (func) => {
 	});
 };
 
-const tickFunc = tickDOMQueueMicrotask ?? tickNodeJSProcessNextTick ?? tickPromise;
+const ticker = tickQMicrotask ?? tickNext ?? tickPromise;
 
 // ----------------
 // </TICK MICROTASK DEFER>
@@ -162,24 +94,23 @@ const tickFunc = tickDOMQueueMicrotask ?? tickNodeJSProcessNextTick ?? tickPromi
 // ----------------
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const queueOfRootObsToResolve: IObsInternal<any>[] = [];
-let indexInQueueOfRootObsToResolve = 0;
-const flushQueueOfRootObsToResolve = () => {
+const _Q: IObsInternal<any>[] = [];
+let _iQ = 0;
+const _flushQ = () => {
 	for (
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		let obs: IObsInternal<any> | undefined;
-		indexInQueueOfRootObsToResolve < queueOfRootObsToResolve.length &&
-		(obs = queueOfRootObsToResolve[indexInQueueOfRootObsToResolve++]);
+		_iQ < _Q.length && (obs = _Q[_iQ++]);
 
 	) {
-		if (obs._activatedParentDependentsAfterDeep) {
-			obs._inQueueOfRoots = false;
+		if (obs._active) {
+			obs._inQ = false;
 			_deriveDeep(obs);
 		}
 		// else, skip and flush
 	}
-	indexInQueueOfRootObsToResolve = 0;
-	queueOfRootObsToResolve.length = 0;
+	_iQ = 0;
+	_Q.length = 0;
 };
 
 // ----------------
@@ -191,15 +122,20 @@ const flushQueueOfRootObsToResolve = () => {
 // ----------------
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-let currentDeriveObs: IObsInternal<any> | undefined;
+let _currentDerive: IObsInternal<any> | undefined;
 
-let currentDeriveError: Error | undefined;
+let _currentError: Error | undefined;
 
-let lastIdOfUpdateWithValueOrError = 0;
+let _lastUpdateID = 0;
 
-const STATE_RESOLVED = 1;
-const STATE_DIRTY = 2;
-const STATE_DIRTY_CHILDREN = 3;
+// perf code golf!
+// // const STATE_UNKNOWN = 0;
+// const STATE_RESOLVED = 1 << 0; // 1
+// const STATE_DIRTY = 1 << 1; // 2
+// const STATE_DIRTY_CHILDREN = 1 << 2; // 4
+const STATE_RESOLVED = '0';
+const STATE_DIRTY = '1';
+const STATE_DIRTY_CHILDREN = '2';
 
 // ----------------
 // </GLOBAL STATE>
@@ -215,30 +151,34 @@ const O = Object.freeze(
 	{
 		prototype: null,
 		// _eq: undefined,
-		_eventListeners: undefined,
-		_parentDependents: undefined,
-		_childDependencies: undefined,
-		_hasParentDependentsOrEventListeners: false,
-		_activatedParentDependentsAfterDeep: false,
-		_inQueueOfRoots: false,
-		_isDeriving: false,
-		_idOfUpdateWithValueOrError: -1,
-		_resolvedError: undefined,
+		_events: undefined,
+		_hasEvents: false,
+		_parents: undefined,
+		_children: undefined,
+		_wired: false,
+		_active: false,
+		_inQ: false,
+		_deriving: false,
+		_updateID: -1,
+		_error: undefined,
 		_state: STATE_DIRTY,
-		_currentValue: undefined,
-		_deriveFunc: undefined,
-		_initializedWithValueOrError: false,
+		_val: undefined,
+		_deriver: undefined,
+		// _initialized: false,
 	},
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 ) as unknown as IObsInternal<any>;
+
+const EVT_CHANGE = '0';
+const EVT_ERROR = '1';
 
 // perf code golf!
 // Object.assign(Object.create(null), { .... })
 const E = Object.freeze(
 	{
 		prototype: null,
-		[ObsEventChange]: undefined,
-		[ObsEventError]: undefined,
+		[EVT_CHANGE]: undefined,
+		[EVT_ERROR]: undefined,
 	},
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 ) as TObsEventListenersMap<any>;
@@ -257,22 +197,22 @@ export const obs = <T = TObserved>(v: T | TObsDeriveFunc<T>, opts?: TObsOptions<
 
 	// thiz._eq = opts?.eq; // ?? Object.is; // referencial === equality
 
-	thiz._eventListeners = { ...E } as TObsEventListenersMap<T>;
+	thiz._events = { ...E } as TObsEventListenersMap<T>;
 
 	if (typeof v === 'function') {
 		thiz._state = STATE_DIRTY;
 
-		thiz._currentValue = undefined;
-		thiz._deriveFunc = v as TObsDeriveFunc<T>;
+		thiz._val = undefined;
+		thiz._deriver = v as TObsDeriveFunc<T>;
 
-		thiz._initializedWithValueOrError = false;
+		// thiz._initialized = false;
 	} else {
 		thiz._state = STATE_RESOLVED;
 
-		thiz._currentValue = v as T;
-		thiz._deriveFunc = undefined;
+		thiz._val = v as T;
+		thiz._deriver = undefined;
 
-		thiz._initializedWithValueOrError = true;
+		// thiz._initialized = true;
 	}
 
 	if (opts && opts.run) {
@@ -293,86 +233,86 @@ export const obs = <T = TObserved>(v: T | TObsDeriveFunc<T>, opts?: TObsOptions<
 export const get = <T>(thiz: TObs<T>): T => {
 	const that = thiz as IObsInternal<T>;
 
-	if (that._state !== STATE_RESOLVED && that._idOfUpdateWithValueOrError !== lastIdOfUpdateWithValueOrError) {
+	if (that._state !== STATE_RESOLVED && that._updateID !== _lastUpdateID) {
 		// STATE_DIRTY || STATE_DIRTY_CHILDREN
 		_deriveDeep(that);
 	}
 
-	if (currentDeriveObs && currentDeriveObs !== that) {
-		if (!currentDeriveObs._childDependencies) {
-			currentDeriveObs._childDependencies = [that];
-		} else if (!arrayIncludes(currentDeriveObs._childDependencies, thiz) && currentDeriveObs._childDependencies) {
-			currentDeriveObs._childDependencies.push(that);
+	if (_currentDerive && _currentDerive !== that) {
+		if (!_currentDerive._children) {
+			_currentDerive._children = [that];
+		} else if (!inArray(_currentDerive._children, thiz) && _currentDerive._children) {
+			_currentDerive._children.push(that);
 		}
 	}
 
-	if (that._resolvedError) {
-		throw that._resolvedError;
+	if (that._error) {
+		throw that._error;
 	}
 
-	// guaranteed defined, because _deriveDeep(that) sets thiz._currentValue or sets thiz._resolvedError (which bails out in the conditional above)
-	return that._currentValue as T;
+	// guaranteed defined, because _deriveDeep(that) sets thiz._val or sets thiz._error (which bails out in the conditional above)
+	return that._val as T;
 };
 
 export const peek = <T>(thiz: TObs<T>): T | undefined => {
 	const that = thiz as IObsInternal<T>;
 
-	if (that._resolvedError) {
-		throw that._resolvedError;
+	if (that._error) {
+		throw that._error;
 	}
-	return that._currentValue;
+	return that._val;
 };
 
 export const set = <T>(thiz: TObs<T>, val: T | ((currentValue: T | undefined) => T)): void => {
 	const that = thiz as IObsInternal<T>;
 
-	if (that._deriveFunc) {
+	if (that._deriver) {
 		throw Error(ERROR_MSG_SET_CALLED_WITH_DERIVE_FUNC);
 	}
-	// if (!that._initializedWithValueOrError && that._deriveFunc) {
-	// 	_callDeriveFunc(that);
+	// if (!that._initialized && that._deriver) {
+	// 	_derive(that);
 	// }
 
 	if (typeof val === 'function') {
 		// eslint-disable-next-line @typescript-eslint/ban-types
-		_setCurrentValue(that, (val as Function)(that._currentValue));
+		_setVal(that, (val as Function)(that._val));
 	} else {
-		_setCurrentValue(that, val);
+		_setVal(that, val);
 	}
 };
 
 export const off = <T>(thiz: TObs<T>) => {
 	const that = thiz as IObsInternal<T>;
 
-	_offEvent(that);
+	_off(that);
 
 	for (
-		let thisParentDependents = that._parentDependents, i = thisParentDependents ? thisParentDependents.length : 0;
+		let parents = that._parents, i = parents ? parents.length : 0;
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		i !== 0 && i <= thisParentDependents!.length;
+		i !== 0 && i <= parents!.length;
 
 	) {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		off(thisParentDependents![--i]);
+		off(parents![--i]);
 	}
 };
 
 export const onChange = <T>(thiz: TObs<T>, listener: TObsEventListenerChange<T>): (() => void) => {
-	return _onEvent(thiz as IObsInternal<T>, ObsEventChange, listener);
+	return _on(thiz as IObsInternal<T>, EVT_CHANGE, listener);
 };
 
 export const onError = <T>(thiz: TObs<T>, listener: TObsEventListenerError): (() => void) => {
-	return _onEvent(thiz as IObsInternal<T>, ObsEventError, listener);
+	return _on(thiz as IObsInternal<T>, EVT_ERROR, listener);
 };
 
 export const run = <T>(thiz: TObs<T>): void => {
 	const that = thiz as IObsInternal<T>;
 
-	if (that._childDependencies) {
+	if (that._children) {
 		_deriveDeep(that);
 	}
 
-	_doActivate(that, true);
+	_activate(that, true);
 
 	get(that);
 };
@@ -453,68 +393,61 @@ export const run = <T>(thiz: TObs<T>): void => {
 // <OBSERVANT INTERNALS>
 // ----------------
 
-const _doActivate = <T>(thiz: IObsInternal<T>, resolved: boolean) => {
-	thiz._hasParentDependentsOrEventListeners = true;
-	_registerParentDependentsOnChildrenDependencies(thiz, resolved);
+const _activate = <T>(thiz: IObsInternal<T>, resolved: boolean) => {
+	thiz._wired = true;
+	_link(thiz, resolved);
 };
 
-const _checkDeactivate = <T>(thiz: IObsInternal<T>) => {
-	if (
-		thiz._hasParentDependentsOrEventListeners &&
-		(!thiz._parentDependents || thiz._parentDependents.length === 0) &&
-		(!thiz._eventListeners[ObsEventChange] ||
-			(Array.isArray(thiz._eventListeners[ObsEventChange]) &&
-				(thiz._eventListeners[ObsEventChange] as []).length === 0)) &&
-		(!thiz._eventListeners[ObsEventError] ||
-			(Array.isArray(thiz._eventListeners[ObsEventError]) && (thiz._eventListeners[ObsEventError] as []).length === 0))
-	) {
-		thiz._hasParentDependentsOrEventListeners = false;
-		_unregisterParentDependentsOnChildrenDependencies(thiz);
+const _deactivate = <T>(thiz: IObsInternal<T>) => {
+	if (thiz._wired && (!thiz._parents || thiz._parents.length === 0) && !thiz._hasEvents) {
+		thiz._wired = false;
+		_unlink(thiz);
 	}
 };
 
-const _onEvent = <T>(thiz: IObsInternal<T>, key: TObsEventTypes, listener: TObsEventListener<T>): (() => void) => {
-	if (thiz._childDependencies) {
+const _on = <T>(thiz: IObsInternal<T>, key: TObsEventTypes, listener: TObsEventListener<T>): (() => void) => {
+	if (thiz._children) {
 		_deriveDeep(thiz);
 	}
-	const listeners = thiz._eventListeners[key];
+	const listeners = thiz._events[key];
 	if (!listeners) {
 		// @ts-expect-error TS2322
-		thiz._eventListeners[key] = listener;
+		thiz._events[key] = listener;
 	} else if (Array.isArray(listeners)) {
-		if (!arrayIncludes(listeners, listener)) {
+		if (!inArray(listeners, listener)) {
 			// @ts-expect-error TS2345
 			listeners.push(listener);
 		}
 	} else if (listeners !== listener) {
 		// @ts-expect-error TS2322
-		thiz._eventListeners[key] = [listeners, listener];
+		thiz._events[key] = [listeners, listener];
 	}
+	thiz._hasEvents = true;
 
-	_doActivate(thiz, true);
+	_activate(thiz, true);
 
 	return () => {
-		_offEvent(thiz, key, listener);
+		_off(thiz, key, listener);
 	};
 };
 
-const _offEvent = <T>(thiz: IObsInternal<T>, key?: TObsEventTypes, listener?: TObsEventListener<T>) => {
-	if (thiz._childDependencies) {
+const _off = <T>(thiz: IObsInternal<T>, key?: TObsEventTypes, listener?: TObsEventListener<T>) => {
+	if (thiz._children) {
 		_deriveDeep(thiz);
 	}
 
 	if (listener && key) {
-		const listeners = thiz._eventListeners[key];
+		const listeners = thiz._events[key];
 		if (listeners) {
 			if (!Array.isArray(listeners)) {
 				if (listeners === listener) {
-					thiz._eventListeners[key] = undefined;
+					thiz._events[key] = undefined;
 				}
 			} else {
 				let i = listeners.length;
 				if (i === 1) {
 					if (listeners[0] === listener) {
-						thiz._eventListeners[key] = undefined;
+						thiz._events[key] = undefined;
 					}
 				} else {
 					for (; i !== 0; ) {
@@ -527,150 +460,149 @@ const _offEvent = <T>(thiz: IObsInternal<T>, key?: TObsEventTypes, listener?: TO
 			}
 		}
 	} else if (key) {
-		thiz._eventListeners[key] = undefined;
+		thiz._events[key] = undefined;
 	} else {
-		thiz._eventListeners[ObsEventChange] = undefined;
-		thiz._eventListeners[ObsEventError] = undefined;
+		thiz._events[EVT_CHANGE] = undefined;
+		thiz._events[EVT_ERROR] = undefined;
 	}
 
-	_checkDeactivate(thiz);
+	thiz._hasEvents = !!(thiz._events[EVT_CHANGE] || thiz._events[EVT_ERROR]);
+
+	_deactivate(thiz);
 };
 
-const _emitEvent = <T>(
+const _emit = <T>(
 	thiz: IObsInternal<T>,
 	key: TObsEventTypes,
 	current: T | undefined,
 	previous: T | undefined,
 	error: Error | undefined,
 ) => {
-	const listeners = thiz._eventListeners[key];
+	const listeners = thiz._events[key];
 	if (!listeners) {
 		return;
 	}
 
-	const tryEventListener = (listener: TObsEventListener<T>) => {
+	const tryEmit = (listener: TObsEventListener<T>) => {
 		try {
-			if (key === ObsEventChange) {
+			if (key === EVT_CHANGE) {
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				(listener as TObsEventListenerChange<T>)(current!, previous);
 			} else {
-				// key === ObsEventError
+				// key === EVT_ERROR
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				(listener as TObsEventListenerError)(error!);
 			}
-		} catch (err) {
-			currentErrorHandler(ensureErrorType(err), 'Listener!');
+		} catch (_err) {
+			// noop (ignore)
+			// _errorHandler(mkError(err), ERROR_MSG_EVENT_LISTENER_THROW);
 		}
 	};
 
 	if (Array.isArray(listeners)) {
 		let i = listeners.length;
 		if (i === 1) {
-			tryEventListener(listeners[0]);
+			tryEmit(listeners[0]);
 		} else {
 			for (; i !== 0; ) {
-				tryEventListener(listeners[--i]);
+				tryEmit(listeners[--i]);
 			}
 		}
 	} else {
-		tryEventListener(listeners);
+		tryEmit(listeners);
 	}
 };
 
-const _registerParentDependentDeep = <T>(
+const _linkDeep = <T>(
 	thiz: IObsInternal<T>,
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	parentDependent: IObsInternal<any>,
+	parent: IObsInternal<any>,
 	resolved: boolean,
 ) => {
-	if (thiz !== parentDependent) {
-		if (thiz._parentDependents) {
-			thiz._parentDependents.push(parentDependent);
+	if (thiz !== parent) {
+		if (thiz._parents) {
+			thiz._parents.push(parent);
 		} else {
-			thiz._parentDependents = [parentDependent];
+			thiz._parents = [parent];
 		}
 	}
 
-	_doActivate(thiz, resolved);
+	_activate(thiz, resolved);
 };
 
-const _registerParentDependentsOnChildrenDependencies = <T>(thiz: IObsInternal<T>, resolved: boolean) => {
-	if (thiz._activatedParentDependentsAfterDeep || !thiz._deriveFunc || !thiz._childDependencies) {
+const _link = <T>(thiz: IObsInternal<T>, resolved: boolean) => {
+	if (thiz._active || !thiz._deriver || !thiz._children) {
 		return;
 	}
 
-	for (
-		let thisChildDependencies = thiz._childDependencies, i = thisChildDependencies ? thisChildDependencies.length : 0;
-		i !== 0 && i <= thisChildDependencies.length;
-
-	) {
+	for (let children = thiz._children, i = children ? children.length : 0; i !== 0 && i <= children.length; ) {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		_registerParentDependentDeep(thisChildDependencies![--i], thiz, resolved);
+		_linkDeep(children![--i], thiz, resolved);
 	}
 
 	if (resolved) {
 		thiz._state = STATE_RESOLVED;
 	}
 
-	thiz._activatedParentDependentsAfterDeep = true;
+	thiz._active = true;
 };
 
-const _unregisterParentDependentDeep = <T>(thiz: IObsInternal<T>, parentDependent: TObs<T>) => {
-	const thisParentDependents = thiz._parentDependents;
-	if (!thisParentDependents) {
+const _unlinkDeep = <T>(thiz: IObsInternal<T>, parent: TObs<T>) => {
+	const parents = thiz._parents;
+	if (!parents) {
 		return;
 	}
-	let i = thisParentDependents ? thisParentDependents.length : 0;
+	let i = parents ? parents.length : 0;
 	if (i === 1) {
-		thiz._parentDependents = undefined;
+		thiz._parents = undefined;
 	} else {
-		for (; i !== 0 && i <= thisParentDependents.length; ) {
-			if (thisParentDependents[--i] === parentDependent) {
-				thisParentDependents.splice(i, 1);
+		for (; i !== 0 && i <= parents.length; ) {
+			if (parents[--i] === parent) {
+				parents.splice(i, 1);
 				break;
 			}
 		}
 	}
 
-	_checkDeactivate(thiz);
+	_deactivate(thiz);
 };
 
-const _unregisterParentDependentsOnChildrenDependencies = <T>(thiz: IObsInternal<T>) => {
-	if (!thiz._activatedParentDependentsAfterDeep) {
+const _unlink = <T>(thiz: IObsInternal<T>) => {
+	if (!thiz._active) {
 		return;
 	}
 
 	for (
-		let thisChildDependencies = thiz._childDependencies, i = thisChildDependencies ? thisChildDependencies.length : 0;
+		let children = thiz._children, i = children ? children.length : 0;
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		i !== 0 && i <= thisChildDependencies!.length;
+		i !== 0 && i <= children!.length;
 
 	) {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		_unregisterParentDependentDeep(thiz, thisChildDependencies![--i]);
+		_unlinkDeep(thiz, children![--i]);
 	}
 
 	thiz._state = STATE_DIRTY;
 
-	thiz._activatedParentDependentsAfterDeep = false;
+	thiz._active = false;
 };
 
-const _climbParentDependentsToFeedQueueOfRootObsToResolve = <T>(thiz: IObsInternal<T>, dirty: boolean) => {
+const _feedQ = <T>(thiz: IObsInternal<T>, dirty: boolean) => {
 	thiz._state = dirty ? STATE_DIRTY : STATE_DIRTY_CHILDREN;
-	const thisParentDependents = thiz._parentDependents;
-	if (thisParentDependents) {
-		for (let i = thisParentDependents.length; i !== 0 && i <= thisParentDependents.length; ) {
-			const parentDependent = thisParentDependents[--i];
-			if (parentDependent._state === STATE_RESOLVED) {
-				_climbParentDependentsToFeedQueueOfRootObsToResolve(parentDependent, false);
+	const parents = thiz._parents;
+	if (parents) {
+		for (let i = parents.length; i !== 0 && i <= parents.length; ) {
+			const parent = parents[--i];
+			if (parent._state === STATE_RESOLVED) {
+				_feedQ(parent, false);
 			}
 		}
-		// !arrayIncludes(queueOfRootObsToResolve, thiz)
-	} else if (!thiz._inQueueOfRoots) {
-		thiz._inQueueOfRoots = true;
-		const i = queueOfRootObsToResolve.push(thiz);
+		// !inArray(_Q, thiz)
+	} else if (!thiz._inQ) {
+		thiz._inQ = true;
+		const i = _Q.push(thiz);
 		if (i === 1) {
-			tickFunc(flushQueueOfRootObsToResolve);
+			ticker(_flushQ);
 		}
 	}
 };
@@ -681,8 +613,8 @@ const _deriveDeep = <T>(thiz: IObsInternal<T>) => {
 	}
 
 	if (thiz._state === STATE_DIRTY) {
-		if (thiz._deriveFunc) {
-			_callDeriveFunc(thiz);
+		if (thiz._deriver) {
+			_derive(thiz);
 		}
 		return;
 	}
@@ -690,18 +622,17 @@ const _deriveDeep = <T>(thiz: IObsInternal<T>) => {
 	// STATE_DIRTY_CHILDREN
 
 	for (
-		let thisChildDependencies = thiz._childDependencies, i = thisChildDependencies ? thisChildDependencies.length : 0;
+		let children = thiz._children, i = children ? children.length : 0;
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		i !== 0 && i <= thisChildDependencies!.length;
+		i !== 0 && i <= children!.length;
 
 	) {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		_deriveDeep(thisChildDependencies![--i]);
+		_deriveDeep(children![--i]);
 
-		// @ts-expect-error TS2367
-		if (thiz._state === STATE_DIRTY) {
-			if (thiz._deriveFunc) {
-				_callDeriveFunc(thiz);
+		if ((thiz._state as IObsInternal<T>['_state']) === STATE_DIRTY) {
+			if (thiz._deriver) {
+				_derive(thiz);
 			}
 			return;
 		}
@@ -710,76 +641,76 @@ const _deriveDeep = <T>(thiz: IObsInternal<T>) => {
 	thiz._state = STATE_RESOLVED;
 };
 
-const _callDeriveFunc = <T>(thiz: IObsInternal<T>) => {
-	if (!thiz._deriveFunc) {
+const _derive = <T>(thiz: IObsInternal<T>) => {
+	if (!thiz._deriver) {
 		return;
 	}
 
-	if (thiz._isDeriving) {
+	if (thiz._deriving) {
 		throw Error(ERROR_MSG_DERIVE_FUNC_CALLED_CIRCULAR);
 	}
-	thiz._isDeriving = true;
+	thiz._deriving = true;
 
-	const previousDeriveObs = currentDeriveObs;
+	const previousDerive = _currentDerive;
 	// eslint-disable-next-line @typescript-eslint/no-this-alias
-	currentDeriveObs = thiz;
+	_currentDerive = thiz;
 
-	const previousChildDependencies = thiz._childDependencies;
-	thiz._childDependencies = undefined as IObsInternal<T>['_childDependencies'];
+	const previousChildren = thiz._children;
+	thiz._children = undefined as IObsInternal<T>['_children'];
 
 	let derivedValue: T | undefined;
 	let deriveError: Error | undefined;
 	try {
-		derivedValue = thiz._deriveFunc(thiz._currentValue); // peek(thiz, ) without the possible previous error
+		derivedValue = thiz._deriver(thiz._val); // peek(thiz, ) without the possible previous error
 	} catch (err) {
-		deriveError = currentDeriveError = ensureErrorType(err);
+		deriveError = _currentError = mkError(err);
 	}
 
-	currentDeriveObs = previousDeriveObs;
+	_currentDerive = previousDerive;
 
-	thiz._isDeriving = false;
+	thiz._deriving = false;
 
-	if (thiz._hasParentDependentsOrEventListeners) {
-		let newChildDependenciesCount = 0;
+	if (thiz._wired) {
+		let count = 0;
 
-		const thisChildDependencies = thiz._childDependencies;
-		const l = thisChildDependencies ? thisChildDependencies.length : 0;
+		const children = thiz._children;
+		const l = children ? children.length : 0;
 
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		for (let i = l; i !== 0 && i <= thisChildDependencies!.length; ) {
+		for (let i = l; i !== 0 && i <= children!.length; ) {
 			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-			const childDependency = thisChildDependencies![--i];
+			const childDependency = children![--i];
 
-			if (!arrayIncludes(previousChildDependencies, childDependency)) {
-				_registerParentDependentDeep(childDependency, thiz, false);
-				newChildDependenciesCount++;
+			if (!inArray(previousChildren, childDependency)) {
+				_linkDeep(childDependency, thiz, false);
+				count++;
 			}
 		}
 
-		let iPrev = previousChildDependencies ? previousChildDependencies.length : 0;
-		if (iPrev !== 0 && (l === 0 || l - newChildDependenciesCount < iPrev)) {
-			for (; iPrev !== 0; ) {
+		let k = previousChildren ? previousChildren.length : 0;
+		if (k !== 0 && (l === 0 || l - count < k)) {
+			for (; k !== 0; ) {
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-				const previousChildDependency = previousChildDependencies![--iPrev];
+				const previousChildDependency = previousChildren![--k];
 
-				if (l === 0 || !arrayIncludes(thisChildDependencies, previousChildDependency)) {
-					_unregisterParentDependentDeep(previousChildDependency, thiz);
+				if (l === 0 || !inArray(children, previousChildDependency)) {
+					_unlinkDeep(previousChildDependency, thiz);
 				}
 			}
 		}
 
 		if (l !== 0) {
-			thiz._activatedParentDependentsAfterDeep = true;
+			thiz._active = true;
 		} else {
-			thiz._activatedParentDependentsAfterDeep = false;
+			thiz._active = false;
 			thiz._state = STATE_RESOLVED;
 		}
 	} else {
-		thiz._state = thiz._childDependencies ? STATE_DIRTY : STATE_RESOLVED;
+		thiz._state = thiz._children ? STATE_DIRTY : STATE_RESOLVED;
 	}
 
 	if (typeof derivedValue !== 'undefined') {
-		_setCurrentValue(thiz, derivedValue);
+		_setVal(thiz, derivedValue);
 		return;
 	}
 
@@ -787,74 +718,140 @@ const _callDeriveFunc = <T>(thiz: IObsInternal<T>) => {
 		return;
 	}
 
-	thiz._initializedWithValueOrError = true;
+	// thiz._initialized = true;
 
-	_setErrorHereAndClimbParentDependents(thiz, currentDeriveError);
-	if (currentDeriveError) {
-		currentErrorHandler(currentDeriveError);
-	}
+	_emitError(thiz, _currentError);
+	// if (_currentError) {
+	// 	_errorHandler(_currentError);
+	// }
 
-	if (thiz._activatedParentDependentsAfterDeep) {
+	if (thiz._active) {
 		thiz._state = STATE_RESOLVED;
 	}
 };
 
-const _setCurrentValue = <T>(thiz: IObsInternal<T>, newValue: T) => {
-	thiz._initializedWithValueOrError = true;
+const _setVal = <T>(thiz: IObsInternal<T>, newValue: T) => {
+	// thiz._initialized = true;
 
-	if (thiz._resolvedError) {
-		_setErrorHereAndClimbParentDependents(thiz, undefined);
+	if (thiz._error) {
+		_emitError(thiz, undefined);
 	}
 
-	if (thiz._activatedParentDependentsAfterDeep) {
+	if (thiz._active) {
 		thiz._state = STATE_RESOLVED;
 	}
 
-	thiz._idOfUpdateWithValueOrError = ++lastIdOfUpdateWithValueOrError;
+	thiz._updateID = ++_lastUpdateID;
 
-	const previousValue = thiz._currentValue;
+	const previousValue = thiz._val;
 	// const changed = thiz._eq ? !thiz._eq(newValue, previousValue) : newValue !== previousValue;
 	if (newValue === previousValue) {
 		return;
 	}
 
-	thiz._currentValue = newValue;
+	thiz._val = newValue;
 
 	for (
-		let thisParentDependents = thiz._parentDependents, i = thisParentDependents ? thisParentDependents.length : 0;
+		let parents = thiz._parents, i = parents ? parents.length : 0;
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		i !== 0 && i <= thisParentDependents!.length;
+		i !== 0 && i <= parents!.length;
 
 	) {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		_climbParentDependentsToFeedQueueOfRootObsToResolve(thisParentDependents![--i], true);
+		_feedQ(parents![--i], true);
 	}
 
-	_emitEvent(thiz, ObsEventChange, newValue, previousValue, undefined);
+	_emit(thiz, EVT_CHANGE, newValue, previousValue, undefined);
 };
 
-const _setErrorHereAndClimbParentDependents = <T>(thiz: IObsInternal<T>, error: Error | undefined) => {
-	if (thiz._resolvedError === error) {
+const _emitError = <T>(thiz: IObsInternal<T>, error: Error | undefined) => {
+	if (thiz._error === error) {
 		return;
 	}
-	thiz._resolvedError = error;
+	thiz._error = error;
 
-	thiz._idOfUpdateWithValueOrError = ++lastIdOfUpdateWithValueOrError;
+	thiz._updateID = ++_lastUpdateID;
 
 	if (error) {
-		_emitEvent(thiz, ObsEventError, undefined, undefined, error);
+		_emit(thiz, EVT_ERROR, undefined, undefined, error);
 	}
 
 	for (
-		let thisParentDependents = thiz._parentDependents, i = thisParentDependents ? thisParentDependents.length : 0;
+		let parents = thiz._parents, i = parents ? parents.length : 0;
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		i !== 0 && i <= thisParentDependents!.length;
+		i !== 0 && i <= parents!.length;
 
 	) {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		_setErrorHereAndClimbParentDependents(thisParentDependents![--i], error);
+		_emitError(parents![--i], error);
 	}
 };
+
+// ----------------
+// <TYPES>
+// ----------------
+
+export type TObsEventListenerChange<T> = (current: T, previous: T | undefined) => void;
+export type TObsEventListenerError = (error: Error) => void;
+export type TObsEventListener<T> = TObsEventListenerChange<T> | TObsEventListenerError;
+export type TObsEventListeners<T> = TObsEventListener<T> | TObsEventListener<T>[] | undefined;
+export type TObsEventListenersChange<T> = TObsEventListenerChange<T> | TObsEventListenerChange<T>[] | undefined;
+export type TObsEventListenersError = TObsEventListenerError | TObsEventListenerError[] | undefined;
+export type TObsEventTypes = typeof EVT_CHANGE | typeof EVT_ERROR;
+export type TObsEventListenersMap<T> = {
+	[EVT_CHANGE]: TObsEventListenersChange<T>;
+	[EVT_ERROR]: TObsEventListenersError;
+};
+
+export type TObsPrimitive = null | number | string | boolean;
+export type TObserved = TObsPrimitive | Array<TObsPrimitive> | Record<string, unknown>;
+export type TObsDeriveFunc<T> = (currentValue: T | undefined) => T;
+
+export type TObs<_T> = {
+	// noop
+};
+
+interface IObsInternal<T> {
+	_events: TObsEventListenersMap<T>;
+	_hasEvents: boolean;
+
+	// _eq?: (val1: T | undefined, val2: T | undefined) => boolean;
+
+	_val?: T;
+
+	_state: typeof STATE_RESOLVED | typeof STATE_DIRTY | typeof STATE_DIRTY_CHILDREN;
+	// _initialized: boolean;
+
+	_inQ: boolean;
+
+	_deriver?: TObsDeriveFunc<T>;
+	_deriving: boolean;
+
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	_parents?: Array<IObsInternal<any>>;
+
+	_wired: boolean;
+
+	_active: boolean;
+
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	_children?: Array<IObsInternal<any>>;
+
+	_updateID: number;
+
+	_error?: Error;
+}
+
+export type TObsOptions<_T> = {
+	run?: boolean;
+	// eq?: (val1: T | undefined, val2: T | undefined) => boolean;
+};
+
+export type TObsTick = (func: () => void) => void;
+
+// ----------------
+// </TYPES>
+// ----------------
 
 // ----------------
 // </OBSERVANT INTERNALS>
