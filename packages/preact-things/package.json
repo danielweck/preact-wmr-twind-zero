@@ -44,13 +44,13 @@
 			"import": "./dist/esm/observant/preact/*",
 			"require": "./dist/cjs/observant/preact/*"
 		},
-		"./observant/vanilla": {
-			"import": "./dist/esm/observant/vanilla/index.js",
-			"require": "./dist/cjs/observant/vanilla/index.js"
+		"./observant/core": {
+			"import": "./dist/esm/observant/core/index.js",
+			"require": "./dist/cjs/observant/core/index.js"
 		},
-		"./observant/vanilla/*": {
-			"import": "./dist/esm/observant/vanilla/*",
-			"require": "./dist/cjs/observant/vanilla/*"
+		"./observant/core/*": {
+			"import": "./dist/esm/observant/core/*",
+			"require": "./dist/cjs/observant/core/*"
 		},
 		"./preactive": {
 			"import": "./dist/esm/preactive/index.js",
@@ -96,10 +96,10 @@
 		"esbuild": "pnpm esbuild-esm && pnpm esbuild-cjs && pnpm esbuild-iife",
 		"esbuild-esm": "esbuild \"./src/index.ts\" --format=esm --outfile=dist/esm-bundle.js --tsconfig=tsconfig.build.json --platform=browser --target=es2020 --bundle --sourcemap=external",
 		"esbuild-cjs": "esbuild \"./src/index.ts\" --format=cjs --outfile=dist/cjs-bundle.js --tsconfig=tsconfig.build.json --platform=browser --target=es2020 --bundle --sourcemap=external",
-		"esbuild-iife": "esbuild \"./src/observant/vanilla/index.ts\" --outfile=\"./dist/observant.esbuild.js\" --global-name=observant --format=iife --platform=browser --target=esnext --bundle --analyze --minify && gzip --best --keep --force --verbose \"./dist/observant.esbuild.js\" && brotli --best --keep --force --verbose \"./dist/observant.esbuild.js\"",
-		"rollup-terser-iife": "rollup --input \"./dist/esm/observant/vanilla/index.js\" --file=\"./dist/observant.rollup-terser.js\" --name=observant --format=iife --no-interop --no-esModule --plugin=\"terser={ecma:2020,mangle:{properties:{regex:/^_.*/}}}\" && gzip --best --keep --force --verbose \"./dist/observant.rollup-terser.js\" && brotli --best --keep --force --verbose \"./dist/observant.rollup-terser.js\"",
-		"rollup-iife": "rollup --input \"./dist/esm/observant/vanilla/index.js\" --file=\"./dist/observant.rollup.js\" --name=observant --format=iife --no-interop --no-esModule && gzip --best --keep --force --verbose \"./dist/observant.rollup.js\" && brotli --best --keep --force --verbose \"./dist/observant.rollup.js\"",
-		"terser": "terser \"./dist/esm/observant/vanilla/index.js\" --output \"./dist/observant.terser.js\" --compress --mangle --mangle-props regex=/^_.*/ --ecma 2020 --module --toplevel && gzip --best --keep --force --verbose \"./dist/observant.terser.js\" && brotli --best --keep --force --verbose \"./dist/observant.terser.js\"",
+		"esbuild-iife": "esbuild \"./src/observant/core/index.ts\" --outfile=\"./dist/observant.esbuild.js\" --global-name=observant --format=iife --platform=browser --target=esnext --bundle --analyze --minify && gzip --best --keep --force --verbose \"./dist/observant.esbuild.js\" && brotli --best --keep --force --verbose \"./dist/observant.esbuild.js\"",
+		"rollup-terser-iife": "rollup --input \"./dist/esm/observant/core/index.js\" --file=\"./dist/observant.rollup-terser.js\" --name=observant --format=iife --no-interop --no-esModule --plugin=\"terser={ecma:2020,mangle:{properties:{regex:/^_.*/}}}\" && gzip --best --keep --force --verbose \"./dist/observant.rollup-terser.js\" && brotli --best --keep --force --verbose \"./dist/observant.rollup-terser.js\"",
+		"rollup-iife": "rollup --input \"./dist/esm/observant/core/index.js\" --file=\"./dist/observant.rollup.js\" --name=observant --format=iife --no-interop --no-esModule && gzip --best --keep --force --verbose \"./dist/observant.rollup.js\" && brotli --best --keep --force --verbose \"./dist/observant.rollup.js\"",
+		"terser": "terser \"./dist/esm/observant/core/index.js\" --output \"./dist/observant.terser.js\" --compress --mangle --mangle-props regex=/^_.*/ --ecma 2020 --module --toplevel && gzip --best --keep --force --verbose \"./dist/observant.terser.js\" && brotli --best --keep --force --verbose \"./dist/observant.terser.js\"",
 		"terser-const-let": "sed -r -e \"s/([ {;])const /\\1let /g\" \"./dist/observant.terser.js\" > \"./dist/observant.terser-const-let.js\"",
 		"terser-rollup-iife": "pnpm terser && pnpm terser-const-let && rollup --input \"./dist/observant.terser-const-let.js\" --file=\"./dist/observant.terser-rollup.js\" --name=observant --format=iife --no-interop --no-esModule --plugin=\"terser={ecma:2020}\" && gzip --best --keep --force --verbose \"./dist/observant.terser-rollup.js\" && brotli --best --keep --force --verbose \"./dist/observant.terser-rollup.js\"",
 		"rollup": "pnpm rollup-iife && pnpm terser-rollup-iife",

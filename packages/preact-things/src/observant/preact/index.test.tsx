@@ -17,7 +17,7 @@ import { afterEach, beforeEach, expect, test } from 'vitest';
 import { cleanup, render, waitFor } from '../../../preact-testing-library.js';
 import { clearCache, suspendCache } from '../../suspend-cache.js';
 import { Suspense } from '../../xpatched/suspense.js';
-import { type TObs, get, logError, obs, onError, set } from '../vanilla/index.js';
+import { type TObs, get, logError, obs, onError, set } from '../core/index.js';
 import { preactObservant } from './index.js';
 
 const defaultErrorHandler = (err: Error, msg?: string) => {
