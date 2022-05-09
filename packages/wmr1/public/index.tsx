@@ -1,4 +1,4 @@
-import { type TObs, get, obs, onChange, peek, set } from '@preact-wmr-twind-zero/preact-things/observant/core/index.js';
+import { type TObs, get, obs, peek, set } from '@preact-wmr-twind-zero/preact-things/observant/core/index.js';
 import { preactObservant } from '@preact-wmr-twind-zero/preact-things/observant/preact/index.js';
 import { ContextSlotsProvider, Slot } from '@preact-wmr-twind-zero/preact-things/slots.js';
 import { func } from '@preact-wmr-twind-zero/shared';
@@ -8,8 +8,6 @@ import { other } from '@preact-wmr-twind-zero/shared/sub';
 import { foo } from '@preact-wmr-twind-zero/shared/sub/foo.js';
 // eslint-disable-next-line import/no-duplicates
 import { other as other2 } from '@preact-wmr-twind-zero/shared/sub/other.js';
-// eslint-disable-next-line import/default
-import cellx from 'cellx';
 import type { ComponentChildren } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import hydrate from 'preact-iso/hydrate';
@@ -307,135 +305,6 @@ const ObservantPerf = () => {
 	);
 };
 
-const obsPerfCellX = () => {
-	const start = {
-		// eslint-disable-next-line import/no-named-as-default-member
-		prop1: cellx.cellx(1),
-		// eslint-disable-next-line import/no-named-as-default-member
-		prop2: cellx.cellx(2),
-		// eslint-disable-next-line import/no-named-as-default-member
-		prop3: cellx.cellx(3),
-		// eslint-disable-next-line import/no-named-as-default-member
-		prop4: cellx.cellx(4),
-	};
-
-	let layer = start;
-	for (let i = 5000; i > 0; i--) {
-		layer = (function (m) {
-			const s = {
-				// eslint-disable-next-line import/no-named-as-default-member
-				prop1: cellx.cellx(function () {
-					return m.prop2();
-				}),
-				// eslint-disable-next-line import/no-named-as-default-member
-				prop2: cellx.cellx(function () {
-					return m.prop1() - m.prop3();
-				}),
-				// eslint-disable-next-line import/no-named-as-default-member
-				prop3: cellx.cellx(function () {
-					return m.prop2() + m.prop4();
-				}),
-				// eslint-disable-next-line import/no-named-as-default-member
-				prop4: cellx.cellx(function () {
-					return m.prop3();
-				}),
-			};
-
-			onChange(s.prop1, () => {
-				// noop
-			});
-			onChange(s.prop2, () => {
-				// noop
-			});
-			onChange(s.prop3, () => {
-				// noop
-			});
-			onChange(s.prop4, () => {
-				// noop
-			});
-
-			s.prop1();
-			s.prop2();
-			s.prop3();
-			s.prop4();
-
-			return s;
-		})(layer);
-	}
-
-	const end = layer;
-
-	if (end.prop1() !== 2) {
-		console.log(`PERF end.prop1() !== 2: ${end.prop1()}`);
-	}
-	if (end.prop2() !== 4) {
-		console.log(`PERF end.prop2() !== 4: ${end.prop2()}`);
-	}
-	if (end.prop3() !== -1) {
-		console.log(`PERF end.prop3() !== -1: ${end.prop3()}`);
-	}
-	if (end.prop4() !== -6) {
-		console.log(`PERF end.prop4() !== -6: ${end.prop4()}`);
-	}
-
-	const timeStart = performance.now();
-
-	start.prop1(4);
-	start.prop2(3);
-	start.prop3(2);
-	start.prop4(1);
-
-	if (end.prop1() !== -2) {
-		console.log(`PERF end.prop1() !== -2: ${end.prop1()}`);
-	}
-	if (end.prop2() !== 1) {
-		console.log(`PERF end.prop2() !== 1: ${end.prop2()}`);
-	}
-	if (end.prop3() !== -4) {
-		console.log(`PERF end.prop3() !== -4: ${end.prop3()}`);
-	}
-	if (end.prop4() !== -4) {
-		console.log(`PERF end.prop4() !== -4: ${end.prop4()}`);
-	}
-
-	const duration = performance.now() - timeStart;
-
-	// expect(duration).toBeGreaterThanOrEqual(10);
-	// expect(duration).toBeLessThanOrEqual(40);
-
-	console.log(`PERF duration cellx (DOM): ${duration}`);
-
-	return duration;
-};
-
-// Safari 7-10
-// Chrome 11
-// Firefox 12-15
-const ObservantPerfCellX = () => {
-	const [perf, setPerf] = useState(0);
-	return (
-		<>
-			<hr />
-			<button
-				onClick={async () => {
-					const COUNT = 10;
-					let count = COUNT;
-					let total = 0;
-					while (count--) {
-						await new Promise((resolve) => setTimeout(resolve, 200));
-						const p = obsPerfCellX();
-						total += p;
-					}
-					setPerf(total / COUNT);
-				}}
-			>
-				{`OBS PERF CellX (${perf})`}
-			</button>
-			<hr />
-		</>
-	);
-};
-
 const _rootObservant = obs(
 	0,
 	// {
@@ -529,7 +398,6 @@ export const App = ({ prerenderIndex }: { prerenderIndex?: number }) => {
 					<p>prerenderIndex: {prerenderIndex}</p>
 				</StaticNoHydrate>
 				<ObservantPerf />
-				<ObservantPerfCellX />
 				<h1>Router status:</h1>
 				<p
 					class={`

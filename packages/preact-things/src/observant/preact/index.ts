@@ -4,7 +4,7 @@
 import type { FunctionComponent } from 'preact';
 import { type MutableRef, useEffect, useRef, useState } from 'preact/hooks';
 
-import { type TObs, get, obs, off, onChange, onError, peek } from '../core/index.js';
+import { type TObs, get, obs, off, on, peek } from '../core/index.js';
 
 export interface ReactionTracking {
 	obs: TObs<boolean>;
@@ -120,7 +120,11 @@ export const preactObservant = <T extends object>(
 			return ret;
 		}) as TObs<boolean>;
 
-		onChange(o, (_current, previous) => {
+		on(o, (error, _current, previous) => {
+			if (error) {
+				console.log('OBS onError! ', componentDisplayName, error);
+				return;
+			}
 			if (previous === undefined) {
 				// console.log('----- OBS onChange (first change) ', previous, _current);
 				return;
@@ -136,9 +140,6 @@ export const preactObservant = <T extends object>(
 				// console.log('----- OBS onChange (not mounted => effectShouldUpdate)');
 				effectShouldUpdate = true;
 			}
-		});
-		onError(o, (error) => {
-			console.log('OBS onError! ', componentDisplayName, error);
 		});
 		get(o); // triggers the first 'change' event from undefined to true
 

@@ -2,7 +2,7 @@
 
 import { afterEach, beforeEach, expect, test } from 'vitest';
 
-import { type TObsEventListenerChange, get, obs, onChange, onError, set } from './index.js';
+import { type TObsEventListener, get, obs, on, set } from './index.js';
 
 // let _unhandledEvents: PromiseRejectionEvent[] = [];
 // function onUnhandledRejection(event: PromiseRejectionEvent) {
@@ -53,7 +53,7 @@ test('test2', () => {
 test('test3b', () => {
 	let order = '0';
 	const a = obs(1);
-	onChange(a, (current, previous) => {
+	on(a, (_error, current, previous) => {
 		order += '2';
 		expect(get(a)).toBe(2);
 		expect(current).toBe(2);
@@ -74,7 +74,7 @@ test('test3b', () => {
 test('test5', () => {
 	const a = obs(1);
 
-	onChange(a, (current, previous) => {
+	on(a, (_error, current, previous) => {
 		expect(current).toEqual(2);
 		expect(previous).toEqual(1);
 	});
@@ -86,10 +86,13 @@ test('test6', () => {
 	const a = obs(1);
 
 	let count = 0;
-	const listener: TObsEventListenerChange<number> = () => {
+	const listener: TObsEventListener<number> = (error) => {
+		if (error) {
+			return;
+		}
 		count++;
 	};
-	const off = onChange(a, listener);
+	const off = on(a, listener);
 	expect(count).toBe(0);
 	off();
 	set(a, 2);
@@ -100,11 +103,14 @@ test('test7', () => {
 	const a = obs(1);
 
 	let count = 0;
-	const listener: TObsEventListenerChange<number> = () => {
+	const listener: TObsEventListener<number> = (error) => {
+		if (error) {
+			return;
+		}
 		count++;
 	};
-	onChange(a, listener);
-	const off = onChange(a, listener);
+	on(a, listener);
+	const off = on(a, listener);
 	expect(count).toBe(0);
 	set(a, 2);
 	expect(count).toBe(1);
@@ -136,10 +142,13 @@ test('test8a', () => {
 		// },
 	);
 
-	onError(b, (error) => {
+	on(b, (error) => {
+		if (!error) {
+			return;
+		}
 		order += '5';
 		expect(error).instanceOf(TypeError);
-		expect(error?.message).toBe('!!');
+		expect(error.message).toBe('!!');
 	});
 	expect(get(b)).toBe(2);
 	order += '2';
@@ -192,22 +201,22 @@ test('test9', () => {
 	);
 
 	let stage = 0;
-	onChange(a, (current, previous) => {
+	on(a, (_error, current, previous) => {
 		// expect(evt.target._name).toBe('_A_');
 		expect(previous).toBe('A');
 		expect(current).toBe('a');
 	});
-	onChange(b, (current, previous) => {
+	on(b, (_error, current, previous) => {
 		// expect(evt.target._name).toBe('_B_');
 		expect(previous).toBe(stage ? 'B+A' : undefined);
 		expect(current).toBe(stage ? 'B+a' : 'B+A');
 	});
-	onChange(c, (current, previous) => {
+	on(c, (_error, current, previous) => {
 		// expect(evt.target._name).toBe('_C_');
 		expect(previous).toBe(stage ? 'C+B+A' : undefined);
 		expect(current).toBe(stage ? 'C+B+a' : 'C+B+A');
 	});
-	onChange(d, (current, previous) => {
+	on(d, (_error, current, previous) => {
 		// expect(true).toBe(false);
 		// expect(evt.target._name).toBe('_D_');
 		expect(previous).toBe(stage ? 'D+B+A' : undefined);
@@ -240,12 +249,12 @@ test('test10', () => {
 	);
 
 	let stage = 0;
-	onChange(a, (current, previous) => {
+	on(a, (_error, current, previous) => {
 		// expect(evt.target._name).toBe('_A_');
 		expect(previous).toBe('A');
 		expect(current).toBe('a');
 	});
-	onChange(b, (current, previous) => {
+	on(b, (_error, current, previous) => {
 		// expect(evt.target._name).toBe('_B_');
 		expect(previous).toEqual(
 			stage === 0
@@ -278,13 +287,13 @@ test('test11', () => {
 	let check = '';
 	let toggle = 0;
 	const leaf = obs('foo');
-	onChange(leaf, (current, previous) => {
+	on(leaf, (_error, current, previous) => {
 		check += `||LEAF_${previous}->${current}`;
 	});
 	const sub = obs(() => {
 		return `${get(leaf)}-bar`;
 	});
-	onChange(sub, (current, previous) => {
+	on(sub, (_error, current, previous) => {
 		check += `||SUB_${previous}->${current}`;
 	});
 	const root = obs(() => {
@@ -292,7 +301,7 @@ test('test11', () => {
 		toggle++;
 		return toggle !== 1;
 	});
-	onChange(root, (current, previous) => {
+	on(root, (_error, current, previous) => {
 		check += `||ROOT_${previous}->${current}`;
 	});
 	expect(get(root)).toBe(false);

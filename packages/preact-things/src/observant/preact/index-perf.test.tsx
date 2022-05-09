@@ -23,8 +23,9 @@ function onUnhandledRejection(event: PromiseRejectionEvent) {
 // let scratch;
 // let rerender: () => void;
 beforeEach(() => {
-	window.requestAnimationFrame = window.requestAnimationFrame.bind(window);
-	window.cancelAnimationFrame = window.cancelAnimationFrame.bind(window);
+	// Vitest v0.11.0 bug (Happy-DOM globals)
+	// window.requestAnimationFrame = window.requestAnimationFrame.bind(window);
+	// window.cancelAnimationFrame = window.cancelAnimationFrame.bind(window);
 
 	// scratch = setupScratch();
 	// rerender = setupRerender();

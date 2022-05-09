@@ -17,7 +17,7 @@ import { afterEach, beforeEach, expect, test } from 'vitest';
 import { cleanup, render, waitFor } from '../../../preact-testing-library.js';
 import { clearCache, suspendCache } from '../../suspend-cache.js';
 import { Suspense } from '../../xpatched/suspense.js';
-import { type TObs, get, obs, onError, set } from '../core/index.js';
+import { type TObs, get, obs, on, set } from '../core/index.js';
 import { preactObservant } from './index.js';
 
 let _unhandledEvents: PromiseRejectionEvent[] = [];
@@ -29,8 +29,9 @@ function onUnhandledRejection(event: PromiseRejectionEvent) {
 // let scratch;
 // let rerender: () => void;
 beforeEach(() => {
-	window.requestAnimationFrame = window.requestAnimationFrame.bind(window);
-	window.cancelAnimationFrame = window.cancelAnimationFrame.bind(window);
+	// Vitest v0.11.0 bug (Happy-DOM globals)
+	// window.requestAnimationFrame = window.requestAnimationFrame.bind(window);
+	// window.cancelAnimationFrame = window.cancelAnimationFrame.bind(window);
 
 	// scratch = setupScratch();
 	// rerender = setupRerender();
@@ -112,7 +113,10 @@ test('test8a DOM', async () => {
 		// },
 	);
 
-	onError(b, (error) => {
+	on(b, (error) => {
+		if (!error) {
+			return;
+		}
 		order += '5';
 		expect(error).instanceOf(TypeError);
 		expect(error?.message).toBe('!!');
