@@ -107,9 +107,9 @@
 	"devDependencies": {
 		"@commitlint/cli": "^16.2.4",
 		"@commitlint/config-conventional": "^16.2.4",
-		"@types/node": "^16.11.31",
-		"@typescript-eslint/eslint-plugin": "^5.22.0",
-		"@typescript-eslint/parser": "^5.22.0",
+		"@types/node": "^16.11.34",
+		"@typescript-eslint/eslint-plugin": "^5.23.0",
+		"@typescript-eslint/parser": "^5.23.0",
 		"browserslist": "^4.20.3",
 		"cpy-cli": "^4.1.0",
 		"cross-env": "^7.0.3",
@@ -127,8 +127,8 @@
 		"eslint-plugin-react": "^7.29.4",
 		"eslint-plugin-react-hooks": "^4.5.0",
 		"eslint-plugin-simple-import-sort": "^7.0.0",
-		"happy-dom": "^3.1.1",
-		"husky": "^8.0.0",
+		"happy-dom": "^3.2.0",
+		"husky": "^8.0.1",
 		"kolorist": "^1.5.1",
 		"lint-staged": "^12.4.1",
 		"postcss": "^8.4.13",
@@ -145,6 +145,6 @@
 		"tslib": "^2.4.0",
 		"turbo": "^1.2.8",
 		"typescript": "next",
-		"vitest": "^0.12.0"
+		"vitest": "^0.12.4"
 	}
 }

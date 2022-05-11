@@ -2,7 +2,7 @@
 
 import { afterEach, beforeEach, expect, test } from 'vitest';
 
-import { type TObsEventListener, get, obs, on, set } from './index.js';
+import { type TObsEventCallback, get, obs, on, set } from './index.js';
 
 // let _unhandledEvents: PromiseRejectionEvent[] = [];
 // function onUnhandledRejection(event: PromiseRejectionEvent) {
@@ -86,7 +86,7 @@ test('test6', () => {
 	const a = obs(1);
 
 	let count = 0;
-	const listener: TObsEventListener<number> = (error) => {
+	const listener: TObsEventCallback<number> = (error) => {
 		if (error) {
 			return;
 		}
@@ -103,7 +103,7 @@ test('test7', () => {
 	const a = obs(1);
 
 	let count = 0;
-	const listener: TObsEventListener<number> = (error) => {
+	const listener: TObsEventCallback<number> = (error) => {
 		if (error) {
 			return;
 		}
