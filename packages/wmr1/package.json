@@ -10,7 +10,7 @@
 	"type": "module",
 	"engines": {
 		"node": ">=16",
-		"pnpm": ">=6"
+		"pnpm": ">=7"
 	},
 	"scripts": {
 		"postinstall": "pnpm clean && rimraf \"node_modules/preact/hooks/package.json\"",

@@ -80,7 +80,7 @@
 	},
 	"engines": {
 		"node": ">=16",
-		"pnpm": ">=6"
+		"pnpm": ">=7"
 	},
 	"scripts": {
 		"postinstall": "pnpm clean && rimraf \"node_modules/preact/hooks/package.json\" && rimraf \"./.types\" && rimraf \"./src/xpatched\" && pnpm patch-preact-types && pnpm patch-preact-suspense-1 && pnpm patch-preact-suspense-2 && pnpm patch-preact-suspense-3",

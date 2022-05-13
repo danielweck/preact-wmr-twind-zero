@@ -61,7 +61,7 @@ jobs:
     ##    cache: pnpm
     ##    cache-dependency-path: '**/pnpm-lock.yaml'
     ##- run: npm --global install npm@^8
-    ##- run: npm --global install pnpm@^6
+    ##- run: npm --global install pnpm@^7
     - name: PNPM cache
       uses: actions/cache@v2
       env:
@@ -80,7 +80,7 @@ jobs:
       run: pnpm install --frozen-lockfile
       #uses: pnpm/action-setup@v2
       #with:
-      #  version: 6.32.3
+      #  version: 7.1.0
       #  run_install: |
       #    - recursive: false
       #      args: [--frozen-lockfile]
