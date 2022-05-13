@@ -161,7 +161,7 @@
 		"preact-render-to-string": "^5.2.0",
 		"prettier": "^2.6.2",
 		"rimraf": "^3.0.2",
-		"rollup": "^2.72.1",
+		"rollup": "^2.73.0",
 		"rollup-plugin-terser": "^7.0.2",
 		"terser": "^5.13.1",
 		"typescript": "next"
