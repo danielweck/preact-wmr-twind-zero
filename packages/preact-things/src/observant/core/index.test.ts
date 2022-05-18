@@ -131,7 +131,7 @@ test('test8a', () => {
 	const b = obs(
 		() => {
 			if (get(a) === 2) {
-				order += '4';
+				order += '3';
 				throw new TypeError('!!');
 			}
 			order += '1';
@@ -146,14 +146,14 @@ test('test8a', () => {
 		if (!error) {
 			return;
 		}
-		order += '5';
+		order += '4';
 		expect(error).instanceOf(TypeError);
 		expect(error.message).toBe('!!');
 	});
 	expect(get(b)).toBe(2);
 	order += '2';
 	set(a, 2);
-	order += '3';
+	order += '5';
 	let err: Error | undefined;
 	try {
 		get(b);
@@ -311,10 +311,10 @@ test('test11', () => {
 	set(leaf, 'one');
 	expect(get(root)).toBe(true);
 	expect(get(sub)).toBe('one-bar');
-	expect(check).toBe('||LEAF_foo->one||SUB_foo-bar->one-bar||ROOT_false->true');
+	expect(check).toBe('||SUB_foo-bar->one-bar||ROOT_false->true||LEAF_foo->one');
 	check = '';
 	set(leaf, 'two');
 	expect(get(root)).toBe(true);
 	expect(get(sub)).toBe('two-bar');
-	expect(check).toBe('||LEAF_one->two||SUB_one-bar->two-bar');
+	expect(check).toBe('||SUB_one-bar->two-bar||LEAF_one->two');
 });

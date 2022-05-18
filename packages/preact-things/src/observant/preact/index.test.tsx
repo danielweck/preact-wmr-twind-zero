@@ -102,7 +102,7 @@ test('test8a DOM', async () => {
 	const b = obs(
 		() => {
 			if (get(a) === 2) {
-				order += '4';
+				order += '3';
 				throw new TypeError('!!');
 			}
 			order += '1';
@@ -117,14 +117,14 @@ test('test8a DOM', async () => {
 		if (!error) {
 			return;
 		}
-		order += '5';
+		order += '4';
 		expect(error).instanceOf(TypeError);
 		expect(error?.message).toBe('!!');
 	});
 	expect(get(b)).toBe(2);
 	order += '2';
 	set(a, 2);
-	order += '3';
+	order += '5';
 	let err: Error | undefined;
 	try {
 		get(b);
@@ -171,7 +171,7 @@ test('preactObservant() makes component reactive', async () => {
 	expect(testPlan).toBe(3);
 });
 
-test('preactObservant() makes component reactive 2', async () => {
+test('preactObservant() makes component reactive 2 A', async () => {
 	let testPlan = 0;
 	const container = document.createElement('div');
 	const a = obs('foo');

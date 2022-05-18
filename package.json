@@ -130,7 +130,7 @@
 		"husky": "^8.0.1",
 		"kolorist": "^1.5.1",
 		"lint-staged": "^12.4.1",
-		"postcss": "^8.4.13",
+		"postcss": "^8.4.14",
 		"postcss-html": "^1.4.1",
 		"postcss-jsx": "^0.36.4",
 		"postcss-syntax": "^0.36.2",
