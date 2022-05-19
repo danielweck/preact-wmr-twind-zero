@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 
-// https://github.com/testing-library/preact-testing-library/blob/27e175f29a3f5802a5b83740ecc7acb521f5c560/src/pure.js
+// https://github.com/testing-library/preact-testing-library/blob/0f19120c01ee22411428e5d4c9fa4e5148cdfaef/src/pure.js
 
 import { configure as configureDTL, getQueriesForElement, prettyDOM } from '@testing-library/dom';
 import { h, hydrate as preactHydrate, render as preactRender } from 'preact';
-import { act, setupRerender } from 'preact/test-utils';
+import { act } from 'preact/test-utils';
 
 configureDTL({
 	asyncWrapper: async (cb) => {
@@ -14,9 +14,9 @@ configureDTL({
 		});
 		return result;
 	},
-	eventWrapper: async (cb) => {
+	eventWrapper: (cb) => {
 		let result;
-		await act(() => {
+		act(() => {
 			result = cb();
 		});
 		return result;
@@ -66,7 +66,8 @@ function render(ui, { container, baseElement = container, queries, hydrate = fal
 		unmount: () => preactRender(null, container),
 		// @ts-ignore
 		rerender: (rerenderUi) => {
-			setupRerender()();
+			// eslint-disable-next-line @typescript-eslint/no-empty-function
+			act(() => {});
 			// @ts-ignore
 			render(wrapUiIfNeeded(rerenderUi), { container, baseElement });
 			// Intentionally do not return anything to avoid unnecessarily complicating the API.
