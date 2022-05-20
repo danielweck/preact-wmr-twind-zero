@@ -144,6 +144,6 @@
 		"tslib": "^2.4.0",
 		"turbo": "^1.2.9",
 		"typescript": "next",
-		"vitest": "^0.12.6"
+		"vitest": "^0.12.7"
 	}
 }
