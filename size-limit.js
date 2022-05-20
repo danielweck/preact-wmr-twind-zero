@@ -31,9 +31,11 @@ for (const obj of arr) {
 			`${red('SIZE LIMIT :(')} [${green(filePath.replace(process.cwd(), '.'))}] (${cyan(size)} > ${cyan(nBytes)})`,
 		);
 		abort = true;
+	} else if (size === nBytes) {
+		console.log(`${cyan('SIZE LIMIT :|')} [${green(filePath.replace(process.cwd(), '.'))}] (${cyan(size)})`);
 	} else {
 		console.log(
-			`${cyan('SIZE LIMIT :)')} [${green(filePath.replace(process.cwd(), '.'))}] (${cyan(size)} <= ${cyan(nBytes)})`,
+			`${cyan('SIZE LIMIT :)')} [${green(filePath.replace(process.cwd(), '.'))}] (${cyan(size)} < ${cyan(nBytes)})`,
 		);
 	}
 }

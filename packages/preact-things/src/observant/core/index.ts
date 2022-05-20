@@ -1,9 +1,9 @@
-// SIZE LIMIT :) [./dist/observant.terser-rollup.js] (2371 <= 2371)
-// SIZE LIMIT :) [./dist/observant.terser-rollup.js.gz] (1025 <= 1025)
-// SIZE LIMIT :) [./dist/observant.terser-rollup.js.br] (938 <= 938)
-// SIZE LIMIT :) [./dist/observant.esbuild.js] (3499 <= 3499)
-// SIZE LIMIT :) [./dist/observant.esbuild.js.gz] (1358 <= 1358)
-// SIZE LIMIT :) [./dist/observant.esbuild.js.br] (1253 <= 1253)
+// SIZE LIMIT :| [./dist/observant.terser-rollup.js] (2328)
+// SIZE LIMIT :| [./dist/observant.terser-rollup.js.gz] (1006)
+// SIZE LIMIT :| [./dist/observant.terser-rollup.js.br] (921)
+// SIZE LIMIT :| [./dist/observant.esbuild.js] (3428)
+// SIZE LIMIT :| [./dist/observant.esbuild.js.gz] (1347)
+// SIZE LIMIT :| [./dist/observant.esbuild.js.br] (1241)
 
 // ----------------
 // <ERROR HANDLING>
@@ -19,44 +19,6 @@ const ERR_SET_COMP = 'Error2';
 // ----------------
 
 // ----------------
-// <FAST ARRAY UTILS>
-// ----------------
-
-// const inArray = <T>(arr: T[] | undefined, v: T): boolean | void => {
-// 	for (let i = arr ? arr.length : 0; i !== 0; ) {
-// 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-// 		if (arr![--i] === v) {
-// 			return true;
-// 		}
-// 	}
-// };
-
-// // faster (?) Array.concat()
-// // https://github.com/stardazed/stardazed/blob/0d0f3935a7679bf5819277feaf2c8e0e971db00a/src/core/buffer.ts#L75
-// const MAX_BLOCK_SIZE = 65535; // max parameter array size for use in Webkit
-// function appendArrayInPlace(dest, source) {
-// 	let offset = 0;
-// 	let itemsLeft = source.length;
-
-// 	if (itemsLeft <= MAX_BLOCK_SIZE) {
-// 		dest.push.apply(dest, source);
-// 	} else {
-// 		while (itemsLeft > 0) {
-// 			const pushCount = Math.min(MAX_BLOCK_SIZE, itemsLeft);
-// 			const subSource = source.slice(offset, offset + pushCount);
-// 			dest.push.apply(dest, subSource);
-// 			itemsLeft -= pushCount;
-// 			offset += pushCount;
-// 		}
-// 	}
-// 	return dest;
-// }
-
-// ----------------
-// </FAST ARRAY UTILS>
-// ----------------
-
-// ----------------
 // <GLOBAL STATE>
 // ----------------
 
@@ -66,64 +28,32 @@ let _curErr: Error | undefined;
 
 let _lastUpdateID = 0;
 
+let _inCompPars = false;
+
 // ----------------
 // </GLOBAL STATE>
 // ----------------
 
 // ----------------
-// <OBSERVANT COMP CONSTRUCTOR>
+// <OBSERVANT CONSTRUCTOR>
 // ----------------
 
-const O = {
-	// prototype: null,
-	_evts: undefined,
-	_pars: undefined,
-	_childsPrev: undefined,
-	_childsI: -1,
-	_childs: undefined,
-	_inComp: false,
-	_updateID: -1,
-	_err: undefined,
-	_dirty: true,
-	_v: undefined,
-	_compFn: undefined,
-};
-// const O = isNode ? OO : Object.freeze(Object.assign(Object.create(null), OO));
-// const O = isNode ? OO : Object.freeze(OO);
-// const O = isNode ? OO : Object.freeze(Object.assign(Object.create(null), OO));
-// const O = isNode ? OO : Object.freeze(Object.assign({}, OO));
-// const O = isNode ? OO : Object.assign({}, OO);
-// const O = isNode ? OO : Object.assign(Object.create(null), OO);
-
 export const obs = <T = TObsKind>(v: T | TObsCompFn<T>, run?: boolean): TObs<T> => {
-	// const thiz = {} as IObs<T>;
-	// const thiz = Object.create(null) as IObs<T>;
-	// const thiz = Object.create(Object.prototype) as IObs<T>;
-	// const thiz = Object.assign( .... , O);
-	// const thiz = {...O} as IObs<T>;
-	// const thiz = Object.seal( ...... ) as IObs<T>;
-	// const thiz = Object.seal(Object.assign({}, O)) as IObs<T>;
-	// const thiz = Object.seal({ ...O }) as IObs<T>;
-	// const thiz = (isNode ? { ...O } : Object.assign({}, O)) as IObs<T>;
-	// const thiz = { ...O } as IObs<T>;
-	// thiz.prototype = null;
-	// Object.setPrototypeOf(thiz, null);
-	// const thiz = Object.assign(Object.create(null), O);
-	// const thiz = Object.assign({}, OO);
+	const fn = typeof v === 'function';
 
-	const thiz = (typeof v === 'function' ? { ...O, _compFn: v } : { ...O, _dirty: false, _v: v }) as IObs<T>;
-
-	// if (typeof v === 'function') {
-	// 	// thiz._dirty = true;
-	// 	// thiz._v = undefined;
-
-	// 	thiz._compFn = v as TObsCompFn<T>;
-	// } else {
-	// 	thiz._dirty = false;
-	// 	thiz._v = v as T;
-
-	// 	// thiz._compFn = undefined;
-	// }
+	const thiz = {
+		_evts: undefined,
+		_pars: undefined,
+		_childsPrev: undefined,
+		_childsI: -1,
+		_childs: undefined,
+		_inComp: false,
+		_updateID: -1,
+		_err: undefined,
+		_compFn: fn ? v : undefined,
+		_dirty: !!fn,
+		_v: fn ? undefined : v,
+	};
 
 	if (run) {
 		get(thiz);
@@ -133,7 +63,7 @@ export const obs = <T = TObsKind>(v: T | TObsCompFn<T>, run?: boolean): TObs<T> 
 };
 
 // ----------------
-// </OBSERVANT COMP CONSTRUCTOR>
+// </OBSERVANT CONSTRUCTOR>
 // ----------------
 
 // ----------------
@@ -148,35 +78,22 @@ export const get = <T = TObsKind>(thiz: TObs<T>): T => {
 	if (_curComp && _curComp !== thiz) {
 		if (_curComp._childs) {
 			if (
-				!(thiz as IObs<T>)._pars ||
-				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-				(_curComp._childs.length < (thiz as IObs<T>)._pars!.length
-					? // @ts-expect-error TS2345
-					  !_curComp._childs.includes(thiz)
-					: // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-					  !((thiz as IObs<T>)._pars! as Array<IObs<TObsKind>>).includes(_curComp))
+				// @ts-expect-error TS2345
+				!_curComp._childs.includes(thiz) &&
+				!_childsPrevInclude(thiz as IObs<T>)
 			) {
-				let inc = false;
-				if (_curComp._childsPrev) {
-					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-					for (let i = 0; i <= _curComp._childsI!; i++) {
-						if (_curComp._childsPrev[i] === thiz) {
-							inc = true;
-							break;
-						}
-					}
-				}
-				if (!inc) {
-					// @ts-expect-error TS2345
-					_curComp._childs.push(thiz);
+				// @ts-expect-error TS2345
+				_curComp._childs.push(thiz);
 
-					if (!(thiz as IObs<T>)._pars) {
-						// @ts-expect-error TS2322
-						(thiz as IObs<T>)._pars = [_curComp];
-					} else {
-						// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-						((thiz as IObs<T>)._pars! as Array<IObs<TObsKind>>).push(_curComp);
-					}
+				if (!(thiz as IObs<T>)._pars) {
+					// @ts-expect-error TS2322
+					(thiz as IObs<T>)._pars = [_curComp];
+				} else {
+					// TODO??
+					// if (!thiz._pars.includes(_curComp))
+
+					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+					((thiz as IObs<T>)._pars! as Array<IObs<TObsKind>>).push(_curComp);
 				}
 			}
 		} else {
@@ -184,7 +101,7 @@ export const get = <T = TObsKind>(thiz: TObs<T>): T => {
 			const i = _curComp._childsI! + 1;
 			if (_curComp._childsPrev && i < _curComp._childsPrev.length && _curComp._childsPrev[i] === thiz) {
 				_curComp._childsI = i;
-			} else {
+			} else if (!_childsPrevInclude(thiz as IObs<T>)) {
 				// @ts-expect-error TS2322
 				_curComp._childs = [thiz];
 
@@ -192,6 +109,9 @@ export const get = <T = TObsKind>(thiz: TObs<T>): T => {
 					// @ts-expect-error TS2322
 					(thiz as IObs<T>)._pars = [_curComp];
 				} else {
+					// TODO??
+					// if (!thiz._pars.includes(_curComp))
+
 					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 					((thiz as IObs<T>)._pars! as Array<IObs<TObsKind>>).push(_curComp);
 				}
@@ -368,10 +288,8 @@ const _unlink = <T = TObsKind>(thiz: IObs<T>, par: TObs<T>) => {
 	}
 };
 
-let _compParenting = false;
-
 const _compPars = <T = TObsKind>(thiz: IObs<T>) => {
-	_compParenting = true;
+	_inCompPars = true;
 
 	for (let pars = thiz._pars ? thiz._pars.slice() : undefined, i = 0, l = pars ? pars.length : -1; i < l; i++) {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -381,7 +299,7 @@ const _compPars = <T = TObsKind>(thiz: IObs<T>) => {
 		}
 	}
 
-	_compParenting = false;
+	_inCompPars = false;
 
 	for (let pars = thiz._pars, i = 0, l = pars ? pars.length : -1; i < l; i++) {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -492,7 +410,7 @@ const _val = <T = TObsKind>(thiz: IObs<T>, newV: T) => {
 	if (newV !== prevV) {
 		thiz._v = newV;
 
-		if (_compParenting) {
+		if (_inCompPars) {
 			thiz._dirty = true;
 		} else {
 			_compPars(thiz);
@@ -523,9 +441,60 @@ const _emitErr = <T = TObsKind>(thiz: IObs<T>, error: Error | undefined) => {
 		}
 	}
 };
+const _childsPrevInclude = <T = TObsKind>(thiz: IObs<T>) => {
+	let inc = false;
+	if (_curComp && _curComp._childsPrev) {
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		for (let i = 0; i <= _curComp._childsI!; i++) {
+			if (_curComp._childsPrev[i] === thiz) {
+				inc = true;
+				break;
+			}
+		}
+	}
+	return inc;
+};
 
 // ----------------
 // </OBSERVANT INTERNALS>
+// ----------------
+
+// ----------------
+// <FAST ARRAY UTILS>
+// ----------------
+
+// const inArray = <T>(arr: T[] | undefined, v: T): boolean | void => {
+// 	for (let i = arr ? arr.length : 0; i !== 0; ) {
+// 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+// 		if (arr![--i] === v) {
+// 			return true;
+// 		}
+// 	}
+// };
+
+// // faster (?) Array.concat()
+// // https://github.com/stardazed/stardazed/blob/0d0f3935a7679bf5819277feaf2c8e0e971db00a/src/core/buffer.ts#L75
+// const MAX_BLOCK_SIZE = 65535; // max parameter array size for use in Webkit
+// function appendArrayInPlace(dest, source) {
+// 	let offset = 0;
+// 	let itemsLeft = source.length;
+
+// 	if (itemsLeft <= MAX_BLOCK_SIZE) {
+// 		dest.push.apply(dest, source);
+// 	} else {
+// 		while (itemsLeft > 0) {
+// 			const pushCount = Math.min(MAX_BLOCK_SIZE, itemsLeft);
+// 			const subSource = source.slice(offset, offset + pushCount);
+// 			dest.push.apply(dest, subSource);
+// 			itemsLeft -= pushCount;
+// 			offset += pushCount;
+// 		}
+// 	}
+// 	return dest;
+// }
+
+// ----------------
+// </FAST ARRAY UTILS>
 // ----------------
 
 // ----------------
