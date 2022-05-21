@@ -119,7 +119,8 @@
 		"lint:eslint": "cross-env TIMING=1 eslint --config \"../../.eslintrc.cjs\" --resolve-plugins-relative-to \"../..\" --ignore-path \"../../.eslintignore\" \"./**/*.{ts,tsx,js,jsx,mjs,cjs}\"",
 		"lint:prettier": "prettier --config \"../../.prettierrc.cjs\" --ignore-path \"../../.prettierignore\" --check --no-write --loglevel log \"./\"",
 		"lint:all": "pnpm lint:eslint && pnpm lint:prettier",
-		"size-limit": "node ../../size-limit.js"
+		"size-limit": "node ../../size-limit.js",
+		"perf": "node  --allow-natives-syntax --stack-size=65500 perf.cjs"
 	},
 	"size-limit": [
 		{

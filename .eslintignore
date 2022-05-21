@@ -20,3 +20,4 @@ vitest.config.ts.js
 **/.pnpm-debug.log
 **/.br
 **/.gz
+**/perf.cjs
