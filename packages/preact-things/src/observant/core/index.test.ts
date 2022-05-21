@@ -166,7 +166,7 @@ test('test8a', () => {
 	expect(err).instanceOf(TypeError);
 	expect(err?.message).toBe('!!');
 	order += '7';
-	expect(order).toBe('0123453467');
+	expect(order).toBe('01234567');
 });
 
 test('test9', () => {

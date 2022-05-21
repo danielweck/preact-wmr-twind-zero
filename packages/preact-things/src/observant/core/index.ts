@@ -1,9 +1,9 @@
-// SIZE LIMIT :| [./dist/observant.terser-rollup.js] (2328)
-// SIZE LIMIT :| [./dist/observant.terser-rollup.js.gz] (1006)
-// SIZE LIMIT :| [./dist/observant.terser-rollup.js.br] (921)
-// SIZE LIMIT :| [./dist/observant.esbuild.js] (3428)
-// SIZE LIMIT :| [./dist/observant.esbuild.js.gz] (1347)
-// SIZE LIMIT :| [./dist/observant.esbuild.js.br] (1241)
+// SIZE LIMIT :| [./dist/observant.terser-rollup.js] (2573)
+// SIZE LIMIT :| [./dist/observant.terser-rollup.js.gz] (1109)
+// SIZE LIMIT :| [./dist/observant.terser-rollup.js.br] (1026)
+// SIZE LIMIT :| [./dist/observant.esbuild.js] (3670)
+// SIZE LIMIT :| [./dist/observant.esbuild.js.gz] (1471)
+// SIZE LIMIT :| [./dist/observant.esbuild.js.br] (1363)
 
 // ----------------
 // <ERROR HANDLING>
@@ -298,15 +298,6 @@ const _unlink = <T = TObsKind>(thiz: IObs<T>, par: TObs<T>) => {
 	}
 };
 
-const _dirtyPars = <T = TObsKind>(thiz: IObs<T>) => {
-	for (let pars = thiz._pars ? thiz._pars : undefined, i = 0, l = pars ? pars.length : -1; i < l; i++) {
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		const p = pars![i];
-		p._dirty = true;
-		// _dirtyPars(p);
-	}
-};
-
 const _compPars = <T = TObsKind>(thiz: IObs<T>) => {
 	_inCompPars = true;
 	_inCompParsQ = undefined;
@@ -315,128 +306,109 @@ const _compPars = <T = TObsKind>(thiz: IObs<T>) => {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		const p = pars![i];
 		p._dirty = true;
-		// if (pars![i]._compFn) {
 		_comp(p);
-		// }
-		// _dirtyPars(p);
 	}
 
 	_inCompPars = false;
 
 	if (_inCompParsQ) {
 		const q = (_inCompParsQ as IObs<T>[]).slice();
+		// _inCompParsQ = undefined;
 		for (let i = 0, l = q.length; i < l; i++) {
 			_compPars(q[i]);
 		}
-		_inCompParsQ = undefined;
 	}
-
-	// for (let pars = thiz._pars, i = 0, l = pars ? pars.length : -1; i < l; i++) {
-	// 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-	// 	const p = pars![i];
-	// 	// special DIRTY marker, see _val
-	// 	if (p._dirty) {
-	// 		p._dirty = false;
-	// 		_compPars(p);
-	// 	}
-	// }
 };
 
 const _comp = <T = TObsKind>(thiz: IObs<T>) => {
-	if (thiz._updateID === _lastUpdateID) {
+	if (!thiz._compFn || thiz._updateID === _lastUpdateID) {
 		return;
 	}
 
-	if (thiz._compFn) {
-		if (thiz._inComp) {
-			throw Error(ERR_CIRCULAR);
+	if (thiz._inComp) {
+		throw Error(ERR_CIRCULAR);
+	}
+	thiz._inComp = true;
+
+	const prevComp = _curComp;
+	_curComp = thiz as unknown as IObs<TObsKind>;
+
+	thiz._childsPrev = thiz._childs;
+	thiz._childsI = -1;
+
+	thiz._childs = undefined;
+
+	let compVal: T | undefined;
+	let compErr: Error | undefined;
+	try {
+		compVal = thiz._compFn(thiz._v);
+	} catch (err) {
+		compErr = _curErr = mkError(err);
+		if (compErr.message === ERR_CIRCULAR) {
+			throw compErr;
 		}
-		thiz._inComp = true;
+	}
 
-		const prevComp = _curComp;
-		_curComp = thiz as unknown as IObs<TObsKind>;
+	_curComp = prevComp;
 
-		thiz._childsPrev = thiz._childs;
-		thiz._childsI = -1;
+	thiz._inComp = false;
 
-		thiz._childs = undefined;
-
-		let compVal: T | undefined;
-		let compErr: Error | undefined;
-		try {
-			compVal = thiz._compFn(thiz._v);
-		} catch (err) {
-			compErr = _curErr = mkError(err);
-			console.log(compErr); // TODO: default error handler?
-			if (compErr.message === ERR_CIRCULAR) {
-				throw compErr;
-			}
-		}
-
-		_curComp = prevComp;
-
-		thiz._inComp = false;
-
-		if (!thiz._childs) {
-			if (thiz._childsPrev) {
-				if (thiz._childsI === thiz._childsPrev.length - 1) {
-					thiz._childs = thiz._childsPrev;
-				} else {
-					let i = thiz._childsI + 1;
-					thiz._childs = thiz._childsPrev.slice(0, i);
-
-					for (; i < thiz._childsPrev.length; i++) {
-						const child = thiz._childsPrev[i];
-						_unlink(child, thiz);
-					}
-				}
-			}
-		} else if (thiz._childsPrev) {
+	if (!thiz._childs) {
+		if (thiz._childsPrev) {
 			if (thiz._childsI === thiz._childsPrev.length - 1) {
-				thiz._childs = thiz._childsPrev.concat(thiz._childs);
+				thiz._childs = thiz._childsPrev;
 			} else {
 				let i = thiz._childsI + 1;
+				thiz._childs = thiz._childsPrev.slice(0, i);
 
 				for (; i < thiz._childsPrev.length; i++) {
 					const child = thiz._childsPrev[i];
 					_unlink(child, thiz);
 				}
-
-				i = thiz._childsI + 1;
-
-				thiz._childsPrev.length = i;
-				// thiz._childsPrev = thiz._childsPrev.slice(0, i);
-				thiz._childs = thiz._childsPrev.concat(thiz._childs);
 			}
 		}
+	} else if (thiz._childsPrev) {
+		if (thiz._childsI === thiz._childsPrev.length - 1) {
+			thiz._childs = thiz._childsPrev.concat(thiz._childs);
+		} else {
+			let i = thiz._childsI + 1;
 
-		thiz._childsPrev = undefined;
-		thiz._childsI = -1;
+			for (; i < thiz._childsPrev.length; i++) {
+				const child = thiz._childsPrev[i];
+				_unlink(child, thiz);
+			}
 
-		// const childs = thiz._childs;
-		// const l = childs ? childs.length : 0;
-		// if (l === 0) {
-		// 	thiz._dirty = false;
-		// }
+			i = thiz._childsI + 1;
 
-		if (compErr) {
-			_emitErr(thiz, _curErr);
-			// thiz._dirty = false;
-			return;
+			thiz._childsPrev.length = i;
+			// thiz._childsPrev = thiz._childsPrev.slice(0, i);
+			thiz._childs = thiz._childsPrev.concat(thiz._childs);
 		}
-		// accepts undefined in case of memo or equals=false option
-		// if (typeof compVal !== 'undefined') {
-		_val(thiz, compVal as T);
 	}
+
+	thiz._childsPrev = undefined;
+	thiz._childsI = -1;
+
+	if (compErr) {
+		// console.log(compErr); // TODO: default error handler?
+		thiz._dirty = false;
+		thiz._updateID = _lastUpdateID;
+		_emitErr(thiz, _curErr);
+		return;
+	}
+
+	// accepts undefined in case of memo or equals=false option
+	// if (typeof compVal !== 'undefined') {
+	_val(thiz, compVal as T);
 };
 
 const _val = <T = TObsKind>(thiz: IObs<T>, newV: T) => {
+	thiz._dirty = false;
+	thiz._updateID = _lastUpdateID;
+
 	if (thiz._err) {
 		_emitErr(thiz, undefined);
 	}
-	thiz._dirty = false;
-
-	thiz._updateID = _lastUpdateID;
 
 	const prevV = thiz._v;
 	const undef = newV === undefined && prevV === undefined;
@@ -452,7 +424,11 @@ const _val = <T = TObsKind>(thiz: IObs<T>, newV: T) => {
 			} else {
 				_inCompParsQ.push(thiz as IObs<TObsKind>);
 			}
-			_dirtyPars(thiz);
+
+			for (let pars = thiz._pars ? thiz._pars : undefined, i = 0, l = pars ? pars.length : -1; i < l; i++) {
+				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+				pars![i]._dirty = true;
+			}
 		}
 
 		if (!undef && thiz._evts) {
@@ -694,619 +670,3 @@ interface IObs<T = TObsKind> {
 // // ----------------
 // // </OBSERVANT CLASS>
 // // ----------------
-
-// ------------------------------
-// BENCH.HTML
-// ------------------------------
-// <!DOCTYPE html>
-// <html>
-// <head>
-// 	<meta charset="UTF-8">
-// 	<title></title>
-// 	<script type="text/javascript">
-// 		window.exports = {};
-// 	</script>
-
-// <script src="./packages/preact-things/dist/observant.rollup.js"></script>
-
-// <script src="../solid/packages/solid/dist/solid.cjs"></script>
-
-// </head>
-// <body>
-
-// <p>
-// 	<label>
-// 		Number of layers
-// 		<input id="tfLayerCount" class="-textfield" type="text" value="5000">
-
-// 		<div id="bSetLayerCount">
-// 			<button class="-btn -btn-primary">10</button>
-// 			<button class="-btn -btn-primary">20</button>
-// 			<button class="-btn -btn-primary">30</button>
-// 			<button class="-btn -btn-danger">50</button>
-// 			<button class="-btn -btn-danger">100</button>
-// 			<button class="-btn -btn-danger">1000</button>
-// 			<button class="-btn -btn-danger">2000</button>
-// 			<button class="-btn -btn-danger">3000</button>
-// 			<button class="-btn -btn-danger">4000</button>
-// 			<button class="-btn -btn-danger">5000</button>
-// 			<button class="-btn -btn-danger">6000</button>
-// 		</div>
-// 	</label>
-// </p>
-
-// <hr>
-
-// <p id="bSelectLibrary">
-// 	Library
-// 	<br>
-// 	<label class="-radiobox"><input type="radio" name="rdbLibrary" value="observant" checked><span></span>observant</label>
-// </p>
-
-// <hr>
-
-// <p>
-// 	<button id="btnRunTest" class="-btn -btn-high -btn-success">Run CellX Bench</button>
-// </p>
-// <p>
-// 	<button id="btnRunTestSolidObs" class="-btn -btn-high -btn-success">Run Solid Bench</button>
-// </p>
-// <p>
-// 	<button id="btnRunTestSolid" class="-btn -btn-high -btn-success">Run Solid Bench (with Solid)</button>
-// </p>
-
-// <hr>
-
-// <p>
-// 	Output
-// 	<pre><output id="tfOutput">&nbsp;</output></pre>
-// </p>
-
-// <script src="../solid/packages/solid/bench/bench.js"></script>
-
-// <!-- <script src="./perf.js"></script> -->
-
-// <script>
-
-// document.querySelectorAll('#bSetLayerCount button').forEach((b) => {
-// 	b.addEventListener('click', function() {
-// 	document.querySelector('#tfLayerCount').value = this.innerHTML;
-// })});
-
-// document.querySelector('#btnRunTest').addEventListener('click', function() {
-// 	runTest(document.querySelector('#bSelectLibrary input:checked').value, parseInt(document.querySelector('#tfLayerCount').value, 10));
-// });
-// document.querySelector('#btnRunTestSolid').addEventListener('click', function() {
-// 	runSolid(false);
-// });
-// document.querySelector('#btnRunTestSolidObs').addEventListener('click', function() {
-// 	runSolid(true);
-// });
-
-// function runSolid(useObs) {
-// 	const log = console.log;
-// 	let msgs = [];
-// 	console.log = (...args) => {
-// 		msgs = msgs.concat(args);
-// 	}
-// 	window.solidbench(useObs);
-// 	console.log = log;
-// 	for (const msg of msgs) {
-// 		console.log(msg);
-// 	}
-// 	document.querySelector('#tfOutput').innerHTML = msgs.join('<br>');
-// }
-// function runTest(lib, layerCount) {
-
-// 	document.querySelector('#btnRunTest').disabled = true;
-
-// 	// console.log(lib, layerCount);
-
-// 	// setTimeout(() => {
-// 		let report = {};
-
-// 		function onDone() {
-// 			// setTimeout(() => {
-// 			document.querySelector('#tfOutput').innerHTML =
-// 			// document.querySelector('#tfOutput').innerHTML + '<br>' + '<br>' +
-// 				'beforeChange: [' + report.beforeChange +
-// 					'],<br>afterChange: [' + report.afterChange +
-// 					'],<br>MIN: ' + report.min +
-// 					',<br>MAX: ' + report.max +
-// 					',<br>AVERAGE: ' + report.avg +
-// 					',<br>MEDIAN: ' + report.median
-// 			;
-
-// 			document.querySelector('#btnRunTest').disabled = false;
-// 			// }, 500);
-// 		}
-
-// 		switch (lib) {
-// 			case 'observant': {
-// 				testObservant(report, layerCount, onDone);
-// 				break;
-// 			}
-// 		}
-// 	// }, 500);
-
-// }
-
-// function testObservant(report, layerCount, done) {
-
-// 	let onC = 0;
-// 	const once = () => {
-// 		let start = {
-// 			prop1: observant.obs(1),
-// 			prop2: observant.obs(2),
-// 			prop3: observant.obs(3),
-// 			prop4: observant.obs(4)
-// 		};
-// 		let layer = start;
-
-// 		for (let i = layerCount; i--; ) {
-// 			layer = ((prev) => {
-// 				let next = {
-// 					prop1: observant.obs(() => observant.get(prev.prop2), {run: true}),
-// 					prop2: observant.obs(() => observant.get(prev.prop1) - observant.get(prev.prop3), {run: true}),
-// 					prop3: observant.obs(() => observant.get(prev.prop2) + observant.get(prev.prop4), {run: true}),
-// 					prop4: observant.obs(() => observant.get(prev.prop3), {run: true})
-// 				};
-
-// 				observant.on(next.prop1, () => {onC++});
-// 				observant.on(next.prop2, () => {onC++});
-// 				observant.on(next.prop3, () => {onC++});
-// 				observant.on(next.prop4, () => {onC++});
-
-// 				// next.prop1.onChange(() => {});
-// 				// next.prop2.onChange(() => {});
-// 				// next.prop3.onChange(() => {});
-// 				// next.prop4.onChange(() => {});
-
-// 				// observant.run(next.prop1);
-// 				// observant.run(next.prop2);
-// 				// observant.run(next.prop3);
-// 				// observant.run(next.prop4);
-
-// 				// observant.get(next.prop1);
-// 				// observant.get(next.prop2);
-// 				// observant.get(next.prop3);
-// 				// observant.get(next.prop4);
-
-// 				return next;
-// 			})(layer);
-// 		}
-
-// 		let end = layer;
-
-// 		// end.prop1.onChange(() => {});
-// 		// end.prop2.onChange(() => {});
-// 		// end.prop3.onChange(() => {});
-// 		// end.prop4.onChange(() => {});
-
-// 		report.beforeChange = [
-// 			observant.get(end.prop1),
-// 			observant.get(end.prop2),
-// 			observant.get(end.prop3),
-// 			observant.get(end.prop4)
-// 		];
-
-// 		let startTime = performance.now();
-
-// 		observant.set(start.prop1, 4);
-// 		observant.set(start.prop2, 3);
-// 		observant.set(start.prop3, 2);
-// 		observant.set(start.prop4, 1);
-
-// 		report.afterChange = [
-// 			observant.get(end.prop1),
-// 			observant.get(end.prop2),
-// 			observant.get(end.prop3),
-// 			observant.get(end.prop4)
-// 		];
-
-// 		report.recalculationTime = performance.now() - startTime;
-
-// 		report.min = Math.min(report.min || 9999, report.recalculationTime);
-// 		report.max = Math.max(report.max || 0, report.recalculationTime);
-
-// 		if (!report.times) {
-// 			report.times = [];
-// 		}
-// 		report.times.push(report.recalculationTime);
-// 	}
-
-// 	const sleep = (ms) => new Promise((res) => {
-// 		setTimeout(() => {
-// 			res();
-// 		}, ms);
-// 	});
-// 	setTimeout(async () => {
-// 		// warmup
-// 		once();
-// 		await sleep(200);
-
-// 		once();
-// 		await sleep(200);
-
-// 		once();
-// 		await sleep(200);
-
-// 		console.log(JSON.stringify(report, null, 4));
-
-// 		report.min = 888;
-// 		report.max = 0;
-// 		report.avg = 0;
-// 		report.median = 0;
-// 		report.times = [];
-// 		report.sorted = [];
-
-// 		for (let i = 0; i < 10; i++) {
-// 			once();
-// 			await sleep(100);
-// 		}
-
-// 		report.avg = report.times.reduce((prev, cur) => {
-// 			return prev + cur;
-// 		}, 0) / report.times.length;
-
-//   		const middle = Math.floor(report.times.length / 2);
-//     	const times = report.sorted = [...report.times].sort((a, b) => a - b);
-// 		report.median = times.length % 2 !== 0 ? times[middle] : (times[middle - 1] + times[middle]) / 2;
-
-// 		console.log(JSON.stringify(report, null, 4));
-
-// 		done();
-// 	});
-// }
-
-// </script>
-
-// </body>
-// </html>
-// ------------------------------
-// BENCH.JS
-// ------------------------------
-// function createSignal_(val) {
-// 	const o = observant.obs(val);
-// 	return [() => observant.get(o), v => observant.set(o, v)];
-//   }
-//   function createRoot_(fn) {
-// 	return fn();
-//   }
-//   function createComputed_(fn) {
-// 	return observant.obs(fn, {run: true});
-//   }
-//   function createMemo_(fn) {
-// 	const o = observant.obs(fn, {run: true});
-// 	return () => observant.get(o);
-//   }
-
-//   var now = typeof process === 'undefined' ? browserNow : nodeNow;
-
-//   var COUNT = 1e5;
-
-//   window.solidbench = function main(useObs) {
-// 	if (useObs) {
-// 	  if (!window.createSignal_SOLID) window.createSignal_SOLID = window.createSignal;
-// 	  if (!window.createRoot_SOLID) window.createRoot_SOLID = window.createRoot;
-// 	  if (!window.createComputed_SOLID) window.createComputed_SOLID = window.createComputed;
-// 	  if (!window.createMemo_SOLID) window.createMemo_SOLID = window.createMemo;
-
-// 	  window.createSignal = createSignal_;
-// 	  window.createRoot = createRoot_;
-// 	  window.createComputed = createComputed_;
-// 	  window.createMemo = createMemo_;
-// 	} else {
-// 	  if (window.createSignal_SOLID) window.createSignal = window.createSignal_SOLID;
-// 	  if (window.createRoot_SOLID) window.createRoot = window.createRoot_SOLID;
-// 	  if (window.createComputed_SOLID) window.createComputed = window.createComputed_SOLID;
-// 	  if (window.createMemo_SOLID) window.createMemo = window.createMemo_SOLID;
-// 	}
-
-// 	var createTotal = 0;
-// 	createTotal += bench(createDataSignals, COUNT, COUNT);
-// 	createTotal += bench(createComputations0to1, COUNT, 0);
-// 	createTotal += bench(createComputations1to1, COUNT, COUNT);
-// 	createTotal += bench(createComputations2to1, COUNT / 2, COUNT);
-// 	createTotal += bench(createComputations4to1, COUNT / 4, COUNT);
-// 	createTotal += bench(createComputations1000to1, COUNT / 1000, COUNT);
-// 	//total += bench1(createComputations8, COUNT, 8 * COUNT);
-// 	createTotal += bench(createComputations1to2, COUNT, COUNT / 2);
-// 	createTotal += bench(createComputations1to4, COUNT, COUNT / 4);
-// 	createTotal += bench(createComputations1to8, COUNT, COUNT / 8);
-// 	createTotal += bench(createComputations1to1000, COUNT, COUNT / 1000);
-// 	console.log(`create total: ${createTotal.toFixed(0)}`);
-// 	console.log('---');
-// 	var updateTotal = 0;
-// 	updateTotal += bench(updateComputations1to1, COUNT * 4, 1);
-// 	updateTotal += bench(updateComputations2to1, COUNT * 2, 2);
-// 	updateTotal += bench(updateComputations4to1, COUNT, 4);
-// 	updateTotal += bench(updateComputations1000to1, COUNT / 100, 1000);
-// 	updateTotal += bench(updateComputations1to2, COUNT * 4, 1);
-// 	updateTotal += bench(updateComputations1to4, COUNT * 4, 1);
-// 	updateTotal += bench(updateComputations1to1000, COUNT * 4, 1);
-// 	console.log(`update total: ${updateTotal.toFixed(0)}`);
-// 	console.log('---');
-// 	console.log(`total: ${(createTotal + updateTotal).toFixed(0)}`);
-
-// 	console.log('---');
-// 	// console.log(window.createMemo.toString());
-//   }
-
-//   function bench(fn, count, scount) {
-// 	var time = run(fn, count, scount);
-// 	console.log(`${fn.name}: ${time.toFixed(0)}`);
-// 	return time;
-//   }
-
-//   function run(fn, n, scount) {
-// 	// prep n * arity sources
-// 	var start,
-// 	  end;
-
-// 	createRoot(function () {
-// 	  // run 3 times to warm up
-// 	  var sources = createDataSignals(scount, []);
-// 	  fn(n / 100, sources);
-// 	  sources = createDataSignals(scount, []);
-// 	  fn(n / 100, sources);
-// 	  sources = createDataSignals(scount, []);
-// 		  // % OptimizeFunctionOnNextCall(fn);
-// 	  fn(n / 100, sources);
-// 	  sources = createDataSignals(scount, []);
-// 	  for (var i = 0; i < scount; i++) {
-// 		sources[i][0]();
-// 		sources[i][0]();
-// 		//%OptimizeFunctionOnNextCall(sources[i]);
-// 		sources[i][0]();
-// 	  }
-
-// 		  // start GC clean
-// 		  // % CollectGarbage(null);
-
-// 	  start = now();
-
-// 	  fn(n, sources);
-
-// 	  // end GC clean
-// 	  sources = null;
-// 		  // % CollectGarbage(null);
-
-// 	  end = now();
-// 	});
-
-// 	return end - start;
-//   }
-
-//   function createDataSignals(n, sources) {
-// 	for (var i = 0; i < n; i++) {
-// 	  sources[i] = createSignal(i);
-// 	}
-// 	return sources;
-//   }
-
-//   function createComputations0to1(n, sources) {
-// 	for (var i = 0; i < n; i++) {
-// 	  createComputation0(i);
-// 	}
-//   }
-
-//   function createComputations1to1000(n, sources) {
-// 	for (var i = 0; i < n / 1000; i++) {
-// 	  const [get] = sources[i];
-// 	  for (var j = 0; j < 1000; j++) {
-// 		createComputation1(get);
-// 	  }
-// 	  //sources[i] = null;
-// 	}
-//   }
-
-//   function createComputations1to8(n, sources) {
-// 	for (var i = 0; i < n / 8; i++) {
-// 	  const [get] = sources[i];
-// 	  createComputation1(get);
-// 	  createComputation1(get);
-// 	  createComputation1(get);
-// 	  createComputation1(get);
-// 	  createComputation1(get);
-// 	  createComputation1(get);
-// 	  createComputation1(get);
-// 	  createComputation1(get);
-// 	  //sources[i] = null;
-// 	}
-//   }
-
-//   function createComputations1to4(n, sources) {
-// 	for (var i = 0; i < n / 4; i++) {
-// 	  const [get] = sources[i];
-// 	  createComputation1(get);
-// 	  createComputation1(get);
-// 	  createComputation1(get);
-// 	  createComputation1(get);
-// 	  //sources[i] = null;
-// 	}
-//   }
-
-//   function createComputations1to2(n, sources) {
-// 	for (var i = 0; i < n / 2; i++) {
-// 	  const [get] = sources[i];
-// 	  createComputation1(get);
-// 	  createComputation1(get);
-// 	  //sources[i] = null;
-// 	}
-//   }
-
-//   function createComputations1to1(n, sources) {
-// 	for (var i = 0; i < n; i++) {
-// 	  const [get] = sources[i]
-// 	  createComputation1(get);
-// 	  //sources[i] = null;
-// 	}
-//   }
-
-//   function createComputations2to1(n, sources) {
-// 	for (var i = 0; i < n; i++) {
-// 	  createComputation2(
-// 		sources[i * 2][0],
-// 		sources[i * 2 + 1][0]
-// 	  );
-// 	  //sources[i * 2] = null;
-// 	  //sources[i * 2 + 1] = null;
-// 	}
-//   }
-
-//   function createComputations4to1(n, sources) {
-// 	for (var i = 0; i < n; i++) {
-// 	  createComputation4(
-// 		sources[i * 4][0],
-// 		sources[i * 4 + 1][0],
-// 		sources[i * 4 + 2][0],
-// 		sources[i * 4 + 3][0]
-// 	  );
-// 	  //sources[i * 4] = null;
-// 	  //sources[i * 4 + 1] = null;
-// 	  //sources[i * 4 + 2] = null;
-// 	  //sources[i * 4 + 3] = null;
-// 	}
-//   }
-
-//   function createComputations8(n, sources) {
-// 	for (var i = 0; i < n; i++) {
-// 	  createComputation8(
-// 		sources[i * 8][0],
-// 		sources[i * 8 + 1][0],
-// 		sources[i * 8 + 2][0],
-// 		sources[i * 8 + 3][0],
-// 		sources[i * 8 + 4][0],
-// 		sources[i * 8 + 5][0],
-// 		sources[i * 8 + 6][0],
-// 		sources[i * 8 + 7][0]
-// 	  );
-// 	  sources[i * 8] = null;
-// 	  sources[i * 8 + 1] = null;
-// 	  sources[i * 8 + 2] = null;
-// 	  sources[i * 8 + 3] = null;
-// 	  sources[i * 8 + 4] = null;
-// 	  sources[i * 8 + 5] = null;
-// 	  sources[i * 8 + 6] = null;
-// 	  sources[i * 8 + 7] = null;
-// 	}
-//   }
-
-//   // only create n / 100 computations, as otherwise takes too long
-//   function createComputations1000to1(n, sources) {
-// 	for (var i = 0; i < n; i++) {
-// 	  createComputation1000(sources, i * 1000);
-// 	}
-//   }
-
-//   function createComputation0(i) {
-// 	createComputed(function () { return i; });
-//   }
-
-//   function createComputation1(s1) {
-// 	createComputed(function () { return s1(); });
-//   }
-
-//   function createComputation2(s1, s2) {
-// 	createComputed(function () { return s1() + s2(); });
-//   }
-
-//   function createComputation4(s1, s2, s3, s4) {
-// 	createComputed(function () { return s1() + s2() + s3() + s4(); });
-//   }
-
-//   function createComputation8(s1, s2, s3, s4, s5, s6, s7, s8) {
-// 	createComputed(function () { return s1() + s2() + s3() + s4() + s5() + s6() + s7() + s8(); });
-//   }
-
-//   function createComputation1000(ss, offset) {
-// 	createComputed(function () {
-// 	  var sum = 0;
-// 	  for (var i = 0; i < 1000; i++) {
-// 		sum += ss[offset + i][0]();
-// 	  }
-// 	  return sum;
-// 	});
-//   }
-
-//   function updateComputations1to1(n, sources) {
-// 	var [get1, set1] = sources[0];
-// 	createComputed(function () { return get1(); });
-// 	for (var i = 0; i < n; i++) {
-// 	  set1(i);
-// 	}
-//   }
-
-//   function updateComputations2to1(n, sources) {
-// 	var [get1, set1] = sources[0],
-// 	  [get2] = sources[1];
-// 	createComputed(function () { return get1() + get2(); });
-// 	for (var i = 0; i < n; i++) {
-// 	  set1(i);
-// 	}
-//   }
-
-//   function updateComputations4to1(n, sources) {
-// 	var [get1, set1] = sources[0],
-// 	  [get2] = sources[1];
-// 	  [get3] = sources[2],
-// 	  [get4] = sources[3];
-// 	createComputed(function () { return get1() + get2() + get3() + get4(); });
-// 	for (var i = 0; i < n; i++) {
-// 	  set1(i);
-// 	}
-//   }
-
-//   function updateComputations1000to1(n, sources) {
-// 	var [get1, set1] = sources[0];
-// 	createComputed(function () {
-// 	  var sum = 0;
-// 	  for (var i = 0; i < 1000; i++) {
-// 		sum += sources[i][0]();
-// 	  }
-// 	  return sum;
-// 	});
-// 	for (var i = 0; i < n; i++) {
-// 	  set1(i);
-// 	}
-//   }
-
-//   function updateComputations1to2(n, sources) {
-// 	var [get1, set1] = sources[0];
-// 	createComputed(function () { return get1(); });
-// 	createComputed(function () { return get1(); });
-// 	for (var i = 0; i < n / 2; i++) {
-// 	  set1(i);
-// 	}
-//   }
-
-//   function updateComputations1to4(n, sources) {
-// 	var [get1, set1] = sources[0];
-// 	createComputed(function () { return get1(); });
-// 	createComputed(function () { return get1(); });
-// 	createComputed(function () { return get1(); });
-// 	createComputed(function () { return get1(); });
-// 	for (var i = 0; i < n / 4; i++) {
-// 	  set1(i);
-// 	}
-//   }
-
-//   function updateComputations1to1000(n, sources) {
-// 	var [get1, set1] = sources[0];
-// 	for (var i = 0; i < 1000; i++) {
-// 	  createComputed(function () { return get1(); });
-// 	}
-// 	for (var i = 0; i < n / 1000; i++) {
-// 	  set1(i);
-// 	}
-//   }
-
-//   function browserNow() {
-// 	return performance.now();
-//   }
-
-//   function nodeNow() {
-// 	var hrt = process.hrtime();
-// 	return hrt[0] * 1000 + hrt[1] / 1e6;
-//   }

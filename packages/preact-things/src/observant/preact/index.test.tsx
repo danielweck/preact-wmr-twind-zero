@@ -140,7 +140,7 @@ test('test8a DOM', async () => {
 	order += '7';
 
 	await waitFor(() => {
-		expect(order).toBe('0123453467a');
+		expect(order).toBe('01234567a');
 	});
 });
 
