@@ -2,7 +2,7 @@
 
 import { afterEach, beforeEach, expect, test } from 'vitest';
 
-import { type TObsEventCallback, get, obs, on, set } from './index.js';
+import { type TObsEventCallback, get, obs, on, reset, set } from './index.js';
 
 // let _unhandledEvents: PromiseRejectionEvent[] = [];
 // function onUnhandledRejection(event: PromiseRejectionEvent) {
@@ -15,6 +15,7 @@ beforeEach(() => {
 	// if ('onunhandledrejection' in window) {
 	// 	window.addEventListener('unhandledrejection', onUnhandledRejection);
 	// }
+	reset();
 });
 afterEach(() => {
 	// if ('onunhandledrejection' in window) {
@@ -165,7 +166,7 @@ test('test8a', () => {
 	expect(err).instanceOf(TypeError);
 	expect(err?.message).toBe('!!');
 	order += '7';
-	expect(order).toBe('01234567');
+	expect(order).toBe('0123453467');
 });
 
 test('test9', () => {

@@ -17,7 +17,7 @@ import { afterEach, beforeEach, expect, test } from 'vitest';
 import { cleanup, render, waitFor } from '../../../preact-testing-library.js';
 import { clearCache, suspendCache } from '../../suspend-cache.js';
 import { Suspense } from '../../xpatched/suspense.js';
-import { type TObs, get, obs, on, set } from '../core/index.js';
+import { type TObs, get, obs, on, reset, set } from '../core/index.js';
 import { preactObservant } from './index.js';
 
 let _unhandledEvents: PromiseRejectionEvent[] = [];
@@ -40,6 +40,8 @@ beforeEach(() => {
 	if ('onunhandledrejection' in window) {
 		window.addEventListener('unhandledrejection', onUnhandledRejection);
 	}
+
+	reset();
 });
 afterEach(() => {
 	clearCache();
@@ -138,7 +140,7 @@ test('test8a DOM', async () => {
 	order += '7';
 
 	await waitFor(() => {
-		expect(order).toBe('01234567a');
+		expect(order).toBe('0123453467a');
 	});
 });
 

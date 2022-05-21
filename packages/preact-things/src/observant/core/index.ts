@@ -11,8 +11,8 @@
 
 const mkError = (err: unknown) => (err instanceof Error ? err : Error(String(err)));
 
-const ERR_CIRCULAR = 'Error1';
-const ERR_SET_COMP = 'Error2';
+const ERR_CIRCULAR = 'ErRoR1';
+const ERR_SET_COMP = 'ErRoR2';
 
 // ----------------
 // </ERROR HANDLING>
@@ -29,6 +29,15 @@ let _curErr: Error | undefined;
 let _lastUpdateID = 0;
 
 let _inCompPars = false;
+let _inCompParsQ: IObs<TObsKind>[] | undefined;
+
+export const reset = () => {
+	_curComp = undefined;
+	_curErr = undefined;
+	_lastUpdateID = 0;
+	_inCompPars = false;
+	_inCompParsQ = undefined;
+};
 
 // ----------------
 // </GLOBAL STATE>
@@ -38,7 +47,7 @@ let _inCompPars = false;
 // <OBSERVANT CONSTRUCTOR>
 // ----------------
 
-export const obs = <T = TObsKind>(v: T | TObsCompFn<T>, run?: boolean): TObs<T> => {
+export const obs = <T = TObsKind>(v: T | TObsCompFn<T>, opts?: TObsOptions<T>): TObs<T> => {
 	const fn = typeof v === 'function';
 
 	const thiz = {
@@ -51,11 +60,12 @@ export const obs = <T = TObsKind>(v: T | TObsCompFn<T>, run?: boolean): TObs<T> 
 		_updateID: -1,
 		_err: undefined,
 		_compFn: fn ? v : undefined,
+		_eq: opts && typeof opts.equals !== 'undefined' ? opts.equals : undefined,
 		_dirty: !!fn,
 		_v: fn ? undefined : v,
 	};
 
-	if (run) {
+	if (opts && opts.run) {
 		get(thiz);
 	}
 
@@ -288,34 +298,55 @@ const _unlink = <T = TObsKind>(thiz: IObs<T>, par: TObs<T>) => {
 	}
 };
 
+const _dirtyPars = <T = TObsKind>(thiz: IObs<T>) => {
+	for (let pars = thiz._pars ? thiz._pars : undefined, i = 0, l = pars ? pars.length : -1; i < l; i++) {
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		const p = pars![i];
+		p._dirty = true;
+		// _dirtyPars(p);
+	}
+};
+
 const _compPars = <T = TObsKind>(thiz: IObs<T>) => {
 	_inCompPars = true;
+	_inCompParsQ = undefined;
 
 	for (let pars = thiz._pars ? thiz._pars.slice() : undefined, i = 0, l = pars ? pars.length : -1; i < l; i++) {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		if (pars![i]._compFn) {
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-			_comp(pars![i]);
-		}
+		const p = pars![i];
+		p._dirty = true;
+		// if (pars![i]._compFn) {
+		_comp(p);
+		// }
+		// _dirtyPars(p);
 	}
 
 	_inCompPars = false;
 
-	for (let pars = thiz._pars, i = 0, l = pars ? pars.length : -1; i < l; i++) {
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		if (pars![i]._dirty) {
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-			pars![i]._dirty = false;
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-			_compPars(pars![i]);
+	if (_inCompParsQ) {
+		const q = (_inCompParsQ as IObs<T>[]).slice();
+		for (let i = 0, l = q.length; i < l; i++) {
+			_compPars(q[i]);
 		}
+		_inCompParsQ = undefined;
 	}
+
+	// for (let pars = thiz._pars, i = 0, l = pars ? pars.length : -1; i < l; i++) {
+	// 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+	// 	const p = pars![i];
+	// 	// special DIRTY marker, see _val
+	// 	if (p._dirty) {
+	// 		p._dirty = false;
+	// 		_compPars(p);
+	// 	}
+	// }
 };
 
 const _comp = <T = TObsKind>(thiz: IObs<T>) => {
 	if (thiz._updateID === _lastUpdateID) {
 		return;
 	}
+
 	if (thiz._compFn) {
 		if (thiz._inComp) {
 			throw Error(ERR_CIRCULAR);
@@ -336,6 +367,10 @@ const _comp = <T = TObsKind>(thiz: IObs<T>) => {
 			compVal = thiz._compFn(thiz._v);
 		} catch (err) {
 			compErr = _curErr = mkError(err);
+			console.log(compErr); // TODO: default error handler?
+			if (compErr.message === ERR_CIRCULAR) {
+				throw compErr;
+			}
 		}
 
 		_curComp = prevComp;
@@ -378,23 +413,20 @@ const _comp = <T = TObsKind>(thiz: IObs<T>) => {
 		thiz._childsPrev = undefined;
 		thiz._childsI = -1;
 
-		const childs = thiz._childs;
-		const l = childs ? childs.length : 0;
-
-		if (l === 0) {
-			thiz._dirty = false;
-		}
-
-		if (typeof compVal !== 'undefined') {
-			_val(thiz, compVal);
-			return;
-		}
+		// const childs = thiz._childs;
+		// const l = childs ? childs.length : 0;
+		// if (l === 0) {
+		// 	thiz._dirty = false;
+		// }
 
 		if (compErr) {
 			_emitErr(thiz, _curErr);
-
-			thiz._dirty = false;
+			// thiz._dirty = false;
+			return;
 		}
+		// accepts undefined in case of memo or equals=false option
+		// if (typeof compVal !== 'undefined') {
+		_val(thiz, compVal as T);
 	}
 };
 
@@ -407,16 +439,23 @@ const _val = <T = TObsKind>(thiz: IObs<T>, newV: T) => {
 	thiz._updateID = _lastUpdateID;
 
 	const prevV = thiz._v;
-	if (newV !== prevV) {
+	const undef = newV === undefined && prevV === undefined;
+	const diff = thiz._eq === false ? true : thiz._eq ? !thiz._eq(prevV as TObsKind, newV as TObsKind) : newV !== prevV;
+	if (undef || diff) {
 		thiz._v = newV;
 
-		if (_inCompPars) {
-			thiz._dirty = true;
-		} else {
+		if (!_inCompPars) {
 			_compPars(thiz);
+		} else {
+			if (!_inCompParsQ) {
+				_inCompParsQ = [thiz as IObs<TObsKind>];
+			} else {
+				_inCompParsQ.push(thiz as IObs<TObsKind>);
+			}
+			_dirtyPars(thiz);
 		}
 
-		if (thiz._evts) {
+		if (!undef && thiz._evts) {
 			_emit(thiz, newV, prevV, undefined);
 		}
 	}
@@ -513,9 +552,10 @@ export type TObs<_T = TObsKind> = {
 	// noop
 };
 
-// export type TObsOptions<_T = TObsKind> = {
-// 	run?: boolean;
-// };
+export type TObsOptions<T = TObsKind> = {
+	equals?: false | ((v1: T | undefined, v2: T | undefined) => boolean);
+	run?: boolean;
+};
 
 // --- internal API
 
@@ -541,6 +581,8 @@ interface IObs<T = TObsKind> {
 	_updateID: number;
 
 	_err?: Error;
+
+	_eq?: TObsOptions['equals'];
 }
 
 // ----------------
@@ -804,10 +846,10 @@ interface IObs<T = TObsKind> {
 // 		for (let i = layerCount; i--; ) {
 // 			layer = ((prev) => {
 // 				let next = {
-// 					prop1: observant.obs(() => observant.get(prev.prop2), true),
-// 					prop2: observant.obs(() => observant.get(prev.prop1) - observant.get(prev.prop3), true),
-// 					prop3: observant.obs(() => observant.get(prev.prop2) + observant.get(prev.prop4), true),
-// 					prop4: observant.obs(() => observant.get(prev.prop3), true)
+// 					prop1: observant.obs(() => observant.get(prev.prop2), {run: true}),
+// 					prop2: observant.obs(() => observant.get(prev.prop1) - observant.get(prev.prop3), {run: true}),
+// 					prop3: observant.obs(() => observant.get(prev.prop2) + observant.get(prev.prop4), {run: true}),
+// 					prop4: observant.obs(() => observant.get(prev.prop3), {run: true})
 // 				};
 
 // 				observant.on(next.prop1, () => {onC++});
@@ -932,10 +974,10 @@ interface IObs<T = TObsKind> {
 // 	return fn();
 //   }
 //   function createComputed_(fn) {
-// 	return observant.obs(fn, true);
+// 	return observant.obs(fn, {run: true});
 //   }
 //   function createMemo_(fn) {
-// 	const o = observant.obs(fn, true);
+// 	const o = observant.obs(fn, {run: true});
 // 	return () => observant.get(o);
 //   }
 
