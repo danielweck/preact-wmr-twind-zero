@@ -60,10 +60,10 @@ export const obs = <T = TObsKind>(v: T | TObsCompFn<T>, opts?: TObsOptions<T>): 
 		_updateID: -1,
 		_err: undefined,
 		_compFn: fn ? v : undefined,
-		_eq: opts && typeof opts.equals !== 'undefined' ? opts.equals : undefined,
-		_dirty: !!fn,
+		_eq: opts ? opts.equals : undefined,
+		_dirty: fn,
 		_v: fn ? undefined : v,
-	};
+	} as IObs<T>;
 
 	if (opts && opts.run) {
 		get(thiz);
@@ -95,15 +95,15 @@ export const get = <T = TObsKind>(thiz: TObs<T>): T => {
 				// @ts-expect-error TS2345
 				_curComp._childs.push(thiz);
 
-				if (!(thiz as IObs<T>)._pars) {
-					// @ts-expect-error TS2322
-					(thiz as IObs<T>)._pars = [_curComp];
-				} else {
+				if ((thiz as IObs<T>)._pars) {
 					// TODO??
 					// if (!thiz._pars.includes(_curComp))
 
 					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 					((thiz as IObs<T>)._pars! as Array<IObs<TObsKind>>).push(_curComp);
+				} else {
+					// @ts-expect-error TS2322
+					(thiz as IObs<T>)._pars = [_curComp];
 				}
 			}
 		} else {
@@ -115,15 +115,15 @@ export const get = <T = TObsKind>(thiz: TObs<T>): T => {
 				// @ts-expect-error TS2322
 				_curComp._childs = [thiz];
 
-				if (!(thiz as IObs<T>)._pars) {
-					// @ts-expect-error TS2322
-					(thiz as IObs<T>)._pars = [_curComp];
-				} else {
+				if ((thiz as IObs<T>)._pars) {
 					// TODO??
 					// if (!thiz._pars.includes(_curComp))
 
 					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 					((thiz as IObs<T>)._pars! as Array<IObs<TObsKind>>).push(_curComp);
+				} else {
+					// @ts-expect-error TS2322
+					(thiz as IObs<T>)._pars = [_curComp];
 				}
 			}
 		}
@@ -175,11 +175,6 @@ export const off = <T = TObsKind>(thiz: TObs<T>) => {
 
 export const on = <T = TObsKind>(thiz: TObs<T>, evtCB: TObsEventCallback<T>): (() => void) => {
 	const evtCBs = (thiz as IObs<T>)._evts;
-	// if (!evtCBs) {
-	// 	(thiz as IObs<T>)._evts = [evtCB];
-	// } else if (!inArray(evtCBs, evtCB)) {
-	// 	evtCBs.push(evtCB);
-	// }
 	if (!evtCBs) {
 		(thiz as IObs<T>)._evts = evtCB;
 	} else if (Array.isArray(evtCBs)) {
@@ -207,24 +202,7 @@ const _off = <T = TObsKind>(thiz: IObs<T>, evtCB?: TObsEventCallback<T>) => {
 	if (evtCB) {
 		const evtCBs = thiz._evts;
 		if (evtCBs) {
-			// let i = evtCBs.length;
-			// if (i === 1) {
-			// 	if (evtCBs[0] === evtCB) {
-			// 		thiz._evts = undefined;
-			// 	}
-			// } else {
-			// 	for (; i !== 0; ) {
-			// 		if (evtCBs[--i] === evtCB) {
-			// 			evtCBs.splice(i, 1);
-			// 			break;
-			// 		}
-			// 	}
-			// }
-			if (!Array.isArray(evtCBs)) {
-				if (evtCBs === evtCB) {
-					thiz._evts = undefined;
-				}
-			} else {
+			if (Array.isArray(evtCBs)) {
 				let i = evtCBs.length;
 				if (i === 1) {
 					if (evtCBs[0] === evtCB) {
@@ -238,6 +216,8 @@ const _off = <T = TObsKind>(thiz: IObs<T>, evtCB?: TObsEventCallback<T>) => {
 						}
 					}
 				}
+			} else if (evtCBs === evtCB) {
+				thiz._evts = undefined;
 			}
 		}
 	} else {
@@ -306,6 +286,7 @@ const _compPars = <T = TObsKind>(thiz: IObs<T>) => {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		const p = pars![i];
 		p._dirty = true;
+		// thiz._compFn guaranteed NOT null (because parent link)
 		_comp(p);
 	}
 
@@ -321,7 +302,8 @@ const _compPars = <T = TObsKind>(thiz: IObs<T>) => {
 };
 
 const _comp = <T = TObsKind>(thiz: IObs<T>) => {
-	if (!thiz._compFn || thiz._updateID === _lastUpdateID) {
+	// thiz._compFn guaranteed NOT null (call sites)
+	if (thiz._updateID === _lastUpdateID) {
 		return;
 	}
 
@@ -341,7 +323,8 @@ const _comp = <T = TObsKind>(thiz: IObs<T>) => {
 	let compVal: T | undefined;
 	let compErr: Error | undefined;
 	try {
-		compVal = thiz._compFn(thiz._v);
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		compVal = thiz._compFn!(thiz._v);
 	} catch (err) {
 		compErr = _curErr = mkError(err);
 		if (compErr.message === ERR_CIRCULAR) {
@@ -411,27 +394,25 @@ const _val = <T = TObsKind>(thiz: IObs<T>, newV: T) => {
 	}
 
 	const prevV = thiz._v;
-	const undef = newV === undefined && prevV === undefined;
-	const diff = thiz._eq === false ? true : thiz._eq ? !thiz._eq(prevV as TObsKind, newV as TObsKind) : newV !== prevV;
-	if (undef || diff) {
+	if (thiz._eq === false ? true : thiz._eq ? !thiz._eq(prevV as TObsKind, newV as TObsKind) : newV !== prevV) {
 		thiz._v = newV;
 
-		if (!_inCompPars) {
-			_compPars(thiz);
-		} else {
-			if (!_inCompParsQ) {
-				_inCompParsQ = [thiz as IObs<TObsKind>];
-			} else {
+		if (_inCompPars) {
+			if (_inCompParsQ) {
 				_inCompParsQ.push(thiz as IObs<TObsKind>);
+			} else {
+				_inCompParsQ = [thiz as IObs<TObsKind>];
 			}
 
 			for (let pars = thiz._pars ? thiz._pars : undefined, i = 0, l = pars ? pars.length : -1; i < l; i++) {
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				pars![i]._dirty = true;
 			}
+		} else {
+			_compPars(thiz);
 		}
 
-		if (!undef && thiz._evts) {
+		if (thiz._evts) {
 			_emit(thiz, newV, prevV, undefined);
 		}
 	}
