@@ -142,7 +142,7 @@
 		"stylelint-config-prettier": "^9.0.3",
 		"stylelint-config-standard": "^25.0.0",
 		"tslib": "^2.4.0",
-		"turbo": "^1.2.9",
+		"turbo": "^1.2.11",
 		"typescript": "next",
 		"vitest": "^0.12.9"
 	}
