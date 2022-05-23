@@ -1,9 +1,9 @@
-// SIZE LIMIT :| [./dist/observant.terser-rollup.js] (2479)
-// SIZE LIMIT :| [./dist/observant.terser-rollup.js.gz] (1078)
-// SIZE LIMIT :| [./dist/observant.terser-rollup.js.br] (1002)
-// SIZE LIMIT :| [./dist/observant.esbuild.js] (3567)
-// SIZE LIMIT :| [./dist/observant.esbuild.js.gz] (1429)
-// SIZE LIMIT :| [./dist/observant.esbuild.js.br] (1320)
+// SIZE LIMIT :| [./dist/observant.terser-rollup.js] (2411)
+// SIZE LIMIT :| [./dist/observant.terser-rollup.js.gz] (1060)
+// SIZE LIMIT :| [./dist/observant.terser-rollup.js.br] (978)
+// SIZE LIMIT :| [./dist/observant.esbuild.js] (3498)
+// SIZE LIMIT :| [./dist/observant.esbuild.js.gz] (1395)
+// SIZE LIMIT :| [./dist/observant.esbuild.js.br] (1285)
 
 // ----------------
 // <ERROR HANDLING>
@@ -12,7 +12,7 @@
 const mkError = (err: unknown) => (err instanceof Error ? err : Error(String(err)));
 
 const ERR_CIRCULAR = 'ErRoR1';
-const ERR_SET_COMP = 'ErRoR2';
+// const ERR_SET_COMP = 'ErRoR2';
 
 // ----------------
 // </ERROR HANDLING>
@@ -81,11 +81,11 @@ export const obs = <T = TObsKind>(v: T | TObsCompFn<T>, opts?: TObsOptions<T>): 
 // ----------------
 
 export const get = <T = TObsKind>(thiz: TObs<T>): T => {
-	if ((thiz as IObs<T>)._dirty && (thiz as IObs<T>)._compFn) {
+	if ((thiz as IObs<T>)._dirty && (thiz as IObs<T>)._compFn && (thiz as IObs<T>)._updateID !== _lastUpdateID) {
 		_comp(thiz as IObs<T>);
 	}
 
-	if (_curComp && _curComp !== thiz) {
+	if (_curComp) {
 		if (_curComp._childs) {
 			if (
 				// @ts-expect-error TS2345
@@ -146,28 +146,20 @@ export const peek = <T = TObsKind>(thiz: TObs<T>): T | undefined => {
 
 export const set = <T = TObsKind>(thiz: TObs<T>, val: T | TObsCompFn<T>): void => {
 	if ((thiz as IObs<T>)._compFn) {
-		throw Error(ERR_SET_COMP);
+		// throw Error(ERR_SET_COMP);
+		return;
 	}
 
 	(thiz as IObs<T>)._updateID = ++_lastUpdateID;
 
-	if (typeof val === 'function') {
-		// eslint-disable-next-line @typescript-eslint/ban-types
-		_val(thiz as IObs<T>, (val as Function)((thiz as IObs<T>)._v));
-	} else {
-		_val(thiz as IObs<T>, val);
-	}
+	// eslint-disable-next-line @typescript-eslint/ban-types
+	_val(thiz as IObs<T>, typeof val === 'function' ? (val as Function)((thiz as IObs<T>)._v) : val);
 };
 
 export const off = <T = TObsKind>(thiz: TObs<T>) => {
 	_off(thiz as IObs<T>);
 
-	for (
-		let pars = (thiz as IObs<T>)._pars, i = pars ? pars.length : 0;
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		i !== 0 && i <= pars!.length;
-
-	) {
+	for (let pars = (thiz as IObs<T>)._pars, i = pars ? pars.length : 0; i !== 0; ) {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		off(pars![--i]);
 	}
@@ -241,9 +233,6 @@ const _tryEmit = <T = TObsKind>(
 const _emit = <T = TObsKind>(thiz: IObs<T>, curV: T | null, prevV: T | undefined | null, err: Error | null) => {
 	const evtCBs = thiz._evts;
 	if (evtCBs) {
-		// for (let i = evtCBs.length; i !== 0; ) {
-		// 	_tryEmit(evtCBs[--i], curV, prevV, err);
-		// }
 		if (Array.isArray(evtCBs)) {
 			let i = evtCBs.length;
 			if (i === 1) {
@@ -259,7 +248,7 @@ const _emit = <T = TObsKind>(thiz: IObs<T>, curV: T | null, prevV: T | undefined
 	}
 };
 
-const _unlink = <T = TObsKind>(thiz: IObs<T>, par: TObs<T>) => {
+const _rmPar = <T = TObsKind>(thiz: IObs<T>, par: TObs<T>) => {
 	const pars = thiz._pars;
 	if (pars) {
 		let i = pars ? pars.length : 0;
@@ -268,7 +257,7 @@ const _unlink = <T = TObsKind>(thiz: IObs<T>, par: TObs<T>) => {
 				thiz._pars = null;
 			}
 		} else {
-			for (; i !== 0 && i <= pars.length; ) {
+			for (; i !== 0; ) {
 				if (pars[--i] === par) {
 					pars.splice(i, 1);
 					break;
@@ -287,7 +276,9 @@ const _compPars = <T = TObsKind>(thiz: IObs<T>) => {
 		const p = pars![i];
 		p._dirty = true;
 		// thiz._compFn guaranteed NOT null (because parent link)
-		_comp(p);
+		if (p._updateID !== _lastUpdateID) {
+			_comp(p);
+		}
 	}
 
 	_inCompPars = false;
@@ -303,9 +294,9 @@ const _compPars = <T = TObsKind>(thiz: IObs<T>) => {
 
 const _comp = <T = TObsKind>(thiz: IObs<T>) => {
 	// thiz._compFn guaranteed NOT null (call sites)
-	if (thiz._updateID === _lastUpdateID) {
-		return;
-	}
+	// if (thiz._updateID === _lastUpdateID) {
+	// 	return;
+	// }
 
 	if (thiz._inComp) {
 		throw Error(ERR_CIRCULAR);
@@ -346,7 +337,7 @@ const _comp = <T = TObsKind>(thiz: IObs<T>) => {
 
 				for (; i < thiz._childsPrev.length; i++) {
 					const child = thiz._childsPrev[i];
-					_unlink(child, thiz);
+					_rmPar(child, thiz);
 				}
 			}
 		}
@@ -358,7 +349,7 @@ const _comp = <T = TObsKind>(thiz: IObs<T>) => {
 
 			for (; i < thiz._childsPrev.length; i++) {
 				const child = thiz._childsPrev[i];
-				_unlink(child, thiz);
+				_rmPar(child, thiz);
 			}
 
 			i = thiz._childsI + 1;
@@ -424,12 +415,7 @@ const _emitErr = <T = TObsKind>(thiz: IObs<T>, error: Error | null) => {
 			_emit(thiz, null, null, error);
 		}
 
-		for (
-			let pars = thiz._pars, i = pars ? pars.length : 0;
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-			i !== 0 && i <= pars!.length;
-
-		) {
+		for (let pars = thiz._pars, i = pars ? pars.length : 0; i !== 0; ) {
 			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			_emitErr(pars![--i], error);
 		}
