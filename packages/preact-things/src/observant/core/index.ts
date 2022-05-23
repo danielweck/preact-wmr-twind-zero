@@ -1,9 +1,9 @@
-// SIZE LIMIT :| [./dist/observant.terser-rollup.js] (2573)
-// SIZE LIMIT :| [./dist/observant.terser-rollup.js.gz] (1109)
-// SIZE LIMIT :| [./dist/observant.terser-rollup.js.br] (1026)
-// SIZE LIMIT :| [./dist/observant.esbuild.js] (3670)
-// SIZE LIMIT :| [./dist/observant.esbuild.js.gz] (1471)
-// SIZE LIMIT :| [./dist/observant.esbuild.js.br] (1363)
+// SIZE LIMIT :| [./dist/observant.terser-rollup.js] (2479)
+// SIZE LIMIT :| [./dist/observant.terser-rollup.js.gz] (1078)
+// SIZE LIMIT :| [./dist/observant.terser-rollup.js.br] (1002)
+// SIZE LIMIT :| [./dist/observant.esbuild.js] (3567)
+// SIZE LIMIT :| [./dist/observant.esbuild.js.gz] (1429)
+// SIZE LIMIT :| [./dist/observant.esbuild.js.br] (1320)
 
 // ----------------
 // <ERROR HANDLING>
@@ -22,21 +22,21 @@ const ERR_SET_COMP = 'ErRoR2';
 // <GLOBAL STATE>
 // ----------------
 
-let _curComp: IObs<TObsKind> | undefined;
+let _curComp: IObs<TObsKind> | null = null;
 
-let _curErr: Error | undefined;
+let _curErr: Error | null = null;
 
 let _lastUpdateID = 0;
 
 let _inCompPars = false;
-let _inCompParsQ: IObs<TObsKind>[] | undefined;
+let _inCompParsQ: IObs<TObsKind>[] | null = null;
 
 export const reset = () => {
-	_curComp = undefined;
-	_curErr = undefined;
+	_curComp = null;
+	_curErr = null;
 	_lastUpdateID = 0;
 	_inCompPars = false;
-	_inCompParsQ = undefined;
+	_inCompParsQ = null;
 };
 
 // ----------------
@@ -51,16 +51,16 @@ export const obs = <T = TObsKind>(v: T | TObsCompFn<T>, opts?: TObsOptions<T>): 
 	const fn = typeof v === 'function';
 
 	const thiz = {
-		_evts: undefined,
-		_pars: undefined,
-		_childsPrev: undefined,
+		_evts: null,
+		_pars: null,
+		_childsPrev: null,
 		_childsI: -1,
-		_childs: undefined,
+		_childs: null,
 		_inComp: false,
 		_updateID: -1,
-		_err: undefined,
-		_compFn: fn ? v : undefined,
-		_eq: opts ? opts.equals : undefined,
+		_err: null,
+		_compFn: fn ? v : null,
+		_eq: opts ? opts.equals : null,
 		_dirty: fn,
 		_v: fn ? undefined : v,
 	} as IObs<T>;
@@ -144,7 +144,7 @@ export const peek = <T = TObsKind>(thiz: TObs<T>): T | undefined => {
 	return (thiz as IObs<T>)._v;
 };
 
-export const set = <T = TObsKind>(thiz: TObs<T>, val: T | ((curV: T | undefined) => T)): void => {
+export const set = <T = TObsKind>(thiz: TObs<T>, val: T | TObsCompFn<T>): void => {
 	if ((thiz as IObs<T>)._compFn) {
 		throw Error(ERR_SET_COMP);
 	}
@@ -206,7 +206,7 @@ const _off = <T = TObsKind>(thiz: IObs<T>, evtCB?: TObsEventCallback<T>) => {
 				let i = evtCBs.length;
 				if (i === 1) {
 					if (evtCBs[0] === evtCB) {
-						thiz._evts = undefined;
+						thiz._evts = null;
 					}
 				} else {
 					for (; i !== 0; ) {
@@ -217,19 +217,19 @@ const _off = <T = TObsKind>(thiz: IObs<T>, evtCB?: TObsEventCallback<T>) => {
 					}
 				}
 			} else if (evtCBs === evtCB) {
-				thiz._evts = undefined;
+				thiz._evts = null;
 			}
 		}
 	} else {
-		thiz._evts = undefined;
+		thiz._evts = null;
 	}
 };
 
 const _tryEmit = <T = TObsKind>(
 	evtCB: TObsEventCallback<T>,
-	curV: T | undefined,
-	prevV: T | undefined,
-	err: Error | undefined,
+	curV: T | null,
+	prevV: T | undefined | null,
+	err: Error | null,
 ) => {
 	try {
 		evtCB(err, curV, prevV);
@@ -238,7 +238,7 @@ const _tryEmit = <T = TObsKind>(
 	}
 };
 
-const _emit = <T = TObsKind>(thiz: IObs<T>, curV: T | undefined, prevV: T | undefined, err: Error | undefined) => {
+const _emit = <T = TObsKind>(thiz: IObs<T>, curV: T | null, prevV: T | undefined | null, err: Error | null) => {
 	const evtCBs = thiz._evts;
 	if (evtCBs) {
 		// for (let i = evtCBs.length; i !== 0; ) {
@@ -265,7 +265,7 @@ const _unlink = <T = TObsKind>(thiz: IObs<T>, par: TObs<T>) => {
 		let i = pars ? pars.length : 0;
 		if (i === 1) {
 			if (pars[0] === par) {
-				thiz._pars = undefined;
+				thiz._pars = null;
 			}
 		} else {
 			for (; i !== 0 && i <= pars.length; ) {
@@ -280,9 +280,9 @@ const _unlink = <T = TObsKind>(thiz: IObs<T>, par: TObs<T>) => {
 
 const _compPars = <T = TObsKind>(thiz: IObs<T>) => {
 	_inCompPars = true;
-	_inCompParsQ = undefined;
+	_inCompParsQ = null;
 
-	for (let pars = thiz._pars ? thiz._pars.slice() : undefined, i = 0, l = pars ? pars.length : -1; i < l; i++) {
+	for (let pars = thiz._pars ? thiz._pars.slice() : null, i = 0, l = pars ? pars.length : -1; i < l; i++) {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		const p = pars![i];
 		p._dirty = true;
@@ -294,7 +294,7 @@ const _compPars = <T = TObsKind>(thiz: IObs<T>) => {
 
 	if (_inCompParsQ) {
 		const q = (_inCompParsQ as IObs<T>[]).slice();
-		// _inCompParsQ = undefined;
+		// _inCompParsQ = null;
 		for (let i = 0, l = q.length; i < l; i++) {
 			_compPars(q[i]);
 		}
@@ -318,7 +318,7 @@ const _comp = <T = TObsKind>(thiz: IObs<T>) => {
 	thiz._childsPrev = thiz._childs;
 	thiz._childsI = -1;
 
-	thiz._childs = undefined;
+	thiz._childs = null;
 
 	let compVal: T | undefined;
 	let compErr: Error | undefined;
@@ -369,7 +369,7 @@ const _comp = <T = TObsKind>(thiz: IObs<T>) => {
 		}
 	}
 
-	thiz._childsPrev = undefined;
+	thiz._childsPrev = null;
 	thiz._childsI = -1;
 
 	if (compErr) {
@@ -380,8 +380,6 @@ const _comp = <T = TObsKind>(thiz: IObs<T>) => {
 		return;
 	}
 
-	// accepts undefined in case of memo or equals=false option
-	// if (typeof compVal !== 'undefined') {
 	_val(thiz, compVal as T);
 };
 
@@ -390,7 +388,7 @@ const _val = <T = TObsKind>(thiz: IObs<T>, newV: T) => {
 	thiz._updateID = _lastUpdateID;
 
 	if (thiz._err) {
-		_emitErr(thiz, undefined);
+		_emitErr(thiz, null);
 	}
 
 	const prevV = thiz._v;
@@ -404,7 +402,7 @@ const _val = <T = TObsKind>(thiz: IObs<T>, newV: T) => {
 				_inCompParsQ = [thiz as IObs<TObsKind>];
 			}
 
-			for (let pars = thiz._pars ? thiz._pars : undefined, i = 0, l = pars ? pars.length : -1; i < l; i++) {
+			for (let pars = thiz._pars ? thiz._pars : null, i = 0, l = pars ? pars.length : -1; i < l; i++) {
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				pars![i]._dirty = true;
 			}
@@ -413,17 +411,17 @@ const _val = <T = TObsKind>(thiz: IObs<T>, newV: T) => {
 		}
 
 		if (thiz._evts) {
-			_emit(thiz, newV, prevV, undefined);
+			_emit(thiz, newV, prevV, null);
 		}
 	}
 };
 
-const _emitErr = <T = TObsKind>(thiz: IObs<T>, error: Error | undefined) => {
+const _emitErr = <T = TObsKind>(thiz: IObs<T>, error: Error | null) => {
 	if (thiz._err !== error) {
 		thiz._err = error;
 
 		if (error) {
-			_emit(thiz, undefined, undefined, error);
+			_emit(thiz, null, null, error);
 		}
 
 		for (
@@ -499,7 +497,7 @@ const _childsPrevInclude = <T = TObsKind>(thiz: IObs<T>) => {
 
 // --- external API
 
-export type TObsEventCallback<T> = (error: Error | undefined, curV: T | undefined, prevV: T | undefined) => void;
+export type TObsEventCallback<T> = (error: Error | null, curV: T | null, prevV: T | undefined | null) => void;
 
 export type TObsPrimitive = null | number | string | boolean;
 export type TObsKind = TObsPrimitive | Array<TObsPrimitive> | Record<string, unknown>;
@@ -516,8 +514,7 @@ export type TObsOptions<T = TObsKind> = {
 
 // --- internal API
 
-type TObsEventCallbacks<T> = TObsEventCallback<T> | TObsEventCallback<T>[] | undefined;
-// type TObsEventCallbacks<T> = TObsEventCallback<T>[] | undefined;
+type TObsEventCallbacks<T> = TObsEventCallback<T> | TObsEventCallback<T>[] | null;
 
 interface IObs<T = TObsKind> {
 	_evts: TObsEventCallbacks<T>;
@@ -526,20 +523,20 @@ interface IObs<T = TObsKind> {
 
 	_dirty: boolean;
 
-	_compFn?: TObsCompFn<T>;
+	_compFn: TObsCompFn<T> | null;
 	_inComp: boolean;
 
-	_pars?: Array<IObs<T>>;
+	_pars: Array<IObs<T>> | null;
 
-	_childs?: Array<IObs<T>>;
-	_childsPrev?: Array<IObs<T>>;
-	_childsI?: number;
+	_childs: Array<IObs<T>> | null;
+	_childsPrev: Array<IObs<T>> | null;
+	_childsI: number;
 
 	_updateID: number;
 
-	_err?: Error;
+	_err: Error | null;
 
-	_eq?: TObsOptions['equals'];
+	_eq: TObsOptions['equals'] | null;
 }
 
 // ----------------
