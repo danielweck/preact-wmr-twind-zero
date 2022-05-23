@@ -90,7 +90,7 @@ document.querySelector('#btnRunTestSolidObs').addEventListener('click', function
 
 function createSignal_(val) {
   const o = observant.obs(val);
-  return [() => observant.get(o), v => observant.set(o, v), o];
+  return [() => observant.get(o), v => observant.set(o, v)];
 }
 function createRoot_(fn) {
   return fn();

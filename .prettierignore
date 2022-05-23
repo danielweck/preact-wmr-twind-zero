@@ -21,4 +21,6 @@ vitest.config.ts.js
 **/.br
 **/.gz
 **/perf.cjs
+**/perf_check.cjs
 **/perf.html
+**/bench-data

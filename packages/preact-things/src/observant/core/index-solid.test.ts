@@ -12,7 +12,7 @@ const createSignal = <T = TObsKind>(
 	opts?: TObsOptions<T>,
 ): [getter: () => T, setter: (v: T | ((v: T) => T)) => void, o: TObs<T>] => {
 	const o = obs(val, opts);
-	return [() => get(o), (v: T | ((v: T) => T)) => (set(o, v as T | undefined), v), o];
+	return [() => get(o), (v: T | ((v: T) => T)) => (set(o, v as T | undefined), v), o]; // return o for peek(o)!
 };
 
 const createRoot = (fn: () => unknown) => {

@@ -27,3 +27,4 @@ vitest.config.ts.js
 **/.pnpm-debug.log
 **/.br
 **/.gz
+**/bench-data

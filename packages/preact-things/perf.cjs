@@ -17,7 +17,7 @@ const observant = vm.runInNewContext(`${code};observant`);
 
 const createSignal = (val) => {
 	const o = observant.obs(val);
-	return [() => observant.get(o), (v) => observant.set(o, v), o];
+	return [() => observant.get(o), (v) => observant.set(o, v)];
 };
 const createRoot = (fn) => {
 	return fn();

@@ -123,6 +123,7 @@
 		"lint:all": "pnpm lint:eslint && pnpm lint:prettier",
 		"size-limit": "node ../../size-limit.js",
 		"perf": "node  --allow-natives-syntax --stack-size=2900 perf.cjs",
+		"perf-check": "(mkdir bench-data || echo ok) && node  --allow-natives-syntax --stack-size=2900 perf_check.cjs",
 		"perf-trace": "node  --allow-natives-syntax --stack-size=2900 --trace-opt --trace-deopt perf.cjs",
 		"perf-inspect": "cross-env WAIT_KEY=1 node  --allow-natives-syntax --stack-size=2900 --inspect perf.cjs"
 	},
