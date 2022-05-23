@@ -33,6 +33,49 @@ const createComputed = (fn) => {
 
 // -------
 
+if (process.env.WAIT_KEY === "1") {
+const pressAnyKeyPromise = () => {
+const message = "Press any key to continue, or CTRL+C to exit...";
+process.stdout.write(message + "\n");
+
+return new Promise((resolve, reject) => {
+const onStdInData = (buffer) => {
+process.stdin.removeListener("data", onStdInData);
+process.stdin.setRawMode(false);
+process.stdin.pause();
+
+process.stdout.write("\n");
+
+const bytes = Array.from(buffer);
+if (bytes.length && bytes[0] === 3) {
+reject(new Error("CTRL+C"));
+// process.exit(1);
+return;
+}
+process.nextTick(resolve);
+};
+
+process.stdin.resume();
+process.stdin.setRawMode(true);
+process.stdin.once("data", onStdInData);
+});
+};
+
+;(async () => {
+try {
+	await pressAnyKeyPromise();
+	doStuff();
+} catch (err) {
+	process.stdout.write((err.message || "ERROR!?") + "\n");
+	process.exit(1);
+}
+})(); // .then(process.exit(0));
+} else {
+	doStuff();
+}
+
+function doStuff() {
+
 var now = typeof process === 'undefined' ? browserNow : nodeNow;
 
 var COUNT = 1e5;
@@ -103,12 +146,12 @@ function run(fn, n, scount) {
 
 		fn(n, sources);
 
+		end = now();
+
 		// end GC clean
 		sources = null;
         // @ts-expect-error TS1109
 		%CollectGarbage(null);
-
-		end = now();
 	});
 
 	return end - start;
@@ -429,3 +472,4 @@ const duration = performance.now() - timeStart;
 
 console.log(duration);
 console.log(onC);
+}

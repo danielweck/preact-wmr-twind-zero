@@ -5,16 +5,17 @@
 	<meta charset="UTF-8">
 	<title></title>
 
-<!-- <script src="./packages/preact-things/dist/observant.rollup.js"></script> -->
-<script src="./dist/observant.terser-rollup.js"></script>
+  <!-- <script src="./dist/observant.esbuild.js"></script> -->
+  <script src="./dist/observant.rollup.js"></script>
+<!-- <script src="./dist/observant.terser-rollup.js"></script> -->
 
 <script type="text/javascript">
   window.module = {};
   window.module.exports = {};
   window.exports = {};
 </script>
-<!-- <script src="../../../solid/packages/solid/bench/kairo.cjs"></script> -->
-<script src="../../../solid/packages/solid/dist/solid.cjs"></script>
+<script src="../../../solid/packages/solid/bench/kairo.cjs"></script>
+<!-- <script src="../../../solid/packages/solid/dist/solid.cjs"></script> -->
 <script type="text/javascript">
   for (let key in window.module.exports) window[key] = window.module.exports[key];
 </script>
@@ -60,7 +61,7 @@
 	<button id="btnRunTestSolidObs" class="-btn -btn-high -btn-success">Run Solid Bench</button>
 </p>
 <p>
-	<button id="btnRunTestSolid" class="-btn -btn-high -btn-success">Run Solid Bench (with Solid)</button>
+	<button id="btnRunTestSolid" class="-btn -btn-high -btn-success">Run Solid Bench (with Solid or Kairo)</button>
 </p>
 
 <hr>

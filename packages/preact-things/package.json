@@ -107,8 +107,10 @@
 		"terser": "terser \"./dist/esm/observant/core/index.js\" --output \"./dist/observant.terser.js\" --compress --mangle --mangle-props regex=/^_.*/ --ecma 2020 --module --toplevel && pnpm terser-compress",
 		"terser-compress": "gzip --best --keep --force --verbose \"./dist/observant.terser.js\" && brotli --best --keep --force --verbose \"./dist/observant.terser.js\"",
 		"terser-const-let": "sed -r -e \"s/(^|[ {;])const /\\1let /g\" \"./dist/observant.terser.js\" > \"./dist/observant.terser-const-let.js\"",
+		"terser-const-let_": "cat \"./dist/observant.terser.js\" > \"./dist/observant.terser-const-let.js\"",
 		"terser-rollup-iife": "pnpm terser && pnpm terser-const-let && rollup --input \"./dist/observant.terser-const-let.js\" --file=\"./dist/observant.terser-rollup_.js\" --name=observant --format=iife --no-interop --no-esModule --plugin=\"terser={ecma:2020}\" && pnpm terser-rollup-iife-tweak && pnpm terser-rollup-iife-compress",
-		"terser-rollup-iife-tweak": "sed -r -e \"s/^var (.+)=function\\((e)\\){/var \\1=((\\2)=>{/\" -e \"s/}\\({}\\);$/})({})/\" \"./dist/observant.terser-rollup_.js\" > \"./dist/observant.terser-rollup.js\"",
+		"terser-rollup-iife-tweak": "sed -r -e \"s/^var (.+)=function\\(([^\\)]+)\\){/var \\1=((\\2)=>{/\" -e \"s/}\\({}\\);$/})({})/\" \"./dist/observant.terser-rollup_.js\" > \"./dist/observant.terser-rollup.js\"",
+		"terser-rollup-iife-tweak_": "cat \"./dist/observant.terser-rollup_.js\" > \"./dist/observant.terser-rollup.js\"",
 		"terser-rollup-iife-compress": "gzip --best --keep --force --verbose \"./dist/observant.terser-rollup.js\" && brotli --best --keep --force --verbose \"./dist/observant.terser-rollup.js\"",
 		"rollup": "pnpm rollup-iife && pnpm terser-rollup-iife",
 		"typescript": "tsc --version && pnpm typescript-esm && pnpm typescript-esm-copy",
@@ -120,7 +122,9 @@
 		"lint:prettier": "prettier --config \"../../.prettierrc.cjs\" --ignore-path \"../../.prettierignore\" --check --no-write --loglevel log \"./\"",
 		"lint:all": "pnpm lint:eslint && pnpm lint:prettier",
 		"size-limit": "node ../../size-limit.js",
-		"perf": "node  --allow-natives-syntax --stack-size=65500 perf.cjs"
+		"perf": "node  --allow-natives-syntax --stack-size=2900 perf.cjs",
+		"perf-trace": "node  --allow-natives-syntax --stack-size=2900 --trace-opt --trace-deopt perf.cjs",
+		"perf-inspect": "cross-env WAIT_KEY=1 node  --allow-natives-syntax --stack-size=2900 --inspect perf.cjs"
 	},
 	"size-limit": [
 		{
