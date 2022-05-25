@@ -96,9 +96,9 @@
 		"esbuild": "pnpm esbuild-esm && pnpm esbuild-cjs && pnpm esbuild-iife && pnpm esbuild-iife_",
 		"esbuild-esm": "esbuild \"./src/index.ts\" --format=esm --outfile=dist/esm-bundle.js --tsconfig=tsconfig.build.json --platform=browser --target=es2020 --bundle --sourcemap=external",
 		"esbuild-cjs": "esbuild \"./src/index.ts\" --format=cjs --outfile=dist/cjs-bundle.js --tsconfig=tsconfig.build.json --platform=browser --target=es2020 --bundle --sourcemap=external",
-		"esbuild-iife": "esbuild \"./src/observant/core/index.ts\" --outfile=\"./dist/observant.esbuild.js\" --global-name=observant --format=iife --platform=browser --target=esnext --bundle --analyze --minify && pnpm esbuild-iife-compress",
+		"esbuild-iife": "esbuild \"./src/observant/core/index.ts\" --outfile=\"./dist/observant.esbuild.js\" --global-name=observant --format=iife --platform=browser --target=esnext --bundle --analyze --minify --mangle-quoted --mangle-props=\"^_[^_]+$\" && pnpm esbuild-iife-compress",
 		"esbuild-iife-compress": "gzip --best --keep --force --verbose \"./dist/observant.esbuild.js\" && brotli --best --keep --force --verbose \"./dist/observant.esbuild.js\"",
-		"esbuild-iife_": "esbuild \"./dist/esm/observant/core/index.js\" --outfile=\"./dist/observant.esbuild_.js\" --global-name=observant --format=iife --platform=browser --target=esnext --bundle --analyze --minify && pnpm esbuild-iife_-compress",
+		"esbuild-iife_": "esbuild \"./dist/esm/observant/core/index.js\" --outfile=\"./dist/observant.esbuild_.js\" --global-name=observant --format=iife --platform=browser --target=esnext --bundle --analyze --minify --mangle-quoted --mangle-props=\"^_[^_]+$\" && pnpm esbuild-iife_-compress",
 		"esbuild-iife_-compress": "gzip --best --keep --force --verbose \"./dist/observant.esbuild_.js\" && brotli --best --keep --force --verbose \"./dist/observant.esbuild_.js\"",
 		"rollup-terser-iife": "rollup --input \"./dist/esm/observant/core/index.js\" --file=\"./dist/observant.rollup-terser.js\" --name=observant --format=iife --no-interop --no-esModule --plugin=\"terser={ecma:2020,mangle:{properties:{regex:/^_.*/}}}\" && pnpm rollup-terser-iife-compress",
 		"rollup-terser-iife-compress": "gzip --best --keep --force --verbose \"./dist/observant.rollup-terser.js\" && brotli --best --keep --force --verbose \"./dist/observant.rollup-terser.js\"",
@@ -142,15 +142,15 @@
 		},
 		{
 			"path": "./dist/observant.esbuild.js",
-			"limit": "3498"
+			"limit": "2862"
 		},
 		{
 			"path": "./dist/observant.esbuild.js.gz",
-			"limit": "1395"
+			"limit": "1306"
 		},
 		{
 			"path": "./dist/observant.esbuild.js.br",
-			"limit": "1285"
+			"limit": "1196"
 		}
 	],
 	"dependencies": {
@@ -158,7 +158,7 @@
 	},
 	"devDependencies": {
 		"@testing-library/dom": "^8.13.0",
-		"@testing-library/preact": "^3.0.1",
+		"@testing-library/preact": "^3.1.1",
 		"cpy-cli": "^4.1.0",
 		"cross-env": "^7.0.3",
 		"esbuild": "^0.14.39",

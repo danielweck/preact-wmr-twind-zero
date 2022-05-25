@@ -5,6 +5,9 @@
 	<meta charset="UTF-8">
 	<title></title>
 
+  <script src="https://unpkg.com/cellx@1.10.26/dist/cellx.umd.js"></script>
+  <!-- <script src="https://raw.githubusercontent.com/Riim/cellx/master/dist/cellx.umd.js"></script> -->
+  
   <!-- <script src="./dist/observant.esbuild.js"></script> -->
   <script src="./dist/observant.rollup.js"></script>
 <!-- <script src="./dist/observant.terser-rollup.js"></script> -->
@@ -17,7 +20,11 @@
 <script src="../../../solid/packages/solid/bench/kairo.cjs"></script>
 <!-- <script src="../../../solid/packages/solid/dist/solid.cjs"></script> -->
 <script type="text/javascript">
-  for (let key in window.module.exports) window[key] = window.module.exports[key];
+  for (let key in window.module.exports) {
+    window[key] = window.module.exports[key];
+  }
+  window.module.exports = undefined;
+  window.module = undefined;
 </script>
 
 </head>
@@ -49,16 +56,18 @@
 <p id="bSelectLibrary">
 	Library
 	<br>
+	<label class="-radiobox"><input type="radio" name="rdbLibrary" value="cellx"><span></span>cellx</label>
 	<label class="-radiobox"><input type="radio" name="rdbLibrary" value="observant" checked><span></span>observant</label>
+</p>
+
+<p>
+	<button id="btnRunTest" class="-btn -btn-high -btn-success">Run CellX Bench (with selected lib)</button>
 </p>
 
 <hr>
 
 <p>
-	<button id="btnRunTest" class="-btn -btn-high -btn-success">Run CellX Bench</button>
-</p>
-<p>
-	<button id="btnRunTestSolidObs" class="-btn -btn-high -btn-success">Run Solid Bench</button>
+	<button id="btnRunTestSolidObs" class="-btn -btn-high -btn-success">Run Solid Bench (with Observant)</button>
 </p>
 <p>
 	<button id="btnRunTestSolid" class="-btn -btn-high -btn-success">Run Solid Bench (with Solid or Kairo)</button>
@@ -480,51 +489,45 @@ function runTest(lib, layerCount) {
 				testObservant(report, layerCount, onDone);
 				break;
 			}
+			case 'cellx': {
+				testCellx(report, layerCount, onDone);
+				break;
+			}
 		}
 	// }, 500);
 
 }
 
-function testObservant(report, layerCount, done) {
+function testCellx(report, layerCount, done) {
 
 	let onC = 0;
 	const once = () => {
 		let start = {
-			prop1: observant.obs(1),
-			prop2: observant.obs(2),
-			prop3: observant.obs(3),
-			prop4: observant.obs(4)
+			prop1: new cellx.Cell(1),
+			prop2: new cellx.Cell(2),
+			prop3: new cellx.Cell(3),
+			prop4: new cellx.Cell(4)
 		};
 		let layer = start;
 
 		for (let i = layerCount; i--; ) {
 			layer = ((prev) => {
 				let next = {
-					prop1: observant.obs(() => observant.get(prev.prop2), {run: true}),
-					prop2: observant.obs(() => observant.get(prev.prop1) - observant.get(prev.prop3), {run: true}),
-					prop3: observant.obs(() => observant.get(prev.prop2) + observant.get(prev.prop4), {run: true}),
-					prop4: observant.obs(() => observant.get(prev.prop3), {run: true})
+					prop1: new cellx.Cell(() => prev.prop2.get(), {run: true}),
+					prop2: new cellx.Cell(() => prev.prop1.get() - prev.prop3.get(), {run: true}),
+					prop3: new cellx.Cell(() => prev.prop2.get() + prev.prop4.get(), {run: true}),
+					prop4: new cellx.Cell(() => prev.prop3.get(), {run: true})
 				};
 
-				// observant.on(next.prop1, () => {onC++});
-				// observant.on(next.prop2, () => {onC++});
-				// observant.on(next.prop3, () => {onC++});
-				// observant.on(next.prop4, () => {onC++});
+			next.prop1.on('change', () => {});
+			next.prop2.on('change', () => {});
+			next.prop3.on('change', () => {});
+			next.prop4.on('change', () => {});
 
-				// next.prop1.onChange(() => {});
-				// next.prop2.onChange(() => {});
-				// next.prop3.onChange(() => {});
-				// next.prop4.onChange(() => {});
-
-				// observant.run(next.prop1);
-				// observant.run(next.prop2);
-				// observant.run(next.prop3);
-				// observant.run(next.prop4);
-
-				// observant.get(next.prop1);
-				// observant.get(next.prop2);
-				// observant.get(next.prop3);
-				// observant.get(next.prop4);
+			next.prop1.get();
+			next.prop2.get();
+			next.prop3.get();
+			next.prop4.get();
 
 				return next;
 			})(layer);
@@ -532,30 +535,25 @@ function testObservant(report, layerCount, done) {
 
 		let end = layer;
 
-		// end.prop1.onChange(() => {});
-		// end.prop2.onChange(() => {});
-		// end.prop3.onChange(() => {});
-		// end.prop4.onChange(() => {});
-
 		report.beforeChange = [
-			observant.get(end.prop1),
-			observant.get(end.prop2),
-			observant.get(end.prop3),
-			observant.get(end.prop4)
+			end.prop1.get(),
+			end.prop2.get(),
+			end.prop3.get(),
+			end.prop4.get()
 		];
 
 		let startTime = performance.now();
 
-		observant.set(start.prop1, 4);
-		observant.set(start.prop2, 3);
-		observant.set(start.prop3, 2);
-		observant.set(start.prop4, 1);
+		start.prop1.set(4);
+		start.prop2.set(3);
+		start.prop3.set(2);
+		start.prop4.set(1);
 
 		report.afterChange = [
-			observant.get(end.prop1),
-			observant.get(end.prop2),
-			observant.get(end.prop3),
-			observant.get(end.prop4)
+			end.prop1.get(),
+			end.prop2.get(),
+			end.prop3.get(),
+			end.prop4.get()
 		];
 
 		report.recalculationTime = performance.now() - startTime;
@@ -613,6 +611,133 @@ function testObservant(report, layerCount, done) {
 	});
 }
 
+function testObservant(report, layerCount, done) {
+
+let onC = 0;
+const once = () => {
+  let start = {
+    prop1: observant.obs(1),
+    prop2: observant.obs(2),
+    prop3: observant.obs(3),
+    prop4: observant.obs(4)
+  };
+  let layer = start;
+
+  for (let i = layerCount; i--; ) {
+    layer = ((prev) => {
+      let next = {
+        prop1: observant.obs(() => observant.get(prev.prop2), {run: true}),
+        prop2: observant.obs(() => observant.get(prev.prop1) - observant.get(prev.prop3), {run: true}),
+        prop3: observant.obs(() => observant.get(prev.prop2) + observant.get(prev.prop4), {run: true}),
+        prop4: observant.obs(() => observant.get(prev.prop3), {run: true})
+      };
+
+      // observant.on(next.prop1, () => {onC++});
+      // observant.on(next.prop2, () => {onC++});
+      // observant.on(next.prop3, () => {onC++});
+      // observant.on(next.prop4, () => {onC++});
+
+      // next.prop1.onChange(() => {});
+      // next.prop2.onChange(() => {});
+      // next.prop3.onChange(() => {});
+      // next.prop4.onChange(() => {});
+
+      // observant.run(next.prop1);
+      // observant.run(next.prop2);
+      // observant.run(next.prop3);
+      // observant.run(next.prop4);
+
+      // observant.get(next.prop1);
+      // observant.get(next.prop2);
+      // observant.get(next.prop3);
+      // observant.get(next.prop4);
+
+      return next;
+    })(layer);
+  }
+
+  let end = layer;
+
+  // end.prop1.onChange(() => {});
+  // end.prop2.onChange(() => {});
+  // end.prop3.onChange(() => {});
+  // end.prop4.onChange(() => {});
+
+  report.beforeChange = [
+    observant.get(end.prop1),
+    observant.get(end.prop2),
+    observant.get(end.prop3),
+    observant.get(end.prop4)
+  ];
+
+  let startTime = performance.now();
+
+  observant.set(start.prop1, 4);
+  observant.set(start.prop2, 3);
+  observant.set(start.prop3, 2);
+  observant.set(start.prop4, 1);
+
+  report.afterChange = [
+    observant.get(end.prop1),
+    observant.get(end.prop2),
+    observant.get(end.prop3),
+    observant.get(end.prop4)
+  ];
+
+  report.recalculationTime = performance.now() - startTime;
+
+  report.min = Math.min(report.min || 9999, report.recalculationTime);
+  report.max = Math.max(report.max || 0, report.recalculationTime);
+
+  if (!report.times) {
+    report.times = [];
+  }
+  report.times.push(report.recalculationTime);
+}
+
+const sleep = (ms) => new Promise((res) => {
+  setTimeout(() => {
+    res();
+  }, ms);
+});
+setTimeout(async () => {
+  // warmup
+  once();
+  await sleep(200);
+
+  once();
+  await sleep(200);
+
+  once();
+  await sleep(200);
+
+  console.log(JSON.stringify(report, null, 4));
+
+  report.min = 888;
+  report.max = 0;
+  report.avg = 0;
+  report.median = 0;
+  report.times = [];
+  report.sorted = [];
+
+  for (let i = 0; i < 10; i++) {
+    once();
+    await sleep(100);
+  }
+
+  report.avg = report.times.reduce((prev, cur) => {
+    return prev + cur;
+  }, 0) / report.times.length;
+
+    const middle = Math.floor(report.times.length / 2);
+    const times = report.sorted = [...report.times].sort((a, b) => a - b);
+  report.median = times.length % 2 !== 0 ? times[middle] : (times[middle - 1] + times[middle]) / 2;
+
+  console.log(JSON.stringify(report, null, 4));
+
+  done();
+});
+}
 </script>
 
 </body>

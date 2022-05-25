@@ -1,10 +1,35 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 
-// https://github.com/testing-library/preact-testing-library/blob/0f19120c01ee22411428e5d4c9fa4e5148cdfaef/src/pure.js
+// @ts-nocheck
 
-import { configure as configureDTL, getQueriesForElement, prettyDOM } from '@testing-library/dom';
+// https://github.com/testing-library/preact-testing-library/blob/1f9851894ff4fc772addef39855ecc0d8b219dca/src/pure.js
+
+import {
+	configure as configureDTL,
+	createEvent,
+	fireEvent as domFireEvent,
+	getQueriesForElement,
+	prettyDOM,
+} from '@testing-library/dom';
 import { h, hydrate as preactHydrate, render as preactRender } from 'preact';
 import { act } from 'preact/test-utils';
+
+// Similar to RTL we make are own fireEvent helper that just calls DTL's fireEvent with that
+// we can that any specific behaviors to the helpers we need
+const fireEvent = (...args) => domFireEvent(...args);
+
+Object.keys(domFireEvent).forEach((key) => {
+	fireEvent[key] = (elem) => {
+		// Preact registers event-listeners in lower-case, so onPointerStart becomes pointerStart
+		// here we will copy this behavior, when we fire an element we will fire it in lowercase so
+		// we hit the Preact listeners.
+		const eventName = `on${key.toLowerCase()}`;
+		const isInElem = eventName in elem;
+		return isInElem
+			? domFireEvent[key](elem)
+			: domFireEvent(elem, createEvent(key[0].toUpperCase() + key.slice(1), elem));
+	};
+});
 
 configureDTL({
 	asyncWrapper: async (cb) => {
@@ -25,7 +50,6 @@ configureDTL({
 
 const mountedContainers = new Set();
 
-// @ts-ignore
 function render(ui, { container, baseElement = container, queries, hydrate = false, wrapper: WrapperComponent } = {}) {
 	if (!baseElement) {
 		// Default to document.body instead of documentElement to avoid output of potentially-large
@@ -42,7 +66,6 @@ function render(ui, { container, baseElement = container, queries, hydrate = fal
 	// they're passing us a custom container or not.
 	mountedContainers.add(container);
 
-	// @ts-ignore
 	const wrapUiIfNeeded = (innerElement) => (WrapperComponent ? h(WrapperComponent, null, innerElement) : innerElement);
 
 	act(() => {
@@ -56,7 +79,6 @@ function render(ui, { container, baseElement = container, queries, hydrate = fal
 	return {
 		container,
 		baseElement,
-		// @ts-ignore
 		debug: (el = baseElement, maxLength, options) =>
 			Array.isArray(el)
 				? // eslint-disable-next-line no-console
@@ -64,11 +86,10 @@ function render(ui, { container, baseElement = container, queries, hydrate = fal
 				: // eslint-disable-next-line no-console,
 				  console.log(prettyDOM(el, maxLength, options)),
 		unmount: () => preactRender(null, container),
-		// @ts-ignore
 		rerender: (rerenderUi) => {
-			// eslint-disable-next-line @typescript-eslint/no-empty-function
-			act(() => {});
-			// @ts-ignore
+			act(() => {
+				// noop
+			});
 			render(wrapUiIfNeeded(rerenderUi), { container, baseElement });
 			// Intentionally do not return anything to avoid unnecessarily complicating the API.
 			// folks can use all the same utilities we return in the first place that are bound to
@@ -104,6 +125,7 @@ function cleanup() {
 	mountedContainers.forEach(cleanupAtContainer);
 }
 
+// eslint-disable-next-line import/export
 export * from '@testing-library/dom';
-
-export { act, cleanup, render };
+// eslint-disable-next-line import/export
+export { act, cleanup, fireEvent, render };

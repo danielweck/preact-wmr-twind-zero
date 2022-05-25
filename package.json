@@ -58,7 +58,7 @@
 		"node": ">=16",
 		"pnpm": ">=7"
 	},
-	"packageManager": "pnpm@7.1.0",
+	"packageManager": "pnpm@7.1.5",
 	"scripts": {
 		"prepare": "husky install",
 		"clean": "pnpm --recursive clean",
@@ -105,11 +105,11 @@
 		"commit-lint": "pnpm commitlint"
 	},
 	"devDependencies": {
-		"@commitlint/cli": "^17.0.0",
+		"@commitlint/cli": "^17.0.1",
 		"@commitlint/config-conventional": "^17.0.0",
 		"@types/node": "^16.11.36",
-		"@typescript-eslint/eslint-plugin": "^5.25.0",
-		"@typescript-eslint/parser": "^5.25.0",
+		"@typescript-eslint/eslint-plugin": "^5.26.0",
+		"@typescript-eslint/parser": "^5.26.0",
 		"browserslist": "^4.20.3",
 		"cpy-cli": "^4.1.0",
 		"cross-env": "^7.0.3",
@@ -126,10 +126,10 @@
 		"eslint-plugin-react": "^7.30.0",
 		"eslint-plugin-react-hooks": "^4.5.0",
 		"eslint-plugin-simple-import-sort": "^7.0.0",
-		"happy-dom": "^4.0.1",
+		"happy-dom": "^4.1.0",
 		"husky": "^8.0.1",
 		"kolorist": "^1.5.1",
-		"lint-staged": "^12.4.1",
+		"lint-staged": "^12.4.2",
 		"postcss": "^8.4.14",
 		"postcss-html": "^1.4.1",
 		"postcss-jsx": "^0.36.4",
@@ -137,12 +137,12 @@
 		"prettier": "^2.6.2",
 		"resolve.exports": "^1.1.0",
 		"rimraf": "^3.0.2",
-		"stylelint": "^14.8.3",
+		"stylelint": "^14.8.5",
 		"stylelint-config-html": "^1.0.0",
 		"stylelint-config-prettier": "^9.0.3",
 		"stylelint-config-standard": "^25.0.0",
 		"tslib": "^2.4.0",
-		"turbo": "^1.2.11",
+		"turbo": "^1.2.12",
 		"typescript": "next",
 		"vitest": "^0.12.9"
 	}

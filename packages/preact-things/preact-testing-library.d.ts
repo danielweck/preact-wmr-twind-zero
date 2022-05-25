@@ -1,5 +1,7 @@
-import { type BoundFunction, type Queries, type queries } from '@testing-library/dom';
-import { type ComponentChild } from 'preact';
+// https://unpkg.com/browse/@testing-library/preact@3.1.1/types/index.d.ts
+
+import type { BoundFunction, Queries, queries } from '@testing-library/dom';
+import type { ComponentChild } from 'preact';
 import type { act as preactAct } from 'preact/test-utils';
 
 export * from '@testing-library/dom';

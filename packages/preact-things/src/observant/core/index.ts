@@ -1,9 +1,9 @@
 // SIZE LIMIT :| [./dist/observant.terser-rollup.js] (2411)
 // SIZE LIMIT :| [./dist/observant.terser-rollup.js.gz] (1060)
 // SIZE LIMIT :| [./dist/observant.terser-rollup.js.br] (978)
-// SIZE LIMIT :| [./dist/observant.esbuild.js] (3498)
-// SIZE LIMIT :| [./dist/observant.esbuild.js.gz] (1395)
-// SIZE LIMIT :| [./dist/observant.esbuild.js.br] (1285)
+// SIZE LIMIT :| [./dist/observant.esbuild.js] (2862)
+// SIZE LIMIT :| [./dist/observant.esbuild.js.gz] (1306)
+// SIZE LIMIT :| [./dist/observant.esbuild.js.br] (1196)
 
 // ----------------
 // <ERROR HANDLING>
