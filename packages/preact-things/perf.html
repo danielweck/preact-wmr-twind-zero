@@ -108,10 +108,10 @@ function createComputed_(fn) {
   const o = observant.obs(fn);
   observant.get(o);
 }
-function createMemo_(fn) {
-  const o = observant.obs(fn);
-  return () => observant.get(o);
-}
+// function createMemo_(fn) {
+//   const o = observant.obs(fn);
+//   return () => observant.get(o);
+// }
 
 function runSolid(useObs) {
 	const log = console.log;
@@ -124,21 +124,21 @@ function runSolid(useObs) {
         if (!window.createSignal_SOLID) window.createSignal_SOLID = window.createSignal;
         if (!window.createRoot_SOLID) window.createRoot_SOLID = window.createRoot;
         if (!window.createComputed_SOLID) window.createComputed_SOLID = window.createComputed;
-        if (!window.createMemo_SOLID) window.createMemo_SOLID = window.createMemo;
+        // if (!window.createMemo_SOLID) window.createMemo_SOLID = window.createMemo;
 
         window.createSignal = createSignal_;
         window.createRoot = createRoot_;
         window.createComputed = createComputed_;
-        window.createMemo = createMemo_;
+        // window.createMemo = createMemo_;
     } else {
         if (window.createSignal_SOLID) window.createSignal = window.createSignal_SOLID;
         if (window.createRoot_SOLID) window.createRoot = window.createRoot_SOLID;
         if (window.createComputed_SOLID) window.createComputed = window.createComputed_SOLID;
-        if (window.createMemo_SOLID) window.createMemo = window.createMemo_SOLID;
+        // if (window.createMemo_SOLID) window.createMemo = window.createMemo_SOLID;
     }
 
     main();
-    // console.log(window.createMemo.toString());
+    // console.log(window.createSignal.toString());
 
 	console.log = log;
 	for (const msg of msgs) {
@@ -513,10 +513,10 @@ function testCellx(report, layerCount, done) {
 		for (let i = layerCount; i--; ) {
 			layer = ((prev) => {
 				let next = {
-					prop1: new cellx.Cell(() => prev.prop2.get(), {run: true}),
-					prop2: new cellx.Cell(() => prev.prop1.get() - prev.prop3.get(), {run: true}),
-					prop3: new cellx.Cell(() => prev.prop2.get() + prev.prop4.get(), {run: true}),
-					prop4: new cellx.Cell(() => prev.prop3.get(), {run: true})
+					prop1: new cellx.Cell(() => prev.prop2.get()),
+					prop2: new cellx.Cell(() => prev.prop1.get() - prev.prop3.get()),
+					prop3: new cellx.Cell(() => prev.prop2.get() + prev.prop4.get()),
+					prop4: new cellx.Cell(() => prev.prop3.get())
 				};
 
 			next.prop1.on('change', () => {});
@@ -626,10 +626,10 @@ const once = () => {
   for (let i = layerCount; i--; ) {
     layer = ((prev) => {
       let next = {
-        prop1: observant.obs(() => observant.get(prev.prop2), {run: true}),
-        prop2: observant.obs(() => observant.get(prev.prop1) - observant.get(prev.prop3), {run: true}),
-        prop3: observant.obs(() => observant.get(prev.prop2) + observant.get(prev.prop4), {run: true}),
-        prop4: observant.obs(() => observant.get(prev.prop3), {run: true})
+        prop1: observant.obs(() => observant.get(prev.prop2)),
+        prop2: observant.obs(() => observant.get(prev.prop1) - observant.get(prev.prop3)),
+        prop3: observant.obs(() => observant.get(prev.prop2) + observant.get(prev.prop4)),
+        prop4: observant.obs(() => observant.get(prev.prop3))
       };
 
       // observant.on(next.prop1, () => {onC++});

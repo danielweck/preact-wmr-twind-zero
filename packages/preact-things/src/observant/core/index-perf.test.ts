@@ -38,30 +38,18 @@ test('perf NodeJS 5000', () => {
 	for (let i = 5000; i > 0; i--) {
 		layer = (function (m) {
 			const s = {
-				prop1: obs(
-					function () {
-						return get(m.prop2);
-					},
-					{ run: true },
-				),
-				prop2: obs(
-					function () {
-						return get(m.prop1) - get(m.prop3);
-					},
-					{ run: true },
-				),
-				prop3: obs(
-					function () {
-						return get(m.prop2) + get(m.prop4);
-					},
-					{ run: true },
-				),
-				prop4: obs(
-					function () {
-						return get(m.prop3);
-					},
-					{ run: true },
-				),
+				prop1: obs(function () {
+					return get(m.prop2);
+				}),
+				prop2: obs(function () {
+					return get(m.prop1) - get(m.prop3);
+				}),
+				prop3: obs(function () {
+					return get(m.prop2) + get(m.prop4);
+				}),
+				prop4: obs(function () {
+					return get(m.prop3);
+				}),
 			};
 
 			// onChange(s.prop1, () => {
@@ -125,30 +113,18 @@ test('perf NodeJS 10', () => {
 	for (let i = 10; i > 0; i--) {
 		layer = (function (m) {
 			const s = {
-				prop1: obs(
-					function () {
-						return get(m.prop2);
-					},
-					{ run: true },
-				),
-				prop2: obs(
-					function () {
-						return get(m.prop1) - get(m.prop3);
-					},
-					{ run: true },
-				),
-				prop3: obs(
-					function () {
-						return get(m.prop2) + get(m.prop4);
-					},
-					{ run: true },
-				),
-				prop4: obs(
-					function () {
-						return get(m.prop3);
-					},
-					{ run: true },
-				),
+				prop1: obs(function () {
+					return get(m.prop2);
+				}),
+				prop2: obs(function () {
+					return get(m.prop1) - get(m.prop3);
+				}),
+				prop3: obs(function () {
+					return get(m.prop2) + get(m.prop4);
+				}),
+				prop4: obs(function () {
+					return get(m.prop3);
+				}),
 			};
 
 			// onChange(s.prop1, () => {
@@ -212,30 +188,18 @@ test('perf NodeJS 1000', () => {
 	for (let i = 1000; i > 0; i--) {
 		layer = (function (m) {
 			const s = {
-				prop1: obs(
-					function () {
-						return get(m.prop2);
-					},
-					{ run: true },
-				),
-				prop2: obs(
-					function () {
-						return get(m.prop1) - get(m.prop3);
-					},
-					{ run: true },
-				),
-				prop3: obs(
-					function () {
-						return get(m.prop2) + get(m.prop4);
-					},
-					{ run: true },
-				),
-				prop4: obs(
-					function () {
-						return get(m.prop3);
-					},
-					{ run: true },
-				),
+				prop1: obs(function () {
+					return get(m.prop2);
+				}),
+				prop2: obs(function () {
+					return get(m.prop1) - get(m.prop3);
+				}),
+				prop3: obs(function () {
+					return get(m.prop2) + get(m.prop4);
+				}),
+				prop4: obs(function () {
+					return get(m.prop3);
+				}),
 			};
 
 			// onChange(s.prop1, () => {

@@ -5,7 +5,7 @@
 
 import { afterEach, beforeEach, describe, expect, it, test } from 'vitest';
 
-import { type TObsKind, type TObsOptions, get, obs, reset, set, skip } from './index.js';
+import { type TObsKind, type TObsOptions, get, memo, obs, reset, set, skip } from './index.js';
 
 const createSignal = <T = TObsKind>(
 	val: T,
@@ -20,14 +20,11 @@ const createRoot = (fn: () => unknown) => {
 };
 
 const createComputed = <T = TObsKind>(fn: () => T) => {
-	obs(fn, { run: true });
+	obs(fn);
 };
 const createEffect = createComputed;
 
-const createMemo = <T = TObsKind>(fn: () => T, opts?: TObsOptions<T>): (() => T) => {
-	const o = obs(fn, opts ? { ...opts, run: true } : { run: true });
-	return () => get(o);
-};
+const createMemo = memo;
 
 // let _unhandledEvents: PromiseRejectionEvent[] = [];
 // function onUnhandledRejection(event: PromiseRejectionEvent) {
@@ -767,13 +764,15 @@ describe('createMemo', () => {
 				const f4 = createMemo(() => d());
 				const f5 = createMemo(() => d());
 				let gcount = 0;
-				const _g = createMemo(() => {
+				const g = createMemo(() => {
 					gcount++;
 					return f1() + f2() + f3() + f4() + f5();
 				});
 
 				gcount = 0;
 				setD(1);
+				expect(g()).toBe(5);
+				expect(g()).toBe(5);
 				expect(gcount).toBe(1);
 			});
 		});

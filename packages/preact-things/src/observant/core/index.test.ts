@@ -307,7 +307,9 @@ test('test11', () => {
 	});
 	expect(get(root)).toBe(false);
 	expect(get(sub)).toBe('foo-bar');
-	expect(check).toBe('||SUB_undefined->foo-bar||ROOT_undefined->false');
+	// first undefined-to-value change event isn't caught as obs() always autoruns (unless lazy in opts)
+	// expect(check).toBe('||SUB_undefined->foo-bar||ROOT_undefined->false');
+	expect(check).toBe('');
 	check = '';
 	set(leaf, 'one');
 	expect(get(root)).toBe(true);

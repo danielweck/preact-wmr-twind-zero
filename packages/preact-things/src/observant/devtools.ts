@@ -1,4 +1,4 @@
-import { type TObs, get, off, on, set } from './core/index.js';
+import { type TObs, get, on, set, stop } from './core/index.js';
 
 // https://github.com/reduxjs/redux-devtools/blob/14e4178d598b09d1c6936a470056bc04b35a88d8/extension/src/app/api/index.ts#L522-L536
 // export interface ConnectResponse {
@@ -169,6 +169,6 @@ export const obsDevTools = <
 
 	return () => {
 		devToolsUnsubscribe?.();
-		off(observantRootState);
+		stop(observantRootState);
 	};
 };

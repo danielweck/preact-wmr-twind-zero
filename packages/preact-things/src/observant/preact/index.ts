@@ -4,7 +4,7 @@
 import type { FunctionComponent } from 'preact';
 import { type MutableRef, useEffect, useRef, useState } from 'preact/hooks';
 
-import { type TObs, get, obs, off, on, peek } from '../core/index.js';
+import { type TObs, obs, on, stop } from '../core/index.js';
 
 export interface ReactionTracking {
 	obs: TObs<boolean>;
@@ -37,7 +37,7 @@ const checkCleanupTimeout = () => {
 
 			if (tracking && now >= tracking.cleanAt) {
 				// console.log('----- OBS tracking cleanup (off)');
-				off(tracking.obs);
+				stop(tracking.obs);
 				ref.current = null;
 				_uncommittedReactionRefs.delete(ref);
 			}
@@ -61,7 +61,7 @@ export const preactObservant = <T extends object>(
 
 		if (reactionTrackingRef.current) {
 			// console.log('----- OBS comp (off current)');
-			off(reactionTrackingRef.current.obs);
+			stop(reactionTrackingRef.current.obs);
 		}
 
 		let effectShouldUpdate = false;
@@ -90,7 +90,7 @@ export const preactObservant = <T extends object>(
 
 					if (reactionTrackingRef.current) {
 						// console.log('----- OBS (effect un-mount: off)');
-						off(reactionTrackingRef.current.obs);
+						stop(reactionTrackingRef.current.obs);
 					}
 					reactionTrackingRef.current = null;
 				};
@@ -103,35 +103,37 @@ export const preactObservant = <T extends object>(
 		let renderedComponent: ReturnType<typeof Component> | undefined;
 		let renderedComponentException: unknown | undefined;
 
-		const o = obs<boolean>(() => {
+		const o = obs<boolean>((cur) => {
 			if (renderedComponent || renderedComponentException) {
-				const ret = !peek(o);
-				// console.log('----- OBS derive func (already rendered) ', ret);
-				return ret;
+				// const cur = !peek(o);
+				// // console.log('----- OBS derive func (already rendered) ', ret);
+				// return cur;
+				return !cur;
 			}
 			try {
 				renderedComponent = Component(...args);
 			} catch (exception) {
 				renderedComponentException = exception;
 			}
-			const v = peek(o);
-			const ret = v === undefined ? true : !v;
+			// const cur = peek(o);
+			const ret = cur === undefined ? true : !cur;
 			// console.log('----- OBS derive func (first rendered) ', v, ret);
 			return ret;
 		}) as TObs<boolean>;
 
-		on(o, (error, _current, previous) => {
+		on(o, (error, _current, _previous) => {
 			if (error) {
 				console.log('OBS onError! ', componentDisplayName, error);
 				return;
 			}
-			if (previous === undefined) {
-				// console.log('----- OBS onChange (first change) ', previous, _current);
-				return;
-			}
+			// if (previous === undefined) {
+			// 	// console.log('----- OBS onChange (first change) ', previous, _current);
+			// 	return;
+			// }
+
 			// console.log('----- OBS onChange (next change) => off ', previous, _current);
 
-			off(o);
+			stop(o);
 
 			if (reactionTrackingRef.current?.mounted) {
 				// console.log('----- OBS onChange (mounted => force re-render)');
@@ -141,7 +143,7 @@ export const preactObservant = <T extends object>(
 				effectShouldUpdate = true;
 			}
 		});
-		get(o); // triggers the first 'change' event from undefined to true
+		// get(o); // triggers the first 'change' event from undefined to true
 
 		if (reactionTrackingRef.current) {
 			// console.log('----- OBS comp (current => re-set)');
