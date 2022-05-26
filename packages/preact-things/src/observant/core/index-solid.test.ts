@@ -5,14 +5,14 @@
 
 import { afterEach, beforeEach, describe, expect, it, test } from 'vitest';
 
-import { type TObs, type TObsKind, type TObsOptions, get, obs, peek, reset, set } from './index.js';
+import { type TObsKind, type TObsOptions, get, obs, reset, set, skip } from './index.js';
 
 const createSignal = <T = TObsKind>(
 	val: T,
 	opts?: TObsOptions<T>,
-): [getter: () => T, setter: (v: T | ((v: T) => T)) => void, o: TObs<T>] => {
+): [getter: () => T, setter: (v: T | ((v: T) => T)) => void] => {
 	const o = obs(val, opts);
-	return [() => get(o), (v: T | ((v: T) => T)) => (set(o, v as T | undefined), v), o]; // return o for peek(o)!
+	return [() => get(o), (v: T | ((v: T) => T)) => (set(o, v as T | undefined), v)];
 };
 
 const createRoot = (fn: () => unknown) => {
@@ -206,8 +206,8 @@ describe('Untrack signals', () => {
 	test('Mute an effect', () => {
 		createRoot(() => {
 			let temp: string | undefined;
-			const [_sign, setSign, o] = createSignal('thoughts');
-			createEffect(() => (temp = `unpure ${peek(o)}`));
+			const [sign, setSign] = createSignal('thoughts');
+			createEffect(() => (temp = `unpure ${skip(sign)}`));
 			// setTimeout(() => {
 			expect(temp).toBe('unpure thoughts');
 			setSign('mind');

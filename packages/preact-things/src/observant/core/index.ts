@@ -31,6 +31,8 @@ let _lastUpdateID = 0;
 let _inCompPars = false;
 let _inCompParsQ: IObs<TObsKind>[] | null = null;
 
+let _skip = false;
+
 export const reset = () => {
 	_curComp = null;
 	_curErr = null;
@@ -85,7 +87,7 @@ export const get = <T = TObsKind>(thiz: TObs<T>): T => {
 		_comp(thiz as IObs<T>);
 	}
 
-	if (_curComp) {
+	if (!_skip && _curComp) {
 		if (_curComp._childs) {
 			if (
 				// @ts-expect-error TS2345
@@ -135,6 +137,13 @@ export const get = <T = TObsKind>(thiz: TObs<T>): T => {
 
 	// guaranteed defined, because _compDeep((thiz as IObs<T>)) sets thiz._v or sets thiz._err (which bails out in the conditional above)
 	return (thiz as IObs<T>)._v as T;
+};
+
+export const skip = <T = unknown>(fn: () => T): T => {
+	_skip = true;
+	const v = fn();
+	_skip = false;
+	return v;
 };
 
 export const peek = <T = TObsKind>(thiz: TObs<T>): T | undefined => {
