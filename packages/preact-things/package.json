@@ -52,30 +52,6 @@
 			"import": "./dist/esm/observant/core/*",
 			"require": "./dist/cjs/observant/core/*"
 		},
-		"./preactive": {
-			"import": "./dist/esm/preactive/index.js",
-			"require": "./dist/cjs/preactive/index.js"
-		},
-		"./preactive/*": {
-			"import": "./dist/esm/preactive/*",
-			"require": "./dist/cjs/preactive/*"
-		},
-		"./preactive/vanilla": {
-			"import": "./dist/esm/preactive/vanilla/index.js",
-			"require": "./dist/cjs/preactive/vanilla/index.js"
-		},
-		"./preactive/vanilla/*": {
-			"import": "./dist/esm/preactive/vanilla/*",
-			"require": "./dist/cjs/preactive/vanilla/*"
-		},
-		"./preactive/preact": {
-			"import": "./dist/esm/preactive/preact/index.js",
-			"require": "./dist/cjs/preactive/preact/index.js"
-		},
-		"./preactive/preact/*": {
-			"import": "./dist/esm/preactive/preact/*",
-			"require": "./dist/cjs/preactive/preact/*"
-		},
 		"./package.json": "./package.json"
 	},
 	"engines": {

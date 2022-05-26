@@ -30,14 +30,6 @@ import {
 import { RoutedSuspendedSubRouter } from './suspended/index.js';
 import { IS_CLIENT_SIDE, IS_PRE_RENDER, KEYBOARD_INTERACT, LAZY_TIMEOUT, PUBLIC_PATH_ROOT } from './utils.js';
 
-// import {
-// 	preactiveAction,
-// 	preactiveComponent,
-// 	preactiveComputedSignal,
-// 	// preactiveDevTools,
-// 	preactiveSignal,
-// } from '@preact-wmr-twind-zero/preact-things/preactive/index.js';
-
 console.log(func());
 console.log(func2());
 console.log(other());
@@ -116,59 +108,6 @@ const RoutedLazy = lazy(
 			}, LAZY_TIMEOUT);
 		}),
 );
-
-// // const _preactiveRootState = preactiveSignal('1');
-
-// const _preactiveNum = preactiveSignal(0);
-// const _preactiveComputedNum = preactiveComputedSignal(() => {
-// 	return _preactiveNum() + 1;
-// });
-// const _preactiveRootState = preactiveSignal({
-// 	str: 'str',
-// 	bool: true,
-// 	arr: ['chars', _preactiveComputedNum],
-// 	obj: {
-// 		word: 'blah',
-// 		num: _preactiveNum,
-// 	},
-// });
-
-// // if (IS_CLIENT_SIDE && process.env.NODE_ENV === 'development') {
-// // 	preactiveDevTools(_preactiveRootState, 'Preactive Root State');
-// // }
-
-// let _clickCount = 0;
-// const PreactiveComp = preactiveComponent(() => {
-// 	return (
-// 		<>
-// 			<hr />
-// 			<button
-// 				onClick={() => {
-// 					_clickCount++;
-// 					preactiveAction(() => {
-// 						return _preactiveRootState.editReactiveValue((_val) => {
-// 							_preactiveNum(_clickCount);
-// 							return {
-// 								count: _clickCount,
-// 								str: `str${_clickCount}`,
-// 								bool: true,
-// 								arr: [`chars${_clickCount}`, _preactiveComputedNum],
-// 								obj: {
-// 									word: `blah${_clickCount}`,
-// 									num: _preactiveNum,
-// 								},
-// 							};
-// 						});
-// 					});
-// 				}}
-// 			>
-// 				UPDATE PREACTIVE STATE
-// 			</button>
-// 			<pre>{JSON.stringify(_preactiveRootState.stringifiable(), null, 4)}</pre>
-// 			<hr />
-// 		</>
-// 	);
-// });
 
 const obsPerf = () => {
 	const start = {
@@ -315,7 +254,7 @@ const _subObservant = obs(
 const _renders1: Record<string, number> = {};
 const _renders2: Record<string, number> = {};
 const _renders3: Record<string, number> = {};
-const PreactiveComp = preactObservant(
+const ObservantComp = preactObservant(
 	({ signal, signalName, children }: { signal: TObs<number>; signalName: string; children?: ComponentChildren }) => {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		_renders1[signalName] = (_renders1[signalName] || 0) + 1;
@@ -539,9 +478,9 @@ export const App = ({ prerenderIndex }: { prerenderIndex?: number }) => {
 						</a>
 					</li>
 				</ul>
-				<PreactiveComp signal={_rootObservant} signalName="ROOT">
-					<PreactiveComp signal={_subObservant} signalName="SUB" />
-				</PreactiveComp>
+				<ObservantComp signal={_rootObservant} signalName="ROOT">
+					<ObservantComp signal={_subObservant} signalName="SUB" />
+				</ObservantComp>
 			</ContextSlotsProvider>
 		</LocationProvider>
 	);
