@@ -4,14 +4,9 @@
 
 /* eslint-disable jest/no-commented-out-tests */
 
-// CJS vs. ESM woes :(
-// https://github.com/vitest-dev/vitest/issues/747#issuecomment-1085860826
-// import { cleanup, render, waitFor } from '@testing-library/preact';
-// ... so we use our local preact-testing-library.js file instead (copy-paste, including .d.ts typings)
-
+import { cleanup } from '@testing-library/preact';
 import { afterEach, beforeEach, expect, test } from 'vitest';
 
-import { cleanup } from '../../../preact-testing-library.js';
 import { get, obs, reset, set } from '../core/index.js';
 
 let _unhandledEvents: PromiseRejectionEvent[] = [];

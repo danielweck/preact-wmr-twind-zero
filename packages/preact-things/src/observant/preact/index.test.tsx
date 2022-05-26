@@ -4,17 +4,12 @@
 
 /* eslint-disable jest/no-commented-out-tests */
 
-// CJS vs. ESM woes :(
-// https://github.com/vitest-dev/vitest/issues/747#issuecomment-1085860826
-// import { cleanup, render, waitFor } from '@testing-library/preact';
-// ... so we use our local preact-testing-library.js file instead (copy-paste, including .d.ts typings)
-
+import { cleanup, render, waitFor } from '@testing-library/preact';
 import { type ComponentChildren, Fragment, h, render as preactRender } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import { ErrorBoundary } from 'preact-iso/lazy';
 import { afterEach, beforeEach, expect, test } from 'vitest';
 
-import { cleanup, render, waitFor } from '../../../preact-testing-library.js';
 import { clearCache, suspendCache } from '../../suspend-cache.js';
 import { Suspense } from '../../xpatched/suspense.js';
 import { type TObs, get, obs, on, reset, set } from '../core/index.js';

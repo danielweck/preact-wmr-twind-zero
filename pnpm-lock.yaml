@@ -89,7 +89,7 @@ importers:
   packages/preact-things:
     specifiers:
       '@testing-library/dom': ^8.13.0
-      '@testing-library/preact': ^3.1.1
+      '@testing-library/preact': ^3.1.2
       cpy-cli: ^4.1.0
       cross-env: ^7.0.3
       esbuild: ^0.14.39
@@ -107,7 +107,7 @@ importers:
       preact: 10.7.2
     devDependencies:
       '@testing-library/dom': 8.13.0
-      '@testing-library/preact': 3.1.1_preact@10.7.2
+      '@testing-library/preact': 3.1.2_preact@10.7.2
       cpy-cli: 4.1.0
       cross-env: 7.0.3
       esbuild: 0.14.39
@@ -847,8 +847,8 @@ packages:
       pretty-format: 27.5.1
     dev: true
 
-  /@testing-library/preact/3.1.1_preact@10.7.2:
-    resolution: {integrity: sha512-RHjln1psbU4Sh/l8k9/gG3VNEDIEicUhzZ74uEnb4hJ4H9G9p1iOXEEMXB2oD5sZcjciQhpx1QUryM5/sAtTTQ==}
+  /@testing-library/preact/3.1.2_preact@10.7.2:
+    resolution: {integrity: sha512-QTuY4Lg5SYHjShZN/talje6Kd3A6u8qsRIjXDmAIFW9sXmCF0Q0kPO01uAvoNQfG/31tuuiPNBQ6dDNVAqtVqg==}
     engines: {node: '>= 12'}
     peerDependencies:
       preact: '>=10 || ^10.0.0-alpha.0 || ^10.0.0-beta.0'
