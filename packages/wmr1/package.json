@@ -37,7 +37,6 @@
 	},
 	"dependencies": {
 		"@preact-wmr-twind-zero/preact-things": "^0.0.0",
-		"@preact-wmr-twind-zero/shared": "^0.0.0",
 		"fast-equals": "^3.0.3",
 		"preact": "^10.7.2",
 		"preact-iso": "^2.3.0"

@@ -42,7 +42,6 @@ export default defineConfig(async (config) => {
 		config.alias = {
 			...config.alias,
 			'@preact-wmr-twind-zero/preact-things/*': path.join(process.cwd(), '..', 'preact-things', 'src'),
-			// '@preact-wmr-twind-zero/shared/*': path.join(process.cwd(), '..', 'shared', 'src'),
 		};
 	}
 

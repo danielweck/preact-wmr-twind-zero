@@ -1,13 +1,6 @@
 import { type TObs, get, obs, peek, set } from '@preact-wmr-twind-zero/preact-things/observant/core/index.js';
 import { preactObservant } from '@preact-wmr-twind-zero/preact-things/observant/preact/index.js';
 import { ContextSlotsProvider, Slot } from '@preact-wmr-twind-zero/preact-things/slots.js';
-import { func } from '@preact-wmr-twind-zero/shared';
-import { func as func2 } from '@preact-wmr-twind-zero/shared/func.js';
-// eslint-disable-next-line import/no-duplicates
-import { other } from '@preact-wmr-twind-zero/shared/sub';
-import { foo } from '@preact-wmr-twind-zero/shared/sub/foo.js';
-// eslint-disable-next-line import/no-duplicates
-import { other as other2 } from '@preact-wmr-twind-zero/shared/sub/other.js';
 import type { ComponentChildren } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import hydrate from 'preact-iso/hydrate';
@@ -29,12 +22,6 @@ import {
 } from './suspend-cache/suspend-cache-hydration.js';
 import { RoutedSuspendedSubRouter } from './suspended/index.js';
 import { IS_CLIENT_SIDE, IS_PRE_RENDER, KEYBOARD_INTERACT, LAZY_TIMEOUT, PUBLIC_PATH_ROOT } from './utils.js';
-
-console.log(func());
-console.log(func2());
-console.log(other());
-console.log(other2());
-console.log(foo());
 
 interface PreactWmrHydrated {
 	PREACTWMR_HYDRATED: boolean | undefined;
