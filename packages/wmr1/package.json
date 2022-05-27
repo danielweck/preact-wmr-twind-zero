@@ -62,7 +62,7 @@
 		"preact-render-to-string": "^5.2.0",
 		"prettier": "^2.6.2",
 		"rimraf": "^3.0.2",
-		"rollup": "^2.74.1",
+		"rollup": "^2.75.0",
 		"stylelint": "^14.8.5",
 		"twind": "^1.0.0-next.37",
 		"typescript": "next",
