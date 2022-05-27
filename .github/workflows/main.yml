@@ -114,6 +114,8 @@ jobs:
           cd gh-pages
           ls -als
           cp -r ../packages/wmr1/dist/* ./
+          cp ../packages/preact-things/dist/esm/observant/core/index.js ./observant.esm.js
+          cp ../packages/preact-things/perf-online.html ./
           touch .nojekyll
           ls -als
           git config user.name "Daniel Weck"
