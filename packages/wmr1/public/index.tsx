@@ -1,4 +1,4 @@
-import { type TObs, get, obs, peek, set } from '@preact-wmr-twind-zero/preact-things/observant/core/index.js';
+import { type TObs, get, obs, set } from '@preact-wmr-twind-zero/preact-things/observant/core/index.js';
 import { preactObservant } from '@preact-wmr-twind-zero/preact-things/observant/preact/index.js';
 import { ContextSlotsProvider, Slot } from '@preact-wmr-twind-zero/preact-things/slots.js';
 import type { ComponentChildren } from 'preact';
@@ -258,8 +258,8 @@ const ObservantComp = preactObservant(
 				<hr />
 				<button
 					onClick={() => {
-						set(signal, (peek(signal) ?? 0) + 1);
-						// set(signal, (v) => (v ?? 0) + 1);
+						// set(signal, (peek(signal) ?? 0) + 1);
+						set(signal, (v) => (v ?? 0) + 1);
 					}}
 				>
 					{
