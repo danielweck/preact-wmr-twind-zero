@@ -76,14 +76,14 @@ try {
 
 function doStuff() {
 
-var now = typeof process === 'undefined' ? browserNow : nodeNow;
+let now = typeof process === 'undefined' ? browserNow : nodeNow;
 
-var COUNT = 1e5;
+let COUNT = 1e5;
 
 main();
 
 function main() {
-	var createTotal = 0;
+	let createTotal = 0;
 	createTotal += bench(createDataSignals, COUNT, COUNT);
 	createTotal += bench(createComputations0to1, COUNT, 0);
 	createTotal += bench(createComputations1to1, COUNT, COUNT);
@@ -97,7 +97,7 @@ function main() {
 	createTotal += bench(createComputations1to1000, COUNT, COUNT / 1000);
 	console.log(`create total: ${createTotal.toFixed(0)}`);
 	console.log('---');
-	var updateTotal = 0;
+	let updateTotal = 0;
 	updateTotal += bench(updateComputations1to1, COUNT * 4, 1);
 	updateTotal += bench(updateComputations2to1, COUNT * 2, 2);
 	updateTotal += bench(updateComputations4to1, COUNT, 4);
@@ -110,7 +110,7 @@ function main() {
 }
 
 function bench(fn, count, scount) {
-	var [time, src, res] = run(fn, count, scount);
+	let [time, src, res] = run(fn, count, scount);
 	console.log(`${fn.name}: ${time.toFixed(0)}`);
   
 	const filePath = path.join(process.cwd(), "bench-data", `BENCH_${fn.name}.json`);
@@ -146,7 +146,7 @@ function bench(fn, count, scount) {
   
   function run(fn, n, scount) {
 	// prep n * arity sources
-	var start,
+	let start,
 	  end;
   
 	let src = Array(scount);
@@ -154,7 +154,7 @@ function bench(fn, count, scount) {
   
 	createRoot(function () {
 	  // run 3 times to warm up
-	  var sources = createDataSignals(scount, []);
+	  let sources = createDataSignals(scount, []);
 	  fn(n / 100, sources);
 	  sources = createDataSignals(scount, []);
 	  fn(n / 100, sources);
@@ -162,7 +162,7 @@ function bench(fn, count, scount) {
 		  % OptimizeFunctionOnNextCall(fn);
 	  fn(n / 100, sources);
 	  sources = createDataSignals(scount, []);
-	  for (var i = 0; i < scount; i++) {
+	  for (let i = 0; i < scount; i++) {
 		sources[i][0]();
 		sources[i][0]();
 		//%OptimizeFunctionOnNextCall(sources[i]);
@@ -178,7 +178,7 @@ function bench(fn, count, scount) {
   
 	  end = now();
   
-	  for (var i = 0; i < scount; i++) {
+	  for (let i = 0; i < scount; i++) {
 		src[i] = sources[i][0]();
 	  }
   
@@ -191,7 +191,7 @@ function bench(fn, count, scount) {
   }
   
   function createDataSignals(n, sources) {
-	for (var i = 0; i < n; i++) {
+	for (let i = 0; i < n; i++) {
 	  sources[i] = createSignal(i);
 	}
 	return sources;
@@ -199,7 +199,7 @@ function bench(fn, count, scount) {
   
   function createComputations0to1(n, sources) {
 	const res = Array(n);
-	for (var i = 0; i < n; i++) {
+	for (let i = 0; i < n; i++) {
 	  res[i] = createComputation0(i);
 	}
 	return res;
@@ -208,9 +208,9 @@ function bench(fn, count, scount) {
   function createComputations1to1000(n, sources) {
 	const res = Array(n);
 	let k = 0;
-	for (var i = 0; i < n / 1000; i++) {
+	for (let i = 0; i < n / 1000; i++) {
 	  const [get] = sources[i];
-	  for (var j = 0; j < 1000; j++) {
+	  for (let j = 0; j < 1000; j++) {
 		res[k++] = createComputation1(get);
 	  }
 	  //sources[i] = null;
@@ -220,7 +220,7 @@ function bench(fn, count, scount) {
   
   function createComputations1to8(n, sources) {
 	const res = Array(n);
-	for (var i = 0; i < n / 8; i++) {
+	for (let i = 0; i < n / 8; i++) {
 	  const [get] = sources[i];
 	  res[i] = createComputation1(get);
 	  res[i + 1] = createComputation1(get);
@@ -237,7 +237,7 @@ function bench(fn, count, scount) {
   
   function createComputations1to4(n, sources) {
 	const res = Array(n);
-	for (var i = 0; i < n / 4; i++) {
+	for (let i = 0; i < n / 4; i++) {
 	  const [get] = sources[i];
 	  res[i] = createComputation1(get);
 	  res[i + 1] = createComputation1(get);
@@ -250,7 +250,7 @@ function bench(fn, count, scount) {
   
   function createComputations1to2(n, sources) {
 	const res = Array(n);
-	for (var i = 0; i < n / 2; i++) {
+	for (let i = 0; i < n / 2; i++) {
 	  const [get] = sources[i];
 	  res[i] = createComputation1(get);
 	  res[i + 1] = createComputation1(get);
@@ -261,7 +261,7 @@ function bench(fn, count, scount) {
   
   function createComputations1to1(n, sources) {
 	const res = Array(n);
-	for (var i = 0; i < n; i++) {
+	for (let i = 0; i < n; i++) {
 	  const [get] = sources[i]
 	  res[i] = createComputation1(get);
 	  //sources[i] = null;
@@ -271,7 +271,7 @@ function bench(fn, count, scount) {
   
   function createComputations2to1(n, sources) {
 	const res = Array(n);
-	for (var i = 0; i < n; i++) {
+	for (let i = 0; i < n; i++) {
 	  res[i] = createComputation2(
 		sources[i * 2][0],
 		sources[i * 2 + 1][0]
@@ -284,7 +284,7 @@ function bench(fn, count, scount) {
   
   function createComputations4to1(n, sources) {
 	const res = Array(n);
-	for (var i = 0; i < n; i++) {
+	for (let i = 0; i < n; i++) {
 	  res[i] = createComputation4(
 		sources[i * 4][0],
 		sources[i * 4 + 1][0],
@@ -301,7 +301,7 @@ function bench(fn, count, scount) {
   
   function createComputations8(n, sources) {
 	const res = Array(n);
-	for (var i = 0; i < n; i++) {
+	for (let i = 0; i < n; i++) {
 	  res[i] = createComputation8(
 		sources[i * 8][0],
 		sources[i * 8 + 1][0],
@@ -327,7 +327,7 @@ function bench(fn, count, scount) {
   // only create n / 100 computations, as otherwise takes too long
   function createComputations1000to1(n, sources) {
 	const res = Array(n);
-	for (var i = 0; i < n; i++) {
+	for (let i = 0; i < n; i++) {
 	  res[i] = createComputation1000(sources, i * 1000);
 	}
 	return res;
@@ -366,8 +366,8 @@ function bench(fn, count, scount) {
   function createComputation1000(ss, offset) {
 	const res = Array(1);
 	createComputed(function () {
-	  var sum = 0;
-	  for (var i = 0; i < 1000; i++) {
+	  let sum = 0;
+	  for (let i = 0; i < 1000; i++) {
 		sum += ss[offset + i][0]();
 	  }
 	  res[0] = sum;
@@ -377,118 +377,118 @@ function bench(fn, count, scount) {
   }
   
   function updateComputations1to1(n, sources) {
-	var [get1, set1] = sources[0];
+	let [get1, set1] = sources[0];
 	const res = [];
 	createComputed(function () { /* if (res[0] !== get1()) console.log(res[0], get1()); */ res.push(get1()); return res[res.length-1]; });
-	for (var i = 0; i < n; i++) {
+	for (let i = 0; i < n; i++) {
 	  set1(i);
 	}
 	return res;
   }
   
   function updateComputations2to1(n, sources) {
-	var [get1, set1] = sources[0],
+	let [get1, set1] = sources[0],
 	  [get2] = sources[1];
 	const res = [];
 	createComputed(function () { res.push(get1() + get2()); return res[res.length-1]; });
-	for (var i = 0; i < n; i++) {
+	for (let i = 0; i < n; i++) {
 	  set1(i);
 	}
 	return res;
   }
   
   function updateComputations4to1(n, sources) {
-	var [get1, set1] = sources[0],
+	let [get1, set1] = sources[0],
 	  [get2] = sources[1];
-	  [get3] = sources[2],
+	  let [get3] = sources[2],
 	  [get4] = sources[3];
 	const res = [];
 	createComputed(function () { res.push(get1() + get2() + get3() + get4()); return res[res.length-1]; });
-	for (var i = 0; i < n; i++) {
+	for (let i = 0; i < n; i++) {
 	  set1(i);
 	}
 	return res;
   }
   
   function updateComputations1000to1(n, sources) {
-	var [get1, set1] = sources[0];
+	let [get1, set1] = sources[0];
 	const res = [];
 	createComputed(function () {
-	  var sum = 0;
+	  let sum = 0;
 	  
-	  for (var i = 0; i < 1000; i++) {
+	  for (let i = 0; i < 1000; i++) {
 		sum += sources[i][0]();
 	  }
   
 	  res.push(sum);
 	  return sum;
 	});
-	for (var i = 0; i < n; i++) {
+	for (let i = 0; i < n; i++) {
 	  set1(i);
 	}
 	return res;
   }
   
   function updateComputations500to1Alt(n, sources) {
-	var [get1, set1] = sources[0];
+	let [get1, set1] = sources[0];
 	const [getA, setA] = createSignal(false);
 	const res = [];
 	createComputed(function () {
-	  var sum = 0;
+	  let sum = 0;
   
 	if (getA()) {
-	  for (var i = 0; i < 500; i++) {
+	  for (let i = 0; i < 500; i++) {
 		sum += sources[i][0]();
 	  }
 	} else {
-	  for (var i = 500; i < 1000; i++) {
+	  for (let i = 500; i < 1000; i++) {
 		sum += sources[i][0]();
 	  }
 	}
 	  res.push(sum);
 	  return sum;
 	});
-	for (var i = 0; i < n; i++) {
+	for (let i = 0; i < n; i++) {
 	  set1(i);
 	}
 	setA(true);
-	for (var i = 0; i < n; i++) {
+	for (let i = 0; i < n; i++) {
 	  set1(i);
 	}
 	return res;
   }
   
   function updateComputations1to2(n, sources) {
-	var [get1, set1] = sources[0];
+	let [get1, set1] = sources[0];
 	const res = [];
 	createComputed(function () { res.push(get1()); return res[res.length-1]; });
 	createComputed(function () { res.push(get1()); return res[res.length-1]; });
-	for (var i = 0; i < n / 2; i++) {
+	for (let i = 0; i < n / 2; i++) {
 	  set1(i);
 	}
 	return res;
   }
   
   function updateComputations1to4(n, sources) {
-	var [get1, set1] = sources[0];
+	let [get1, set1] = sources[0];
 	const res = [];
 	createComputed(function () { res.push(get1()); return res[res.length-1]; });
 	createComputed(function () { res.push(get1()); return res[res.length-1]; });
 	createComputed(function () { res.push(get1()); return res[res.length-1]; });
 	createComputed(function () { res.push(get1()); return res[res.length-1]; });
-	for (var i = 0; i < n / 4; i++) {
+	for (let i = 0; i < n / 4; i++) {
 	  set1(i);
 	}
 	return res;
   }
   
   function updateComputations1to1000(n, sources) {
-	var [get1, set1] = sources[0];
+	let [get1, set1] = sources[0];
 	const res = [];
-	for (var i = 0; i < 1000; i++) {
+	for (let i = 0; i < 1000; i++) {
 	  createComputed(function () { res.push(get1()); return res[res.length-1]; });
 	}
-	for (var i = 0; i < n / 1000; i++) {
+	for (let i = 0; i < n / 1000; i++) {
 	  set1(i);
 	}
 	return res;
@@ -499,7 +499,7 @@ function bench(fn, count, scount) {
   }
   
   function nodeNow() {
-	var hrt = process.hrtime();
+	let hrt = process.hrtime();
 	return hrt[0] * 1000 + hrt[1] / 1e6;
   }
 }
