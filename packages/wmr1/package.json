@@ -38,7 +38,7 @@
 	"dependencies": {
 		"@preact-wmr-twind-zero/preact-things": "^0.0.0",
 		"fast-equals": "^3.0.3",
-		"preact": "^10.7.2",
+		"preact": "^10.7.3",
 		"preact-iso": "^2.3.0"
 	},
 	"devDependencies": {
@@ -57,12 +57,12 @@
 		"browserslist": "^4.20.3",
 		"cpy-cli": "^4.1.0",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.16.0",
+		"eslint": "^8.17.0",
 		"kolorist": "^1.5.1",
 		"preact-render-to-string": "^5.2.0",
 		"prettier": "^2.6.2",
 		"rimraf": "^3.0.2",
-		"rollup": "^2.75.3",
+		"rollup": "^2.75.5",
 		"stylelint": "^14.8.5",
 		"twind": "^1.0.0-next.37",
 		"typescript": "next",
