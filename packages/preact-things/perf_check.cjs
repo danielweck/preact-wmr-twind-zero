@@ -9,11 +9,37 @@ const observant = vm.runInNewContext(`${code};observant`);
 // const { createRoot, createSignal, createComputed } = require("../../../solid/packages/solid/bench/sinuous.cjs");
 // const { createRoot, createSignal, createComputed } = require("../../../solid/packages/solid/bench/s-mod.cjs");
 
+// const { signal, computed } = require("../../usignal.cjs");
+// const createSignal = (val) => {
+// const o = signal(val);
+// return [() => o.value, v => o.value = v];
+// };
+// const createRoot = (fn) => {
+// return fn();
+// };
+// const createComputed = (fn) => {
+// const o = computed(fn);
+// const tmp = o.value;
+// };
+
 // MATCH:
 // const { createRoot, createSignal, createComputed } = require("../../../solid/packages/solid/bench/rval-mod.cjs");
 // const { createRoot, createSignal, createComputed } = require("../../../solid/packages/solid/bench/vuerx.cjs");
 // const { createRoot, createSignal, createComputed } = require("../../../solid/packages/solid/bench/kairo.cjs");
 // const { createRoot, createSignal, createComputed } = require("../../../solid/packages/solid/dist/solid.cjs");
+
+// const { signal, computed } = require("../../preact-signals.cjs");
+// const createSignal = (val) => {
+// const o = signal(val);
+// return [() => o.value, v => o.value = v];
+// };
+// const createRoot = (fn) => {
+// return fn();
+// };
+// const createComputed = (fn) => {
+// const o = computed(fn);
+// const tmp = o.value;
+// };
 
 const createSignal = (val) => {
 	const o = observant.obs(val);

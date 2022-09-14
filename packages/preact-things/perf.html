@@ -21,8 +21,21 @@
   for (let key in window.exports) {
     window["preactsignals"][key] = window.exports[key];
   }
-  window.module = undefined;
+  window.exports = undefined;
 </script>
+
+<!-- 
+<script type="text/javascript">
+  window.exports = {};
+</script>
+<script src="https://unpkg.com/usignal@0.4.5/cjs/index.js"></script>
+<script type="text/javascript">
+  window["usignal"] = {};
+  for (let key in window.exports) {
+    window["usignal"][key] = window.exports[key];
+  }
+  window.exports = undefined;
+</script> -->
 
 <script type="text/javascript">
   window.module = {};
@@ -84,6 +97,9 @@
 <p>
 	<button id="btnRunTestSolidPreact" class="-btn -btn-high -btn-success">Run Solid Bench (with Preact/Signals)</button>
 </p>
+<!-- <p>
+	<button id="btnRunTestSolidUSignal" class="-btn -btn-high -btn-success">Run Solid Bench (with uSignal)</button>
+</p> -->
 <p>
 	<button id="btnRunTestSolid" class="-btn -btn-high -btn-success">Run Solid Bench (with Solid or Kairo)</button>
 </p>
@@ -114,6 +130,9 @@ document.querySelector('#btnRunTestSolidObs').addEventListener('click', function
 document.querySelector('#btnRunTestSolidPreact').addEventListener('click', function() {
 	runSolid(1);
 });
+// document.querySelector('#btnRunTestSolidUSignal').addEventListener('click', function() {
+// 	runSolid(2);
+// });
 
 function createSignal_PREACT(val) {
   const o = window["preactsignals"].signal(val);
@@ -124,6 +143,18 @@ function createRoot_PREACT(fn) {
 }
 function createComputed_PREACT(fn) {
   const o = window["preactsignals"].computed(fn);
+  const tmp = o.value;
+}
+
+function createSignal_U(val) {
+  const o = window["usignal"].signal(val);
+  return [() => o.value, v => o.value = v];
+}
+function createRoot_U(fn) {
+  return fn();
+}
+function createComputed_U(fn) {
+  const o = window["usignal"].computed(fn);
   const tmp = o.value;
 }
 
@@ -150,7 +181,7 @@ function runSolid(useObs) {
 		msgs = msgs.concat(args);
 	}
 
-    if (useObs === 1) {
+  if (useObs === 1) {
         if (!window.createSignal_SOLID) window.createSignal_SOLID = window.createSignal;
         if (!window.createRoot_SOLID) window.createRoot_SOLID = window.createRoot;
         if (!window.createComputed_SOLID) window.createComputed_SOLID = window.createComputed;
@@ -160,6 +191,16 @@ function runSolid(useObs) {
         window.createRoot = createRoot_PREACT;
         window.createComputed = createComputed_PREACT;
         // window.createMemo = createMemo_PREACT;
+    } else if (useObs === 2) {
+        if (!window.createSignal_SOLID) window.createSignal_SOLID = window.createSignal;
+        if (!window.createRoot_SOLID) window.createRoot_SOLID = window.createRoot;
+        if (!window.createComputed_SOLID) window.createComputed_SOLID = window.createComputed;
+        // if (!window.createMemo_SOLID) window.createMemo_SOLID = window.createMemo;
+
+        window.createSignal = createSignal_U;
+        window.createRoot = createRoot_U;
+        window.createComputed = createComputed_U;
+        // window.createMemo = createMemo_U;
     } else if (useObs) {
         if (!window.createSignal_SOLID) window.createSignal_SOLID = window.createSignal;
         if (!window.createRoot_SOLID) window.createRoot_SOLID = window.createRoot;
