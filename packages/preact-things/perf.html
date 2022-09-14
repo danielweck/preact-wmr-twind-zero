@@ -13,6 +13,18 @@
 <!-- <script src="./dist/observant.terser-rollup.js"></script> -->
 
 <script type="text/javascript">
+  window.exports = {};
+</script>
+<script src="https://unpkg.com/@preact/signals-core@1.1.0/dist/signals-core.js"></script>
+<script type="text/javascript">
+  window["preactsignals"] = {};
+  for (let key in window.exports) {
+    window["preactsignals"][key] = window.exports[key];
+  }
+  window.module = undefined;
+</script>
+
+<script type="text/javascript">
   window.module = {};
   window.module.exports = {};
   window.exports = {};
@@ -70,6 +82,9 @@
 	<button id="btnRunTestSolidObs" class="-btn -btn-high -btn-success">Run Solid Bench (with Observant)</button>
 </p>
 <p>
+	<button id="btnRunTestSolidPreact" class="-btn -btn-high -btn-success">Run Solid Bench (with Preact/Signals)</button>
+</p>
+<p>
 	<button id="btnRunTestSolid" class="-btn -btn-high -btn-success">Run Solid Bench (with Solid or Kairo)</button>
 </p>
 
@@ -96,6 +111,21 @@ document.querySelector('#btnRunTestSolid').addEventListener('click', function() 
 document.querySelector('#btnRunTestSolidObs').addEventListener('click', function() {
 	runSolid(true);
 });
+document.querySelector('#btnRunTestSolidPreact').addEventListener('click', function() {
+	runSolid(1);
+});
+
+function createSignal_PREACT(val) {
+  const o = window["preactsignals"].signal(val);
+  return [() => o.value, v => o.value = v];
+}
+function createRoot_PREACT(fn) {
+  return fn();
+}
+function createComputed_PREACT(fn) {
+  const o = window["preactsignals"].computed(fn);
+  const tmp = o.value;
+}
 
 function createSignal_(val) {
   const o = observant.obs(val);
@@ -120,7 +150,17 @@ function runSolid(useObs) {
 		msgs = msgs.concat(args);
 	}
 
-    if (useObs) {
+    if (useObs === 1) {
+        if (!window.createSignal_SOLID) window.createSignal_SOLID = window.createSignal;
+        if (!window.createRoot_SOLID) window.createRoot_SOLID = window.createRoot;
+        if (!window.createComputed_SOLID) window.createComputed_SOLID = window.createComputed;
+        // if (!window.createMemo_SOLID) window.createMemo_SOLID = window.createMemo;
+
+        window.createSignal = createSignal_PREACT;
+        window.createRoot = createRoot_PREACT;
+        window.createComputed = createComputed_PREACT;
+        // window.createMemo = createMemo_PREACT;
+    } else if (useObs) {
         if (!window.createSignal_SOLID) window.createSignal_SOLID = window.createSignal;
         if (!window.createRoot_SOLID) window.createRoot_SOLID = window.createRoot;
         if (!window.createComputed_SOLID) window.createComputed_SOLID = window.createComputed;
