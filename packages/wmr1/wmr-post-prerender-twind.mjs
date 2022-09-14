@@ -1,14 +1,11 @@
 // eslint-disable-next-line import/default
-import parcelCss from '@parcel/css';
 import browserslist from 'browserslist';
 import fs from 'fs';
 import { cyan, green } from 'kolorist';
+import { browserslistToTargets, transform } from 'lightningcss';
 import path from 'path';
 
 const SKIP_CSS_MINIFY = false;
-
-// eslint-disable-next-line import/no-named-as-default-member
-const { browserslistToTargets, transform } = parcelCss;
 
 const targets = browserslistToTargets(
 	browserslist(fs.readFileSync(path.join(process.cwd(), '.browserslistrc'), { encoding: 'utf8' }).split('\n')),

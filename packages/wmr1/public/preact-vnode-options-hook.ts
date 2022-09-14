@@ -61,6 +61,9 @@ export const initPreactVDOMHook = (tw?: (val: string) => string) => {
 				}
 
 				props[p] = undefined;
+
+				// https://github.com/preactjs/preact-render-to-string/compare/v5.2.2...5.2.3#diff-bfe9874d239014961b1ae4e89875a6155667db834a410aaaa2ebe3cf89820556R258
+				delete props[p];
 			}
 		}
 

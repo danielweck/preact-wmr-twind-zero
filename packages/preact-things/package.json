@@ -126,35 +126,35 @@
 		},
 		{
 			"path": "./dist/observant.esbuild.js",
-			"limit": "2799"
+			"limit": "2812"
 		},
 		{
 			"path": "./dist/observant.esbuild.js.gz",
-			"limit": "1336"
+			"limit": "1343"
 		},
 		{
 			"path": "./dist/observant.esbuild.js.br",
-			"limit": "1220"
+			"limit": "1232"
 		}
 	],
 	"dependencies": {
-		"preact": "^10.7.3"
+		"preact": "^10.11.0"
 	},
 	"devDependencies": {
-		"@testing-library/dom": "^8.13.0",
-		"@testing-library/preact": "^3.2.0",
-		"cpy-cli": "^4.1.0",
+		"@testing-library/dom": "^8.17.1",
+		"@testing-library/preact": "^3.2.2",
+		"cpy-cli": "^4.2.0",
 		"cross-env": "^7.0.3",
-		"esbuild": "^0.14.43",
-		"eslint": "^8.17.0",
+		"esbuild": "^0.15.7",
+		"eslint": "^8.23.1",
 		"preact-iso": "^2.3.0",
-		"preact-render-to-string": "^5.2.0",
-		"prettier": "^2.6.2",
+		"preact-render-to-string": "^5.2.4",
+		"prettier": "^2.7.1",
 		"rimraf": "^3.0.2",
-		"rollup": "^2.75.6",
+		"rollup": "^2.79.0",
 		"rollup-plugin-terser": "^7.0.2",
-		"terser": "^5.14.0",
-		"typescript": "next"
+		"terser": "^5.15.0",
+		"typescript": "^4.8.3"
 	},
 	"files": [
 		"dist"
