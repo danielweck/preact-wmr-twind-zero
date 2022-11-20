@@ -16,7 +16,7 @@
 		"module": "ESNext",
 		"moduleResolution": "nodenext",
 		"allowSyntheticDefaultImports": true,
-		"skipLibCheck": false,
+		"skipLibCheck": true,
 		"esModuleInterop": false,
 		"importsNotUsedAsValues": "error",
 		"preserveValueImports": false,
