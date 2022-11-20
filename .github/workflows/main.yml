@@ -20,7 +20,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: ['16.x']
+        node: ['18.x']
         os: [ubuntu-latest]
         include:
           - os: ubuntu-latest

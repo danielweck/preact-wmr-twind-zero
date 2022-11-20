@@ -1,6 +1,6 @@
+import { virtual } from '@twind/core';
 import type { VNode } from 'preact';
 import prerender, { type PrerenderOptions, type PrerenderResult } from 'preact-iso/prerender';
-import { virtual } from 'twind';
 
 import { initPreactVDOMHook_Twind } from '../preact-vnode-options-hook--twind.js';
 import { twindConfig } from '../twind.config.js';

@@ -1,7 +1,7 @@
 import { transformSync } from '@babel/core';
 import { isBooleanLiteral, isNumericLiteral, isStringLiteral, stringLiteral, templateLiteral } from '@babel/types';
+import { shortcut, virtual } from '@twind/core';
 import { cyan, green, red } from 'kolorist';
-import { shortcut, virtual } from 'twind';
 
 import { createTwindInstance, resetTwindInstance } from './public/twindFactory.js';
 
@@ -37,10 +37,10 @@ const REGEXP_MULTILINE_JSX_CLASS_PROPS = /(class|className|data-tw)[\s]*=[\s]*{[
 export function wmrTwindPlugin(config) {
 	// in WMR build/prerender mode, we execute Twind via a transient stylesheet.
 	// See lazy instantiation further down below...
-	/** @type {import('twind').Twind<import('twind').BaseTheme & import('@twind/preset-tailwind').TailwindTheme, string[]> | undefined} */
+	/** @type {import('@twind/core').Twind<import('@twind/core').BaseTheme & import('@twind/preset-tailwind').TailwindTheme, string[]> | undefined} */
 	let _tw;
 	// The Twind stylesheet is not actually used anywhere, this is just to generate the classnames (not the actual styles / rules)
-	/** @type {import('twind').Sheet<string[]> | undefined} */
+	/** @type {import('@twind/core').Sheet<string[]> | undefined} */
 	let _twindSheet;
 
 	/**

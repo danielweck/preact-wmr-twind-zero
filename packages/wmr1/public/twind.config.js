@@ -1,4 +1,4 @@
-import { css } from 'twind';
+import { css } from '@twind/core';
 
 import { KEYBOARD_INTERACT } from './utils.js';
 
@@ -36,7 +36,7 @@ export const twindReset = SKIP_PREFLIGHT
 			}
 	  `;
 
-/** @type {import('twind').TwindUserConfig<import('twind').BaseTheme, import('twind').Preset<import('twind').BaseTheme>[]>} */
+/** @type {import('@twind/core').TwindUserConfig<import('@twind/core').BaseTheme, import('@twind/core').Preset<import('@twind/core').BaseTheme>[]>} */
 export const twindConfig = {
 	variants: [['is-rtl', '&[dir=rtl]']],
 	hash: false,

@@ -36,7 +36,6 @@ declare global {
 if (IS_CLIENT_SIDE && process.env.NODE_ENV === 'development') {
 	// eslint-disable-next-line @typescript-eslint/no-floating-promises
 	(async () => {
-		// @ts-expect-error TS7016
 		await import('preact/debug');
 	})();
 }
