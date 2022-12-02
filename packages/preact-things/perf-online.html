@@ -40,6 +40,7 @@
 			<label class="-radiobox"
 				><input type="radio" name="rdbLibrary" value="observant" checked /><span></span>observant</label
 			>
+			<label class="-radiobox"><input type="radio" name="rdbLibrary" value="reactive" /><span></span>reactive</label>
 		</p>
 
 		<p>
@@ -53,6 +54,9 @@
 		</p>
 		<p>
 			<button id="btnRunTestSolid" class="-btn -btn-high -btn-success">Run Solid Bench (with Solid)</button>
+		</p>
+		<p>
+			<button id="btnRunTestSolidReactive" class="-btn -btn-high -btn-success">Run Solid Bench (with Reactive)</button>
 		</p>
 
 		<hr />
@@ -69,7 +73,10 @@
 				createSignal as createSignal_SOLID,
 			} from 'https://unpkg.com/solid-js@1.4.3/dist/solid.js';
 
-			import { get, set, obs } from './observant.esm.js'; // 'https://1jyvch.csb.app/observant.js' Codesandbox same-origin CORS
+			import { Reactive } from 'https://unpkg.com/@reactively/core@0.0.6/dist/core.js';
+
+			import { get, set, obs } from './dist/esm/observant/core/index.js';
+			// import { get, set, obs } from 'https://1jyvch.csb.app/observant.js'; // Codesandbox same-origin CORS!
 
 			document.querySelectorAll('#bSetLayerCount button').forEach((b) => {
 				b.addEventListener('click', function () {
@@ -89,6 +96,25 @@
 			document.querySelector('#btnRunTestSolidObs').addEventListener('click', function () {
 				runSolid(true);
 			});
+			document.querySelector('#btnRunTestSolidReactive').addEventListener('click', function () {
+				runSolid(1);
+			});
+
+			function createSignal_REACTIVE(val) {
+				const o = new Reactive(val);
+				return [() => o.get(), (v) => o.set(v)];
+			}
+			function createRoot_REACTIVE(fn) {
+				return fn();
+			}
+			function createComputed_REACTIVE(fn) {
+				const o = new Reactive(fn);
+				const tmp = o.get();
+			}
+			// function createMemo_REACTIVE(fn) {
+			//   const o = obs(fn);
+			//   return () => get(o);
+			// }
 
 			function createSignal_OBS(val) {
 				const o = obs(val);
@@ -113,7 +139,12 @@
 					msgs = msgs.concat(args);
 				};
 
-				if (useObs) {
+				if (useObs === 1) {
+					window.createSignal = createSignal_REACTIVE;
+					window.createRoot = createRoot_REACTIVE;
+					window.createComputed = createComputed_REACTIVE;
+					// window.createMemo = createMemo_REACTIVE;
+				} else if (useObs) {
 					window.createSignal = createSignal_OBS;
 					window.createRoot = createRoot_OBS;
 					window.createComputed = createComputed_OBS;
@@ -496,6 +527,10 @@
 				}
 
 				switch (lib) {
+					case 'reactive': {
+						testReactive(report, layerCount, onDone);
+						break;
+					}
 					case 'observant': {
 						testObservant(report, layerCount, onDone);
 						break;
@@ -612,6 +647,124 @@
 				});
 			}
 
+			function testReactive(report, layerCount, done) {
+				let onC = 0;
+				const once = () => {
+					let start = {
+						prop1: new Reactive(1),
+						prop2: new Reactive(2),
+						prop3: new Reactive(3),
+						prop4: new Reactive(4),
+					};
+					let layer = start;
+
+					for (let i = layerCount; i--; ) {
+						layer = ((prev) => {
+							let next = {
+								prop1: new Reactive(() => prev.prop2.get()),
+								prop2: new Reactive(() => prev.prop1.get() - prev.prop3.get()),
+								prop3: new Reactive(() => prev.prop2.get() + prev.prop4.get()),
+								prop4: new Reactive(() => prev.prop3.get()),
+							};
+
+							// on(next.prop1, () => {onC++});
+							// on(next.prop2, () => {onC++});
+							// on(next.prop3, () => {onC++});
+							// on(next.prop4, () => {onC++});
+
+							// next.prop1.onChange(() => {});
+							// next.prop2.onChange(() => {});
+							// next.prop3.onChange(() => {});
+							// next.prop4.onChange(() => {});
+
+							// run(next.prop1);
+							// run(next.prop2);
+							// run(next.prop3);
+							// run(next.prop4);
+
+							// get(next.prop1);
+							// get(next.prop2);
+							// get(next.prop3);
+							// get(next.prop4);
+
+							return next;
+						})(layer);
+					}
+
+					let end = layer;
+
+					// end.prop1.onChange(() => {});
+					// end.prop2.onChange(() => {});
+					// end.prop3.onChange(() => {});
+					// end.prop4.onChange(() => {});
+
+					report.beforeChange = [end.prop1.get(), end.prop2.get(), end.prop3.get(), end.prop4.get()];
+
+					let startTime = performance.now();
+
+					start.prop1.set(4);
+					start.prop2.set(3);
+					start.prop3.set(2);
+					start.prop4.set(1);
+
+					report.afterChange = [end.prop1.get(), end.prop2.get(), end.prop3.get(), end.prop4.get()];
+
+					report.recalculationTime = performance.now() - startTime;
+
+					report.min = Math.min(report.min || 9999, report.recalculationTime);
+					report.max = Math.max(report.max || 0, report.recalculationTime);
+
+					if (!report.times) {
+						report.times = [];
+					}
+					report.times.push(report.recalculationTime);
+				};
+
+				const sleep = (ms) =>
+					new Promise((res) => {
+						setTimeout(() => {
+							res();
+						}, ms);
+					});
+				setTimeout(async () => {
+					// warmup
+					once();
+					await sleep(200);
+
+					once();
+					await sleep(200);
+
+					once();
+					await sleep(200);
+
+					console.log(JSON.stringify(report, null, 4));
+
+					report.min = 888;
+					report.max = 0;
+					report.avg = 0;
+					report.median = 0;
+					report.times = [];
+					report.sorted = [];
+
+					for (let i = 0; i < 10; i++) {
+						once();
+						await sleep(100);
+					}
+
+					report.avg =
+						report.times.reduce((prev, cur) => {
+							return prev + cur;
+						}, 0) / report.times.length;
+
+					const middle = Math.floor(report.times.length / 2);
+					const times = (report.sorted = [...report.times].sort((a, b) => a - b));
+					report.median = times.length % 2 !== 0 ? times[middle] : (times[middle - 1] + times[middle]) / 2;
+
+					console.log(JSON.stringify(report, null, 4));
+
+					done();
+				});
+			}
 			function testObservant(report, layerCount, done) {
 				let onC = 0;
 				const once = () => {

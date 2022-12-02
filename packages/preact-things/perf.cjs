@@ -41,21 +41,34 @@ const observant = vm.runInNewContext(`${code};observant`);
 // const tmp = o.value;
 // };
 
+const { Reactive } = require("../../../reactively/packages/core/dist/reactively-core.cjs");
 const createSignal = (val) => {
-	const o = observant.obs(val);
-	return [() => observant.get(o), (v) => observant.set(o, v)];
+const o = new Reactive(val);
+return [() => o.get(), v => o.set(v)];
 };
 const createRoot = (fn) => {
-	return fn();
+return fn();
 };
 const createComputed = (fn) => {
-	const o = observant.obs(fn);
-	observant.get(o);
+const o = new Reactive(fn);
+const tmp = o.get();
 };
-// const createMemo = (fn) => {
-// 	const o = observant.obs(fn);
-// 	return () => observant.get(o);
+
+// const createSignal = (val) => {
+// 	const o = observant.obs(val);
+// 	return [() => observant.get(o), (v) => observant.set(o, v)];
 // };
+// const createRoot = (fn) => {
+// 	return fn();
+// };
+// const createComputed = (fn) => {
+// 	const o = observant.obs(fn);
+// 	observant.get(o);
+// };
+// // const createMemo = (fn) => {
+// // 	const o = observant.obs(fn);
+// // 	return () => observant.get(o);
+// // };
 
 // -------
 

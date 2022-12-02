@@ -10,6 +10,7 @@
   
   <!-- <script src="./dist/observant.esbuild.js"></script> -->
   <script src="./dist/observant.rollup.js"></script>
+  <!-- <script src="./dist/esm/observant/core/index.js" type="module"></script> -->
 <!-- <script src="./dist/observant.terser-rollup.js"></script> -->
 
 <script type="text/javascript">
@@ -47,6 +48,9 @@
 <script type="text/javascript">
   for (let key in window.module.exports) {
     window[key] = window.module.exports[key];
+  }
+  if (!window.createSignal) {
+    alert("window.createSignal ??");
   }
   window.module.exports = undefined;
   window.module = undefined;
@@ -103,6 +107,9 @@
 <p>
 	<button id="btnRunTestSolid" class="-btn -btn-high -btn-success">Run Solid Bench (with Solid or Kairo)</button>
 </p>
+<p>
+	<button id="btnRunTestSolidReactive" class="-btn -btn-high -btn-success">Run Solid Bench (with Reactive)</button>
+</p>
 
 <hr>
 
@@ -111,7 +118,9 @@
 	<pre><output id="tfOutput">&nbsp;</output></pre>
 </div>
 
-<script>
+<script type="module">
+
+import { Reactive } from 'https://unpkg.com/@reactively/core@0.0.6/dist/core.js';
 
 document.querySelectorAll('#bSetLayerCount button').forEach((b) => {
 	b.addEventListener('click', function() {
@@ -133,6 +142,25 @@ document.querySelector('#btnRunTestSolidPreact').addEventListener('click', funct
 // document.querySelector('#btnRunTestSolidUSignal').addEventListener('click', function() {
 // 	runSolid(2);
 // });
+document.querySelector('#btnRunTestSolidReactive').addEventListener('click', function() {
+	runSolid(3);
+});
+
+function createSignal_REACTIVE(val) {
+  const o = new Reactive(val);
+  return [() => o.get(), (v) => o.set(v)];
+}
+function createRoot_REACTIVE(fn) {
+  return fn();
+}
+function createComputed_REACTIVE(fn) {
+  const o = new Reactive(fn);
+  const tmp = o.get();
+}
+// function createMemo_REACTIVE(fn) {
+//   const o = obs(fn);
+//   return () => get(o);
+// }
 
 function createSignal_PREACT(val) {
   const o = window["preactsignals"].signal(val);
@@ -201,6 +229,16 @@ function runSolid(useObs) {
         window.createRoot = createRoot_U;
         window.createComputed = createComputed_U;
         // window.createMemo = createMemo_U;
+    } else if (useObs === 3) {
+        if (!window.createSignal_SOLID) window.createSignal_SOLID = window.createSignal;
+        if (!window.createRoot_SOLID) window.createRoot_SOLID = window.createRoot;
+        if (!window.createComputed_SOLID) window.createComputed_SOLID = window.createComputed;
+        // if (!window.createMemo_SOLID) window.createMemo_SOLID = window.createMemo;
+
+        window.createSignal = createSignal_REACTIVE;
+        window.createRoot = createRoot_REACTIVE;
+        window.createComputed = createComputed_REACTIVE;
+        // window.createMemo = createMemo_REACTIVE;
     } else if (useObs) {
         if (!window.createSignal_SOLID) window.createSignal_SOLID = window.createSignal;
         if (!window.createRoot_SOLID) window.createRoot_SOLID = window.createRoot;
@@ -212,6 +250,14 @@ function runSolid(useObs) {
         window.createComputed = createComputed_;
         // window.createMemo = createMemo_;
     } else {
+      if (!window.createSignal) {
+        alert("!! window.createSignal");
+      }
+        // if (!window.createSignal_SOLID) window.createSignal_SOLID = window.createSignal;
+        // if (!window.createRoot_SOLID) window.createRoot_SOLID = window.createRoot;
+        // if (!window.createComputed_SOLID) window.createComputed_SOLID = window.createComputed;
+        // // if (!window.createMemo_SOLID) window.createMemo_SOLID = window.createMemo;
+
         if (window.createSignal_SOLID) window.createSignal = window.createSignal_SOLID;
         if (window.createRoot_SOLID) window.createRoot = window.createRoot_SOLID;
         if (window.createComputed_SOLID) window.createComputed = window.createComputed_SOLID;
