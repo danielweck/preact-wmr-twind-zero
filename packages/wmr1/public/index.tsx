@@ -311,7 +311,9 @@ export const App = ({ prerenderIndex }: { prerenderIndex?: number }) => {
 					<p>prerenderIndex: {prerenderIndex}</p>
 				</StaticNoHydrate>
 				<ObservantPerf />
-				<h1>Router status:</h1>
+				<h1 data-headlessui-state="open" class="ui-open:bg-pink-600">
+					Router status:
+				</h1>
 				<p
 					class={`
 						bg-pink-600
@@ -332,7 +334,7 @@ export const App = ({ prerenderIndex }: { prerenderIndex?: number }) => {
 				</StaticNoHydrate>
 
 				<h1>Router links:</h1>
-				<ul>
+				<ul data-headlessui-state="open">
 					<li>
 						<span
 							class={`
@@ -343,7 +345,9 @@ export const App = ({ prerenderIndex }: { prerenderIndex?: number }) => {
 						>
 							&#x2588;&#x2588;&#x2588;
 						</span>
-						<a href={`${PUBLIC_PATH_ROOT}?param=home#hash-home`}>Routed Home</a>
+						<a class="ui-open:bg-pink-600" href={`${PUBLIC_PATH_ROOT}?param=home#hash-home`}>
+							Routed Home
+						</a>
 					</li>
 					<li>
 						<span

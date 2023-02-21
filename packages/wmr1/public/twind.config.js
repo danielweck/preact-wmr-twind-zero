@@ -36,9 +36,27 @@ export const twindReset = SKIP_PREFLIGHT
 			}
 	  `;
 
+// https://github.com/tailwindlabs/headlessui/blob/main/packages/%40headlessui-tailwindcss/src/index.ts
+const prefix = 'ui';
+// BaseTheme & import('@twind/preset-tailwind').TailwindTheme & import('@twind/preset-typography').TypographyTheme
+/** @type {import('@twind/core').Variant<import('@twind/core').BaseTheme & import('@twind/core').ExtractThemes<import('@twind/core').BaseTheme, import('@twind/core').Preset[]>>[]} */
+const variants = [];
+['open', 'checked', 'selected', 'active', 'disabled'].forEach((state) => {
+	// variants.push([`${prefix}-${state}`, `&[data-headlessui-state~="${state}"], :where([data-headlessui-state~="${state}"]):not(:has([data-headlessui-state])) &`]);
+	variants.push([
+		`${prefix}-${state}`,
+		`&[data-headlessui-state~="${state}"], :where([data-headlessui-state~="${state}"]) &`,
+	]);
+	variants.push([
+		`${prefix}-not-${state}`,
+		`&[data-headlessui-state]:not([data-headlessui-state~="${state}"]), :where([data-headlessui-state]:not([data-headlessui-state~="${state}"])) &:not([data-headlessui-state])`,
+	]);
+});
+variants.push(['is-rtl', '&[dir=rtl]']);
+
 /** @type {import('@twind/core').TwindUserConfig<import('@twind/core').BaseTheme, import('@twind/core').Preset<import('@twind/core').BaseTheme>[]>} */
 export const twindConfig = {
-	variants: [['is-rtl', '&[dir=rtl]']],
+	variants,
 	hash: false,
 	// hash(className, defaultHash) {
 	// if (/^[~@]\(/.test(className)) {
