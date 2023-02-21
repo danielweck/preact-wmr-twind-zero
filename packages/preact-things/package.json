@@ -138,23 +138,23 @@
 		}
 	],
 	"dependencies": {
-		"preact": "^10.11.3"
+		"preact": "^10.12.1"
 	},
 	"devDependencies": {
-		"@rollup/plugin-terser": "^0.1.0",
-		"@testing-library/dom": "^8.19.0",
-		"@testing-library/preact": "^3.2.2",
+		"@rollup/plugin-terser": "^0.4.0",
+		"@testing-library/dom": "^9.0.0",
+		"@testing-library/preact": "^3.2.3",
 		"cpy-cli": "^4.2.0",
 		"cross-env": "^7.0.3",
-		"esbuild": "^0.15.16",
-		"eslint": "^8.28.0",
+		"esbuild": "^0.17.10",
+		"eslint": "^8.34.0",
 		"preact-iso": "^2.3.1",
 		"preact-render-to-string": "^5.2.6",
-		"prettier": "^2.8.0",
-		"rimraf": "^3.0.2",
-		"rollup": "^3.5.1",
-		"terser": "^5.16.0",
-		"typescript": "^4.9.3"
+		"prettier": "^2.8.4",
+		"rimraf": "^4.1.2",
+		"rollup": "^3.17.2",
+		"terser": "^5.16.4",
+		"typescript": "^4.9.5"
 	},
 	"files": [
 		"dist"
