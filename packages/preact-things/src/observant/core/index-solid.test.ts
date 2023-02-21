@@ -6,7 +6,7 @@
 import { afterEach, beforeEach, describe, expect, it, test } from 'vitest';
 
 import { memo } from '../ex/index.js';
-import { type TObsKind, type TObsOptions, get, obs, reset, set, skip } from './index.js';
+import { get, obs, reset, set, skip, type TObsKind, type TObsOptions } from './index.js';
 
 const createSignal = <T = TObsKind>(
 	val: T,

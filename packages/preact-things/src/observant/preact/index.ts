@@ -4,7 +4,7 @@
 import type { FunctionComponent } from 'preact';
 import { type MutableRef, useEffect, useRef, useState } from 'preact/hooks';
 
-import { type TObs, obs, on, stop } from '../core/index.js';
+import { obs, on, stop, type TObs } from '../core/index.js';
 
 export interface ReactionTracking {
 	obs: TObs<boolean>;

@@ -2,7 +2,7 @@
 
 import { afterEach, beforeEach, expect, test } from 'vitest';
 
-import { type TObsEventCallback, get, obs, on, reset, set } from './index.js';
+import { get, obs, on, reset, set, type TObsEventCallback } from './index.js';
 
 // let _unhandledEvents: PromiseRejectionEvent[] = [];
 // function onUnhandledRejection(event: PromiseRejectionEvent) {

@@ -1,4 +1,4 @@
-import { type Options, type VNode, options } from 'preact';
+import { type Options, options, type VNode } from 'preact';
 
 import type { TClassProps, TwindProps } from './preact-vnode-options-hook--twind-types.js';
 

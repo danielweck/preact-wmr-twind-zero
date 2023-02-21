@@ -1,4 +1,4 @@
-import { type TObs, type TObsKind, type TObsOptions, get, obs } from '../core/index.js';
+import { get, obs, type TObs, type TObsKind, type TObsOptions } from '../core/index.js';
 import type { IObs } from '../types/internal.js';
 
 // ----------------

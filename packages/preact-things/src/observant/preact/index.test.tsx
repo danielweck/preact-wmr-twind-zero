@@ -12,7 +12,7 @@ import { afterEach, beforeEach, expect, test } from 'vitest';
 
 import { clearCache, suspendCache } from '../../suspend-cache.js';
 import { Suspense } from '../../xpatched/suspense.js';
-import { type TObs, get, obs, on, reset, set } from '../core/index.js';
+import { get, obs, on, reset, set, type TObs } from '../core/index.js';
 import { preactObservant } from './index.js';
 
 let _unhandledEvents: PromiseRejectionEvent[] = [];

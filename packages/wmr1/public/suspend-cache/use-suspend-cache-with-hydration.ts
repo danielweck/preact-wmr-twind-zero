@@ -1,8 +1,8 @@
 import {
 	type AsyncFunc,
 	type ResolvedOrRejected,
-	type SuspendCacheOptions,
 	suspendCache,
+	type SuspendCacheOptions,
 } from '@preact-wmr-twind-zero/preact-things/suspend-cache.js';
 import { useEffect, useRef, useState } from 'preact/hooks';
 

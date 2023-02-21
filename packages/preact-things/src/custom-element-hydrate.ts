@@ -1,4 +1,4 @@
-import { type FunctionalComponent, type RenderableProps, type VNode, h, hydrate } from 'preact';
+import { type FunctionalComponent, h, hydrate, type RenderableProps, type VNode } from 'preact';
 
 import { createRootFragment } from './render-hydrate-replace-node.js';
 import { IS_CLIENT_SIDE } from './utils.js';

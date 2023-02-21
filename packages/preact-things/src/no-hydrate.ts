@@ -1,4 +1,4 @@
-import { type FunctionalComponent, type RenderableProps, Component, h } from 'preact';
+import { Component, type FunctionalComponent, h, type RenderableProps } from 'preact';
 
 // https://gist.github.com/developit/e94cd0da8479aacd1bbdedd612c1975f
 // also see: https://github.com/preactjs/preact-www/blob/master/src/lib/hydrator.js

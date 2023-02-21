@@ -1,4 +1,4 @@
-import { type ComponentChildren, type FunctionalComponent, type RenderableProps, createContext, h } from 'preact';
+import { type ComponentChildren, createContext, type FunctionalComponent, h, type RenderableProps } from 'preact';
 import { useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'preact/hooks';
 
 import { IS_CLIENT_SIDE } from './utils.js';

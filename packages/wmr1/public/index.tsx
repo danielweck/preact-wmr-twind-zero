@@ -1,4 +1,4 @@
-import { type TObs, get, obs, set } from '@preact-wmr-twind-zero/preact-things/observant/core/index.js';
+import { get, obs, set, type TObs } from '@preact-wmr-twind-zero/preact-things/observant/core/index.js';
 import { preactObservant } from '@preact-wmr-twind-zero/preact-things/observant/preact/index.js';
 import { ContextSlotsProvider, Slot } from '@preact-wmr-twind-zero/preact-things/slots.js';
 import type { ComponentChildren } from 'preact';
